@@ -1,0 +1,129 @@
+<?php
+$title = 'P-PIT '.$this->translate('Sport Studies', 'ppit-studies', $context->getLocale());
+$this->headTitle($title);
+echo $context->getHeaderCode();
+?>
+<div id="main_menu" >
+	<div class="row">
+	    <div class="col-md-10 col-md-offset-1">
+			<div align="center">
+
+<?php if ($context->isAllowed('studentSport/search')) : ?>
+				<button type="button" class="btn btn-default menu-btn" id="studentSport-anchor">
+					<?php echo $this->translate('Students', 'ppit-studies', $context->getLocale()) ?>
+				</button>
+<?php endif ?>
+
+<?php if ($context->isAllowed('document/index')) : ?>
+				<button type="button" class="btn btn-default menu-btn" id="document-anchor">
+					<?php echo $this->translate('Documents', 'ppit-documents', $context->getLocale()) ?>
+				</button>
+<?php endif ?>
+
+<?php if ($context->isAllowed('productCategory/index')) : ?>
+				<button type="button" class="btn btn-default menu-btn" id="product-anchor">
+					<?php echo $this->translate('Catalogue', 'ppit-master-data', $context->getLocale()) ?>
+				</button>
+<?php endif ?>
+
+<?php if ($context->isAllowed('ppitUser/index')) : ?>
+				<button type="button" class="btn btn-default menu-btn" id="ppitUser-anchor">
+					<?php echo $this->translate('Users', 'ppit-user', $context->getLocale()) ?>
+				</button>
+<?php endif ?>
+			</div>
+		</div>
+	</div>
+	<div>&nbsp;</div>
+</div>
+
+<!-- Main panel -->
+<div class="row">
+    <div class="col-md-6 ppit-panel" id="index_action">
+	</div>
+
+	<div class="col-md-6 ppit-panel" id="form_action" style="display: none">
+	</div>
+</div>
+
+<div>&nbsp;</div>
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+    		<div class="panel-heading front-page" style="background-color: red;">
+                <div><strong><?php echo $this->translate('Preview') ?></strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="home-panel"></div>
+
+<!-- Load the common form javascript functions -->
+<?php echo $this->partial('/partials/common-form-js.phtml'); ?>
+
+<script>
+
+function loadPanel(target, route)
+{
+	// Anchor to the main panel
+	$(location).attr('hash', '#');
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, false);
+	xhttp.send();
+	document.getElementById(target).innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+	console.log('showing panel: ' + target +', url = ' + route);
+	console.log(xhttp.responseText);
+<?php endif;?>
+}
+
+// Student sport
+<?php if ($context->isAllowed('studentSport/search')) : ?>
+
+<?php echo $this->partial('/partials/ppit-studies-scripts') ?>
+
+<?php if ($context->isAuthenticated()) : ?>
+	activateStudentSport();
+<?php else : ?>
+	showLogin();
+<?php endif;?>
+
+<?php endif;?>
+
+<?php if ($context->isAllowed('document/index')) : ?>
+function activateDocument() {
+	loadPanel('index_action', '<?php echo $this->url('document/index') ?>');
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#document-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+$('#document-anchor').click(activateDocument);
+<?php endif;?>
+
+<?php if ($context->isAllowed('productCategory/index')) : ?>
+function activateProduct() {
+	loadPanel('index_action', '<?php echo $this->url('productCategory/index') ?>');
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#product-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+$('#product-anchor').click(activateProduct);
+<?php endif;?>
+
+<?php if ($context->isAllowed('ppitUser/index')) : ?>
+function activateUser() {
+	loadPanel('index_action', '<?php echo $this->url('ppitUser/index') ?>');
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#ppitUser-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+$('#ppitUser-anchor').click(activateUser);
+<?php endif;?>
+
+function showHome(id) {
+	$('#home-panel').show();
+	loadPanel('#home-panel', '<?php echo $this->url('studentSport/home') ?>' + id);
+}
+
+//showHome(1);
+
+</script>

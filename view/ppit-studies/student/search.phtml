@@ -1,0 +1,189 @@
+<div id="search-panel" class="panel panel-default">
+	<div class="panel-heading" style="background: #AFAFFC; color: #FFFFFF">
+		<strong>
+			<?php echo $this->translate(($config['ppitStudies']['sportOption']) ? 'Sport-studies' : 'Studies', 'ppit-studies', $context->getLocale());?>
+			<span id="mode-text"></span>
+		</strong>
+	</div>
+	<div class="panel-body">
+		
+<!-- Filters -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><span class="glyphicon glyphicon-search"></span></label>
+			<div class="col-sm-7">
+	    		<button type="button" class="form-control btn btn-default btn-xs" title="<?php echo $this->translate('Erase', 'ppit-core', $context->getLocale()) ?>" id="erase-button">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Center', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select id="search_center_name" class="form-control">
+					<option value=""><-- <?php echo $this->translate('Please select a value', 'ppit-core', $context->getLocale()) ?> --></option>
+<?php foreach ($centers as $center) : ?>
+		    		<option value="<?php echo $center->name ?>"><?php echo $center->name ?></option>
+<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Status', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select id="search_status" class="form-control">
+					<option value=""><-- <?php echo $this->translate('Please select a value', 'ppit-core', $context->getLocale()) ?> --></option>
+<?php foreach ($config['ppitStudies']['status'] as $status => $statusProperties) : ?>
+		    		<option value="<?php echo $status ?>"><?php echo $config['ppitStudies']['status'][$status]['labels'][$context->getLocale()] ?></option>
+<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Name', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input type="text" size="5" id="search_n_fn" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input type="text" size="3" id="search_min_school_year" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input type="text" size="3" id="search_max_school_year" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+<?php if ($config['ppitStudies']['sportOption']) : ?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select id="search_sport" class="form-control">
+					<option value=""><-- <?php echo $this->translate('Please select a value', 'ppit-core', $context->getLocale()) ?> --></option>
+	<?php foreach ($config['ppitStudies']['sports'] as $sport => $sportProperties) : ?>
+		    		<option value="<?php echo $sport ?>"><?php echo $config['ppitStudies']['sports'][$sport]['labels'][$context->getLocale()] ?></option>
+	<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Category', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input type="text" size="5" id="search_category" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+<?php endif;?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input type="text" size="5" id="search_class" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+	<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
+	<div id="search-area">
+	
+	<?php if (!$properties || array_key_exists('specialty', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $this->translate('Specialty', 'ppit-studies', $context->getLocale()) ?></label>
+				<div class="col-sm-7">
+					<input type="text" size="5" id="search_specialty" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+	<?php endif ?>
+	
+	<?php if (!$properties || array_key_exists('boarding_school', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $this->translate('Boarding school', 'ppit-studies', $context->getLocale()) ?></label>
+				<div class="col-sm-7">
+					<input type="text" size="5" id="search_boarding_school" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+	<?php endif ?>
+	
+	<?php if (!$properties || array_key_exists('adr_city', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $this->translate('City', 'ppit-contact', $context->getLocale()) ?></label>
+				<div class="col-sm-7">
+		    		<input type="text" size="5" id="search_adr_city" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+	<?php endif ?>
+	
+	<?php if (!$properties || array_key_exists('adr_state', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $this->translate('State', 'ppit-contact', $context->getLocale()) ?></label>
+				<div class="col-sm-7">
+		    		<input type="text" size="5" id="search_adr_state" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+	<?php endif ?>
+	
+	<?php if (!$properties || array_key_exists('adr_country', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $this->translate('Country', 'ppit-contact', $context->getLocale()) ?></label>
+				<div class="col-sm-7">
+		    		<input type="text" size="5" id="search_adr_country" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+	<?php endif ?>
+	
+	<?php if (!$properties || array_key_exists('sex', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $this->translate('Sex', 'ppit-contact', $context->getLocale()) ?></label>
+				<div class="col-sm-7">
+		    		<select id="search_sex" class="form-control">
+						<option value=""><-- <?php echo $this->translate('Please select a value', 'ppit-core', $context->getLocale()) ?> --></option>
+			    		<option value="F"><?php echo $this->translate('F', 'ppit-contact', $context->getLocale()) ?></option>
+						<option value="M"><?php echo $this->translate('M', 'ppit-contact', $context->getLocale()) ?></option>
+			    		<option value="?"><?php echo $this->translate('?', 'ppit-contact', $context->getLocale()) ?></option>
+					</select>
+				</div>
+			</div>
+	<?php endif ?>
+	
+	<?php if (!$properties || array_key_exists('birth_date', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $this->translate('Birth', 'ppit-contact', $context->getLocale()) ?></label>
+				<div class="col-sm-7">
+		    		<input type="text" size="3" id="search_min_birth_date" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+	<?php endif ?>
+	
+	<?php if (!$properties || array_key_exists('birth_date', $properties)) : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label">&nbsp;</label>
+				<div class="col-sm-7">
+		    		<input type="text" size="3" id="search_max_birth_date" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+	<?php endif ?>
+	
+		</div>
+
+	    <div>&nbsp;</div>
+		
+<!-- Actions -->
+	    <div>
+	    		<button type="button" class="btn btn-default" title="<?php echo $this->translate('Export', 'ppit-core', $context->getLocale()) ?>" id="export-button">
+					<span class="glyphicon glyphicon-cloud-download"></span>
+					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
+				</button>
+	    </div>
+
+	    <div>&nbsp;</div>
+
+<!-- Add or update section -->
+		<div id="student-list-panel"></div>
+	</div>
+</div>

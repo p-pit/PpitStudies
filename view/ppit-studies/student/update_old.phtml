@@ -1,0 +1,616 @@
+<?php if (!$context->isSpaMode()) echo $this->partial('partials/view-controller') ?>
+<?php
+$title = $this->translate('Evaluations', 'ppit-learning', $context->getLocale());
+$this->headTitle($title);
+echo $this->partial('/partials/menu', array('context' => $context, 'user_type' => $this->user_type));
+?>
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+<div class="panel panel-default">
+	<div class="panel-heading clearfix">
+		<strong><?php echo $this->translate((($id) ? 'Update' : 'Add').' a student', 'ppit-studies', $context->getLocale()) ?></strong>
+		<div class="btn-group pull-right">
+			<a class="glyphicon glyphicon-remove" href="<?php echo $this->url('student') ?>" onclick="hideForm();"></a>
+		</div>
+	</div>
+    <div class="panel-body">
+		<table class="table-condensed">
+
+<?php if ($message == 'OK') : ?>
+           	<tr id="return">
+				<td colspan="2">
+					<a id="order_update_anchor_return" class="glyphicon glyphicon-circle-arrow-left" href="<?php echo $this->url('student') ?>"></a>
+					<a id="order_update_anchor_return_2" href="<?php echo $this->url('student') ?>"><?php echo $this->translate('Return', 'ppit-core', $context->getLocale()) ?></a>
+				</td>
+			</tr>
+<?php endif;?>
+		</table>
+
+<!-- Form provided for MPA view mode -->
+<?php if (!$context->isSpaMode()) : ?>
+		<form id='student_form' action="<?php echo $this->route; ?>" method="post" onSubmit="return checkForm()">
+<?php endif;?>
+
+<?php if ($message == 'OK') : ?>
+<!-- Global message -->
+			<div class="form-group" id="message">
+				<div class="col-sm-12"><h3><?php echo $this->translate('Your request have been registered', 'ppit-core', $context->getLocale()) ?></h3></div>
+			</div>
+<?php endif;?>
+
+<!-- Global error -->
+<?php if ($error == 'Isolation') : ?>
+			<div class="form-group">
+				<div class="col-sm-12"><h4 class="help-block"><?php echo $this->translate('The database has evolved in the meantime, please input again', 'ppit-core', $context->getLocale()) ?></h4></div>
+			</div>
+<?php endif;?>
+
+<?php echo $this->translate('Fields preceded by * are mandatory', 'ppit-core', $context->getLocale()) ?>
+
+<!--  CSRF -->
+<?php $element = $csrfForm->get('csrf') ?>
+			<div class="form-group">
+				<?php echo $this->formElement($element) ?>
+<?php if ($this->formElementErrors($element)) : ?>
+				<div class="col-sm-12"><p class="help-block"><?php echo $this->translate('The form has expired, please input again', 'ppit-core', $context->getLocale()) ?></p></div>
+<?php endif;?>
+			</div>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Student contact -->
+			<h4>
+				<?php echo $this->translate('Student', 'ppit-studies', $context->getLocale()) ?>
+			</h4>
+<?php echo $this->partial('/partials/contact-update.phtml', array('addMode' => !$id, 'message' => $message, 'prefix' => 'student_', 'contact' => $student->student_contact, 'properties' => array(), 'vcards' => $vcards, 'context' => $context)); ?>
+			
+<!-- Legal representant -->
+			<h4>
+				<?php echo $this->translate('Legal representant', 'ppit-studies', $context->getLocale()) ?>
+			</h4>
+<?php echo $this->partial('/partials/contact-update.phtml', array('addMode' => !$id, 'message' => $message, 'prefix' => '', 'contact' => $student->customer->contact, 'properties' => array(), 'vcards' => $vcards, 'context' => $context)); ?>
+
+<!-- Mother / Father / Other -->
+<?php echo $this->partial('/partials/select-widget.phtml', array(
+		'property' => 'legal_repr_status',
+		'label' => '* '.$this->translate('Status', 'ppit-core', $context->getLocale()),
+		'value' => $student->legal_repr_status,
+		'modalities' => array('mother' => $this->translate('Mother', 'ppit-studies', $context->getLocale()), 'father' => $this->translate('Father', 'ppit-studies', $context->getLocale()), 'other' => $this->translate('Other', 'ppit-studies', $context->getLocale())),
+		'isMandatory' => true,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- 2nd legal representant -->
+			<h4>
+				<?php echo $this->translate('2nd legal representant', 'ppit-studies', $context->getLocale()) ?>
+			</h4>
+<?php echo $this->partial('/partials/contact-update.phtml', array('addMode' => !$id, 'message' => $message, 'prefix' => 'bill_', 'contact' => $student->customer->bill_contact, 'properties' => array(), 'vcards' => $vcards, 'context' => $context)); ?>
+
+<!-- Mother / Father / Other -->
+<?php echo $this->partial('/partials/select-widget.phtml', array(
+		'property' => 'bill_status',
+		'label' => '* '.$this->translate('Status', 'ppit-core', $context->getLocale()),
+		'value' => $student->bill_status,
+		'modalities' => array('mother' => $this->translate('Mother', 'ppit-studies', $context->getLocale()), 'father' => $this->translate('Father', 'ppit-studies', $context->getLocale()), 'other' => $this->translate('Other', 'ppit-studies', $context->getLocale())),
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- School year -->
+<?php echo $this->partial('/partials/select-widget.phtml', array(
+		'property' => 'school_year',
+		'label' => '* '.$this->translate('School year', 'ppit-studies', $context->getLocale()),
+		'value' => $student->school_year,
+		'modalities' => $config['ppitStudies']['schoolYears'],
+		'isMandatory' => true,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Center id -->
+<?php echo $this->partial('/partials/select-widget.phtml', array(
+		'property' => 'center_id',
+		'label' => '* '.$this->translate('Center', 'ppit-studies', $context->getLocale()),
+		'value' => $student->center_id,
+		'modalities' => $centers,
+		'isMandatory' => true,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Class -->
+<?php $classes = array(); foreach ($config['ppitStudies']['classes'] as $class_id => $class_caption) $classes[$class_id] = $this->translate($class_caption, 'ppit-studies', $context->getLocale()) ?>
+<?php echo $this->partial('/partials/select-widget.phtml', array(
+		'property' => 'class',
+		'label' => '* '.$this->translate('Class', 'ppit-studies', $context->getLocale()),
+		'value' => $student->class,
+		'modalities' => $classes,
+		'isMandatory' => true,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Specialty -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'specialty',
+		'label' => $this->translate('Specialty', 'ppit-studies', $context->getLocale()),
+		'value' => $student->specialty,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Boarding school -->
+<?php $options = array(); foreach ($config['ppitStudies']['options'] as $option_id => $option_caption) $options[$option_id] = $this->translate($option_caption, 'ppit-studies', $context->getLocale()) ?>
+<?php echo $this->partial('/partials/select-widget.phtml', array(
+		'property' => 'boarding_school',
+		'label' => '* '.$this->translate('Boarding school', 'ppit-studies', $context->getLocale()),
+		'value' => $student->boarding_school,
+		'isMandatory' => true,
+		'modalities' => $options,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Birth date -->
+<?php echo $this->partial('/partials/date-widget.phtml', array(
+		'property' => 'birth_date',
+		'label' => '* '.$this->translate('Birth date', 'ppit-studies', $context->getLocale()),
+		'value' => $student->birth_date,
+		'isMandatory' => true,
+		'minDate' => '0000-00-00',
+		'maxDate' => '9999-99-99',
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Place of birth -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'place_of_birth',
+		'label' => '* '.$this->translate('Place of birth', 'ppit-studies', $context->getLocale()),
+		'value' => $student->place_of_birth,
+		'isMandatory' => true,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Nationality -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'nationality',
+		'label' => '* '.$this->translate('Nationality', 'ppit-studies', $context->getLocale()),
+		'value' => $student->nationality,
+		'isMandatory' => true,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Id card, passport -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'id_card_passport',
+		'label' => $this->translate('Id card, passport', 'ppit-studies', $context->getLocale()),
+		'value' => $student->id_card_passport,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Health insurance -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'health_insurance',
+		'label' => $this->translate('Health insurance', 'ppit-studies', $context->getLocale()),
+		'value' => $student->health_insurance,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Medical examination -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'medical_examination',
+		'label' => $this->translate('Medical examination', 'ppit-studies', $context->getLocale()),
+		'value' => $student->medical_examination,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Observations -->
+<?php echo $this->partial('/partials/textarea-widget.phtml', array(
+		'property' => 'observations',
+		'label' => $this->translate('Observations', 'ppit-studies', $context->getLocale()),
+		'rows' => 3, 
+		'value' => $student->observations,
+		'isMandatory' => false,
+		'maxLength' => 2047,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Sport -->
+			<h4>
+				<?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?>
+			</h4>
+
+<!-- Licence -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'licence_holder',
+		'label' => $this->translate('Licence', 'ppit-studies', $context->getLocale()),
+		'value' => $student->licence_holder,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Level -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'level',
+		'label' => $this->translate('Level', 'ppit-studies', $context->getLocale()),
+		'value' => $student->level,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Results -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'results',
+		'label' => $this->translate('Results', 'ppit-studies', $context->getLocale()),
+		'value' => $student->results,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Left or right handed -->
+<?php $options = array('left' => $this->translate('Left handed', 'ppit-studies', $context->getLocale()), 'right' => $this->translate('Right handed', 'ppit-studies', $context->getLocale())); ?>
+<?php echo $this->partial('/partials/select-widget.phtml', array(
+		'property' => 'left_right_handed',
+		'label' => '* '.$this->translate('Left or right handed', 'ppit-studies', $context->getLocale()),
+		'value' => $student->left_right_handed,
+		'isMandatory' => true,
+		'modalities' => $options,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Main post -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'main_post',
+		'label' => $this->translate('Main post', 'ppit-studies', $context->getLocale()),
+		'value' => $student->main_post,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Secondary posts -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'secondary_posts',
+		'label' => $this->translate('Secondary posts', 'ppit-studies', $context->getLocale()),
+		'value' => $student->secondary_posts,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Club -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'club',
+		'label' => $this->translate('Club', 'ppit-studies', $context->getLocale()),
+		'value' => $student->club,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Coach name -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'coach_name',
+		'label' => $this->translate('Coach name', 'ppit-studies', $context->getLocale()),
+		'value' => $student->coach_name,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Coach phone -->
+<?php echo $this->partial('/partials/phone-widget.phtml', array(
+		'property' => 'coach_tel',
+		'label' => $this->translate('Coach phone', 'ppit-studies', $context->getLocale()),
+		'value' => $student->coach_tel,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Studies -->
+			<h4>
+				<?php echo $this->translate('Studies', 'ppit-studies', $context->getLocale()) ?>
+			</h4>
+					
+<!-- Previous class -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'previous_class',
+		'label' => $this->translate('Previous class', 'ppit-studies', $context->getLocale()),
+		'value' => $student->previous_class,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+					
+<!-- Previous school -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'previous_school',
+		'label' => $this->translate('Previous school', 'ppit-studies', $context->getLocale()),
+		'value' => $student->previous_school,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Main school -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => '',
+		'label' => $this->translate('Main school', 'ppit-studies', $context->getLocale()),
+		'value' => $student->main_school,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Previous quarter average -->
+<?php echo $this->partial('/partials/number-widget.phtml', array(
+		'property' => 'previous_quarter_average',
+		'label' => $this->translate('Previous quarter average', 'ppit-studies', $context->getLocale()),
+		'value' => $student->previous_quarter_average,
+		'isMandatory' => false,
+		'min' => 0,
+		'max' => 20,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+					
+<!-- Orientation -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'orientation',
+		'label' => $this->translate('Orientation', 'ppit-studies', $context->getLocale()),
+		'value' => $student->orientation,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Mother tongue -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'mother_tongue',
+		'label' => $this->translate('Mother tongue', 'ppit-studies', $context->getLocale()),
+		'value' => $student->mother_tongue,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Living language 1 -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'living_language_1',
+		'label' => $this->translate('Living language 1', 'ppit-studies', $context->getLocale()),
+		'value' => $student->living_language_1,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Living language 2 -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'living_language_2',
+		'label' => $this->translate('Living language 2', 'ppit-studies', $context->getLocale()),
+		'value' => $student->living_language_2,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Medical -->
+			<h4>
+				<?php echo $this->translate('Medical', 'ppit-studies', $context->getLocale()) ?>
+			</h4>
+
+<!-- Weight -->
+<?php echo $this->partial('/partials/number-widget.phtml', array(
+		'property' => 'weight',
+		'label' => $this->translate('Weight (pounds)', 'ppit-studies', $context->getLocale()),
+		'value' => $student->weight,
+		'isMandatory' => false,
+		'min' => 0,
+		'max' => 200,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Height -->
+<?php echo $this->partial('/partials/number-widget.phtml', array(
+		'property' => 'height',
+		'label' => $this->translate('Height (inches)', 'ppit-studies', $context->getLocale()),
+		'value' => $student->height,
+		'isMandatory' => false,
+		'min' => 0,
+		'max' => 2,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Wear size -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'wear_size',
+		'label' => $this->translate('Wear size', 'ppit-studies', $context->getLocale()),
+		'value' => $student->wear_size,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<!-- Shoe size -->
+<?php echo $this->partial('/partials/input-widget.phtml', array(
+		'property' => 'shoe_size',
+		'label' => $this->translate('Shoe size', 'ppit-studies', $context->getLocale()),
+		'value' => $student->shoe_size,
+		'isMandatory' => false,
+		'context' => $context,
+		'isDisabled' => $isDisabled,
+)); ?>
+
+<?php if ($message == 'OK') : ?>
+<!-- Foot return link -->
+		<div class="form-group" id="foot_return_link">
+				<div class="col-sm-5">&nbsp;</div>
+				<div class="col-sm-7">
+					<a id='student_update_anchor_foot_return' href="<?php echo $this->url('student') ?>"><?php echo $this->translate('Return', 'ppit-core', $context->getLocale()) ?></a>
+				</div>
+			</div>
+<?php else : ?>
+<!-- Submit button -->
+			<div class="form-group" id="foot_buttons">
+				<div class="col-sm-5">&nbsp;</div>
+				<div class="col-sm-7">
+					<input name="submit" type="submit" id="student_update_button" class="btn btn-primary" value="<?php echo $this->translate((($id) ? 'Update' : 'Add'), 'ppit-core', $context->getLocale()) ?>">
+					&nbsp;&nbsp;
+					<a id='student_update_anchor_cancel' href="<?php echo $this->url('student') ?>"><?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?></a>
+				</div>
+			</div>
+<?php endif;?>
+	</div>
+</div>
+	</div>
+</div>
+
+<script id='student_update_script'>
+
+eval(document.getElementById("delivery_contact_update_script").innerHTML);
+eval(document.getElementById("delivery_2_contact_update_script").innerHTML);
+
+// Menu
+$("#student_update_anchor_return").click(function () { hideForm(); } );
+$("#student_update_anchor_return_2").click(function () { hideForm(); } );
+
+// Form
+$("#student_update_form").click(function () { checkForm(); } );
+
+// Foot return
+$("#student_update_anchor_foot_return").click(function () { hideForm(); } );
+
+//Button
+$("#student_update_button").click(function () { checkForm(); } );
+$("#student_update_anchor_cancel").click(function () { hideForm(); } );
+	
+//The elements are checked last to first so the focus is positionned on the first element on error
+function checkForm() 
+{
+	var validity = true;
+
+    if (!check_shoe_size()) validity = false;
+    if (!check_wear_size()) validity = false;
+    if (!check_height()) validity = false;
+    if (!check_weight()) validity = false;
+
+    if (!check_living_language_2()) validity = false;
+    if (!check_living_language_1()) validity = false;
+    if (!check_mother_tongue()) validity = false;
+    if (!check_orientation()) validity = false;
+    if (!check_previous_quarter_average()) validity = false;
+    if (!check_main_school()) validity = false;
+    if (!check_previous_school()) validity = false;
+    if (!check_previous_class()) validity = false;
+
+    if (!check_coach_tel()) validity = false;
+    if (!check_coach_name()) validity = false;
+    if (!check_club()) validity = false;
+    if (!check_secondary_posts()) validity = false;
+    if (!check_main_post()) validity = false;
+    if (!check_left_right_handed()) validity = false;
+    if (!check_results()) validity = false;
+    if (!check_level()) validity = false;
+    if (!check_licence_holder()) validity = false;
+
+    if (!check_observations()) validity = false;
+    if (!check_medical_examination()) validity = false;
+    if (!check_health_insurance()) validity = false;
+    if (!check_id_card_passport()) validity = false;
+    if (!check_nationality()) validity = false;
+    if (!check_place_of_birth()) validity = false;
+    if (!check_birth_date()) validity = false;
+    if (!check_boarding_school()) validity = false;
+    if (!check_specialty()) validity = false;
+    if (!check_class()) validity = false;
+    if (!check_category()) validity = false;
+    if (!check_sport()) validity = false;
+    if (!check_center_id()) validity = false;
+    if (!check_school_year()) validity = false;
+    if (!check_bill_status()) validity = false;
+    if (!bill_checkContact()) validity = false;
+    if (!check_legal_repr_status()) validity = false;
+    if (!checkContact()) validity = false;
+    if (!student_checkContact()) validity = false;
+    
+// Form provided for MPA view mode
+<?php if (!$context->isSpaMode()) : ?>
+	return validity; //document.getElementById('order_form').submit();
+<?php else : ?>
+//Post the update
+	if (validity) {
+		var data = new FormData();
+		data.append('legal_repr_status', document.getElementById("legal_repr_status").value);
+		data.append('bill_status', document.getElementById("bill_status").value);
+		data.append('school_year', document.getElementById("school_year").value);
+		data.append('center_id', document.getElementById("center_id").value);
+		data.append('sport', document.getElementById("sport").value);
+		data.append('category', document.getElementById("category").value);
+		data.append('class', document.getElementById("class").value);
+		data.append('specialty', document.getElementById("specialty").value);
+		data.append('boarding_school', document.getElementById("boarding_school").value);
+		data.append('birth_date', document.getElementById("birth_date").value);
+		data.append('place_of_birth', document.getElementById("place_of_birth").value);
+		data.append('nationality', document.getElementById("nationality").value);
+		data.append('id_card-passport', document.getElementById("id_card_passport").value);
+		data.append('health_insurance', document.getElementById("health_insurance").value);
+		data.append('medical_examination', document.getElementById("medical_examination").value);
+		data.append('observations', document.getElementById("observations").value);
+	    
+	    // Sports
+		data.append('licence_holder', document.getElementById("licence_holder").value);
+		data.append('level', document.getElementById("level").value);
+		data.append('results', document.getElementById("results").value);
+		data.append('left_right_handed', document.getElementById("left_right_handed").value);
+		data.append('main_post', document.getElementById("main_post").value);
+		data.append('secondary_posts', document.getElementById("secondary_posts").value);
+		data.append('club', document.getElementById("club").value);
+		data.append('coach_name', document.getElementById("coach_name").value);
+		data.append('coach_tel', document.getElementById("coach_tel").value);
+
+		// Studies
+		data.append('previous_class', document.getElementById("previous_class").value);
+		data.append('previous_school', document.getElementById("previous_school").value);
+		data.append('main_school', document.getElementById("main_school").value);
+		data.append('previous_quarter_average', document.getElementById("previous_quarter_average").value);
+		data.append('orientation', document.getElementById("orientation").value);
+		data.append('mother_tongue', document.getElementById("mother_tongue").value);
+		data.append('living_language_1', document.getElementById("living_language_1").value);
+		data.append('living_language_2', document.getElementById("living_language_2").value);
+
+		// Medical
+		data.append('weight', document.getElementById("weight").value);
+		data.append('height', document.getElementById("height").value);
+		data.append('wear_size', document.getElementById("wear_size").value);
+		data.append('shoe_size', document.getElementById("shoe_size").value);
+
+		postForm("<?php echo $this->url('student/update', array('id' => $id)) ?>", 'student_update_script', 'form_action', data
+			student_getContactParams() +
+			getContactParams() +
+			bill_getContactParams());
+		reload('<?php echo $this->url('student') ?>', 'student_index_script', false);
+	}
+<?php endif;?>
+}
+
+</script>

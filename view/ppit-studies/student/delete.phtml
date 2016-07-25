@@ -1,0 +1,67 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background: #AFAFFC; color: #FFFFFF">
+		<strong><?php echo $this->translate('Delete a student file', 'ppit-studies', $context->getLocale()) ?></strong>
+		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Close', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+		</div>
+	</div>
+	<div class="panel-body">
+		<table class="table-condensed">
+
+<!-- Last, first name -->
+			<tr class="row">
+				<td align="right"><strong><?php echo $this->translate('Name', 'ppit-contact', $context->getLocale()) ?></strong></td>
+				<td><?php echo $student->n_fn ?></td>
+			</tr>
+
+<!-- School year -->
+			<tr class="row">
+				<td align="right"><strong><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></strong></td>
+				<td><?php echo $student->school_year ?></td>
+			</tr>
+
+		</table>
+
+<!-- Load the form header -->
+<?php echo $this->partial('/partials/form-header.phtml', array(
+			'update_time' => $student->update_time,
+			'message' => $message,
+			'error' => $error,
+			'csrfForm' => $csrfForm,
+			'context' => $context,
+)); ?>
+
+<?php if ($message == 'OK') : ?>
+
+<!-- Foot return link -->
+			<div class="form-group" id="foot_return_link">
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-8">
+					<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return', 'ppit-core', $context->getLocale()) ?>" id="return-anchor">
+						<span><?php echo $this->translate('Return', 'ppit-core', $context->getLocale()) ?></span>
+					</button>
+				</div>
+			</div>
+
+<?php else : ?>
+
+<!-- Submit button -->
+		    <div class="form-group">
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-8">
+					<input name="submit" type="submit" id="submit-button" class="btn btn-danger" value="<?php echo $this->translate('Confirm', 'ppit-core', $context->getLocale()) ?>">
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-default" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>" id="cancel-anchor">
+						<span><?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?></span>
+					</button>
+				</div>
+			</div>
+
+<?php endif;?>
+
+		</form>
+	</div>
+</div>
+

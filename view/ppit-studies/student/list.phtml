@@ -1,0 +1,102 @@
+<?php
+$first = true;
+$paramString = '?';
+foreach ($params as $name => $value) {
+	if (!$first) $paramString .= '&';
+	$first = false;
+	$paramString .= $name.'='.$value;
+}
+?>
+				<table class="table table-striped ppit_index">
+<!-- Column headers -->
+					<tr>
+						<th>&nbsp;</th>
+						<th>&nbsp;</th>
+						<th>
+							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="n_fn-anchor">
+								<span><?php echo $this->translate('Name', 'ppit-contact', $context->getLocale()) ?></span>
+<?php if ($major == 'n_fn') : ?>
+								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+							</button>
+						</th>
+
+<?php if ($config['ppitStudies']['sportOption']) : ?>
+						<th>
+							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="sport-anchor">
+								<span><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></span>
+	<?php if ($major == 'sport') : ?>
+								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+	<?php endif ?>
+							</button>
+						</th>
+<?php endif ?>
+
+						<th>
+							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="class-anchor">
+								<span><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale()) ?></span>
+<?php if ($major == 'class') : ?>
+								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+							</button>
+						</th>
+
+						<th>
+							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="emergency_phone_1-anchor">
+								<span><?php echo $this->translate('Emergency', 'ppit-studies', $context->getLocale()) ?></span>
+<?php if ($major == 'emergency_phone_1') : ?>
+								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+							</button>
+						</th>
+					</tr>
+					<tr class="student">
+						<td colspan="6">
+							<button type="button" class="btn btn-default index-btn student-detail-anchor" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale())?>" id="student-add-anchor">
+								<span class="glyphicon glyphicon-plus" id="add-glyphicon"></span>
+							</button>
+						</td>
+					</tr>
+<!-- Rows -->
+<?php foreach ($students as $student) : ?>
+					<tr class="student" style="font-size: 85%">
+						<td>
+							<button type="button" class="btn btn-default index-btn student-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="student-detail-anchor_<?php echo $student->id ?>">
+								<span class="glyphicon glyphicon-zoom-in" id="<?php echo $student->id ?>-glyphicon"></span>
+							</button>
+						</td>
+						<td>
+							<span class="info">
+								<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $student->student_contact_id)) ?>"/>
+								<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $student->student_contact_id)) ?>"/></span>
+							</span>
+						</td>
+
+						<td><?php echo $student->n_fn ?></td>
+
+	<?php if ($config['ppitStudies']['sportOption']) : ?>
+						<td style="text-align: center">
+							<img height="20" src="<?php echo $this->basePath('/img/sports/'.$student->sport.'.png') ?>" title="<?php echo $config['ppitStudies']['sports'][$student->sport]['labels']['fr_FR'] ?>" alt="<?php echo $config['ppitStudies']['sports'][$student->sport]['labels']['fr_FR'] ?>" /><br>
+							<?php echo $student->category ?>
+						</td>
+	<?php endif;?>
+
+						<td><?php echo $student->class ?> <?php echo $student->specialty ?></td>
+
+						<td>
+	<?php if ($student->emergency_phone_1) : ?>
+							<a href="tel:<?php echo $student->emergency_phone_1 ?>"><?php echo $student->emergency_phone_1 ?></a><br>
+	<?php endif;?>
+
+	<?php if ($student->emergency_phone_2) : ?>
+							<a href="tel:<?php echo $student->emergency_phone_2 ?>"><?php echo $student->emergency_phone_2 ?></a><br>
+	<?php endif;?>
+
+	<?php if ($student->emergency_email) : ?>
+							<a href="mailto:<?php echo $student->emergency_email ?>"><?php echo $student->emergency_email ?></a><br>
+	<?php endif;?>
+						</td>
+					</tr>
+
+<?php endforeach; ?>
+				</table>

@@ -1,0 +1,141 @@
+<style>
+.ppit-th {
+	font-weight: bold;
+	background-color: #eFeFeF;
+}
+</style>
+
+<?php
+	$title = $this->translate('Messages', 'ppit-contacts', $context->getLocale());
+	$this->headTitle($title);
+    echo $this->partial('/partials/menu');
+?>
+<div class="row">
+    <div class="col-md-12">
+		<div class="panel panel-default">
+            <div class="panel-heading"><strong><?php echo $title ?></strong></div>
+           	<div class="panel-body">
+					<table class="table table-striped">
+					<tr>
+						<th class="ppit-th">&nbsp;</th>
+						<th class="ppit-th">&nbsp;</th>
+						<th class="ppit-th">
+							<a href="<?php echo $this->url($this->route, array('action' => 'index')) ?>
+															?major=type
+															<?php if ($major == 'type' && $dir =='ASC') echo '&dir=DESC'; else echo '&dir=ASC' ?>">
+								<?php echo $this->translate('Media', 'ppit-contact', $context->getLocale());?>
+							</a>
+						</th>
+						<th class="ppit-th">
+							<a href="<?php echo $this->url($this->route, array('action' => 'index')) ?>
+															?major=from
+															<?php if ($major == 'from' && $dir =='ASC') echo '&dir=DESC'; else echo '&dir=ASC' ?>">
+								<?php echo $this->translate('From', 'ppit-contact', $context->getLocale());?>
+							</a>
+						</th>
+						<th class="ppit-th">
+							<a href="<?php echo $this->url($this->route, array('action' => 'index')) ?>
+															?major=to
+															<?php if ($major == 'to' && $dir =='ASC') echo '&dir=DESC'; else echo '&dir=ASC' ?>">
+								<?php echo $this->translate('To', 'ppit-contact', $context->getLocale());?>
+							</a>
+						</th>
+						<th class="ppit-th">
+							<a href="<?php echo $this->url($this->route, array('action' => 'index')) ?>
+															?major=emission_time
+															<?php if ($major == 'emission_time' && $dir =='ASC') echo '&dir=DESC'; else echo '&dir=ASC' ?>">
+								<?php echo $this->translate('Emission', 'ppit-contact', $context->getLocale());?>
+							</a>
+						</th>
+						<th class="ppit-th">
+							<a href="<?php echo $this->url($this->route, array('action' => 'index')) ?>
+															?major=subject
+															<?php if ($major == 'subject' && $dir =='ASC') echo '&dir=DESC'; else echo '&dir=ASC' ?>">
+								<?php echo $this->translate('Subject', 'ppit-contact', $context->getLocale());?>
+							</a>
+						</th>
+						<th class="ppit-th">
+							<a href="<?php echo $this->url($this->route, array('action' => 'index')) ?>
+															?major=volume
+															<?php if ($major == 'volume' && $dir =='ASC') echo '&dir=DESC'; else echo '&dir=ASC' ?>">
+								<?php echo $this->translate('Number', 'ppit-contact', $context->getLocale());?>
+							</a>
+						</th>
+						<th class="ppit-th">
+							<a href="<?php echo $this->url($this->route, array('action' => 'index')) ?>
+															?major=cost
+															<?php if ($major == 'cost' && $dir =='ASC') echo '&dir=DESC'; else echo '&dir=ASC' ?>">
+								<?php echo $this->translate('Cost', 'ppit-contact', $context->getLocale()) ?> (€)
+							</a>
+						</th>
+					</tr>
+
+<!-- Add action -->
+					<tr>
+						<td colspan="9">
+							<a class="glyphicon glyphicon-plus" title="<?php echo $this->translate('Add a message', 'ppit-contact', $context->getLocale()) ?>" href="<?php echo $this->url('sms/update');?>"></a>
+						</td>
+					</tr>
+
+<?php foreach ($messages as $message) : ?>
+					<tr>
+	
+<?php if (!$message->emission_time) : ?>
+
+<!-- Update action -->
+						<td><a class="glyphicon glyphicon-edit" title="<?php echo $this->translate('Update a message', 'ppit-contact', $context->getLocale()) ?>" href="<?php echo $this->url('sms/update', array('id' => $message->id));?>"></a></td>
+<?php else : ?>
+						<td>&nbsp;</td>
+<?php endif;?>
+
+<!-- Delete action -->
+						<td><a class="glyphicon glyphicon-trash" title="<?php echo $this->translate('Delete a message', 'ppit-contact', $context->getLocale()) ?>" href="<?php echo $this->url('sms/delete', array('id' => $message->id));?>"></a></td>
+
+<!-- Media-->
+						<td><?php echo $message->type ?></td>
+
+<!-- From -->
+						<td><?php echo $message->from ?></td>
+
+						<td>
+<!-- Center -->
+							<?php echo (isset($message->to->center_id)) ? $this->translate('Center', 'ppit-studies', $context->getLocale()).'='.$message->to->center_id : ' ' ?>
+
+<!-- Sport -->
+							<?php echo (isset($message->to->sport)) ? $this->translate('Sport', 'ppit-studies', $context->getLocale()).'='.$this->translate($message->to->sport, 'ppit-studies', $context->getLocale()) : ' ' ?>
+
+<!-- Class -->
+							<?php echo (isset($message->to->class)) ? $this->translate('Class', 'ppit-studies', $context->getLocale()).'='.$this->translate($message->to->class, 'ppit-studies', $context->getLocale()) : ' ' ?>
+
+<!-- Boarding_school -->
+							<?php echo (isset($message->to->boarding_school)) ? $this->translate('Boarding school option', 'ppit-studies', $context->getLocale()).'='.$this->translate($message->to->boarding_school, 'ppit-studies', $context->getLocale()) : ' ' ?>
+
+						</td>
+
+<!-- Emission time-->
+<?php if ($message->emission_time) : ?>
+<?php 
+	$emissionTime = strtotime($message->emission_time);
+	$emissionTime = date("d/m/y g:i A", $emissionTime);
+?>
+						<td><?php echo $emissionTime ?></td>
+<?php else : ?>
+						<td>&nbsp;</td>
+<?php endif;?>
+
+<!-- Subject -->
+						<td><?php echo $message->subject ?></td>
+
+<!-- Volume -->
+						<td align="right"><?php echo $message->volume ?></td>
+
+<!-- Cost -->
+						<td align="right"><?php echo $context->formatFloat($message->cost, 2) ?></td>
+					</tr>
+
+<?php endforeach; ?>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

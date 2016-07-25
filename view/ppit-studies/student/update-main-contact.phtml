@@ -1,0 +1,251 @@
+
+<!-- Form header -->
+<?php echo $this->partial('/partials/form-header', array(
+			'update_time' => $contact->update_time,
+			'message' => $message,
+			'error' => $error,
+			'csrfForm' => $csrfForm,
+			'context' => $context,
+));
+?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Photo -->
+	    <div class="form-group" id="photo_group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+				<img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $contact->id)) ?>"/>
+			<div class="col-sm-12"><p class="help-block" id="place_id_error"></p></div>
+		</div>
+<?php if ($message != 'OK') : ?>
+	    <div class="photo-group">
+			<label class="col-sm-5 control-label"></label>
+			<div class="col-sm-7">
+				<input type="file" name="vcard_photo" id="vcard_photo" class="form-control" />
+			</div>
+		</div>
+<?php endif; ?>
+		<div>&nbsp;</div>
+
+<!-- Title -->
+		<div class="form-group" id="n_title_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Title', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="n_title" id="n_title" class="form-control" value="<?php echo $contact->n_title ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="n_title_error"></p></div>
+		</div>
+
+<!-- Last name -->
+		<div class="form-group" id="n_last_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Last name', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="n_last" id="n_last" class="form-control" value="<?php echo $contact->n_last ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="n_last_error"></p></div>
+		</div>
+
+<!-- First name -->
+		<div class="form-group" id="n_first_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('First name', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="n_first" id="n_first" class="form-control" value="<?php echo $contact->n_first ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="n_first_error"></p></div>
+		</div>
+
+<!-- Email -->
+		<div class="form-group" id="email_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Email', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="email" id="email" class="form-control" value="<?php echo $contact->email ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="email_error"></p></div>
+		</div>
+
+<?php if (!$contact->properties || array_key_exists('tel_work', $properties)) : ?>
+
+<!-- Tel work -->
+		<div class="form-group" id="tel_work_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Work phone', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="tel_work" id="tel_work" class="form-control" value="<?php echo $contact->tel_work ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="tel_work_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('tel_cell', $properties)) : ?>
+
+<!-- Tel cell -->
+		<div class="form-group" id="tel_cell_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Cellular', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="tel_cell" id="tel_cell" class="form-control" value="<?php echo $contact->tel_cell ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="tel_cell_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_street', $properties)) : ?>
+
+<!-- Address - street -->
+		<div class="form-group" id="adr_street_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Address - street', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="adr_street" id="adr_street" class="form-control" value="<?php echo $contact->adr_street ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="adr_street_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_extended', $properties)) : ?>
+
+<!-- Address - extended -->
+		<div class="form-group" id="adr_extended_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Address - extended', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="adr_extended" id="adr_extended" class="form-control" value="<?php echo $contact->adr_extended ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="adr_extended_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_post_office_box', $properties)) : ?>
+
+<!-- Address - post office box -->
+		<div class="form-group" id="post_office_box_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Address - post office box', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="adr_post_office_box" id="adr_post_office_box" class="form-control" value="<?php echo $contact->adr_post_office_box ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="adr_post_office_box_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_zip', $properties)) : ?>
+
+<!-- Address - street -->
+		<div class="form-group" id="adr_zip_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Address - zip', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="adr_zip" id="adr_zip" class="form-control" value="<?php echo $contact->adr_zip ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="adr_zip_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_street', $properties)) : ?>
+
+<!-- Address - city -->
+		<div class="form-group" id="adr_city_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Address - city', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="adr_city" id="adr_city" class="form-control" value="<?php echo $contact->adr_city ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="adr_city_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_state', $properties)) : ?>
+
+<!-- Address - state -->
+		<div class="form-group" id="adr_state_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Address - state', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="adr_state" id="adr_state" class="form-control" value="<?php echo $contact->adr_state ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="adr_state_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_country', $properties)) : ?>
+
+<!-- Address - country -->
+		<div class="form-group" id="adr_country_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Address - country', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="adr_country" id="adr_country" class="form-control" value="<?php echo $contact->adr_country ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="adr_country_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('sex', $properties)) : ?>
+
+<!-- Sex -->
+		<div class="form-group" id="sex_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Sex', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="sex" id="sex" class="form-control" value="<?php echo $contact->sex ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="sex_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('birth_date', $properties)) : ?>
+
+<!-- Birth date -->
+		<div class="form-group" id="birth_date_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Birth date', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="birth_date" id="birth_date" class="form-control" value="<?php echo $contact->birth_date ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="birth_date_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('adr_street', $properties)) : ?>
+
+<!-- Place of birth -->
+		<div class="form-group" id="place_of_birth_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Place of birth', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="place_of_birth" id="place_of_birth" class="form-control" value="<?php echo $contact->place_of_birth ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="place_of_birth_error"></p></div>
+		</div>
+<?php endif;?>
+
+<?php if (!$contact->properties || array_key_exists('nationality', $properties)) : ?>
+
+<!-- Nationality -->
+		<div class="form-group" id="nationality_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Nationality', 'ppit-contact', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="nationality" id="nationality" class="form-control" value="<?php echo $contact->nationality ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="nationality_error"></p></div>
+		</div>
+<?php endif;?>
+				
+<?php if ($message == 'OK') : ?>
+
+<!-- Foot return link -->
+			<div class="form-group" id="foot_return_link">
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-8">
+					<button type="button" class="btn btn-default" title="<?php echo $this->translate('Close', 'ppit-core', $context->getLocale()) ?>" id="return-anchor">
+						<span><?php echo $this->translate('Return', 'ppit-core', $context->getLocale()) ?></span>
+					</button>
+				</div>
+			</div>
+
+<?php else : ?>
+
+<!-- Submit button -->
+		    <div class="form-group">
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-8">
+					<input name="submit" type="submit" id="submit-button" class="btn btn-warning" value="<?php echo $this->translate('Confirm', 'ppit-core', $context->getLocale()) ?>">
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-default" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>" id="cancel-anchor">
+						<span><?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?></span>
+					</button>
+				</div>
+			</div>
+
+<?php endif;?>
+
+		</form>

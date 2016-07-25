@@ -1,0 +1,55 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background: #AFAFFC; color: #FFFFFF">
+		<strong><?php echo $this->translate('Detail', 'ppit-core', $context->getLocale()) ?></strong>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		 </div>
+	</div>
+	<div class="panel-body">
+<!-- <nav class="navbar navbar-default">
+  <div class="container-fluid"> -->
+    <!-- Brand and toggle get grouped for better mobile display -->
+<!--    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><?php echo $studentSport->n_fn ?></a>
+    </div> -->
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav nav-tabs">
+        <li class="dropdown" id="student-dropdown">
+          <a href="#" class="dropdown-toggle" id="student-dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"><?php echo $this->translate('Student', 'ppit-studies', $context->getLocale()) ?> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-item" id="student-inscription-dropdown-item"><a id="student-inscription-anchor" href="#"><?php echo $this->translate('Inscription', 'ppit-studies', $context->getLocale()) ?></a></li>
+          	<li class="dropdown-item" id="student-sport-dropdown-item"><a id="student-sport-anchor" href="#"><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></a></li>
+          </ul>
+        </li>
+        <li class="dropdown" id="contacts-dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $this->translate('Contacts', 'ppit-contact', $context->getLocale()) ?> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-item" id="student-main-contact-dropdown-item"><a id="student-main-contact-anchor" href="#"><?php echo $this->translate('Main', 'ppit-contact', $context->getLocale()) ?></a></li>
+            <li class="dropdown-item" id="student-backup-contact-dropdown-item"><a id="student-backup-contact-anchor" href="#"><?php echo $this->translate('Backup', 'ppit-contact', $context->getLocale()) ?></a></li>
+            <li class="dropdown-item" id="student-bill-contact-dropdown-item"><a id="student-bill-contact-anchor" href="#"><?php echo $this->translate('Bill', 'ppit-contact', $context->getLocale()) ?></a></li>
+          </ul>
+        </li>
+        <li><a id="student-invoice-anchor" href="#"><?php echo $this->translate('Invoice', 'ppit-order', $context->getLocale()) ?><span class="sr-only">(current)</span></a></li>
+        <li><a id="student-document-anchor" href="#"><?php echo $this->translate('Documents', 'ppit-contact', $context->getLocale()) ?><span class="sr-only">(current)</span></a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+<!--  </div>
+</nav> -->
+		<table class="table-condensed">
+			<tr>
+				<td colspan="2">
+
+		<div id="student-sport-update-panel"></div>
+
+	</div>
+</div>
