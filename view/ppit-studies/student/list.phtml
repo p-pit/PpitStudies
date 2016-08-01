@@ -1,102 +1,84 @@
-<?php
-$first = true;
-$paramString = '?';
-foreach ($params as $name => $value) {
-	if (!$first) $paramString .= '&';
-	$first = false;
-	$paramString .= $name.'='.$value;
-}
-?>
-				<table class="table table-striped ppit_index">
-<!-- Column headers -->
-					<tr>
-						<th>&nbsp;</th>
-						<th>&nbsp;</th>
-						<th>
-							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="n_fn-anchor">
-								<span><?php echo $this->translate('Name', 'ppit-contact', $context->getLocale()) ?></span>
-<?php if ($major == 'n_fn') : ?>
-								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<table class="table table-striped ppit_index">
+	<tr>
+		<th>&nbsp;</th>
+
+<?php foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
+		<th align="center">
+	<?php $label = $context->getConfig('commitmentAccount')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	<?php if ($label) : ?>
+			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
+				<span><?php echo $label ?></span>
+<?php if ($major == $propertyId) : ?>
+				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
 <?php endif ?>
-							</button>
-						</th>
-
-<?php if ($config['ppitStudies']['sportOption']) : ?>
-						<th>
-							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="sport-anchor">
-								<span><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></span>
-	<?php if ($major == 'sport') : ?>
-								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
-	<?php endif ?>
-							</button>
-						</th>
-<?php endif ?>
-
-						<th>
-							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="class-anchor">
-								<span><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale()) ?></span>
-<?php if ($major == 'class') : ?>
-								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
-<?php endif ?>
-							</button>
-						</th>
-
-						<th>
-							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="emergency_phone_1-anchor">
-								<span><?php echo $this->translate('Emergency', 'ppit-studies', $context->getLocale()) ?></span>
-<?php if ($major == 'emergency_phone_1') : ?>
-								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
-<?php endif ?>
-							</button>
-						</th>
-					</tr>
-					<tr class="student">
-						<td colspan="6">
-							<button type="button" class="btn btn-default index-btn student-detail-anchor" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale())?>" id="student-add-anchor">
-								<span class="glyphicon glyphicon-plus" id="add-glyphicon"></span>
-							</button>
-						</td>
-					</tr>
-<!-- Rows -->
-<?php foreach ($students as $student) : ?>
-					<tr class="student" style="font-size: 85%">
-						<td>
-							<button type="button" class="btn btn-default index-btn student-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="student-detail-anchor_<?php echo $student->id ?>">
-								<span class="glyphicon glyphicon-zoom-in" id="<?php echo $student->id ?>-glyphicon"></span>
-							</button>
-						</td>
-						<td>
-							<span class="info">
-								<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $student->student_contact_id)) ?>"/>
-								<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $student->student_contact_id)) ?>"/></span>
-							</span>
-						</td>
-
-						<td><?php echo $student->n_fn ?></td>
-
-	<?php if ($config['ppitStudies']['sportOption']) : ?>
-						<td style="text-align: center">
-							<img height="20" src="<?php echo $this->basePath('/img/sports/'.$student->sport.'.png') ?>" title="<?php echo $config['ppitStudies']['sports'][$student->sport]['labels']['fr_FR'] ?>" alt="<?php echo $config['ppitStudies']['sports'][$student->sport]['labels']['fr_FR'] ?>" /><br>
-							<?php echo $student->category ?>
-						</td>
+			</button>
 	<?php endif;?>
+		</th>
+<?php endforeach;?>
 
-						<td><?php echo $student->class ?> <?php echo $student->specialty ?></td>
+	<tr>
+		<td>
+			<input type="checkbox" class="form-control account-checkbox" id="account-checkbox" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+		</td>
+		
+		<td colspan="6">&nbsp;</td>
+	</tr>
 
-						<td>
-	<?php if ($student->emergency_phone_1) : ?>
-							<a href="tel:<?php echo $student->emergency_phone_1 ?>"><?php echo $student->emergency_phone_1 ?></a><br>
-	<?php endif;?>
+	<input type="hidden" id="account-number" value="<?php echo count($accounts) ?>" />
 
-	<?php if ($student->emergency_phone_2) : ?>
-							<a href="tel:<?php echo $student->emergency_phone_2 ?>"><?php echo $student->emergency_phone_2 ?></a><br>
-	<?php endif;?>
+<?php $i = 0; foreach ($accounts as $account) : ?>
+	
+	<input type="hidden"  id="account_<?php echo $i ?>" value="<?php echo $account->id ?>" />
+	
+	<tr class="account" style="text-align: center">
+		<td>
+			<input type="checkbox" class="form-control account-checkbox" id="account-checkbox_<?php echo $i ?>"></input>
+		</td>
 
-	<?php if ($student->emergency_email) : ?>
-							<a href="mailto:<?php echo $student->emergency_email ?>"><?php echo $student->emergency_email ?></a><br>
-	<?php endif;?>
-						</td>
-					</tr>
+	<?php foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
+	
+		<?php if ($propertyId == 'customer_name') : ?>
+		<td><?php echo $account->customer_name ?></td>
+	
+		<?php elseif ($rendering == 'text') : ?>
+		<td><?php echo $account->properties[$propertyId] ?></td>
+	
+		<?php elseif ($rendering == 'photo') : ?>
+		<td>
+			<span class="info">
+				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $account->properties[$propertyId])) ?>"/>
+				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->properties[$propertyId])) ?>"/></span>
+			</span>
+		</td>
 
-<?php endforeach; ?>
-				</table>
+		<?php elseif ($rendering == 'image') : ?>
+		<td style="text-align: center">
+			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$account->properties[$propertyId].'.png') ?>" title="<?php echo $account->properties[$propertyId] ?>" alt="<?php echo $account->properties[$propertyId] ?>" /><br>
+		</td>
+
+		<?php elseif ($rendering == 'phone') : ?>
+		<td>
+			<a href="tel:<?php echo $account->properties[$propertyId] ?>"><?php echo $account->properties[$propertyId] ?></a>
+		</td>
+	
+		<?php else : ?>
+		<td><?php echo $account->properties[$propertyId] ?></td>
+		
+		<?php endif;?>
+		
+	<?php endforeach;?>
+	</tr>
+	
+<?php $i++; endforeach; ?>
+
+	<tr>
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor">
+				<span class="glyphicon glyphicon-list-alt" id="group-glyphicon"></span>
+			</button>
+		</td>
+		
+		<td colspan="6">&nbsp;</td>
+	</tr>
+
+</table>

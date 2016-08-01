@@ -2,6 +2,7 @@
 namespace PpitStudies;
 
 use PpitCore\Model\GenericTable;
+use PpitStudies\Model\Absence;
 use PpitStudies\Model\Student;
 use PpitStudies\Model\StudentSport;
 use PpitStudies\Model\StudentSportImport;
@@ -41,7 +42,18 @@ class Module
     {
         return array(
             'factories' => array(
-                'PpitStudies\Model\StudentTable' =>  function($sm) {
+                'PpitStudies\Model\AbsenceTable' =>  function($sm) {
+                    $tableGateway = $sm->get('AbsenceTableGateway');
+                    $table = new GenericTable($tableGateway);
+                    return $table;
+                },
+                'AbsenceTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Absence());
+                    return new TableGateway('student_absence', $dbAdapter, null, $resultSetPrototype);
+                },
+            	'PpitStudies\Model\StudentTable' =>  function($sm) {
                     $tableGateway = $sm->get('StudentTableGateway');
                     $table = new GenericTable($tableGateway);
                     return $table;

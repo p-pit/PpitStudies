@@ -1,6 +1,7 @@
 <?php
 	return array(
 		'2nd legal representant' => '2nd représentant légal',
+		'Absences' => 'Absences',
 		'Add a student file' => 'Ajouter un dossier élève',
 		'Any center' => 'Tout centre',
 		'Any class' => 'Toute classe',
@@ -20,6 +21,7 @@
 		'Emergency' => 'Urgence',
 		'Emergency email' => 'Email d\'urgence',
 		'Emergency phone' => 'Téléphone d\'urgence',
+		'Evaluations' => 'Evaluations',
 		'Extern' => 'Externe',
 		'Father' => 'Père',
 		'Final year' => 'Terminale',

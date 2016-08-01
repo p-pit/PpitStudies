@@ -4,14 +4,13 @@ namespace PpitStudies;
 return array(
 	'controllers' => array(
         'invokables' => array(
+        	'PpitStudies\Controller\Absence' => 'PpitStudies\Controller\AbsenceController',
         	'PpitStudies\Controller\Home' => 'PpitStudies\Controller\HomeController',
         	'PpitStudies\Controller\Sms' => 'PpitStudies\Controller\SmsController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
-//        	'PpitStudies\Controller\StudentSport' => 'PpitStudies\Controller\StudentSportController',
         ),
     ),
  
-    // The following section is new and should be added to your file
     'router' => array(
         'routes' => array(
             'index' => array(
@@ -25,7 +24,101 @@ return array(
                     ),
                 ),
             ),
-        	'home' => array(
+        	'absence' => array(
+                'type'    => 'literal',
+                'options' => array(
+                    'route'    => '/absence',
+                    'defaults' => array(
+                        'controller' => 'PpitStudies\Controller\Absence',
+                        'action'     => 'index',
+                    ),
+                ),
+           		'may_terminate' => true,
+	       		'child_routes' => array(
+        						'index' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index',
+        										'defaults' => array(
+        												'action' => 'index',
+        										),
+        								),
+        						),
+        						'search' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search',
+        										'defaults' => array(
+        												'action' => 'search',
+        										),
+        								),
+        						),
+        						'list' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list',
+        										'defaults' => array(
+        												'action' => 'list',
+        										),
+        								),
+        						),
+        						'export' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/export',
+        										'defaults' => array(
+        												'action' => 'export',
+        										),
+        								),
+        						),
+	       						'detail' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/detail[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'detail',
+        										),
+        								),
+        						),
+	       						'add' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add[/:type]',
+        										'defaults' => array(
+        												'action' => 'add',
+        										),
+        								),
+        						),
+	       						'update' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update[/:id][/:act]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'update',
+		        								),
+		        						),
+		        				),
+	       			),
+	       			'delete' => array(
+	                    'type' => 'segment',
+	                    'options' => array(
+	                        'route' => '/delete[/:id]',
+		                    'constraints' => array(
+		                    	'id' => '[0-9]*',
+		                    ),
+	                    	'defaults' => array(
+	                            'action' => 'delete',
+	                        ),
+	                    ),
+	                ),
+	       		),
+        		'home' => array(
                 'type'    => 'segment',
                 'options' => array(
                     'route'    => '/home[/:action][/:centre][/:id]',
@@ -99,7 +192,7 @@ return array(
 	       		),
         	),
         	'student' => array(
-                'type'    => 'segment',
+                'type'    => 'literal',
                 'options' => array(
                     'route'    => '/student',
                     'defaults' => array(
@@ -109,303 +202,53 @@ return array(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-	                'index' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/index',
-	                    	'defaults' => array(
-	                    		'action' => 'index',
-	                        ),
-	                    ),
-	                ),
-	                'search' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/search',
-	                    	'defaults' => array(
-	                    		'action' => 'search',
-	                        ),
-	                    ),
-	                ),
-	       			'list' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/list',
-	                    	'defaults' => array(
-	                    		'action' => 'list',
-	                        ),
-	                    ),
-	                ),
-	       			'export' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/export',
-	                    	'defaults' => array(
-	                    		'action' => 'export',
-	                        ),
-	                    ),
-	                ),
-	       			'detail' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/detail[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'detail',
-	                        ),
-	                    ),
-	                ),
-	       			'add' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/add',
-	                    	'defaults' => array(
-	                            'action' => 'add',
-	                        ),
-	                    ),
-	                ),
-	       			'duplicate' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/duplicate[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'duplicate',
-	                        ),
-	                    ),
-	                ),
-	       			'update' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'update',
-	                        ),
-	                    ),
-	                ),
-	       			'updateSport' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update-sport[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'updateSport',
-	                        ),
-	                    ),
-	                ),
-	       			'updateMainContact' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update-main-contact[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'updateMainContact',
-	                        ),
-	                    ),
-	                ),
-	       			'updateBackupContact' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update-backup-contact[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'updateBackupContact',
-	                        ),
-	                    ),
-	                ),
-	       			'updateBillContact' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update-bill-contact[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'updateBillContact',
-	                        ),
-	                    ),
-	                ),
-	       			'home' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/home[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'home',
-	                        ),
-	                    ),
-	                ),
-	       			'photo' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/photo[/:id]',
-		                    'constraints' => array(
-		                    	'id'     => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'photo',
-	                        ),
-	                    ),
-	                ),
-	       			'delete' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/delete[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'delete',
-	                        ),
-	                    ),
-	                ),
-	       			'import' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/import',
-	                    	'defaults' => array(
-	                            'action' => 'import',
-	                        ),
-	                    ),
-	                ),
+        						'index' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index',
+        										'defaults' => array(
+        												'action' => 'index',
+        										),
+        								),
+        						),
+        						'search' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search',
+        										'defaults' => array(
+        												'action' => 'search',
+        										),
+        								),
+        						),
+        						'list' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list',
+        										'defaults' => array(
+        												'action' => 'list',
+        										),
+        								),
+        						),
+        						'export' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/export',
+        										'defaults' => array(
+        												'action' => 'export',
+        										),
+        								),
+        						),
+	       						'group' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/group[:type]',
+        										'defaults' => array(
+        												'action' => 'group',
+        										),
+        								),
+        						),
 	       		),
         	),
-/*        	'studentSport' => array(
-                'type'    => 'literal',
-                'options' => array(
-                    'route'    => '/student-sport',
-                    'defaults' => array(
-                        'controller' => 'PpitStudies\Controller\StudentSport',
-                        'action'     => 'index',
-                    ),
-                ),
-           		'may_terminate' => true,
-	       		'child_routes' => array(
-	                'index' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/index',
-	                    	'defaults' => array(
-	                    		'action' => 'index',
-	                        ),
-	                    ),
-	                ),
-	                'search' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/search',
-	                    	'defaults' => array(
-	                    		'action' => 'search',
-	                        ),
-	                    ),
-	                ),
-	       			'list' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/list',
-	                    	'defaults' => array(
-	                    		'action' => 'list',
-	                        ),
-	                    ),
-	                ),
-	       			'export' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/export',
-	                    	'defaults' => array(
-	                    		'action' => 'export',
-	                        ),
-	                    ),
-	                ),
-	       			'detail' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/detail[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'detail',
-	                        ),
-	                    ),
-	                ),
-	       			'update' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'update',
-	                        ),
-	                    ),
-	                ),
-	       			'updateSport' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update-sport[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'updateSport',
-	                        ),
-	                    ),
-	                ),
-	       			'photo' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/photo[/:id]',
-		                    'constraints' => array(
-		                    	'id'     => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'photo',
-	                        ),
-	                    ),
-	                ),
-	       			'home' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/home[/:id]',
-		                    'constraints' => array(
-		                    	'id'     => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'home',
-	                        ),
-	                    ),
-	                ),
-	       			'delete' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/delete[/:id]',
-		                    'constraints' => array(
-		                    		'id'     => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'delete',
-	                        ),
-	                    ),
-	                ),
-	       		),
-	       	),*/
         ),
     ),
 	'bjyauthorize' => array(
@@ -413,40 +256,28 @@ return array(
 		'guards' => array(
 			'BjyAuthorize\Guard\Route' => array(
 
-				// Users
+				array('route' => 'absence', 'roles' => array('user')),
+				array('route' => 'absence/index', 'roles' => array('user')),
+				array('route' => 'absence/search', 'roles' => array('user')),
+            	array('route' => 'absence/list', 'roles' => array('user')),
+				array('route' => 'absence/export', 'roles' => array('user')),
+				array('route' => 'absence/detail', 'roles' => array('user')),
+            	array('route' => 'absence/add', 'roles' => array('user')),
+				array('route' => 'absence/update', 'roles' => array('admin')),
+				array('route' => 'absence/delete', 'roles' => array('admin')),
 				array('route' => 'sms', 'roles' => array('responsible')),
 				array('route' => 'sms/delete', 'roles' => array('responsible')),
 				array('route' => 'sms/index', 'roles' => array('responsible')),
 				array('route' => 'sms/simulate', 'roles' => array('responsible')),
 				array('route' => 'sms/update', 'roles' => array('responsible')),
-				array('route' => 'student', 'roles' => array('responsible')),
-				array('route' => 'student/add', 'roles' => array('responsible')),
-				array('route' => 'student/index', 'roles' => array('responsible')),
-				array('route' => 'student/delete', 'roles' => array('responsible')),
-				array('route' => 'student/duplicate', 'roles' => array('responsible')),
-				array('route' => 'student/detail', 'roles' => array('responsible')),
-				array('route' => 'student/export', 'roles' => array('responsible')),
-				array('route' => 'student/home', 'roles' => array('user')),
-				array('route' => 'student/photo', 'roles' => array('user')),
-				array('route' => 'student/search', 'roles' => array('admin')),
-				array('route' => 'student/update', 'roles' => array('responsible')),
-				array('route' => 'student/updateSport', 'roles' => array('responsible')),
-				array('route' => 'student/updateMainContact', 'roles' => array('responsible')),
-				array('route' => 'student/updateBackupContact', 'roles' => array('responsible')),
-				array('route' => 'student/updateBillContact', 'roles' => array('responsible')),
+				array('route' => 'student', 'roles' => array('user')),
+				array('route' => 'student/index', 'roles' => array('user')),
+				array('route' => 'student/search', 'roles' => array('user')),
+				array('route' => 'student/detail', 'roles' => array('user')),
+            	array('route' => 'student/group', 'roles' => array('user')),
+				array('route' => 'student/export', 'roles' => array('user')),
+            	array('route' => 'student/list', 'roles' => array('user')),
 				array('route' => 'student/import', 'roles' => array('admin')),
-/*				array('route' => 'studentSport/add', 'roles' => array('admin')),
-				array('route' => 'studentSport/photo', 'roles' => array('user')),
-				array('route' => 'studentSport/delete', 'roles' => array('admin')),
-				array('route' => 'studentSport/detail', 'roles' => array('admin')),
-				array('route' => 'studentSport/export', 'roles' => array('admin')),
-				array('route' => 'studentSport/home', 'roles' => array('user')),
-				array('route' => 'studentSport/index', 'roles' => array('admin')),
-				array('route' => 'studentSport/list', 'roles' => array('admin')),
-				array('route' => 'studentSport/update', 'roles' => array('responsible')),
-				array('route' => 'studentSport/updateSport', 'roles' => array('responsible')),
-				array('route' => 'studentSport/search', 'roles' => array('admin')),
-				array('route' => 'studentSport/import', 'roles' => array('admin')),*/
 			)
 		)
 	),
@@ -501,6 +332,9 @@ return array(
 			),
 	),
 
-	'ppitStudiesDependencies' => array(
+	'absence/update' => array(),
+	'ppitStudiesDependencies' => array(),
+	'student/index' => array(
+			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
 	),
 );

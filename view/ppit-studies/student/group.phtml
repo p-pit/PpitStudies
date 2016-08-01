@@ -1,0 +1,42 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
+		<strong><?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale()) ?></strong>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		 </div>
+	</div>
+	<div class="panel-body">
+
+		<button type="button" class="btn btn-default action-btn" id="absence-add-anchor">
+			<?php echo $this->translate('Absences', 'ppit-studies', $context->getLocale()) ?>
+		</button>
+
+		<button type="button" class="btn btn-default action-btn" id="evaluation-add-anchor">
+			<?php echo $this->translate('Evaluations', 'ppit-studies', $context->getLocale()) ?>
+		</button>
+
+		<button type="button" class="btn btn-default action-btn" id="evaluation-add-anchor">
+			<?php echo $this->translate('Sport progress', 'ppit-studies', $context->getLocale()) ?>
+		</button>
+
+	<div>&nbsp;</div>
+
+	<input type="hidden" id="group-nb-account" value="<?php echo count($accounts) ?>" />
+
+<?php $i = 0; foreach ($accounts as $account) : ?>
+	
+	<input type="hidden"  id="group-account_<?php echo $i ?>" value="<?php echo $account->id ?>" />
+
+	<div class="form-group" id="product_group">
+		<label class="col-sm-5 control-label">&nbsp;</label>
+		<div class="col-sm-7">
+			<input class="form-control" disabled="disabled" value="<?php echo $account->customer_name ?>" />
+		</div>
+	</div>
+<?php $i++; endforeach;?>
+
+	<div id="account-grouped-action-panel"></div>
+</div>
+	
