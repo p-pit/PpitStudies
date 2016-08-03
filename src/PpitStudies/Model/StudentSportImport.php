@@ -468,6 +468,11 @@ class StudentSportImport implements InputFilterAwareInterface
 					$vcard->n_last = $studentSportImport->nom_famille;
 					$vcard->n_fn = $vcard->n_last.', '.$vcard->n_first;
 					$vcard->email = $studentSportImport->email;
+					Vcard::getTable()->save($vcard);
+
+		    		$community->name = $vcard->n_fn;
+		    		$community->main_contact_id = $vcard->id;
+		    		Community::getTable()->save($community);
 				}
 				$account->customer_community_id = $community->id;
 				Account::getTable()->save($account);
