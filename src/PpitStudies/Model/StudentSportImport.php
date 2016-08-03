@@ -420,8 +420,8 @@ class StudentSportImport implements InputFilterAwareInterface
     	$select = StudentSportImport::getTable()->getSelect();
     	$cursor = StudentSportImport::getTable()->transSelectWith($select);
     	foreach ($cursor as $studentSportImport) {
-    		$customer = Community::get($studentSportImport->nom_famille.', '.$studentSportImport->prenoms, 'name');
-    		if ($customer) $account = Account::get($customer->id, 'customer_community_id');
+    		$community = Community::get($studentSportImport->nom_famille.', '.$studentSportImport->prenoms, 'name');
+    		if ($community) $account = Account::get($community->id, 'customer_community_id');
     		else $account = null;
     		if (!$account) {
 	    		$account = new Account;	
@@ -449,7 +449,27 @@ class StudentSportImport implements InputFilterAwareInterface
 				$account->property_6 = $studentSportImport->internat;
 
 				// Add the account
-				if ($customer) $account->customer_community_id = $customer->id;
+				if (!$community) {
+					$community = new Community;
+					Community::getTable()->save($community);
+					
+					$document = new Document;
+					$document->parent_id = 0;
+					$document->type = 'directory';
+					$document->name = 'Documents';
+					$document->acl = array('communities' => array($community->id => 'write'), 'contacts' => array());
+					Document::getTable()->save($document);
+					 
+					$community->root_document_id = $document->id;
+					
+					$vcard = new Vcard;
+					$vcard->community_id = $community->id;
+					$vcard->n_first = $studentSportImport->prenoms;
+					$vcard->n_last = $studentSportImport->nom_famille;
+					$vcard->n_fn = $vcard->n_last.', '.$vcard->n_first;
+					$vcard->email = $studentSportImport->email;
+				}
+				$account->customer_community_id = $community->id;
 				Account::getTable()->save($account);
     		}
     		else {
