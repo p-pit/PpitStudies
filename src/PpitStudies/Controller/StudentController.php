@@ -9,6 +9,7 @@ use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
 use PpitMasterData\Model\Place;
+use PpitStudies\Model\StudentSportImport;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -165,13 +166,20 @@ class StudentController extends AbstractActionController
 	{
 		// Retrieve the context
 		$context = Context::getCurrent();
+
+		// First Ids to delete
+		$firstCommunityId = $this->params()->fromQuery('firstCommunityId');
+		$firstVcardId = $this->params()->fromQuery('firstVcardId');
+		$firstUserId = $this->params()->fromQuery('firstUserId');
+		$firstDocumentId = $this->params()->fromQuery('firstDocumentId');
+		if (!$firstCommunityId || !$firstVcardId || !$firstUserId || !$firstDocumentId) throw new \Exception('Bad request');
 		
 		// Atomically save
-		$connection = Student::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection = StudentSportImport::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
 		try {
 		
-//			StudentSportImport::importUser();
+//			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
 			StudentSportImport::import();
 
 			$connection->commit();
@@ -183,6 +191,6 @@ class StudentController extends AbstractActionController
 			throw $e;
 		}
 		
-		return $this->redirect()->toRoute('home');
+//		return $this->redirect()->toRoute('home');
 	}
 }

@@ -332,20 +332,34 @@ class StudentSportImport implements InputFilterAwareInterface
     	return $data;
     }
 
-    public static function importUser()
+    public static function importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId)
     {
     	$context = Context::getCurrent();
 
-/*    	Community::getTable()->multipleDelete(array());
-    	Vcard::getTable()->multipleDelete(array());
-    	User::getTable()->multipleDelete(array());
-    	Document::getTable()->multipleDelete(array());*/
+    	$where = new Where;
+    	$where->equalTo('instance_id', $context->getInstanceId());
+    	$where->greaterThanOrEqualTo('id', $firstCommunityId);
+    	Community::getTable()->transMultipleDelete($where);
+
+    	$where = new Where;
+    	$where->equalTo('instance_id', $context->getInstanceId());
+    	$where->greaterThanOrEqualTo('id', $firstVcardId);
+    	Vcard::getTable()->transMultipleDelete($where);
+
+    	$where = new Where;
+    	$where->equalTo('instance_id', $context->getInstanceId());
+    	$where->greaterThanOrEqualTo('user_id', $firstUserId);
+    	User::getTable()->transMultipleDelete($where);
+
+    	$where = new Where;
+    	$where->equalTo('instance_id', $context->getInstanceId());
+    	$where->greaterThanOrEqualTo('id', $firstDocumentId);
+    	Document::getTable()->transMultipleDelete($where);
     	
     	$select = UserImport::getTable()->getSelect();
-    	$cursor = UserImport::getTable()->selectWith($select);
+    	$cursor = UserImport::getTable()->transSelectWith($select);
     	foreach ($cursor as $userImport) {
-			if ($userImport->contact_id) {
-	    		$vcardImport = VcardImport::getTable()->transGet($userImport->contact_id);
+    		if ($userImport->contact_id) {
 	    		$community = new Community;
 	    		Community::getTable()->save($community);
 
@@ -357,17 +371,28 @@ class StudentSportImport implements InputFilterAwareInterface
 	    		Document::getTable()->save($document);
 	    		
 	    		$community->root_document_id = $document->id;
-	    		
+
 	    		$vcard = new Vcard;
 	    		$vcard->community_id = $community->id;
-	    		$vcard->n_title = $vcardImport->n_title;
-	    		$vcard->n_first = $vcardImport->n_first;
-	    		$vcard->n_last = $vcardImport->n_last;
-	    		$vcard->n_fn = $vcardImport->n_fn;
-	    		$vcard->org = $vcardImport->org;
-	    		$vcard->tel_work = $vcardImport->tel_work;
-	    		$vcard->tel_cell = $vcardImport->tel_cell;
-	    		$vcard->email = $vcardImport->email;
+	    		
+    		    if ($userImport->contact_id == 1) {
+    		    	$eleveImport = StudentSportImport::getTable()->transGet($userImport->perimetre);
+		    		$vcard->n_first = $eleveImport->prenoms;
+		    		$vcard->n_last = $eleveImport->nom_famille;
+		    		$vcard->n_fn = $vcard->n_last.', '.$vcard->n_first;
+		    		$vcard->email = $eleveImport->email;
+    		    }
+    			else {
+	    			$vcardImport = VcardImport::getTable()->transGet($userImport->contact_id);
+    				$vcard->n_title = $vcardImport->n_title;
+		    		$vcard->n_first = $vcardImport->n_first;
+		    		$vcard->n_last = $vcardImport->n_last;
+		    		$vcard->n_fn = $vcardImport->n_fn;
+		    		$vcard->org = $vcardImport->org;
+		    		$vcard->tel_work = $vcardImport->tel_work;
+		    		$vcard->tel_cell = $vcardImport->tel_cell;
+		    		$vcard->email = $vcardImport->email;
+    			}
 	    		Vcard::getTable()->save($vcard);
 	
 	    		$community->name = $vcard->n_fn;
@@ -396,7 +421,8 @@ class StudentSportImport implements InputFilterAwareInterface
     	$cursor = StudentSportImport::getTable()->transSelectWith($select);
     	foreach ($cursor as $studentSportImport) {
     		$customer = Community::get($studentSportImport->nom_famille.', '.$studentSportImport->prenoms, 'name');
-    		$account = Account::get($customer->id, 'customer_community_id');
+    		if ($customer) $account = Account::get($customer->id, 'customer_community_id');
+    		else $account = null;
     		if (!$account) {
 	    		$account = new Account;	
 				$account->opening_date = $studentSportImport->date_inscription;
@@ -423,7 +449,7 @@ class StudentSportImport implements InputFilterAwareInterface
 				$account->property_6 = $studentSportImport->internat;
 
 				// Add the account
-				$account->customer_community_id = $customer->id;
+				if ($customer) $account->customer_community_id = $customer->id;
 				Account::getTable()->save($account);
     		}
     		else {
@@ -452,6 +478,8 @@ class StudentSportImport implements InputFilterAwareInterface
    		}
 			
     		$commitment = Commitment::instanciate('registration');
+    		if ($studentSportImport->annee_scolaire == '2016-2017') $commitment->status = 'new';
+    		else $commitment->status = 'closed';
     		$commitment->account_id = $account->id;
     		$commitment->identifier = $studentSportImport->id;
     		$commitment->caption = $studentSportImport->annee_scolaire;

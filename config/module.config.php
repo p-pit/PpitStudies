@@ -247,6 +247,15 @@ return array(
         										),
         								),
         						),
+        						'import' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/import',
+        										'defaults' => array(
+        												'action' => 'import',
+        										),
+        								),
+        						),
 	       		),
         	),
         ),
