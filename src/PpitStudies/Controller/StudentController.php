@@ -18,17 +18,17 @@ class StudentController extends AbstractActionController
     public function indexAction()
     {
     	$context = Context::getCurrent();
-		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-		$instance_id = $context->getInstanceId();
+    	$instance_id = $context->getInstanceId();
 		$community_id = (int) $context->getCommunityId();
 		$contact = Vcard::getNew($instance_id, $community_id);
 
-		$menu = $context->getConfig('menu');
+		$menu = $context->getConfig('menus')[$context->getCurrentApplication()];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'productIdentifier' => 'p-pit-studies',
     			'community_id' => $community_id,
     			'menu' => $menu,
     			'contact' => $contact,
@@ -146,6 +146,7 @@ class StudentController extends AbstractActionController
     	$request = $this->getRequest();
        	if (!$request->isPost()) return $this->redirect()->toRoute('home');
        	$nbAccount = $request->getPost('nb-account');
+
        	$accounts = array();
        	for ($i = 0; $i < $nbAccount; $i++) {
        		$account = Account::get($request->getPost('account_'.$i));

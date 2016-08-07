@@ -1,0 +1,68 @@
+<table class="table table-striped ppit_index">
+	<tr>
+		<th>&nbsp;</th>
+
+<?php foreach ($context->getConfig('progress/list') as $propertyId => $rendering) : ?>
+		<th align="center">
+	<?php $label = $context->getConfig('progress')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	<?php if ($label) : ?>
+			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
+				<span><?php echo $label ?></span>
+<?php if ($major == $propertyId) : ?>
+				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+			</button>
+	<?php endif;?>
+		</th>
+<?php endforeach;?>
+
+	</tr>
+
+<?php foreach ($progresses as $progress) : ?>
+	
+	<input type="hidden" id="progress_<?php echo $i ?>" value="<?php echo $progress->id ?>" />
+	
+	<tr style="text-align: center">
+
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default btn-xs index-btn progress-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="progress-detail-anchor_<?php echo $progress->id ?>">
+				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
+			</button>
+		</td>
+
+	<?php foreach ($context->getConfig('progress/list') as $propertyId => $rendering) : ?>
+	
+		<?php $property = $context->getConfig('progress')['properties'][$propertyId] ?>
+	
+		<?php if ($propertyId == 'name') : ?>
+		<td><?php echo $progress->name ?></td>
+	
+		<?php elseif ($rendering == 'text') : ?>
+		<td><?php echo $progress->properties[$propertyId] ?></td>
+
+		<?php elseif ($rendering == 'image') : ?>
+		<td style="text-align: center">
+			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$progress->properties[$propertyId].'.png') ?>" title="<?php echo $progress->properties[$propertyId] ?>" alt="<?php echo $progress->properties[$propertyId] ?>" />
+		</td>
+
+		<?php elseif ($rendering == 'phone') : ?>
+		<td>
+			<a href="tel:<?php echo $progress->properties[$propertyId] ?>"><?php echo $account->properties[$propertyId] ?></a>
+		</td>
+
+		<?php elseif ($rendering == 'select') : ?>
+		<td><?php echo $property['modalities'][$progress->properties[$propertyId]][$context->getLocale()] ?>
+		</td>
+	
+		<?php else : ?>
+		<td><?php echo $progress->properties[$propertyId] ?></td>
+		
+		<?php endif;?>
+		
+	<?php endforeach;?>
+	
+	</tr>
+	
+<?php endforeach; ?>
+
+</table>

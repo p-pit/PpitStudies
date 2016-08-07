@@ -5,7 +5,7 @@ return array(
 	'controllers' => array(
         'invokables' => array(
         	'PpitStudies\Controller\Absence' => 'PpitStudies\Controller\AbsenceController',
-        	'PpitStudies\Controller\Home' => 'PpitStudies\Controller\HomeController',
+        	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
         	'PpitStudies\Controller\Sms' => 'PpitStudies\Controller\SmsController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
         ),
@@ -74,7 +74,7 @@ return array(
 	       						'detail' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/detail[/:id]',
+        										'route' => '/detail[/:type][/:id][/:action]',
         										'constraints' => array(
         												'id' => '[0-9]*',
         										),
@@ -104,36 +104,103 @@ return array(
 		        								),
 		        						),
 		        				),
-	       			),
-	       			'delete' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/delete[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'delete',
-	                        ),
-	                    ),
-	                ),
+				       			'delete' => array(
+				                    'type' => 'segment',
+				                    'options' => array(
+				                        'route' => '/delete[/:id]',
+					                    'constraints' => array(
+					                    	'id' => '[0-9]*',
+					                    ),
+				                    	'defaults' => array(
+				                            'action' => 'delete',
+				                        ),
+				                    ),
+				                ),
 	       		),
-        		'home' => array(
-                'type'    => 'segment',
+            ),
+        	'progress' => array(
+                'type'    => 'literal',
                 'options' => array(
-                    'route'    => '/home[/:action][/:centre][/:id]',
-                    'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'centre' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    	'id'     => '[0-9]*',
-                    ),
+                    'route'    => '/progress',
                     'defaults' => array(
-                        'controller' => 'PpitStudies\Controller\Home',
+                        'controller' => 'PpitStudies\Controller\Progress',
                         'action'     => 'index',
                     ),
                 ),
+           		'may_terminate' => true,
+	       		'child_routes' => array(
+        						'index' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index',
+        										'defaults' => array(
+        												'action' => 'index',
+        										),
+        								),
+        						),
+        						'search' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search',
+        										'defaults' => array(
+        												'action' => 'search',
+        										),
+        								),
+        						),
+        						'list' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list',
+        										'defaults' => array(
+        												'action' => 'list',
+        										),
+        								),
+        						),
+        						'export' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/export',
+        										'defaults' => array(
+        												'action' => 'export',
+        										),
+        								),
+        						),
+	       						'detail' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/detail[/:type][/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'detail',
+        										),
+        								),
+        						),
+	       						'add' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add[/:type]',
+        										'defaults' => array(
+        												'action' => 'add',
+        										),
+        								),
+        						),
+				       			'delete' => array(
+				                    'type' => 'segment',
+				                    'options' => array(
+				                        'route' => '/delete[/:id]',
+					                    'constraints' => array(
+					                    	'id' => '[0-9]*',
+					                    ),
+				                    	'defaults' => array(
+				                            'action' => 'delete',
+				                        ),
+				                    ),
+				                ),
+	       		),
             ),
-        	'sms' => array(
+    		'sms' => array(
                 'type'    => 'segment',
                 'options' => array(
                     'route'    => '/sms',
@@ -255,10 +322,11 @@ return array(
         												'action' => 'import',
         										),
         								),
+        						
         						),
-	       		),
-        	),
-        ),
+				),
+	       	),
+	    ),
     ),
 	'bjyauthorize' => array(
 		// Guard listeners to be attached to the application event manager
@@ -274,6 +342,14 @@ return array(
             	array('route' => 'absence/add', 'roles' => array('user')),
 				array('route' => 'absence/update', 'roles' => array('admin')),
 				array('route' => 'absence/delete', 'roles' => array('admin')),
+				array('route' => 'progress', 'roles' => array('user')),
+				array('route' => 'progress/index', 'roles' => array('user')),
+				array('route' => 'progress/search', 'roles' => array('user')),
+            	array('route' => 'progress/list', 'roles' => array('user')),
+				array('route' => 'progress/export', 'roles' => array('user')),
+				array('route' => 'progress/detail', 'roles' => array('user')),
+            	array('route' => 'progress/add', 'roles' => array('user')),
+				array('route' => 'progress/delete', 'roles' => array('admin')),
 				array('route' => 'sms', 'roles' => array('responsible')),
 				array('route' => 'sms/delete', 'roles' => array('responsible')),
 				array('route' => 'sms/index', 'roles' => array('responsible')),
@@ -341,9 +417,598 @@ return array(
 			),
 	),
 
-	'absence/update' => array(),
 	'ppitStudiesDependencies' => array(),
+
+	'menus' => array(
+			'p-pit-studies' => array(
+					'student' => array(
+							'action' => 'Student',
+							'route' => 'student',
+							'params' => array('type' => ''),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Students',
+									'fr_FR' => 'Eleves',
+							),
+					),
+					'progress' => array(
+							'action' => 'Progress',
+							'route' => 'progress',
+							'params' => array('type' => ''),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Sport progress',
+									'fr_FR' => 'Suivi sportif',
+							),
+					),
+					'catalogue' => array(
+							'action' => 'Catalogue',
+							'route' => 'produit',
+							'params' => array(),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Catalogue',
+									'fr_FR' => 'Catalogue',
+							),
+					),
+					'ppitUser' => array(
+							'action' => 'User',
+							'route' => 'ppitUser/index',
+							'params' => array('type' => ''),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Users',
+									'fr_FR' => 'Utilisateurs',
+							),
+					),
+			),
+	),
+
+	'absence/update' => array(),
+
+	'student' => array(
+			'types' => array(
+					'sport' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'Basketball' => array('fr_FR' => 'Basketball'),
+									'Football' => array('fr_FR' => 'Football'),
+									'Golf' => array('fr_FR' => 'Golf'),
+									'Tennis' => array('fr_FR' => 'Tennis'),
+							),
+							'labels' => array(
+									'en_US' => 'Sport',
+									'fr_FR' => 'Sport',
+							),
+					),
+			),
+	),
+
 	'student/index' => array(
 			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
+	),
+
+	'progress' => array(
+			'types' => array(
+					'sport' => array(
+							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+							'accountProperty' => 'property_1',
+							'subjects' => array(),
+					),
+			),
+			'properties' => array(
+					'school_year' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017'),
+							),
+							'labels' => array(
+									'en_US' => 'School year',
+									'fr_FR' => 'Année scolaire',
+							),
+					),
+					'period' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'P1' => array('fr_FR' => 'Sept/oct', 'en_US' => 'Sept/oct'),
+									'P2' => array('fr_FR' => 'Nov/déc', 'en_US' => 'Nov/dec'),
+									'P3' => array('fr_FR' => 'Jan/fév', 'en_US' => 'Jan/fev'),
+									'P4' => array('fr_FR' => 'Mar/Avr', 'en_US' => 'Mar/Apr'),
+									'P5' => array('fr_FR' => 'Mai/Juin', 'en_US' => 'May/June'),
+							),
+							'labels' => array(
+									'en_US' => 'Period',
+									'fr_FR' => 'Période',
+							),
+					),
+					'name' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Name',
+									'fr_FR' => 'Nom',
+							),
+					),
+			),
+	),
+
+	'progress/index' => array(
+			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
+	),
+
+	'progress/detail' => array(
+			'types' => array(
+					'sport' => array(
+							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+							'subjects' => array(
+									'Basketball' => array(),
+									'Equitation' => array(
+											'qualitative_criteria' => array(
+													'confiance' => array(
+															'labels' => array('fr_FR' => 'Confiance en soi, dans ses chevaux (attitude mentale)'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'posture' => array(
+															'labels' => array('fr_FR' => 'Posture et mise en selle'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'aide' => array(
+															'labels' => array('fr_FR' => 'Ecole des aides'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'obstacle' => array(
+															'labels' => array('fr_FR' => 'Travail à l\'obstacle et en extérieur'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'soin' => array(
+															'labels' => array('fr_FR' => 'Travail à pied, soins aux chevaux'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'OBJECTIFS'),
+															'type' => 'subtitle',
+													),
+													'objectif-ct' => array(
+															'labels' => array('fr_FR' => 'Objectifs court-terme'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'objectif-lt' => array(
+															'labels' => array('fr_FR' => 'Objectifs long-terme'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+											),
+									),
+									'Football' => array(
+											'qualitative_criteria' => array(
+													'poste-principal' => array(
+															'labels' => array('fr_FR' => 'Poste principal'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'poste-secondaire' => array(
+															'labels' => array('fr_FR' => 'Poste secondaire'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+											),
+											'modalities' => array(
+													'1' => array('fr_FR' => 'Non acquis'),
+													'2' => array('fr_FR' => 'En cours'),
+													'3' => array('fr_FR' => 'Acquis'),
+											),
+											'quantitative_criteria' => array(
+													array(
+															'labels' => array('fr_FR' => 'TECHNIQUES OFFENSIVES'),
+															'type' => 'subtitle',
+													),
+													'passe-pd' => array(
+															'labels' => array('fr_FR' => 'Passes PD'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'passe-pg' => array(
+															'labels' => array('fr_FR' => 'Passes PG'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'controle' => array(
+															'labels' => array('fr_FR' => 'Contrôle ballon'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'tir-pd' => array(
+															'labels' => array('fr_FR' => 'Tirs PD'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'tir-pg' => array(
+															'labels' => array('fr_FR' => 'Tirs PG'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'tete' => array(
+															'labels' => array('fr_FR' => 'Jeu de tête'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'jeu-court' => array(
+															'labels' => array('fr_FR' => 'Jeu court'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'jeu-mi-long' => array(
+															'labels' => array('fr_FR' => 'Jeu mi-long'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'jeu-long' => array(
+															'labels' => array('fr_FR' => 'Jeu long'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'dribble' => array(
+															'labels' => array('fr_FR' => 'Feintes-dribbles'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'protection-ballon' => array(
+															'labels' => array('fr_FR' => 'Protection du ballon'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'jeu-combine-def' => array(
+															'labels' => array('fr_FR' => 'Jeu combiné'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'duel-offensif' => array(
+															'labels' => array('fr_FR' => 'Duels offensifs'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'TECHNIQUES DEFENSIVES'),
+															'type' => 'subtitle',
+													),
+													'jeu-test-def' => array(
+															'labels' => array('fr_FR' => 'Jeu de tête'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'interception' => array(
+															'labels' => array('fr_FR' => 'Interception'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'duel-def' => array(
+															'labels' => array('fr_FR' => 'Duels défensifs (tacle, charge...)'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'PRINCIPES DEFENSIFS'),
+															'type' => 'subtitle',
+													),
+													'placement-def' => array(
+															'labels' => array('fr_FR' => 'Placement'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'replacement' => array(
+															'labels' => array('fr_FR' => 'Replacement'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'cadrage' => array(
+															'labels' => array('fr_FR' => 'Cadrage'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'couverture' => array(
+															'labels' => array('fr_FR' => 'Couverture'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'efficacite-def' => array(
+															'labels' => array('fr_FR' => 'Efficacité défensive individuelle'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'gestion-desequilibre' => array(
+															'labels' => array('fr_FR' => 'Gestion déséquilibres'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'transition-def-off' => array(
+															'labels' => array('fr_FR' => 'Transition def./off (efficacité'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'PRINCIPES OFFENSIFS'),
+															'type' => 'subtitle',
+													),
+													'placement-off' => array(
+															'labels' => array('fr_FR' => 'Placement'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'demarquage' => array(
+															'labels' => array('fr_FR' => 'Démarquage / disponibilité'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'jeu-combine-off' => array(
+															'labels' => array('fr_FR' => 'Jeu combiné'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'jeu-appui' => array(
+															'labels' => array('fr_FR' => 'Jeu en appui'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'jeu-soutien' => array(
+															'labels' => array('fr_FR' => 'Jeu en soutien'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'vision-jeu' => array(
+															'labels' => array('fr_FR' => 'Vision du jeu'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'dernier-geste' => array(
+															'labels' => array('fr_FR' => 'Dernière passe / dernier geste'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'finition' => array(
+															'labels' => array('fr_FR' => 'Finition'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'efficacite-off' => array(
+															'labels' => array('fr_FR' => 'Efficacité offensive individuelle'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'PHYSIQUE'),
+															'type' => 'subtitle',
+													),
+													'vitesse' => array(
+															'labels' => array('fr_FR' => 'Vitesse'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'explosivite' => array(
+															'labels' => array('fr_FR' => 'Explosivité'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'resistance' => array(
+															'labels' => array('fr_FR' => 'Résistance'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'endurance' => array(
+															'labels' => array('fr_FR' => 'Endurance'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'puissance' => array(
+															'labels' => array('fr_FR' => 'Puissance'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'souplesse' => array(
+															'labels' => array('fr_FR' => 'Souplesse'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'coordination' => array(
+															'labels' => array('fr_FR' => 'Coordination'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'mental' => array(
+															'labels' => array('fr_FR' => 'MENTAL'),
+															'type' => 'subtitle',
+													),
+													'volonte' => array(
+															'labels' => array('fr_FR' => 'Volonté / investissement'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'aggressivite' => array(
+															'labels' => array('fr_FR' => 'Agressivité'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'prise-info' => array(
+															'labels' => array('fr_FR' => 'Prise d\'information'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'concentration' => array(
+															'labels' => array('fr_FR' => 'Concentration/écoute/compréhension'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'choix' => array(
+															'labels' => array('fr_FR' => 'Choix'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'controle-emotionnel' => array(
+															'labels' => array('fr_FR' => 'Contrôle émotionnel'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'positif' => array(
+															'labels' => array('fr_FR' => 'Esprit positif'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'fair-play' => array(
+															'labels' => array('fr_FR' => 'Fair-play'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'respect' => array(
+															'labels' => array('fr_FR' => 'Respect'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'comportement' => array(
+															'labels' => array('fr_FR' => 'Comportement général'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'humilite' => array(
+															'labels' => array('fr_FR' => 'Humilité'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+													'long-jeu' => array(
+															'labels' => array('fr_FR' => 'Long jeu'),
+															'type' => 'select',
+															'maxLength'  => '255',
+													),
+											),
+									),
+									'Golf' => array(
+											'qualitative_criteria' => array(
+													'chipping' => array(
+															'labels' => array('fr_FR' => 'Chipping'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'putting' => array(
+															'labels' => array('fr_FR' => 'Putting'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'bunker' => array(
+															'labels' => array('fr_FR' => 'Bunker'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'parcours' => array(
+															'labels' => array('fr_FR' => 'Parcours'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+											),
+									),
+									'Tennis' => array(
+											'qualitative_criteria' => array(
+													array(
+															'labels' => array('fr_FR' => 'TECHNIQUE'),
+															'type' => 'subtitle',
+													),
+													'coup-droit' => array(
+															'labels' => array('fr_FR' => 'Coup droit'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'revers' => array(
+															'labels' => array('fr_FR' => 'Revers'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'service' => array(
+															'labels' => array('fr_FR' => 'Service'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'volee' => array(
+															'labels' => array('fr_FR' => 'Volée'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'smash' => array(
+															'labels' => array('fr_FR' => 'Smash'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'PHYSIQUE'),
+															'type' => 'subtitle',
+													),
+													'placement' => array(
+															'labels' => array('fr_FR' => 'Placement'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'jeu-jambe' => array(
+															'labels' => array('fr_FR' => 'Jeux de jambe'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'foncier' => array(
+															'labels' => array('fr_FR' => 'Foncier'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'vitesse' => array(
+															'labels' => array('fr_FR' => 'Vitesse'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'test' => array(
+															'labels' => array('fr_FR' => 'Tests'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'MENTAL'),
+															'type' => 'subtitle',
+													),
+													'mental' => array(
+															'labels' => array('fr_FR' => ''),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													array(
+															'labels' => array('fr_FR' => 'OBJECTIFS'),
+															'type' => 'subtitle',
+													),
+													'objectif-ct' => array(
+															'labels' => array('fr_FR' => 'Objectifs court-terme'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+													'objectif-lt' => array(
+															'labels' => array('fr_FR' => 'Objectifs long-terme'),
+															'type' => 'input',
+															'maxLength'  => '255',
+													),
+											),
+									),
+							),
+					),
+			),
+	),
+
+	'progress/search' => array(
+			'title' => array('en_US' => 'Sport progress', 'fr_FR' => 'Suivi sportif'),
+			'todoTitle' => array('en_US' => 'to be completed', 'fr_FR' => 'à compléter'),
+			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
+			'main' => array('school_year' => 'select', 'name' => 'contains', 'period' => 'select'),
+			'more' => array(),
+	),
+
+	'progress/list' => array(
+			'school_year' => 'select',
+			'name' => 'text',
+			'period' => 'select',
 	),
 );

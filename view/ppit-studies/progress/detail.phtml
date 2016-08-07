@@ -1,0 +1,173 @@
+<!-- Form header -->
+<?php echo $this->partial('/partials/form-header', array(
+		'update_time' => $progress->update_time,
+		'message' => $message,
+		'error' => $error,
+		'csrfForm' => $csrfForm,
+		'context' => $context,
+));
+?>
+
+<?php if ($action == 'detail' || $message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Name -->
+
+	<div class="form-group" id="product_group">
+		<label class="col-sm-5 control-label">&nbsp;</label>
+		<div class="col-sm-7">
+			<input class="form-control" disabled="disabled" value="<?php echo $progress->name ?>" />
+		</div>
+	</div>
+
+<!-- School year -->
+		<div class="form-group" id="school_year_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="school_year" disabled="disabled">
+	<?php foreach ($context->getConfig('progress')['properties']['school_year']['modalities'] as $schoolYearId => $schoolYear) : ?>
+					<option value="<?php echo $schoolYearId ?>"><?php echo $schoolYear[$context->getLocale()] ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="school_year_error"></p></div>
+		</div>
+
+<!-- Period -->
+		<div class="form-group" id="period_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Period', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="period" disabled="disabled">
+	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+	<?php foreach ($context->getConfig('progress')['properties']['period']['modalities'] as $periodId => $period) : ?>
+					<option value="<?php echo $periodId ?>" <?php if ($progress->period == $periodId) echo ' selected="selected"' ?>><?php echo $period[$context->getLocale()] ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="period_error"></p></div>
+		</div>
+
+<!-- Progress date -->
+<?php $progressDate = ($progress->date) ? $progress->date : Date('Y-m-d') ?>
+		<input type="hidden" id="date" />
+		<div class="form-group" id="input_date_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_date" value="<?php echo $context->decodeDate($progressDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_date_error"></p></div>
+		</div>
+
+<?php $subject = $context->getConfig('progress/update')['types']['sport']['subjects'][$progress->subject] ?>
+
+<?php if (array_key_exists('qualitative_criteria', $subject)) : ?>
+	<?php foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) : ?>
+
+		<?php $criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null ?>
+
+		<?php if ($criterion['type'] == 'subtitle') : ?>
+
+		<div><strong><?php echo $criterion['labels'][$context->getLocale()]?></strong></div>
+		<div>&nbsp;</div>
+
+		<?php else : ?>
+			
+		<div class="form-group" id="qualitative_<?php echo $criterionId ?>_group">
+			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="qualitative_<?php echo $criterionId ?>" value="<?php $criterionValue ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="qualitative_<?php echo $criterionId ?>_error"></p></div>
+		</div>
+		
+		<?php endif;?>
+
+	<?php endforeach;?>
+<?php endif;?>
+
+<?php if (array_key_exists('quantitative_criteria', $subject)) : ?>
+	<?php foreach ($subject['quantitative_criteria'] as $criterionId => $criterion) : ?>
+
+		<?php $criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null ?>
+		
+		<?php if ($criterion['type'] == 'subtitle') : ?>
+
+<!-- Subtitle -->
+		<div><strong><?php echo $criterion['labels'][$context->getLocale()]?></strong></div>
+		<div>&nbsp;</div>
+
+		<?php elseif ($criterion['type'] == 'select') : ?>
+
+<!-- Select -->
+		<div class="form-group" id="quantitative_<?php echo $criterionId ?>_group">
+			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="quantitative_<?php echo $criterionId ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+		<?php foreach ($subject['modalities'] as $key => $value) : ?>
+					<option value="<?php echo $key ?>" <?php if ($criterionValue == $key) echo ' selected="selected"' ?>><?php echo $subject['modalities'][$key][$context->getLocale()] ?></option>
+		<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="quantitative_<?php echo $criterionId ?>_error"></p></div>
+		</div>
+			
+		<?php else : ?>
+		
+<!-- Number -->
+		<div class="form-group" id="quantitative_<?php echo $criterionId ?>_group">
+			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="quantitative_<?php echo $criterionId ?>" value="<?php if (array_key_exists($criterionId, $progress->criteria)) echo  $context->formatFloat($progress->criteria[$criterionId], 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="quantitative_<?php echo $criterionId ?>_error"></p></div>
+		</div>
+		
+		<?php endif;?>
+
+	<?php endforeach;?>
+<?php endif;?>
+
+<!-- Observations -->
+		<div class="form-group" id="observations_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="observations_error"></p></div>
+		</div>
+
+<!-- Status -->
+		<input type="hidden" id="status" value="<?php $progress->status ?>" />
+		<div class="form-group" id="status_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Completed', 'ppit-core', $context->getLocale()) ?> ?</label>
+			<div class="col-sm-7">
+				<input type="checkbox" class="form-control" id="status_checkbox" checked="checked" value="completed" <?php if ($isDisabled) echo 'disabled="disabled"'?>></checkbox>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="status_error"></p></div>
+		</div>
+
+<!-- Comment -->
+	<?php if (!$isDisabled) : ?>
+		<div class="form-group" id="comment_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Comment (non visible to the student)', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="comment"></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="comment_error"></p></div>
+		</div>
+	<?php endif;?>
+
+<?php if ($action == 'update' || $action == 'delete') : ?>
+		<div class="form-group">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+	<?php if ($action == 'update') : ?>
+				<input name="submit" type="submit" id="submit-button" class="btn btn-warning" value="<?php echo $this->translate('Update', 'ppit-core', $context->getLocale()) ?>">
+	<?php else : ?>
+				<input name="submit" type="submit" id="submit-button" class="btn btn-danger" value="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>">
+	<?php endif;?>
+			</div>
+		</div>
+<?php endif;?>
+
+	</form>

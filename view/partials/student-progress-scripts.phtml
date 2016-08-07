@@ -1,0 +1,424 @@
+
+function connectRemoveIcon(id, target)
+{
+	$('#' + id).click(function () {
+		$('#' + target).hide();
+		$('.progress-checkbox').attr('disabled', null);
+	});
+}
+
+function getParams() {
+
+	var params = '?', todo = true;
+
+<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	
+	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
+	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
+	if (min_<?php echo $propertyId ?>.length >= 2) { params += 'min_<?php echo $propertyId ?>=' + min_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	var max_<?php echo $propertyId ?> = document.getElementById('search_max_<?php echo $propertyId ?>').value;
+	if (max_<?php echo $propertyId ?>) max_<?php echo $propertyId ?> = encodeDate(max_<?php echo $propertyId ?>);
+	if (max_<?php echo $propertyId ?>.length >= 2) { params += 'max_<?php echo $propertyId ?>=' + max_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	<?php else : ?>
+
+	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	
+	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
+	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
+	if (min_<?php echo $propertyId ?>.length >= 2) { params += 'min_<?php echo $propertyId ?>=' + min_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	var max_<?php echo $propertyId ?> = document.getElementById('search_max_<?php echo $propertyId ?>').value;
+	if (max_<?php echo $propertyId ?>) max_<?php echo $propertyId ?> = encodeDate(max_<?php echo $propertyId ?>);
+	if (max_<?php echo $propertyId ?>.length >= 2) { params += 'max_<?php echo $propertyId ?>=' + max_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	<?php elseif ($rendering == 'select') : ?>
+
+	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (<?php echo $propertyId ?>) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
+	
+	<?php else : ?>
+
+	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+	<?php
+	$todoTitle = (isset ($context->getConfig('progress/search')['todoTitle']) ? $context->getConfig('progress/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	$searchTitle = (isset ($context->getConfig('progress/search')['searchTitle']) ? $context->getConfig('progress/search')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
+	?>
+	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
+
+	return params;
+}
+
+// Export the list
+function exportProgressList() {
+
+	var params = getParams();
+	document.location.href = '<?php echo $this->url('progress/export') ?>' + params;
+}
+
+function eraseProgressSearch() {
+
+<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').val('');
+	$('#search_max_<?php echo $propertyId ?>').val('');
+
+	<?php else : ?>
+	$('#search_<?php echo $propertyId ?>').val('');
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').val('');
+	$('#search_max_<?php echo $propertyId ?>').val('');
+
+	<?php else : ?>
+	$('#search_<?php echo $propertyId ?>').val('');
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+	getProgressList(getParams(), 'name', 'ASC');
+}
+
+function sortProgressList(criterion) {
+
+	var dir;
+	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	if (criterion + '-anchor' == ascCriterion) dir = 'DESC'; else dir = 'ASC';
+	getProgressList(getParams(), criterion, dir);
+}
+
+function filterProgressList() {
+
+	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	if (ascCriterion) {
+		criterion = ascCriterion.split('-')[0];
+		dir = 'ASC';
+	}
+	else {
+		criterion = descCriterion.split('-')[0];
+		dir = 'ASC';
+	}
+	getProgressList(getParams(), criterion, dir);
+}
+
+function connectProgressSearchInputs() {
+
+	$('#export-button').click(function () { exportProgressList(); });
+	
+	$('#erase-button').unbind();
+	$('#erase-button').click(function () { eraseProgressSearch(); });
+
+<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+
+		<?php if ($context->getConfig('progress')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_min_<?php echo $propertyId ?>").datepicker();
+	$("#search_max_<?php echo $propertyId ?>").datepicker();
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+		<?php endif;?>
+	
+	<?php elseif ($rendering == 'select') : ?>
+		$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+	
+	<?php else : ?>
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+
+		<?php if ($context->getConfig('progress')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_<?php echo $propertyId ?>").datepicker();
+	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+		<?php endif;?>
+
+	<?php endif;?>
+
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+
+		<?php if ($context->getConfig('progress')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_min_<?php echo $propertyId ?>").datepicker();
+	$("#search_max_<?php echo $propertyId ?>").datepicker();
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+		<?php endif;?>
+	
+	<?php elseif ($rendering == 'select') : ?>
+		$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+
+	<?php else : ?>
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+
+		<?php if ($context->getConfig('progress')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_<?php echo $propertyId ?>").datepicker();
+	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+		<?php endif;?>
+		
+	<?php endif;?>
+
+<?php endforeach;?>
+}
+
+// Load the list
+function getProgressList(params, major, dir) {		
+
+	// Execute the ajax request
+	route = '<?php echo $this->url('progress/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('progress-list-panel').innerHTML = xhttp.responseText;
+			
+			// Connect the sort anchors
+			$('.ppit-sort-anchor').each(function () {
+				$(this).click(function () {
+					sortProgressList($(this).attr('id').split('-')[0]);
+				});
+			});
+			
+			// Connect the detail anchors
+			$('.progress-detail-anchor').each(function () {
+				$(this).click(function () {
+					getFootballProgressDetail($(this).attr('id').split('_')[1]);
+				});
+			});
+		}
+	}
+	xhttp.send();
+}
+
+<?php 
+$properties = array();
+$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
+$properties['period'] = array('type' => 'select', 'mandatory' => true);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Progress', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectProgressAddForm()
+{
+	$('#input_date').datepicker();
+
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Check validity
+		var validity = checkProgressUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var accountNumber = $('#group-nb-account').val();
+			for (i = 0; i < accountNumber; i++) {
+				formData.append('account_' + i, $('#group-account_' + i).val());
+			}
+			formData.append('nb-account', i);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('progress/add', array('type' => 'sport')) ?>';
+			target = 'account-grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function getProgressAdd() {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('progress/add', array('type' => 'sport')) ?>';
+
+	xhttp.open('POST', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('account-grouped-action-panel').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('account-grouped-action-panel, route = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+			
+			connectProgressAddForm();
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#progress-add-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+<?php foreach ($context->getConfig('student')['types']['sport']['modalities'] as $sportId => $unused) : ?>
+	<?php 
+	$properties = array();
+	
+	foreach($context->getConfig('progress/detail')['types']['sport']['subjects'][$sportId] as $blocks) {
+		if (array_key_exists('qualitative_criteria', $blocks)) {
+			foreach ($blocks['qualitative_criteria'] as $criteriaId => $criteria) {
+				$properties['qualitative_'.$criteriaId] = array('type' => $criteria['type'], 'mandatory' => false, 'maxSize' => $criteria['maxSize']);
+			}
+		}
+		if (array_key_exists('quantitative_criteria', $blocks)) {
+			$modalities = array();
+			foreach ($blocks['modalities'] as $modalityId => $modality) $modalities[$modalityId] = $modality($context->getLocale());
+			foreach ($blocks['quantitative_criteria'] as $criteriaId => $criteria) {
+				if ($criteria['type'] == select) $properties['quantitative_'.$criteriaId] = array('type' => $criteria['type'], 'mandatory' => false);
+				elseif ($criteria['type'] == 'number') $properties['quantitative_'.$criteriaId] = array('type' => $criteria['type'], 'mandatory' => false, 'minValue' => $criteria['minValue'], 'maxValue' => $maxValue);
+			}
+		}
+	}
+	$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+	$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+	$properties['update_time'] = array('type' => 'hidden');
+
+	echo $this->partial('/partials/check-update-properties', array('entity' => $sportId.'Progress', 'context' => $context, 'properties' => $properties)) 
+	?>
+
+function connect<?php echo $sportId?>ProgressDetailForm(id)
+{
+	$('#input_date').datepicker();
+
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Check validity
+		var validity = check<?php echo $sportId ?>ProgressDetailProperties();
+
+		if (validity) {
+			account_id = $('#group-account').val();
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+			formData.append('account_id', account_id);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('progress/detail', array('type' => 'sport')) ?>/' + id;
+			target = 'form_action';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function get<?php echo $sportId ?>ProgressDetail(id) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('progress/detail', array('type' => 'sport')) ?>/' + id;
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('form_action').innerHTML = xhttp.responseText;			
+			connect<?php echo $sportId ?>ProgressDetailForm();
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#progress-add-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+<?php endforeach;?>
+
+function activateProgress() {
+
+	// Load the search panel and highlight the menu entry
+	loadPanel('index_action', '<?php echo $this->url('progress/search') ?>');
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	var progressAnchor;
+	progressAnchor = '#progress-anchor';
+	$(progressAnchor).removeClass("btn-default").addClass("btn-primary");
+
+	<?php
+	$todoTitle = (isset ($context->getConfig('progress/search')['todoTitle']) ? $context->getConfig('progress/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	?>
+	$('#mode-text').text('<?php echo $todoTitle ?>');
+		
+	// Connect the search inputs
+	connectProgressSearchInputs();
+	
+	getProgressList('?', 'name', 'ASC');
+	
+	$('#add-criteria').click(function () {
+		mode = $('#add-criteria').text();
+		if (mode == '<?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale()) ?>') {
+			$('#add-criteria').text('<?php echo $this->translate('Less criteria', 'ppit-core', $context->getLocale()) ?>');
+			$('#search-area').show();
+		}
+		else {
+			$('#add-criteria').text('<?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale()) ?>');
+			$('#search-area').hide();
+		}
+	});
+	$('#search-area').hide();
+}

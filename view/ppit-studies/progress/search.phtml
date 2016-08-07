@@ -2,7 +2,7 @@
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
 			<?php 
-			$title = (isset ($context->getConfig('commitmentAccount/search')['title']) ? $context->getConfig('commitmentAccount/search')['title'][$context->getLocale()] : $this->translate('Accounts', 'ppit-commitment', $context->getLocale()));
+			$title = $context->getConfig('progress/search')['title'][$context->getLocale()];
 			echo $title;
 			?>
 			(<span id="mode-text"></span>)
@@ -21,8 +21,8 @@
 			</div>
 		</div>
 		
-<?php foreach ($context->getConfig('commitmentAccount/search')['main'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('commitmentAccount')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+	<?php $label = $context->getConfig('progress')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 	
 	<?php if ($rendering == 'contains') : ?>
 		<div class="form-group">
@@ -52,7 +52,7 @@
 
 		<?php
 		$modalities = array();
-		foreach ($context->getConfig('commitmentAccount')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+		foreach ($context->getConfig('progress')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
 			$modalities[$modalityId] = $modality[$context->getLocale()];
 		} 
 		?>
@@ -74,8 +74,8 @@
 		<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
 		<div id="search-area">
 		
-<?php foreach ($context->getConfig('commitmentAccount/search')['more'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('commitmentAccount')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+	<?php $label = $context->getConfig('progress')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 
 	<?php if ($propertyId == 'place_id') : ?>
 			<div class="form-group">
@@ -118,7 +118,7 @@
 
 		<?php
 		$modalities = array();
-		foreach ($context->getConfig('commitmentAccount')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+		foreach ($context->getConfig('progress')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
 			$modalities[$modalityId] = $modality[$context->getLocale()];
 		} 
 		?>
@@ -152,6 +152,6 @@
 		<div>&nbsp;</div>
 
 <!-- Add or update section -->
-		<div id="account-list-panel"></div>
+		<div id="progress-list-panel"></div>
 	</div>
 </div>

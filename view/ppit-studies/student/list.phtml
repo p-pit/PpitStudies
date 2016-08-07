@@ -1,6 +1,7 @@
 <table class="table table-striped ppit_index">
 	<tr>
 		<th>&nbsp;</th>
+		<th>&nbsp;</th>
 
 <?php foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
 		<th align="center">
@@ -18,7 +19,13 @@
 
 	<tr>
 		<td>
-			<input type="checkbox" class="form-control account-checkbox" id="account-checkbox" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+			<input type="checkbox" class="account-checkbox" id="account-checkbox" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+		</td>
+
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default btn-xs index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor">
+				<span class="glyphicon glyphicon-list-alt" id="group-glyphicon"></span>
+			</button>
 		</td>
 		
 		<td colspan="6">&nbsp;</td>
@@ -32,7 +39,13 @@
 	
 	<tr class="account" style="text-align: center">
 		<td>
-			<input type="checkbox" class="form-control account-checkbox" id="account-checkbox_<?php echo $i ?>"></input>
+			<input type="checkbox" class="account-checkbox" id="account-checkbox_<?php echo $i ?>"></input>
+		</td>
+
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default btn-xs index-btn account-group-anchor" title="<?php echo $this->translate('Unitary actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor">
+				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
+			</button>
 		</td>
 
 	<?php foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
@@ -72,9 +85,13 @@
 <?php $i++; endforeach; ?>
 
 	<tr>
+		<td>
+			<input type="checkbox" class="account-checkbox" id="down-account-checkbox"></input>
+		</td>
+
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor">
-				<span class="glyphicon glyphicon-list-alt" id="group-glyphicon"></span>
+			<button type="button" class="btn btn-default btn-xs bindex-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-down-group-anchor">
+				<span class="glyphicon glyphicon-list-alt" id="down-group-glyphicon"></span>
 			</button>
 		</td>
 		

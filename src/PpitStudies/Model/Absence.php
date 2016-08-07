@@ -15,6 +15,7 @@ class Absence implements InputFilterAwareInterface
 {
     public $id;
     public $instance_id;
+    public $school_year;
     public $type;
     public $account_id;
     public $subject;
@@ -40,6 +41,7 @@ class Absence implements InputFilterAwareInterface
     {
         $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->instance_id = (isset($data['instance_id'])) ? $data['instance_id'] : null;
+        $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
@@ -53,6 +55,7 @@ class Absence implements InputFilterAwareInterface
     	$data = array();
     	$data['id'] = (int) $this->id;
     	$data['instance_id'] = (int) $this->instance_id;
+    	$data['school_year'] = $this->school_year;
     	$data['type'] = $this->type;
     	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
@@ -96,8 +99,8 @@ class Absence implements InputFilterAwareInterface
     public static function get($id, $column = 'id')
     {
     	$absence = Absence::getTable()->get($id, $column);
-    	$commitment = Commitment::get($absence->account_id);
-    	$absence->name = $commitment->name;
+    	$account = Account::get($absence->account_id);
+    	$absence->name = $account->name;
     	return $absence;
     }
     
@@ -113,7 +116,11 @@ class Absence implements InputFilterAwareInterface
     
     	$context = Context::getCurrent();
 
-        if (array_key_exists('type', $data)) {
+        if (array_key_exists('school_year', $data)) {
+	    	$this->school_year = trim(strip_tags($data['school_year']));
+		    if (!$this->school_year || strlen($this->school_year) > 255) return 'Integrity';
+		}
+    	if (array_key_exists('type', $data)) {
 		    $this->type = trim(strip_tags($data['type']));
 		    if (!$this->type || strlen($this->type) > 255) return 'Integrity';
 		}

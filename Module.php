@@ -3,6 +3,7 @@ namespace PpitStudies;
 
 use PpitCore\Model\GenericTable;
 use PpitStudies\Model\Absence;
+use PpitStudies\Model\Progress;
 use PpitStudies\Model\Student;
 use PpitStudies\Model\StudentSport;
 use PpitStudies\Model\StudentSportImport;
@@ -53,7 +54,18 @@ class Module
                     $resultSetPrototype->setArrayObjectPrototype(new Absence());
                     return new TableGateway('student_absence', $dbAdapter, null, $resultSetPrototype);
                 },
-            	'PpitStudies\Model\StudentTable' =>  function($sm) {
+                'PpitStudies\Model\ProgressTable' =>  function($sm) {
+                    $tableGateway = $sm->get('ProgressTableGateway');
+                    $table = new GenericTable($tableGateway);
+                    return $table;
+                },
+                'ProgressTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Progress());
+                    return new TableGateway('student_progress', $dbAdapter, null, $resultSetPrototype);
+                },
+                'PpitStudies\Model\StudentTable' =>  function($sm) {
                     $tableGateway = $sm->get('StudentTableGateway');
                     $table = new GenericTable($tableGateway);
                     return $table;

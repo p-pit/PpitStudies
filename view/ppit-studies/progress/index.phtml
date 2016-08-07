@@ -2,7 +2,7 @@
 <?php echo $this->partial('/partials/common-form-js.phtml'); ?>
 
 <?php
-$title = $context->getConfig('student/index')['title'][$context->getLocale()];
+$title = $context->getConfig('progress/index')['title'][$context->getLocale()];
 $this->headTitle($title);
 echo $this->partial('/partials/header');
 ?>
@@ -45,10 +45,9 @@ echo $this->partial('/partials/header');
 
 <?php
 echo $this->partial('/partials/student-progress-scripts');
-echo $this->partial('/partials/ppit-student-scripts');
 echo $this->partial('/partials/ppit-controller') 
 ?>
 
-activateStudent();
+activateProgress();
 
 </script>
