@@ -20,7 +20,7 @@ class ProgressController extends AbstractActionController
 		$instance_id = $context->getInstanceId();
 		$community_id = (int) $context->getCommunityId();
 
-		$menu = $context->getConfig('menus')[$context->getCurrentApplication()];
+		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(

@@ -18,9 +18,9 @@ class AbsenceController extends AbstractActionController
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
 		$instance_id = $context->getInstanceId();
 		$community_id = (int) $context->getCommunityId();
-		$contact = Vcard::getNew($instance_id, $community_id);
+//		$contact = Vcard::getNew($instance_id, $community_id);
 
-		$menu = $context->getConfig('menu');
+		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(
@@ -28,7 +28,7 @@ class AbsenceController extends AbstractActionController
     			'config' => $context->getConfig(),
     			'community_id' => $community_id,
     			'menu' => $menu,
-    			'contact' => $contact,
+//    			'contact' => $contact,
     			'currentEntry' => $currentEntry,
     	));
     }

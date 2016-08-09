@@ -22,7 +22,7 @@ class StudentController extends AbstractActionController
 		$community_id = (int) $context->getCommunityId();
 		$contact = Vcard::getNew($instance_id, $community_id);
 
-		$menu = $context->getConfig('menus')[$context->getCurrentApplication()];
+		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(
