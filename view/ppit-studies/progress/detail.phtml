@@ -1,3 +1,14 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
+		<strong><?php echo $this->translate('Detail', 'ppit-core', $context->getLocale()) ?></strong>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		 </div>
+	</div>
+	<div class="panel-body">
+
 <!-- Form header -->
 <?php echo $this->partial('/partials/form-header', array(
 		'update_time' => $progress->update_time,
@@ -8,7 +19,7 @@
 ));
 ?>
 
-<?php if ($action == 'detail' || $message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
 
 <!-- Name -->
 
@@ -57,7 +68,7 @@
 			<div class="col-sm-12"><p class="help-block" id="input_date_error"></p></div>
 		</div>
 
-<?php $subject = $context->getConfig('progress/update')['types']['sport']['subjects'][$progress->subject] ?>
+<?php $subject = $context->getConfig('progress/detail')['types']['sport']['subjects'][$progress->subject] ?>
 
 <?php if (array_key_exists('qualitative_criteria', $subject)) : ?>
 	<?php foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) : ?>
@@ -87,7 +98,13 @@
 <?php if (array_key_exists('quantitative_criteria', $subject)) : ?>
 	<?php foreach ($subject['quantitative_criteria'] as $criterionId => $criterion) : ?>
 
-		<?php $criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null ?>
+		<?php 
+		$criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null;
+		if ($criterionValue == "NA") $colorCoding = 'red';
+		elseif ($criterionValue == "EC") $colorCoding = 'orange';
+		elseif ($criterionValue == "AC") $colorCoding = 'green';
+		else $colorCoding = null;
+		?>
 		
 		<?php if ($criterion['type'] == 'subtitle') : ?>
 
@@ -100,7 +117,9 @@
 <!-- Select -->
 		<div class="form-group" id="quantitative_<?php echo $criterionId ?>_group">
 			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
-			<div class="col-sm-7">
+			<div class="col-sm-1" <?php if ($colorCoding) echo 'style="background-color: '.$colorCoding.'"' ?>>&nbsp;</div>
+			<div class="col-sm-1" id="color-coding_<?php echo $criterionId ?>" <?php if ($colorCoding) echo 'style="background-color: '.$colorCoding.'"' ?>>&nbsp;</div>
+			<div class="col-sm-5">
 				<select class="form-control" id="quantitative_<?php echo $criterionId ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
 		<?php foreach ($subject['modalities'] as $key => $value) : ?>
@@ -171,3 +190,5 @@
 <?php endif;?>
 
 	</form>
+	</div>
+</div>

@@ -28,7 +28,8 @@ class StudentController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-    			'productIdentifier' => 'p-pit-studies',
+    			'applicationName' => 'p-pit-studies',
+    			'active' => 'application',
     			'community_id' => $community_id,
     			'menu' => $menu,
     			'contact' => $contact,

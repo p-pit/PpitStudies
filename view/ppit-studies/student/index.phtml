@@ -49,6 +49,10 @@ echo $this->partial('/partials/ppit-student-scripts');
 echo $this->partial('/partials/ppit-controller') 
 ?>
 
+<?php foreach ($context->getConfig('menus')['p-pit-studies'] as $entryId => $entry) : ?>
+	$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entry['route'], $entry['params']) ?>'); });
+<?php endforeach;?>
+
 activateStudent();
 
 </script>

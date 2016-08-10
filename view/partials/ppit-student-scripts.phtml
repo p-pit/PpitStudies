@@ -228,9 +228,101 @@ function getStudentList(params, major, dir) {
 					getStudentGroup();
 				});
 			});
+			
+			// Connect the detail anchors
+			$('.account-detail-anchor').each(function () {
+				$(this).click(function () {
+					getStudentDetail($(this).attr('id').split('_')[1]);
+				});
+			});
 		}
 	}
 	xhttp.send();
+}
+
+function getStudentUpdate(id, action) {
+
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('commitmentAccount/update') ?>/' + id;
+	if (action) route += '/' + action;
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+
+			document.getElementById('account-update-panel').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('account-update-panel, route = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+			
+//			connectAccountUpdateForm(id, action);
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
+	if (action == 'update') $('#account-update-anchor').removeClass("btn-default").addClass("btn-primary");
+	else if (action == 'delete') $('#account-delete-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+function connectAuditPanel()
+{
+	$('#audit-panel').hide();
+	$('#audit-label').click(function () {
+		if ($('#audit-label').text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#audit-panel').show();
+			$('#audit-label').text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+		}
+		else {
+			$('#audit-panel').hide();
+			$('#audit-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+		}
+	});
+}
+
+// Load the detail panel
+function getStudentDetail(id) {
+
+	// Ensure the target is displayed
+	$('#form_action').show();
+
+	// Anchor to the new panel
+	$(location).attr('hash', 'form_action');
+
+	var route = '<?php echo $this->url('commitmentAccount/detail') ?>' + '/' + id;
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('form_action').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('showing panel: form_action, url = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+			
+			connectAuditPanel();
+			connectRemoveIcon('remove-anchor', 'form_action');
+
+			getStudentUpdate(id, '');
+
+/*			if (id) {
+				$('#account-update-anchor').click(function () { getAccountUpdate(id, 'update'); });
+				$('#account-delete-anchor').click(function () { getAccountUpdate(id, 'delete'); });
+			}
+			else $('#account-add-anchor').click(function () { getAccountUpdate(id, 'add'); });
+
+			if (id != 0) getCommitmentAccountList('registration', '?account_id=' + id, 'identifier', 'DESC');*/
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#account-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
 }
 
 //////////////////////////

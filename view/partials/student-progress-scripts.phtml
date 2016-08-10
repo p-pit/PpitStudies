@@ -303,6 +303,24 @@ function getProgressAdd() {
 }
 
 <?php foreach ($context->getConfig('student')['types']['sport']['modalities'] as $sportId => $unused) : ?>
+	<?php $blocks = $context->getConfig('progress/detail')['types']['sport']['subjects'][$sportId] ?>
+
+function connect<?php echo $sportId?>ColorCoding() {
+
+	<?php if (array_key_exists('quantitative_criteria', $blocks)) : ?>
+		<?php foreach ($blocks['quantitative_criteria'] as $criterionId => $criterion) : ?>
+			$('#quantitative_<?php echo $criterionId ?>').change(function () {
+				var value = $('#quantitative_<?php echo $criterionId ?>').val(), color = 'white';
+				if (value == 'NA') color = 'red';
+				else if (value == 'EC') color = 'orange';
+				else if (value == 'AC') color = 'green';
+				$('#color-coding_<?php echo $criterionId ?>').css('background-color', color);
+			});
+		<?php endforeach;?>
+	<?php endif;?>
+
+}
+
 	<?php 
 	$properties = array();
 	
@@ -371,14 +389,16 @@ function connect<?php echo $sportId?>ProgressDetailForm(id)
 }
 
 function get<?php echo $sportId ?>ProgressDetail(id) {
-	
+
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('progress/detail', array('type' => 'sport')) ?>/' + id;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
+			connect<?php echo $sportId ?>ColorCoding();
 			connect<?php echo $sportId ?>ProgressDetailForm();
 		}
 	}
