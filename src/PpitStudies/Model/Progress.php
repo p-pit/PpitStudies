@@ -89,7 +89,7 @@ class Progress implements InputFilterAwareInterface
     	$select = Progress::getTable()->getSelect()
     		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array(), 'left')
     		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name'), 'left')
-    		->order(array($major.' '.$dir, 'period', 'subject', 'name'));
+    		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
 		$where = new Where;
 		$where->equalTo('type', $type);
 		
@@ -161,7 +161,18 @@ class Progress implements InputFilterAwareInterface
     		return $progress;
     	}
     }
-    
+
+    public static function retrieveAll($type, $account_id)
+    {
+    	$select = Progress::getTable()->getSelect()
+	    	->where(array('account_id' => $account_id, 'type' => $type))
+	    	->order(array('school_year DESC', 'period DESC'));
+    	$cursor = Progress::getTable()->selectWith($select);
+    	$progresses = array();
+    	foreach ($cursor as $progress) $progresses[] = $progress;
+    	return $progresses;
+    }
+
     public function loadData($data) {
     
     	$context = Context::getCurrent();

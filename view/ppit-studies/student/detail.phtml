@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
+		<strong><?php echo $account->customer_name ?></strong>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		 </div>
+	</div>
+	<div class="panel-body">
+
+<!-- Photo -->
+		<div style="text-align: center"><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->properties['property_3'])) ?>"/></div>
+				
+		<ul class="nav nav-tabs">
+		  <li role="presentation" class="student-tab active" id="news-flash-tab"><a href="#"><?php echo $this->translate('News flash', 'ppit-studies', $context->getLocale()) ?></a></li>
+		  <li role="presentation" class="student-tab"><a href="#" id="sport-tab"><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></a></li>
+		  <li role="presentation" class="student-tab"><a href="#" id="schooling-tab"><?php echo $this->translate('Schooling', 'ppit-studies', $context->getLocale()) ?></a></li>
+		</ul>
+
+		<div id="student-detail-panel"></div>
+	</div>
+</div>

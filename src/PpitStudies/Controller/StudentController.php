@@ -136,6 +136,25 @@ class StudentController extends AbstractActionController
 		$writer->save('php://output');
     }
 
+    public function detailAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$id = (int) $this->params()->fromRoute('id', 0);
+    	if ($id) $account= Account::get($id);
+    	else $account = Account::instanciate();
+    
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'id' => $account->id,
+    			'account' => $account,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
     public function groupAction()
     {
     	// Retrieve the context

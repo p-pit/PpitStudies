@@ -177,6 +177,18 @@ return array(
         										),
         								),
         						),
+	       						'dashboard' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/dashboard[/:account_id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'dashboard',
+        										),
+        								),
+        						),
 	       						'add' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -305,6 +317,18 @@ return array(
         										),
         								),
         						),
+	       						'detail' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/detail[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'detail',
+		        								),
+		        						),
+		        				),
 	       						'group' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -347,8 +371,9 @@ return array(
 				array('route' => 'progress/search', 'roles' => array('user')),
             	array('route' => 'progress/list', 'roles' => array('user')),
 				array('route' => 'progress/export', 'roles' => array('user')),
+				array('route' => 'progress/add', 'roles' => array('user')),
 				array('route' => 'progress/detail', 'roles' => array('user')),
-            	array('route' => 'progress/add', 'roles' => array('user')),
+				array('route' => 'progress/dashboard', 'roles' => array('user')),
 				array('route' => 'progress/delete', 'roles' => array('admin')),
 				array('route' => 'sms', 'roles' => array('responsible')),
 				array('route' => 'sms/delete', 'roles' => array('responsible')),
@@ -490,11 +515,9 @@ return array(
 					'period' => array(
 							'type' => 'select',
 							'modalities' => array(
-									'P1' => array('fr_FR' => 'Sept/oct', 'en_US' => 'Sept/oct'),
-									'P2' => array('fr_FR' => 'Nov/déc', 'en_US' => 'Nov/dec'),
-									'P3' => array('fr_FR' => 'Jan/fév', 'en_US' => 'Jan/fev'),
-									'P4' => array('fr_FR' => 'Mar/Avr', 'en_US' => 'Mar/Apr'),
-									'P5' => array('fr_FR' => 'Mai/Juin', 'en_US' => 'May/June'),
+									'P1' => array('en_US' => 'Quarter 1', 'fr_FR' => 'Trim. 1'),
+									'P2' => array('en_US' => 'Quarter 2', 'fr_FR' => 'Trim. 2'),
+									'P3' => array('en_US' => 'Quarter 3', 'fr_FR' => 'Trim. 3'),
 							),
 							'labels' => array(
 									'en_US' => 'Period',

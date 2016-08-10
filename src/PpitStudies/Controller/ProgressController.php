@@ -300,6 +300,28 @@ class ProgressController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+
+    public function dashboardAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+
+//    	$progresses = Progress::getList('sport', array('account_id' => $account_id), 'school_year', 'ASC', null);
+  		$progresses = Progress::retrieveAll('sport', $account_id);
+    	
+    	// Return the link list
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'account' => $account,
+    			'progresses' => $progresses,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
     
 	public function deleteAction()
     {
