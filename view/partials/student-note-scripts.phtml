@@ -11,7 +11,7 @@ function getParams() {
 
 	var params = '?', todo = true;
 
-<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	
@@ -32,7 +32,7 @@ function getParams() {
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	
@@ -59,8 +59,8 @@ function getParams() {
 <?php endforeach;?>
 
 	<?php
-	$todoTitle = (isset ($context->getConfig('progress/search')['todoTitle']) ? $context->getConfig('progress/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
-	$searchTitle = (isset ($context->getConfig('progress/search')['searchTitle']) ? $context->getConfig('progress/search')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
+	$todoTitle = (isset ($context->getConfig('note/search')['todoTitle']) ? $context->getConfig('note/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	$searchTitle = (isset ($context->getConfig('note/search')['searchTitle']) ? $context->getConfig('note/search')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
 
@@ -68,17 +68,17 @@ function getParams() {
 }
 
 // Export the list
-function exportProgressList() {
+function exportNoteList() {
 
 	$('#form_action').hide();
 
 	var params = getParams();
-	document.location.href = '<?php echo $this->url('progress/export') ?>' + params;
+	document.location.href = '<?php echo $this->url('note/export') ?>' + params;
 }
 
-function eraseProgressSearch() {
+function eraseNoteSearch() {
 
-<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
 
 	$('#form_action').hide();
 
@@ -93,7 +93,7 @@ function eraseProgressSearch() {
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').val('');
@@ -106,10 +106,10 @@ function eraseProgressSearch() {
 
 <?php endforeach;?>
 
-	getProgressList(getParams(), 'name', 'ASC');
+	getNoteList(getParams(), 'name', 'ASC');
 }
 
-function sortProgressList(criterion) {
+function sortNoteList(criterion) {
 
 	$('#form_action').hide();
 
@@ -117,10 +117,10 @@ function sortProgressList(criterion) {
 	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
 	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
 	if (criterion + '-anchor' == ascCriterion) dir = 'DESC'; else dir = 'ASC';
-	getProgressList(getParams(), criterion, dir);
+	getNoteList(getParams(), criterion, dir);
 }
 
-function filterProgressList() {
+function filterNoteList() {
 
 	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
 	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
@@ -132,66 +132,66 @@ function filterProgressList() {
 		criterion = descCriterion.split('-')[0];
 		dir = 'ASC';
 	}
-	getProgressList(getParams(), criterion, dir);
+	getNoteList(getParams(), criterion, dir);
 }
 
-function connectProgressSearchInputs() {
+function connectNoteSearchInputs() {
 
-	$('#export-button').click(function () { exportProgressList(); });
+	$('#export-button').click(function () { exportNoteList(); });
 	
 	$('#erase-button').unbind();
-	$('#erase-button').click(function () { eraseProgressSearch(); });
+	$('#erase-button').click(function () { eraseNoteSearch(); });
 
-<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 	
 	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 		<?php endif;?>
 
 	<?php endif;?>
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 
 	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 		<?php endif;?>
 		
 	<?php endif;?>
@@ -200,28 +200,28 @@ function connectProgressSearchInputs() {
 }
 
 // Load the list
-function getProgressList(params, major, dir) {		
+function getNoteList(params, major, dir) {		
 
 	// Execute the ajax request
-	route = '<?php echo $this->url('progress/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	route = '<?php echo $this->url('note/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
 
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-			document.getElementById('progress-list-panel').innerHTML = xhttp.responseText;
+			document.getElementById('note-list-panel').innerHTML = xhttp.responseText;
 			
 			// Connect the sort anchors
 			$('.ppit-sort-anchor').each(function () {
 				$(this).click(function () {
-					sortProgressList($(this).attr('id').split('-')[0]);
+					sortNoteList($(this).attr('id').split('-')[0]);
 				});
 			});
 			
 			// Connect the detail anchors
-			$('.progress-detail-anchor').each(function () {
+			$('.note-detail-anchor').each(function () {
 				$(this).click(function () {
-					getFootballProgressUpdate($(this).attr('id').split('_')[1]);
+					getNoteUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
 		}
@@ -244,52 +244,18 @@ function connectAuditPanel()
 	});
 }
 
-<?php foreach ($context->getConfig('student')['types']['sport']['modalities'] as $sportId => $unused) : ?>
-	<?php $blocks = $context->getConfig('progress/detail')['types']['sport']['subjects'][$sportId] ?>
+<?php 
+$properties = array();
+$properties['date'] = array('type' => 'date', 'mandatory' => false);
+$properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
 
-function connect<?php echo $sportId?>ColorCoding() {
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
+?>
 
-	<?php if (array_key_exists('quantitative_criteria', $blocks)) : ?>
-		<?php foreach ($blocks['quantitative_criteria'] as $criterionId => $criterion) : ?>
-			$('#quantitative_<?php echo $criterionId ?>').change(function () {
-				var value = $('#quantitative_<?php echo $criterionId ?>').val(), color = 'white';
-				if (value == 'NA') color = 'red';
-				else if (value == 'EC') color = 'orange';
-				else if (value == 'AC') color = 'green';
-				$('#color-coding_<?php echo $criterionId ?>').css('background-color', color);
-			});
-		<?php endforeach;?>
-	<?php endif;?>
-
-}
-
-	<?php 
-	$properties = array();
-	$properties['date'] = array('type' => 'date', 'mandatory' => false);
-	
-	$blocks = $context->getConfig('progress/detail')['types']['sport']['subjects'][$sportId];
-	if (array_key_exists('qualitative_criteria', $blocks)) {
-		foreach ($blocks['qualitative_criteria'] as $criteriaId => $criteria) {
-			$properties['qualitative_'.$criteriaId] = array('type' => $criteria['type'], 'mandatory' => false, 'maxSize' => 2047);
-		}
-	}
-	if (array_key_exists('quantitative_criteria', $blocks)) {
-		$modalities = array();
-		foreach ($blocks['modalities'] as $modalityId => $modality) $modalities[$modalityId] = $modality[$context->getLocale()];
-		foreach ($blocks['quantitative_criteria'] as $criteriaId => $criteria) {
-			if ($criteria['type'] == 'select') $properties['quantitative_'.$criteriaId] = array('type' => $criteria['type'], 'mandatory' => false);
-			elseif ($criteria['type'] == 'number') $properties['quantitative_'.$criteriaId] = array('type' => $criteria['type'], 'mandatory' => false, 'minValue' => $criteria['minValue'], 'maxValue' => $maxValue);
-		}
-	}
-	$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
-	$properties['status'] = array('type' => 'checkbox');
-	$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
-	$properties['update_time'] = array('type' => 'hidden');
-
-	echo $this->partial('/partials/check-update-properties', array('entity' => $sportId.'Progress', 'context' => $context, 'properties' => $properties)) 
-	?>
-
-function connect<?php echo $sportId?>ProgressUpdateForm(id)
+function connectNoteUpdateForm(id)
 {
 	$('#input_date').datepicker();
 	var form = document.getElementById('ppit-form');
@@ -298,14 +264,12 @@ function connect<?php echo $sportId?>ProgressUpdateForm(id)
 		event.preventDefault();
 
 		// Check validity
-		var validity = check<?php echo $sportId ?>ProgressUpdateProperties();
+		var validity = checkNoteUpdateProperties();
 
 		if (validity) {
-			account_id = $('#group-account').val();
 
 			// Create a new FormData object.
 			var formData = new FormData();
-			formData.append('account_id', account_id);
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
@@ -314,7 +278,7 @@ function connect<?php echo $sportId?>ProgressUpdateForm(id)
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('progress/update', array('type' => 'sport')) ?>/' + id;
+			route = '<?php echo $this->url('note/update') ?>/' + id;
 			target = 'form_action';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -323,7 +287,7 @@ function connect<?php echo $sportId?>ProgressUpdateForm(id)
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					connectRemoveIcon('remove-anchor', 'form_action');
 					connectAuditPanel();
-					filterProgressList();
+					filterNoteList();
 				}
 			};
 			xhttp.send(formData);
@@ -332,10 +296,10 @@ function connect<?php echo $sportId?>ProgressUpdateForm(id)
 	}
 }
 
-function get<?php echo $sportId ?>ProgressUpdate(id) {
+function getNoteUpdate(id) {
 
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('progress/update', array('type' => 'sport')) ?>/' + id;
+	var route = '<?php echo $this->url('note/update') ?>/' + id;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -345,12 +309,11 @@ function get<?php echo $sportId ?>ProgressUpdate(id) {
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectAuditPanel();
-			connect<?php echo $sportId ?>ColorCoding();
-			connect<?php echo $sportId ?>ProgressUpdateForm(id);
+			connectNoteUpdateForm(id);
 			
 			// Connect the delete anchor
 			$('#delete-anchor').click(function () {
-				getProgressDelete(id);
+				getNoteDelete(id);
 			});
 		}
 	}
@@ -358,11 +321,10 @@ function get<?php echo $sportId ?>ProgressUpdate(id) {
 
 	// Highlight the clicked button (and only it in its class)
 	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#progress-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
+	$('#note-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
 }
-<?php endforeach;?>
 
-function connectProgressDeleteForm(id)
+function connectNoteDeleteForm(id)
 {
 	var form = document.getElementById('ppit-form');
 	form.onsubmit = function(event) {
@@ -378,7 +340,7 @@ function connectProgressDeleteForm(id)
 
 		var xhttp = new XMLHttpRequest();
 		var route, target;
-		route = '<?php echo $this->url('progress/delete') ?>/' + id;
+		route = '<?php echo $this->url('note/delete') ?>/' + id;
 		target = 'form_action';
 		xhttp.open('POST', route, true);
 		// Set up a handler for when the request finishes.
@@ -386,17 +348,17 @@ function connectProgressDeleteForm(id)
 			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 				document.getElementById(target).innerHTML = xhttp.responseText;
 				connectRemoveIcon('remove-anchor', 'form_action');
-				filterProgressList();
+				filterNoteList();
 			}
 		};
 		xhttp.send(formData);
 	}
 }
 
-function getProgressDelete(id) {
+function getNoteDelete(id) {
 
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('progress/delete') ?>/' + id;
+	var route = '<?php echo $this->url('note/delete') ?>/' + id;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -404,7 +366,7 @@ function getProgressDelete(id) {
 			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
-			connectProgressDeleteForm(id);
+			connectNoteDeleteForm(id);
 		}
 	}
 	xhttp.send();
@@ -414,24 +376,24 @@ function getProgressDelete(id) {
 	$('#delete-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
-function activateProgress() {
+function activateNote() {
 
 	// Load the search panel and highlight the menu entry
-	loadPanel('index_action', '<?php echo $this->url('progress/search') ?>');
+	loadPanel('index_action', '<?php echo $this->url('note/search') ?>');
 	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
-	var progressAnchor;
-	progressAnchor = '#progress-anchor';
-	$(progressAnchor).removeClass("btn-default").addClass("btn-primary");
+	var noteAnchor;
+	noteAnchor = '#note-anchor';
+	$(noteAnchor).removeClass("btn-default").addClass("btn-primary");
 
 	<?php
-	$todoTitle = (isset ($context->getConfig('progress/search')['todoTitle']) ? $context->getConfig('progress/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	$todoTitle = (isset ($context->getConfig('note/search')['todoTitle']) ? $context->getConfig('note/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text('<?php echo $todoTitle ?>');
 		
 	// Connect the search inputs
-	connectProgressSearchInputs();
+	connectNoteSearchInputs();
 	
-	getProgressList('?', 'name', 'ASC');
+	getNoteList('?', 'name', 'ASC');
 	
 	$('#add-criteria').click(function () {
 		mode = $('#add-criteria').text();

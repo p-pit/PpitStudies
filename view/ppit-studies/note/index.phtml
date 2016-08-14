@@ -2,7 +2,7 @@
 <?php echo $this->partial('/partials/common-form-js.phtml'); ?>
 
 <?php
-$title = $context->getConfig('student/index')['title'][$context->getLocale()];
+$title = $context->getConfig('note/index')['title'][$context->getLocale()];
 $this->headTitle($title);
 echo $this->partial('/partials/header');
 ?>
@@ -44,7 +44,7 @@ echo $this->partial('/partials/header');
 <script>
 
 <?php
-echo $this->partial('/partials/ppit-student-scripts');
+echo $this->partial('/partials/student-note-scripts');
 echo $this->partial('/partials/ppit-controller') 
 ?>
 
@@ -52,6 +52,6 @@ echo $this->partial('/partials/ppit-controller')
 	$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entry['route'], $entry['params']) ?>'); });
 <?php endforeach;?>
 
-activateStudent();
+activateNote();
 
 </script>

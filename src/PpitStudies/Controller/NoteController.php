@@ -6,18 +6,16 @@ use PpitCommitment\Model\Account;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
-use PpitStudies\Model\Progress;
-use PpitStudies\ViewHelper\SsmlProgressViewHelper;
+use PpitStudies\Model\Note;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class ProgressController extends AbstractActionController
+class NoteController extends AbstractActionController
 {
     public function indexAction()
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-		$instance_id = $context->getInstanceId();
 		$community_id = (int) $context->getCommunityId();
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
@@ -42,9 +40,9 @@ class ProgressController extends AbstractActionController
     	$filters = array();
     
     	$name = ($params()->fromQuery('name', null));
-    	if ($name) $filters['name'] = $name;
+    	if ($name) $filters['name'] = $customer_name;
 
-    	foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -54,7 +52,7 @@ class ProgressController extends AbstractActionController
     		if ($max_property) $filters['max_'.$propertyId] = $max_property;
     	}
 
-    	foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) {
     	
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -85,22 +83,22 @@ class ProgressController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-
+    
     	$params = $this->getFilters($this->params());
-
+    
     	$major = ($this->params()->fromQuery('major', 'name'));
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
-
+    
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-
+    
     	// Retrieve the list
-    	$progresses = Progress::getList('sport', $params, $major, $dir, $mode);
+    	$notes = Note::getList('schooling', $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
-    			'progresses' => $progresses,
+    			'notes' => $notes,
     			'mode' => $mode,
     			'params' => $params,
     			'major' => $major,
@@ -119,30 +117,27 @@ class ProgressController extends AbstractActionController
     {
     	$view = $this->getList();
 
-    	include 'public/PHPExcel_1/Classes/PHPExcel.php';
+   		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
 		$workbook = new \PHPExcel;
-		(new SsmlProgressViewHelper)->formatXls($workbook, $view);		
+		(new SsmlNoteViewHelper)->formatXls($workbook, $view);		
 		$writer = new \PHPExcel_Writer_Excel2007($workbook);
 		
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition:inline;filename=Fichier.xlsx ');
 		$writer->save('php://output');
-    	$view->setTerminal(true);
-    	return $view;
     }
-
+    
     public function updateAction()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
     
-    	// Retrieve the params
-    	$type = $this->params()->fromRoute('type');
-    	$id = (int) $this->params()->fromRoute('id');
-    	$progress = Progress::get($id);
-
+    	// Retrieve the absence
+    	$id = (int) $this->params()->fromRoute('id', 0);
+ 		$note = Note::get($id);
+    
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
@@ -154,35 +149,25 @@ class ProgressController extends AbstractActionController
     		$csrfForm->setData($request->getPost());
     		 
     		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the input data
 
     			// Load the input data
     			$data = array();
+    			$data['update_time'] = $request->getPost('update_time');
     			$data['date'] = $request->getPost('date');
-    			 
-    			$subject = $context->getConfig('progress/detail')['types']['sport']['subjects'][$progress->subject];
-				if (array_key_exists('qualitative_criteria', $subject)) {
-					foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) {
-						if ($criterion['type'] != 'subtitle') $data[$criterionId] = $request->getPost('qualitative_'.$criterionId);
-					}
-				}
-				if (array_key_exists('quantitative_criteria', $subject)) {
-					foreach ($subject['quantitative_criteria'] as $criterionId => $criterion) {
-						if ($criterion['type'] != 'subtitle') $data[$criterionId] = $request->getPost('quantitative_'.$criterionId);
-					}
-				}
-
-				$data['status'] = $request->getPost('status');
-				$data['update_time'] = $request->getPost('update_time');
+    			$data['note'] = $request->getPost('note');
 				$data['observations'] = $request->getPost('observations');
 				$data['comment'] = $request->getPost('comment');
-				$rc = $progress->loadData($data);
+
+				$rc = $note->loadData($data);
 				if ($rc != 'OK') throw new \Exception('View error');
 
     			// Atomically save
-    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-    				$rc = $progress->update($progress->update_time);
+					$rc = $note->update($note->update_time);
     				if ($rc != 'OK') {
     					$connection->rollback();
     					$error = $rc;
@@ -203,7 +188,7 @@ class ProgressController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'id' => $id,
-    			'progress' => $progress,
+    			'note' => $note,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message
@@ -216,32 +201,31 @@ class ProgressController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-
+    
     	$account_id = (int) $this->params()->fromRoute('account_id');
     	$account = Account::get($account_id);
-
-//    	$progresses = Progress::getList('sport', array('account_id' => $account_id), 'school_year', 'ASC', null);
-  		$progresses = Progress::retrieveAll('sport', $account_id);
-    	
+    
+    	$notes = Note::retrieveAll('schooling', $account_id);
+    	 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'account' => $account,
-    			'progresses' => $progresses,
+    			'notes' => $notes,
     	));
     	$view->setTerminal(true);
     	return $view;
     }
-
-    public function deleteAction()
+    
+	public function deleteAction()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
     
     	// Retrieve the params
     	$id = (int) $this->params()->fromRoute('id');
-    	$progress = Progress::get($id);
+    	$note = Note::get($id);
     	
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -259,14 +243,14 @@ class ProgressController extends AbstractActionController
     			$data = array();
     			$data['status'] = 'deleted';
     			$data['update_time'] = $request->getPost('update_time');
-				$rc = $progress->loadData($data);
+				$rc = $note->loadData($data);
 				if ($rc != 'OK') throw new \Exception('View error');
 
     			// Atomically save
-    			$connection = Progress::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-    				$rc = $progress->update($progress->update_time);
+    				$rc = $note->update($note->update_time);
     				if ($rc != 'OK') {
     					$connection->rollback();
     					$error = $rc;
@@ -287,12 +271,12 @@ class ProgressController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'id' => $id,
-    			'progress' => $progress,
+    			'note' => $note,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
+	}
 }

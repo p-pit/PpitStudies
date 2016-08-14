@@ -4,7 +4,7 @@
 
 <?php foreach ($context->getConfig('progress/list') as $propertyId => $rendering) : ?>
 		<th align="center">
-	<?php $label = $context->getConfig('progress')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
 				<span><?php echo $label ?></span>
@@ -32,10 +32,23 @@
 
 	<?php foreach ($context->getConfig('progress/list') as $propertyId => $rendering) : ?>
 	
-		<?php $property = $context->getConfig('progress')['properties'][$propertyId] ?>
+		<?php $property = $context->getConfig('student')['properties'][$propertyId] ?>
 	
 		<?php if ($propertyId == 'name') : ?>
 		<td><?php echo $progress->name ?></td>
+
+		<?php elseif ($propertyId == 'sport') : ?>
+		<td style="text-align: center">
+			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$progress->sport.'.png') ?>" title="<?php echo $progress->sport ?>" alt="<?php echo $progress->properties[$propertyId] ?>" />
+		</td>
+	
+		<?php elseif ($propertyId == 'photo') : ?>
+		<td>
+			<span class="info">
+				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $progress->photo)) ?>"/>
+				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $progress->photo)) ?>"/></span>
+			</span>
+		</td>
 	
 		<?php elseif ($rendering == 'text') : ?>
 		<td><?php echo $progress->properties[$propertyId] ?></td>
@@ -47,7 +60,7 @@
 
 		<?php elseif ($rendering == 'phone') : ?>
 		<td>
-			<a href="tel:<?php echo $progress->properties[$propertyId] ?>"><?php echo $account->properties[$propertyId] ?></a>
+			<a href="tel:<?php echo $progress->properties[$propertyId] ?>"><?php echo $progress->properties[$propertyId] ?></a>
 		</td>
 
 		<?php elseif ($rendering == 'select') : ?>

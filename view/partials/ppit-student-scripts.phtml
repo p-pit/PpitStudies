@@ -273,11 +273,12 @@ function getStudentDetail(id) {
 			document.getElementById('form_action').innerHTML = xhttp.responseText;
 			
 			connectRemoveIcon('remove-anchor', 'form_action');
+			connectStudentTab('<?php echo $this->url('absence/dashboard') ?>/' + id);
 			
 			$('#news-flash-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#news-flash-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('progress/dashboard') ?>/' + id);
+				connectStudentTab('<?php echo $this->url('absence/dashboard') ?>/' + id);
 			});
 
 			$('#sport-tab').click(function () {
@@ -289,7 +290,7 @@ function getStudentDetail(id) {
 			$('#schooling-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#schooling-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('progress/dashboard') ?>/' + id);
+				connectStudentTab('<?php echo $this->url('note/dashboard') ?>/' + id);
 			});
 		}
 	}
@@ -300,9 +301,9 @@ function getStudentDetail(id) {
 	$('#account-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
 }
 
-//////////////////////////
-// Load the group panel //
-//////////////////////////
+/////////////////////////
+// student/addAbsence //
+/////////////////////////
 
 <?php 
 $properties = array();
@@ -314,7 +315,7 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Absence', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAbsenceAddForm()
+function connectAddAbsenceForm()
 {
 	$('#input_date').datepicker();
 
@@ -344,7 +345,7 @@ function connectAbsenceAddForm()
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('absence/add', array('type' => 'boarding-school')) ?>';
+			route = '<?php echo $this->url('student/addAbsence', array('type' => 'boarding-school')) ?>';
 			target = 'account-grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -360,10 +361,10 @@ function connectAbsenceAddForm()
 	}
 }
 
-function getAbsenceAdd() {
+function getAddAbsence() {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('absence/add', array('type' => 'boarding-school')) ?>';
+	var route = '<?php echo $this->url('student/addAbsence', array('type' => 'boarding-school')) ?>';
 
 	xhttp.open('POST', route, true);
 	xhttp.onreadystatechange = function() {
@@ -374,7 +375,7 @@ function getAbsenceAdd() {
 			console.log(xhttp.responseText);
 <?php endif;?>
 			
-			connectAbsenceAddForm();
+			connectAddAbsenceForm();
 		}
 	}
 	xhttp.send();
@@ -382,6 +383,202 @@ function getAbsenceAdd() {
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
 	$('#absence-add-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+/////////////////////
+// student/addNote //
+/////////////////////
+
+<?php 
+$properties = array();
+$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
+$properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['date'] = array('type' => 'date', 'mandatory' => true);
+$properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
+$properties['weight'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectAddNoteForm()
+{
+	$('#input_date').datepicker();
+
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Check validity
+		var validity = checkNoteUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+
+				value = $('#input_value_' + account_id).val();
+				error = checkNumber(value, 0, 100);
+				if (error) {
+					renderElement('input_value_' + account_id, error);
+					validity = false;
+				}
+			    else { 
+					renderElement('input_value_' + account_id, null);
+					value = getNumber(value, 2);
+					$('#value_' + account_id).val(value);
+				}
+				
+				formData.append('value_' + account_id, value);
+			}
+			formData.append('nb-account', accountNumber);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addNote', array('type' => 'schooling')) ?>';
+			target = 'account-grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function getAddNote() {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addNote', array('type' => 'schooling')) ?>';
+	var formData = new FormData();
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('POST', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('account-grouped-action-panel').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('account-grouped-action-panel, route = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+			
+			connectAddNoteForm();
+			$('#subject').focus();
+		}
+	}
+	xhttp.send(formData);
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#note-add-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+/////////////////////////
+// student/addProgress //
+/////////////////////////
+
+<?php 
+$properties = array();
+$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
+$properties['period'] = array('type' => 'select', 'mandatory' => true);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Progress', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectAddProgressForm()
+{
+	$('#input_date').datepicker();
+
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Check validity
+		var validity = checkProgressUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var accountNumber = $('#group-nb-account').val();
+			for (i = 0; i < accountNumber; i++) {
+				formData.append('account_' + i, $('#group-account_' + i).val());
+			}
+			formData.append('nb-account', i);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addProgress', array('type' => 'sport')) ?>';
+			target = 'account-grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+//					filterProgressList();
+					$('.index-btn').removeClass('btn-primary').addClass('btn-default');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function getAddProgress() {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addProgress', array('type' => 'sport')) ?>';
+
+	xhttp.open('POST', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('account-grouped-action-panel').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('account-grouped-action-panel, route = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+			
+			connectAddProgressForm();
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#progress-add-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
 function getStudentGroup() {
@@ -418,8 +615,9 @@ function getStudentGroup() {
 <?php endif;?>
 			
 			connectRemoveIcon('remove-anchor', 'form_action');
-			$('#absence-add-anchor').click(function () { getAbsenceAdd(); });
-			$('#progress-add-anchor').click(function () { getProgressAdd(); });
+			$('#absence-add-anchor').click(function () { getAddAbsence(); });
+			$('#evaluation-add-anchor').click(function () { getAddNote(); });
+			$('#progress-add-anchor').click(function () { getAddProgress(); });
 		}
 	}
 	xhttp.send(formData);

@@ -1,0 +1,107 @@
+<div>&nbsp;</div>
+
+<!-- Form header -->
+<?php echo $this->partial('/partials/form-header', array(
+		'message' => $message,
+		'error' => $error,
+		'csrfForm' => $csrfForm,
+		'context' => $context,
+));
+?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- School year -->
+		<div class="form-group" id="school_year_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="school_year" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+	<?php foreach ($context->getConfig('student')['schoolYears'] as $schoolYearId => $schoolYear) : ?>
+					<option value="<?php echo $schoolYearId ?>"><?php echo $schoolYear[$context->getLocale()] ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="school_year_error"></p></div>
+		</div>
+
+<!-- Subject -->
+		<div class="form-group" id="subject_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+<?php foreach ($config['note/update']['types'][$type]['subjects'] as $subject) : ?>
+	<?php $caption = $subject[$context->getLocale()]; ?>
+	    			<option value="<?php echo $caption ?>" <?php if ($note->subject == $caption) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+<?php endforeach;?>
+	    		</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="subject_error"></p></div>
+		</div>
+
+<!-- Note date -->
+<?php $noteDate = ($note->date) ? $note->date : Date('Y-m-d') ?>
+		<input type="hidden" id="date" />
+		<div class="form-group" id="input_date_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_date" value="<?php echo $context->decodeDate($noteDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_date_error"></p></div>
+		</div>
+
+<!-- Reference value -->
+<?php $reference_value = ($note->reference_value) ? $note->reference_value : '20' ?>
+		<input type="hidden" id="reference_value" />
+		<div class="form-group" id="input_reference_value_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Reference value', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_reference_value_error"></p></div>
+		</div>
+
+<!-- Weight -->
+<?php $weight = ($note->weight) ? $note->weight : '1' ?>
+		<input type="hidden" id="weight" />
+		<div class="form-group" id="input_weight_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Weight', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_weight" value="<?php echo $context->formatFloat($weight, 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_weight_error"></p></div>
+		</div>
+
+<?php $first=true; foreach ($accounts as $account) : ?>
+
+<!-- Value -->
+		<input type="hidden" id="value_<?php echo $account->id ?>" />
+		<div class="form-group" id="input_value_<?php echo $account->id ?>_group">
+			<label class="col-sm-5 control-label"><?php echo $account->customer_name ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_value_<?php echo $account->id ?>" <?php if ($note->value) echo 'value="'.$context->formatFloat($note->value, 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_value_<?php echo $account->id ?>_error"></p></div>
+		</div>
+
+<?php $first=false; endforeach;?>
+
+<!-- Comment -->
+		<div class="form-group" id="comment_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Comment', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="comment_error"></p></div>
+		</div>
+
+<?php if ($message != 'OK') : ?>
+		<div class="form-group">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+				<input name="submit" type="submit" id="submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+			</div>
+		</div>
+<?php endif;?>
+
+	</form>

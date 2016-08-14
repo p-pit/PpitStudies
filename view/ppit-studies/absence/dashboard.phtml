@@ -1,0 +1,15 @@
+
+<h4><?php echo $this->translate('Last absences', 'ppit-studies', $context->getLocale()) ?></h4>
+
+<?php $first=true; foreach ($absences as $absence) : ?>
+
+		<?php if (!$first) : ?><div>&nbsp;</div><?php endif;?>
+		<div>
+			<strong><?php echo $context->decodeDate($absence->date) ?></strong>
+			<?php echo $absence->subject ?>
+	<?php if ($absence->observations) : ?>
+			<br><?php echo $absence->observations ?>
+	<?php endif;?>
+		</div>
+
+<?php $first=false; endforeach;?>

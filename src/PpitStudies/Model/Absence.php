@@ -1,6 +1,7 @@
 <?php
 namespace PpitStudies\Model;
 
+use PpitContact\Model\Community;
 use PpitCommitment\Model\Account;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
@@ -20,9 +21,16 @@ class Absence implements InputFilterAwareInterface
     public $account_id;
     public $subject;
     public $date;
-	public $audit;
+    public $observations;
+    public $status;
+    public $audit;
     public $update_time;
 
+    // Joined properties
+    public $name;
+    public $sport;
+    public $photo;
+    
     // Transient properties
     public $comment;
     public $properties;
@@ -46,8 +54,15 @@ class Absence implements InputFilterAwareInterface
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
+        $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
+        $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
+        
+        // Joined properties
+        $this->name = (isset($data['name'])) ? $data['name'] : null;
+        $this->sport = (isset($data['sport'])) ? $data['sport'] : null;
+        $this->photo = (isset($data['photo'])) ? $data['photo'] : null;
     }
     
     public function toArray()
@@ -60,6 +75,8 @@ class Absence implements InputFilterAwareInterface
     	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
     	$data['date'] =  ($this->date) ? $this->date : null;
+    	$data['observations'] =  ($this->observations) ? $this->observations : null;
+    	$data['status'] =  ($this->status) ? $this->status : null;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
 		return $data;
     }
@@ -67,14 +84,16 @@ class Absence implements InputFilterAwareInterface
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
     	$select = Absence::getTable()->getSelect()
-    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('name'), 'left')
-			->order(array($major.' '.$dir, 'date', 'subject', 'name'));
+    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'photo' => 'property_3'), 'left')
+    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name'), 'left')
+    		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
+		$where->notEqualTo('status', 'deleted');
 		$where->equalTo('type', $type);
 		
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-    		$where->equalTo('date', date('Y-m-d'));
+//    		$where->equalTo('date', date('Y-m-d'));
     	}
     	else {
 
@@ -96,11 +115,23 @@ class Absence implements InputFilterAwareInterface
 		return $absences;
     }
 
+    public static function retrieveAll($type, $account_id)
+    {
+    	$select = Absence::getTable()->getSelect()
+    		->where(array('status != ?' => 'deleted', 'account_id' => $account_id, 'type' => $type))
+    		->order(array('date DESC', 'subject ASC'));
+    	$cursor = Absence::getTable()->selectWith($select);
+    	$absences = array();
+    	foreach ($cursor as $absence) $absences[] = $absence;
+    	return $absences;
+    }
+    
     public static function get($id, $column = 'id')
     {
     	$absence = Absence::getTable()->get($id, $column);
     	$account = Account::get($absence->account_id);
-    	$absence->name = $account->name;
+    	$community = Community::get($account->customer_community_id);
+    	$absence->name = $community->name;
     	return $absence;
     }
     
@@ -136,17 +167,27 @@ class Absence implements InputFilterAwareInterface
 	    	$this->date = trim(strip_tags($data['date']));
 	    	if (!$this->date || !checkdate(substr($this->date, 5, 2), substr($this->date, 8, 2), substr($this->date, 0, 4))) return 'Integrity';
 		}
-        if (array_key_exists('comment', $data)) {
+		if (array_key_exists('observations', $data)) {
+		    $this->observations = trim(strip_tags($data['observations']));
+		    if (strlen($this->observations) > 2047) return 'Integrity';
+		}
+        if (array_key_exists('status', $data)) {
+		    $this->status = trim(strip_tags($data['status']));
+		    if (strlen($this->status) > 255) return 'Integrity';
+		}
+		if (array_key_exists('comment', $data)) {
 		    $this->comment = trim(strip_tags($data['comment']));
 		    if (strlen($this->comment) > 2047) return 'Integrity';
 		}
 		if (array_key_exists('update_time', $data)) $this->update_time = $data['update_time'];
+
     	$this->properties = $this->toArray();
     	
     	// Update the audit
     	$this->audit[] = array(
     			'time' => Date('Y-m-d G:i:s'),
     			'n_fn' => $context->getFormatedName(),
+    			'status' => $this->status,
     			'comment' => $this->comment,
     	);
 

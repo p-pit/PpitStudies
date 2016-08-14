@@ -2,7 +2,7 @@
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
 			<?php 
-			$title = $context->getConfig('progress/search')['title'][$context->getLocale()];
+			$title = $context->getConfig('absence/search')['title'][$context->getLocale()];
 			echo $title;
 			?>
 			(<span id="mode-text"></span>)
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		
-<?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) : ?>
 	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 	
 	<?php if ($rendering == 'contains') : ?>
@@ -74,7 +74,7 @@
 		<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
 		<div id="search-area">
 		
-<?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('absence/search')['more'] as $propertyId => $rendering) : ?>
 	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 
 	<?php if ($propertyId == 'place_id') : ?>
@@ -152,6 +152,6 @@
 		<div>&nbsp;</div>
 
 <!-- Add or update section -->
-		<div id="progress-list-panel"></div>
+		<div id="absence-list-panel"></div>
 	</div>
 </div>

@@ -18,7 +18,6 @@ class AbsenceController extends AbstractActionController
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
 		$instance_id = $context->getInstanceId();
 		$community_id = (int) $context->getCommunityId();
-//		$contact = Vcard::getNew($instance_id, $community_id);
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
@@ -30,7 +29,6 @@ class AbsenceController extends AbstractActionController
     			'active' => 'application',
     			'community_id' => $community_id,
     			'menu' => $menu,
-//    			'contact' => $contact,
     			'currentEntry' => $currentEntry,
     	));
     }
@@ -42,10 +40,10 @@ class AbsenceController extends AbstractActionController
     	// Retrieve the query parameters
     	$filters = array();
     
-    	$customer_name = ($params()->fromQuery('customer_name', null));
-    	if ($customer_name) $filters['customer_name'] = $customer_name;
+    	$name = ($params()->fromQuery('name', null));
+    	if ($name) $filters['name'] = $customer_name;
 
-    	foreach ($context->getConfig('commitmentAccount/search')['main'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -55,7 +53,7 @@ class AbsenceController extends AbstractActionController
     		if ($max_property) $filters['max_'.$propertyId] = $max_property;
     	}
 
-    	foreach ($context->getConfig('commitmentAccount/search')['more'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('absence/search')['more'] as $propertyId => $rendering) {
     	
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -77,7 +75,6 @@ class AbsenceController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
-				'places' => Place::getList(),
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -90,20 +87,19 @@ class AbsenceController extends AbstractActionController
     
     	$params = $this->getFilters($this->params());
     
-    	$major = ($this->params()->fromQuery('major', 'customer_name'));
+    	$major = ($this->params()->fromQuery('major', 'name'));
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
     	// Retrieve the list
-    	$accounts = Account::getList($params, $major, $dir, $mode);
+    	$absences = Absence::getList('boarding-school', $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
-    			'accounts' => $accounts,
-				'places' => Place::getList(),
+    			'absences' => $absences,
     			'mode' => $mode,
     			'params' => $params,
     			'major' => $major,
@@ -126,23 +122,23 @@ class AbsenceController extends AbstractActionController
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
 		$workbook = new \PHPExcel;
-		(new SsmlAccountViewHelper)->formatXls($workbook, $view);		
+		(new SsmlAbsenceViewHelper)->formatXls($workbook, $view);		
 		$writer = new \PHPExcel_Writer_Excel2007($workbook);
 		
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition:inline;filename=Fichier.xlsx ');
 		$writer->save('php://output');
     }
-
+/*
     public function detailAction()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    	 
+    
     	$id = (int) $this->params()->fromRoute('id', 0);
     	if ($id) $account= Account::get($id);
     	else $account = Account::instanciate();
-
+    
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
@@ -151,130 +147,49 @@ class AbsenceController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
-
-    public function addAction() {
-
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-
-    	// Retrieve the type
-    	$type = $this->params()->fromRoute('type', null);
-
-    	$absence = Absence::instanciate($type);
-
-    	// Instanciate the csrf form
-    	$csrfForm = new CsrfForm();
-    	$csrfForm->addCsrfElement('csrf');
-    	$error = null;
-    	$message = null;
-
-    	$request = $this->getRequest();
-    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
-    	$nbAccount = $request->getPost('nb-account');
-    	$accounts = array();
-    	for ($i = 0; $i < $nbAccount; $i++) {
-    		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[] = $account;
-    	}
-
-    	if ($request->getPost('date')) {
-			$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
-			$csrfForm->setData($request->getPost());
-			 
-			if ($csrfForm->isValid()) { // CSRF check
-
-				// Load the input data
-				$data = array();
-				$data['school_year'] = $request->getPost('school_year');
-				$data['subject'] = $request->getPost('subject');
-				$data['date'] = $request->getPost('date');
-				$data['comment'] = $request->getPost('comment');
-				
-				// Atomically save
-				$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
-				$connection->beginTransaction();
-				try {
-					foreach ($accounts as $account) {
-						$data['account_id'] = $account->id;
-						$rc = $absence->loadData($data);
-						if ($rc != 'OK') throw new \Exception('View error');
-
-						$rc = $absence->add();
-						if ($rc != 'OK') {
-							$connection->rollback();
-							$error = $rc;
-							break;
-						}
-					}
-					if (!$error) {
-						$connection->commit();
-						$message = 'OK';
-					}
-				}
-				catch (\Exception $e) {
-					$connection->rollback();
-					throw $e;
-				}
-			}
-		}
-    	
-    	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'type' => $type,
-    			'accounts' => $accounts,
-    			'absence' => $absence,
-    			'csrfForm' => $csrfForm,
-    			'error' => $error,
-    			'message' => $message
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-    }
-
+    }*/
+    
     public function updateAction()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
     
-    	// Retrieve the type
-    	$type = $this->params()->fromRoute(0);
-    
+    	// Retrieve the absence
     	$id = (int) $this->params()->fromRoute('id', 0);
-    	$action = $this->params()->fromRoute('act', null);
-    	if ($id) $account = Account::get($id);
-    	else $account = Account::instanciate($type);
+ 		$absence = Absence::get($id);
     
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
     	$error = null;
-    	if ($action == 'delete') $message = 'confirm-delete';
-    	elseif ($action) $message =  'confirm-update';
-    	else $message = null;
+    	$message = null;
     	$request = $this->getRequest();
     	if ($request->isPost()) {
-    		$message = null;
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     		 
     		if ($csrfForm->isValid()) { // CSRF check
     
     			// Load the input data
-    			$account->loadDataFromRequest($request, $action);
-    
+
+    			// Load the input data
+    			$data = array();
+				$data['update_time'] = $request->getPost('update_time');
+    			$data['date'] = $request->getPost('date');
+				$data['observations'] = $request->getPost('observations');
+				$data['comment'] = $request->getPost('comment');
+
+				$rc = $absence->loadData($data);
+				if ($rc != 'OK') throw new \Exception('View error');
+
     			// Atomically save
-    			$connection = Account::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-    				if (!$account->id) $return = $account->add();
-    				elseif ($action == 'delete') $return = $account->delete($request->getPost('update_time'));
-    				else $return = $account->update($request->getPost('update_time'));
-    
-    				if ($return != 'OK') {
+					$rc = $absence->update($absence->update_time);
+    				if ($rc != 'OK') {
     					$connection->rollback();
-    					$error = $return;
+    					$error = $rc;
     				}
     				else {
     					$connection->commit();
@@ -285,7 +200,6 @@ class AbsenceController extends AbstractActionController
     				$connection->rollback();
     				throw $e;
     			}
-    			$action = null;
     		}
     	}
     
@@ -293,9 +207,7 @@ class AbsenceController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'id' => $id,
-    			'action' => $action,
-    			'account' => $account,
-				'places' => Place::getList(),
+    			'absence' => $absence,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message
@@ -303,61 +215,87 @@ class AbsenceController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+
+    public function dashboardAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+    
+    	$absences = Absence::retrieveAll('boarding-school', $account_id);
+    	 
+    	// Return the link list
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'account' => $account,
+    			'absences' => $absences,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
     
 	public function deleteAction()
     {
-    	$id = (int) $this->params()->fromRoute('id', 0);
-    	if (!$id) return $this->redirect()->toRoute('index');
-
     	// Retrieve the context
     	$context = Context::getCurrent();
-
-    	// Retrieve the organizational unit
-		$account = Account::get($id);
-		$csrfForm = new CsrfForm();
-		$csrfForm->addCsrfElement('csrf');
-		$message = null;
-		$error = null;
-    	// Retrieve the user validation from the post
+    
+    	// Retrieve the params
+    	$id = (int) $this->params()->fromRoute('id');
+    	$absence = Absence::get($id);
+    	
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
     	$request = $this->getRequest();
     	if ($request->isPost()) {
-    		
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
-    		
-    		if ($csrfForm->isValid()) {
+    		 
+    		if ($csrfForm->isValid()) { // CSRF check
 
-    			// Atomicity
-    			$connection = Account::getTable()->getAdapter()->getDriver()->getConnection();
+    			// Load the input data
+    			$data = array();
+    			$data['status'] = 'deleted';
+    			$data['update_time'] = $request->getPost('update_time');
+				$rc = $absence->loadData($data);
+				if ($rc != 'OK') throw new \Exception('View error');
+
+    			// Atomically save
+    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-		    		// Delete the row
-					$return = $account->delete($account->update_time);
-					if ($return != 'OK') {
-						$connection->rollback();
-						$error = $return;
-					}
-					else {
-						$connection->commit();
-						$message = $return;
-					}
+    				$rc = $absence->update($absence->update_time);
+    				if ($rc != 'OK') {
+    					$connection->rollback();
+    					$error = $rc;
+    				}
+    				else {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
     			}
-           	    catch (\Exception $e) {
-	    			$connection->rollback();
-	    			throw $e;
-	    		}
-    		}  
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
     	}
+    
     	$view = new ViewModel(array(
-    		'context' => $context,
-			'config' => $context->getconfig(),
-    		'account' => $account,
-    		'id' => $id,
-    		'csrfForm' => $csrfForm,
-    		'message' => $message,
-    		'error' => $error,
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'id' => $id,
+    			'absence' => $absence,
+    			'csrfForm' => $csrfForm,
+    			'error' => $error,
+    			'message' => $message
     	));
-   		if ($context->isSpaMode()) $view->setTerminal(true);
-   		return $view;
-    }
+    	$view->setTerminal(true);
+    	return $view;
+	}
 }

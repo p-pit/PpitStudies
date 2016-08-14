@@ -1,0 +1,79 @@
+<table class="table table-striped ppit_index">
+	<tr>
+		<th>&nbsp;</th>
+
+<?php foreach ($context->getConfig('note/list') as $propertyId => $rendering) : ?>
+		<th align="center">
+	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	<?php if ($label) : ?>
+			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
+				<span><?php echo $label ?></span>
+<?php if ($major == $propertyId) : ?>
+				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+			</button>
+	<?php endif;?>
+		</th>
+<?php endforeach;?>
+
+	</tr>
+
+<?php foreach ($notes as $note) : ?>
+	
+	<tr style="text-align: center">
+
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default btn-xs index-btn note-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $note->id ?>">
+				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
+			</button>
+		</td>
+
+	<?php foreach ($context->getConfig('note/list') as $propertyId => $rendering) : ?>
+	
+		<?php $property = $context->getConfig('student')['properties'][$propertyId] ?>
+	
+		<?php if ($propertyId == 'name') : ?>
+		<td><?php echo $note->name ?></td>
+
+		<?php elseif ($propertyId == 'sport') : ?>
+		<td style="text-align: center">
+			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$note->sport.'.png') ?>" title="<?php echo $note->sport ?>" alt="<?php echo $note->sport ?>" />
+		</td>
+	
+		<?php elseif ($propertyId == 'photo') : ?>
+		<td>
+			<span class="info">
+				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $note->photo)) ?>"/>
+				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $note->photo)) ?>"/></span>
+			</span>
+		</td>
+	
+		<?php elseif ($rendering == 'text') : ?>
+		<td><?php echo $note->properties[$propertyId] ?></td>
+
+		<?php elseif ($rendering == 'image') : ?>
+		<td style="text-align: center">
+			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$note->properties[$propertyId].'.png') ?>" title="<?php echo $note->properties[$propertyId] ?>" alt="<?php echo $note->properties[$propertyId] ?>" />
+		</td>
+
+		<?php elseif ($rendering == 'phone') : ?>
+		<td>
+			<a href="tel:<?php echo $note->properties[$propertyId] ?>"><?php echo $note->properties[$propertyId] ?></a>
+		</td>
+
+		<?php elseif ($rendering == 'select') : ?>
+		<td><?php echo $property['modalities'][$note->properties[$propertyId]][$context->getLocale()] ?>
+		</td>
+	
+		<?php else : ?>
+		<td><?php echo $note->properties[$propertyId] ?></td>
+		
+		<?php endif;?>
+		
+	<?php endforeach;?>
+	
+	</tr>
+	
+<?php endforeach; ?>
+
+</table>

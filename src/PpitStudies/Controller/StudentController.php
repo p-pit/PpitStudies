@@ -9,6 +9,9 @@ use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
 use PpitMasterData\Model\Place;
+use PpitStudies\Model\Absence;
+use PpitStudies\Model\Note;
+use PpitStudies\Model\Progress;
 use PpitStudies\Model\StudentSportImport;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -183,6 +186,259 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
+    public function addAbsenceAction() {
+    
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	// Retrieve the type
+    	$type = $this->params()->fromRoute('type', null);
+    
+    	$absence = Absence::instanciate($type);
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
+    	$request = $this->getRequest();
+    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
+    	$nbAccount = $request->getPost('nb-account');
+    	$accounts = array();
+    	for ($i = 0; $i < $nbAccount; $i++) {
+    		$account = Account::get($request->getPost('account_'.$i));
+    		$accounts[] = $account;
+    	}
+    
+    	if ($request->getPost('date')) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the input data
+    			$data = array();
+    			$data['school_year'] = $request->getPost('school_year');
+    			$data['subject'] = $request->getPost('subject');
+    			$data['date'] = $request->getPost('date');
+    			$data['comment'] = $request->getPost('comment');
+    
+    			// Atomically save
+    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				foreach ($accounts as $account) {
+    					$data['account_id'] = $account->id;
+    					$rc = $absence->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    
+    					$rc = $absence->add();
+    					if ($rc != 'OK') {
+    						$connection->rollback();
+    						$error = $rc;
+    						break;
+    					}
+    				}
+    				if (!$error) {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    	 
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'type' => $type,
+    			'accounts' => $accounts,
+    			'absence' => $absence,
+    			'csrfForm' => $csrfForm,
+    			'error' => $error,
+    			'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function addNoteAction() {
+    
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	// Retrieve the type
+    	$type = $this->params()->fromRoute('type', null);
+    
+    	$note = Note::instanciate($type);
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
+    	$request = $this->getRequest();
+    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
+    	$nbAccount = $request->getPost('nb-account');
+    	$accounts = array();
+    	for ($i = 0; $i < $nbAccount; $i++) {
+    		$account = Account::get($request->getPost('account_'.$i));
+    		$accounts[] = $account;
+    	}
+    	if ($request->getPost('date')) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the input data
+    			$data = array();
+    			$data['school_year'] = $request->getPost('school_year');
+    			$data['subject'] = $request->getPost('subject');
+    			$data['date'] = $request->getPost('date');
+    			$data['reference_value'] = $request->getPost('reference_value');
+    			$data['weight'] = $request->getPost('weight');
+    			$data['comment'] = $request->getPost('comment');
+    			$data['status'] = 'new';
+
+    			// Atomically save
+    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				foreach ($accounts as $account) {
+    					$data['account_id'] = $account->id;
+    					$data['value'] = $request->getPost('value_'.$account->id);
+    					$rc = $note->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    					$rc = $note->add();
+    					if ($rc != 'OK') {
+    						$connection->rollback();
+    						$error = $rc;
+    						break;
+    					}
+    				}
+    				if (!$error) {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'type' => $type,
+    			'accounts' => $accounts,
+    			'note' => $note,
+    			'csrfForm' => $csrfForm,
+    			'error' => $error,
+    			'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
+    public function addProgressAction() {
+    	 
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	// Retrieve the type
+    	$type = $this->params()->fromRoute('type', null);
+    
+    	$progress = Progress::instanciate($type);
+    	$accountProperty = $context->getConfig('progress')['types'][$type]['accountProperty']; // ex. 'property_1' for 'sport' at FM Sports
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
+    	$request = $this->getRequest();
+    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
+    	$nbAccount = $request->getPost('nb-account');
+    	$accounts = array();
+    	for ($i = 0; $i < $nbAccount; $i++) {
+    		$account = Account::get($request->getPost('account_'.$i));
+    		$accounts[] = $account;
+    	}
+    
+    	if ($request->getPost('period')) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the input data
+    			$data = array();
+    			$data['school_year'] = $request->getPost('school_year');
+    			$data['period'] = $request->getPost('period');
+    			$data['comment'] = $request->getPost('comment');
+    
+    			// Atomically save
+    			$connection = Progress::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				foreach ($accounts as $account) {
+    
+    					$data['account_id'] = $account->id;
+    					$progress->subject = $account->properties[$accountProperty]; // ex. value of 'property_1 for 'sport' at FM Sports
+    
+    					$rc = $progress->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    					$progress->status = 'new';
+    
+    					// Check the existence and ignore in that case
+    					if (Progress::retrieveExisting($progress)) break;
+    
+    					// Retrieve the previous criteria values from the most recent progress
+    					$lastProgress = Progress::retrievePrevious($progress);
+    					if ($lastProgress) $progress->criteria = $lastProgress->criteria;
+    
+    					$rc = $progress->add();
+    					if ($rc != 'OK') {
+    						$connection->rollback();
+    						$error = $rc;
+    						break;
+    					}
+    				}
+    				if (!$error) {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    	 
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'type' => $type,
+    			'accounts' => $accounts,
+    			'progress' => $progress,
+    			'csrfForm' => $csrfForm,
+    			'error' => $error,
+    			'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
 	public function importAction()
 	{
 		// Retrieve the context

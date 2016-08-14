@@ -5,6 +5,7 @@ return array(
 	'controllers' => array(
         'invokables' => array(
         	'PpitStudies\Controller\Absence' => 'PpitStudies\Controller\AbsenceController',
+        	'PpitStudies\Controller\Note' => 'PpitStudies\Controller\NoteController',
         	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
         	'PpitStudies\Controller\Sms' => 'PpitStudies\Controller\SmsController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
@@ -83,19 +84,10 @@ return array(
         										),
         								),
         						),
-	       						'add' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add[/:type]',
-        										'defaults' => array(
-        												'action' => 'add',
-        										),
-        								),
-        						),
 	       						'update' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/update[/:id][/:act]',
+		        								'route' => '/update[/:id]',
 		        								'constraints' => array(
 		        										'id'     => '[0-9]*',
 		        								),
@@ -104,7 +96,116 @@ return array(
 		        								),
 		        						),
 		        				),
-				       			'delete' => array(
+	       						'dashboard' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/dashboard[/:account_id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'dashboard',
+        										),
+        								),
+        						),
+	       						'delete' => array(
+				                    'type' => 'segment',
+				                    'options' => array(
+				                        'route' => '/delete[/:id]',
+					                    'constraints' => array(
+					                    	'id' => '[0-9]*',
+					                    ),
+				                    	'defaults' => array(
+				                            'action' => 'delete',
+				                        ),
+				                    ),
+				                ),
+	       		),
+            ),
+        	'note' => array(
+                'type'    => 'literal',
+                'options' => array(
+                    'route'    => '/note',
+                    'defaults' => array(
+                        'controller' => 'PpitStudies\Controller\Note',
+                        'action'     => 'index',
+                    ),
+                ),
+           		'may_terminate' => true,
+	       		'child_routes' => array(
+        						'index' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index',
+        										'defaults' => array(
+        												'action' => 'index',
+        										),
+        								),
+        						),
+        						'search' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search',
+        										'defaults' => array(
+        												'action' => 'search',
+        										),
+        								),
+        						),
+        						'list' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list',
+        										'defaults' => array(
+        												'action' => 'list',
+        										),
+        								),
+        						),
+        						'export' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/export',
+        										'defaults' => array(
+        												'action' => 'export',
+        										),
+        								),
+        						),
+	       						'detail' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/detail[/:type][/:id][/:action]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'detail',
+        										),
+        								),
+        						),
+	       						'update' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'update',
+		        								),
+		        						),
+		        				),
+	       						'dashboard' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/dashboard[/:account_id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'dashboard',
+        										),
+        								),
+        						),
+	       						'delete' => array(
 				                    'type' => 'segment',
 				                    'options' => array(
 				                        'route' => '/delete[/:id]',
@@ -165,15 +266,15 @@ return array(
         										),
         								),
         						),
-	       						'detail' => array(
+	       						'update' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/detail[/:type][/:id]',
+        										'route' => '/update[/:type][/:id]',
         										'constraints' => array(
         												'id' => '[0-9]*',
         										),
         										'defaults' => array(
-        												'action' => 'detail',
+        												'action' => 'update',
         										),
         								),
         						),
@@ -186,15 +287,6 @@ return array(
         										),
         										'defaults' => array(
         												'action' => 'dashboard',
-        										),
-        								),
-        						),
-	       						'add' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add[/:type]',
-        										'defaults' => array(
-        												'action' => 'add',
         										),
         								),
         						),
@@ -338,7 +430,34 @@ return array(
         										),
         								),
         						),
-        						'import' => array(
+	       						'addAbsence' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-absence[/:type]',
+        										'defaults' => array(
+        												'action' => 'addAbsence',
+        										),
+        								),
+        						),
+	       						'addNote' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-note[/:type]',
+        										'defaults' => array(
+        												'action' => 'addNote',
+        										),
+        								),
+        						),
+	       						'addProgress' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-progress[/:type]',
+        										'defaults' => array(
+        												'action' => 'addProgress',
+        										),
+        								),
+        						),
+	       						'import' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/import',
@@ -363,16 +482,24 @@ return array(
             	array('route' => 'absence/list', 'roles' => array('user')),
 				array('route' => 'absence/export', 'roles' => array('user')),
 				array('route' => 'absence/detail', 'roles' => array('user')),
-            	array('route' => 'absence/add', 'roles' => array('user')),
 				array('route' => 'absence/update', 'roles' => array('admin')),
+				array('route' => 'absence/dashboard', 'roles' => array('admin')),
 				array('route' => 'absence/delete', 'roles' => array('admin')),
+				array('route' => 'note', 'roles' => array('user')),
+				array('route' => 'note/index', 'roles' => array('user')),
+				array('route' => 'note/search', 'roles' => array('user')),
+            	array('route' => 'note/list', 'roles' => array('user')),
+				array('route' => 'note/export', 'roles' => array('user')),
+				array('route' => 'note/detail', 'roles' => array('user')),
+				array('route' => 'note/update', 'roles' => array('admin')),
+				array('route' => 'note/dashboard', 'roles' => array('admin')),
+				array('route' => 'note/delete', 'roles' => array('admin')),
 				array('route' => 'progress', 'roles' => array('user')),
 				array('route' => 'progress/index', 'roles' => array('user')),
 				array('route' => 'progress/search', 'roles' => array('user')),
             	array('route' => 'progress/list', 'roles' => array('user')),
 				array('route' => 'progress/export', 'roles' => array('user')),
-				array('route' => 'progress/add', 'roles' => array('user')),
-				array('route' => 'progress/detail', 'roles' => array('user')),
+				array('route' => 'progress/update', 'roles' => array('user')),
 				array('route' => 'progress/dashboard', 'roles' => array('user')),
 				array('route' => 'progress/delete', 'roles' => array('admin')),
 				array('route' => 'sms', 'roles' => array('responsible')),
@@ -385,6 +512,9 @@ return array(
 				array('route' => 'student/search', 'roles' => array('user')),
 				array('route' => 'student/detail', 'roles' => array('user')),
             	array('route' => 'student/group', 'roles' => array('user')),
+            	array('route' => 'student/addAbsence', 'roles' => array('user')),
+            	array('route' => 'student/addNote', 'roles' => array('user')),
+				array('route' => 'student/addProgress', 'roles' => array('user')),
 				array('route' => 'student/export', 'roles' => array('user')),
             	array('route' => 'student/list', 'roles' => array('user')),
 				array('route' => 'student/import', 'roles' => array('admin')),
@@ -456,6 +586,26 @@ return array(
 									'fr_FR' => 'Eleves',
 							),
 					),
+					'note' => array(
+							'action' => 'Note',
+							'route' => 'note',
+							'params' => array('type' => ''),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Notes',
+									'fr_FR' => 'Notes',
+							),
+					),
+					'absence' => array(
+							'action' => 'Absence',
+							'route' => 'absence',
+							'params' => array('type' => ''),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Absences',
+									'fr_FR' => 'Absences',
+							),
+					),
 					'progress' => array(
 							'action' => 'Progress',
 							'route' => 'progress',
@@ -469,9 +619,10 @@ return array(
 			),
 	),
 
-	'absence/update' => array(),
-
 	'student' => array(
+			'schoolYears' => array(
+					'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017'),
+			),
 			'types' => array(
 					'sport' => array(
 							'type' => 'select',
@@ -485,20 +636,6 @@ return array(
 									'en_US' => 'Sport',
 									'fr_FR' => 'Sport',
 							),
-					),
-			),
-	),
-
-	'student/index' => array(
-			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
-	),
-
-	'progress' => array(
-			'types' => array(
-					'sport' => array(
-							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
-							'accountProperty' => 'property_1',
-							'subjects' => array(),
 					),
 			),
 			'properties' => array(
@@ -530,6 +667,137 @@ return array(
 									'en_US' => 'Name',
 									'fr_FR' => 'Nom',
 							),
+					),
+					'sport' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'Basketball' => array('fr_FR' => 'Basketball'),
+									'Equitation' => array('fr_FR' => 'Equitation'),
+									'Football' => array('fr_FR' => 'Football'),
+									'Golf' => array('fr_FR' => 'Golf'),
+									'Tennis' => array('fr_FR' => 'Tennis'),
+							),
+							'labels' => array(
+									'en_US' => 'Sport',
+									'fr_FR' => 'Sport',
+							),
+					),
+					'photo' => array(
+							'type' => 'photo',
+							'labels' => array(
+									'en_US' => '',
+									'fr_FR' => '',
+							),
+					),
+			),
+	),
+
+	'student/index' => array(
+			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
+	),
+
+	'absence' => array(
+			'types' => array(
+					'boarding-school' => array(
+							'labels' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
+					),
+			),
+	),
+		
+	'absence/search' => array(
+			'title' => array('en_US' => 'Absences', 'fr_FR' => 'Absences'),
+			'todoTitle' => array('en_US' => 'to check', 'fr_FR' => 'à viser'),
+			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
+			'main' => array('school_year' => 'select', 'name' => 'contains'/*, 'subject' => 'select'*/),
+			'more' => array(),
+	),
+	
+	'absence/list' => array(
+			'sport' => 'image',
+			'photo' => 'photo',
+			'name' => 'text',
+//			'subject' => 'select',
+	),
+
+	'absence/update' => array(
+			'types' => array(
+					'boarding-school' => array(
+							'labels' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
+							'subjects' => array(
+									'Matin' => array('en_US' => 'Morning', 'fr_FR' => 'Matin'),
+									'Soir' => array('en_US' => 'Evening', 'fr_FR' => 'Soir'),
+									'Week-end' => array('en_US' => 'Weekend', 'fr_FR' => 'Week-end'),
+									'Dimanche' => array('en_US' => 'Sunday', 'fr_FR' => 'Dimanche'),
+									'Footing' => array('en_US' => 'Footing', 'fr_FR' => 'Footing'),
+							),
+					),
+					'schooling' => array(
+							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+							'subjects' => array(
+									'Français' => array('en_US' => 'French', 'fr_FR' => 'Français'),
+									'Mathématiques' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
+									'Physique/chimie' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
+									'SVT' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+									'LV1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
+									'LV2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
+									'Economie' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
+									'Histoire/géographie' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+							),
+					),
+			),
+	),
+
+	'note' => array(
+			'types' => array(
+					'schooling' => array(
+							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+					),
+			),
+	),
+
+	'note/index' => array(
+			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
+	),
+		
+	'note/search' => array(
+			'title' => array('en_US' => 'Notes', 'fr_FR' => 'Notes'),
+			'todoTitle' => array('en_US' => 'to check', 'fr_FR' => 'à viser'),
+			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
+			'main' => array('school_year' => 'select', 'name' => 'contains'/*, 'subject' => 'select'*/),
+			'more' => array(),
+	),
+	
+	'note/list' => array(
+			'sport' => 'image',
+			'photo' => 'photo',
+			'name' => 'text',
+			//			'subject' => 'select',
+	),
+	
+	'note/update' => array(
+			'types' => array(
+					'schooling' => array(
+							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+							'subjects' => array(
+									'Français' => array('en_US' => 'French', 'fr_FR' => 'Français'),
+									'Mathématiques' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
+									'Physique/chimie' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
+									'SVT' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+									'LV1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
+									'LV2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
+									'Economie' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
+									'Histoire/géographie' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+							),
+					),
+			),
+	),
+		
+	'progress' => array(
+			'types' => array(
+					'sport' => array(
+							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+							'accountProperty' => 'property_1',
+							'subjects' => array(),
 					),
 			),
 	),
@@ -725,7 +993,8 @@ return array(
 	),
 
 	'progress/list' => array(
-			'school_year' => 'select',
+			'sport' => 'image',
+			'photo' => 'photo',
 			'name' => 'text',
 			'period' => 'select',
 	),

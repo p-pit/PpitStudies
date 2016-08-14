@@ -9,6 +9,23 @@
 	</div>
 	<div class="panel-body">
 
+		<input type="hidden" id="group-nb-account" value="<?php echo count($accounts) ?>" />
+
+<?php $i = 0; foreach ($accounts as $account) : ?>
+	
+		<input type="hidden"  id="group-account_<?php echo $i ?>" value="<?php echo $account->id ?>" />
+
+		<div class="form-group" id="product_group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $account->customer_name ?>" />
+			</div>
+		</div>
+
+<?php $i++; endforeach;?>
+
+		<div>&nbsp;</div>
+
 		<button type="button" class="btn btn-default action-btn" id="absence-add-anchor">
 			<?php echo $this->translate('Absences', 'ppit-studies', $context->getLocale()) ?>
 		</button>
@@ -21,22 +38,7 @@
 			<?php echo $this->translate('Sport progress', 'ppit-studies', $context->getLocale()) ?>
 		</button>
 
-	<div>&nbsp;</div>
-
-	<input type="hidden" id="group-nb-account" value="<?php echo count($accounts) ?>" />
-
-<?php $i = 0; foreach ($accounts as $account) : ?>
-	
-	<input type="hidden"  id="group-account_<?php echo $i ?>" value="<?php echo $account->id ?>" />
-
-	<div class="form-group" id="product_group">
-		<label class="col-sm-5 control-label">&nbsp;</label>
-		<div class="col-sm-7">
-			<input class="form-control" disabled="disabled" value="<?php echo $account->customer_name ?>" />
-		</div>
+		<div id="account-grouped-action-panel"></div>
 	</div>
-<?php $i++; endforeach;?>
-
-	<div id="account-grouped-action-panel"></div>
 </div>
 	

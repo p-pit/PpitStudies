@@ -12,7 +12,7 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Filter\StripTags;
 
-class Progress implements InputFilterAwareInterface
+class Note implements InputFilterAwareInterface
 {
     public $id;
     public $instance_id;
@@ -21,8 +21,9 @@ class Progress implements InputFilterAwareInterface
     public $account_id;
     public $subject;
     public $date;
-    public $period;
-    public $criteria;
+    public $value;
+    public $reference_value;
+    public $weight;
     public $observations;
     public $status;
     public $audit;
@@ -36,7 +37,6 @@ class Progress implements InputFilterAwareInterface
     // Transient properties
     public $comment;
     public $properties;
-    public $account;
 
     protected $inputFilter;
 
@@ -57,9 +57,10 @@ class Progress implements InputFilterAwareInterface
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
-        $this->period = (isset($data['period'])) ? $data['period'] : null;
-        $this->criteria = (isset($data['criteria'])) ? json_decode($data['criteria'], true) : null;
-        $this->observations = (isset($data['observations'])) ? json_decode($data['observations'], true) : null;
+        $this->value = (isset($data['value'])) ? $data['value'] : null;
+        $this->reference_value = (isset($data['reference_value'])) ? $data['reference_value'] : null;
+        $this->weight = (isset($data['weight'])) ? $data['weight'] : null;
+        $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
         $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
@@ -79,130 +80,83 @@ class Progress implements InputFilterAwareInterface
     	$data['type'] = $this->type;
     	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
-    	$data['date'] = ($this->date) ? $this->date : null;
-    	$data['period'] = $this->period;
-    	$data['criteria'] = json_encode($this->criteria);
-    	$data['observations'] = $this->observations;
-    	$data['status'] = $this->status;
+    	$data['date'] =  ($this->date) ? $this->date : null;
+    	$data['value'] =  ($this->value) ? $this->value : null;
+    	$data['reference_value'] =  ($this->reference_value) ? $this->reference_value : null;
+    	$data['weight'] =  ($this->weight) ? $this->weight : null;
+    	$data['observations'] =  ($this->observations) ? $this->observations : null;
+    	$data['status'] =  $this->status;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
 		return $data;
     }
     
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
-    	$select = Progress::getTable()->getSelect()
-    		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array('sport' => 'property_1', 'photo' => 'property_3'), 'left')
+    	$select = Note::getTable()->getSelect()
+    		->join('commitment_account', 'student_note.account_id = commitment_account.id', array('sport' => 'property_1', 'photo' => 'property_3'), 'left')
     		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name'), 'left')
-    		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
+    		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('status', 'deleted');
 		$where->equalTo('type', $type);
 		
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-    		$where->notEqualTo('status', 'completed');
+//    		$where->equalTo('date', date('Y-m-d'));
     	}
     	else {
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-    			if ($propertyId == 'name') $where->like('contact_community.name', '%'.$params[$propertyId].'%');
-				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
+				if (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			else $where->like($propertyId, '%'.$params[$propertyId].'%');
     		}
     	}
 		
     	$select->where($where);
-		$cursor = Progress::getTable()->selectWith($select);
-		$progresses = array();
-		foreach ($cursor as $progress) {
-			$progress->properties = $progress->toArray();
-			$progresses[] = $progress;
+		$cursor = Note::getTable()->selectWith($select);
+		$notes = array();
+		foreach ($cursor as $note) {
+			$note->properties = $note->toArray();
+			$notes[] = $note;
 		}
-		return $progresses;
-    }
-
-    public static function get($id, $column = 'id')
-    {
-    	$progress = Progress::getTable()->get($id, $column);
-    	$account = Account::get($progress->account_id);
-    	$progress->account = $account;
-    	$community = Community::get($account->customer_community_id);
-    	$progress->name = $community->name;
-    	return $progress;
-    }
-    
-    public static function instanciate($type = null)
-    {
-		$progress = new Progress;
-		$progress->type = $type;
-		$progress->criteria = array();
-		$progress->audit = array();
-		return $progress;
-    }
-
-    public static function retrieveExisting($progress)
-    {
-    	$select = Progress::getTable()->getSelect()
-    		->where(array(
-    			'account_id' => $progress->account_id,
-    			'type' => $progress->type,
-    			'subject' => $progress->subject,
-    			'school_year' => $progress->school_year,
-    			'period' => $progress->period,
-    		));
-    	$cursor = Progress::getTable()->selectWith($select);
-    	if (count($cursor) > 0) {
-    		reset($cursor);
-    		return current($cursor);
-    	}
-    	else return null;
-    }
-    
-    public static function retrievePrevious($progress)
-    {
-    	$select = Progress::getTable()->getSelect()
-    		->columns(array('date' => new \Zend\Db\Sql\Expression('MAX(date)')))
-    		->where(array(
-    			'account_id' => $progress->account_id,
-    			'type' => $progress->type,
-    			'subject' => $progress->subject,
-    			'status' => 'completed',
-    	));
-    	$cursor = Progress::getTable()->selectWith($select);
-    	if (!count($cursor) > 0) return null;
-    	foreach ($cursor as $previousProgress) $previousDate = $previousProgress->date;
-
-    	$select = Progress::getTable()->getSelect()
-    		->where(array(
-    			'account_id' => $progress->account_id,
-    			'type' => $progress->type,
-    			'subject' => $progress->subject,
-    			'date' => $previousDate,
-    		));
-    	$cursor = Progress::getTable()->selectWith($select);
-    	foreach ($cursor as $progress) {
-    		return $progress;
-    	}
+		return $notes;
     }
 
     public static function retrieveAll($type, $account_id)
     {
-    	$select = Progress::getTable()->getSelect()
-	    	->where(array('status' => 'completed', 'account_id' => $account_id, 'type' => $type))
-	    	->order(array('school_year DESC', 'period DESC'));
-    	$cursor = Progress::getTable()->selectWith($select);
-    	$progresses = array();
-    	foreach ($cursor as $progress) $progresses[] = $progress;
-    	return $progresses;
+    	$select = Note::getTable()->getSelect()
+    		->where(array('status != ?' => 'deleted', 'account_id' => $account_id, 'type' => $type))
+    		->order(array('date DESC', 'subject ASC'));
+    	$cursor = Note::getTable()->selectWith($select);
+    	$notes = array();
+    	foreach ($cursor as $note) $notes[] = $note;
+    	return $notes;
+    }
+    
+    public static function get($id, $column = 'id')
+    {
+    	$note = Note::getTable()->get($id, $column);
+    	$account = Account::get($note->account_id);
+    	$community = Community::get($account->customer_community_id);
+    	$note->name = $community->name;
+    	return $note;
+    }
+    
+    public static function instanciate($type = null)
+    {
+		$note = new Note;
+		$note->type = $type;
+		$note->audit = array();
+		return $note;
     }
 
     public function loadData($data) {
     
     	$context = Context::getCurrent();
 
-    	if (array_key_exists('school_year', $data)) {
+        if (array_key_exists('school_year', $data)) {
 	    	$this->school_year = trim(strip_tags($data['school_year']));
 		    if (!$this->school_year || strlen($this->school_year) > 255) return 'Integrity';
 		}
@@ -218,35 +172,22 @@ class Progress implements InputFilterAwareInterface
 		    $this->subject = trim(strip_tags($data['subject']));
 		    if (!$this->subject || strlen($this->subject) > 255) return 'Integrity';
 		}
-    	if (array_key_exists('date', $data)) {
+		if (array_key_exists('date', $data)) {
 	    	$this->date = trim(strip_tags($data['date']));
 	    	if (!$this->date || !checkdate(substr($this->date, 5, 2), substr($this->date, 8, 2), substr($this->date, 0, 4))) return 'Integrity';
 		}
-		if (array_key_exists('period', $data)) {
-	    	$this->period = trim(strip_tags($data['period']));
-		    if (!$this->period || strlen($this->period) > 255) return 'Integrity';
+    	if (array_key_exists('value', $data)) {
+		    $this->value = (float) $data['value'];
+		    if ($this->value > 100) return 'Integrity';
 		}
-
-        $subject = $context->getConfig('progress/detail')['types']['sport']['subjects'][$this->subject];
-
-		if (array_key_exists('qualitative_criteria', $subject)) {
-			foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) {
-				if (array_key_exists($criterionId, $data)) {
-			    	$this->criteria[$criterionId] = trim(strip_tags($data[$criterionId]));
-				    if (strlen($this->criteria[$criterionId]) > 255) return 'Integrity';
-				}
-			}
+        if (array_key_exists('reference_value', $data)) {
+		    $this->reference_value = (float) $data['reference_value'];
+		    if ($this->reference_value > 100) return 'Integrity';
 		}
-		
-		if (array_key_exists('quantitative_criteria', $subject)) {
-			foreach ($subject['quantitative_criteria'] as $criterionId => $criterion) {
-				if (array_key_exists($criterionId, $data)) {
-			    	$this->criteria[$criterionId] = trim(strip_tags($data[$criterionId]));
-				    if (strlen($this->criteria[$criterionId]) > 255) return 'Integrity';
-				}
-			}
+        if (array_key_exists('weight', $data)) {
+		    $this->weight = (float) $data['weight'];
+		    if ($this->weight > 100) return 'Integrity';
 		}
-
 		if (array_key_exists('observations', $data)) {
 		    $this->observations = trim(strip_tags($data['observations']));
 		    if (strlen($this->observations) > 2047) return 'Integrity';
@@ -260,6 +201,7 @@ class Progress implements InputFilterAwareInterface
 		    if (strlen($this->comment) > 2047) return 'Integrity';
 		}
 		if (array_key_exists('update_time', $data)) $this->update_time = $data['update_time'];
+
     	$this->properties = $this->toArray();
     	
     	// Update the audit
@@ -278,7 +220,7 @@ class Progress implements InputFilterAwareInterface
     	$context = Context::getCurrent();
 
     	$this->id = null;
-    	Progress::getTable()->save($this);
+    	Note::getTable()->save($this);
     
     	return ('OK');
     }
@@ -286,12 +228,12 @@ class Progress implements InputFilterAwareInterface
     public function update($update_time)
     {
     	$context = Context::getCurrent();
-    	$progress = Progress::get($this->id);
+    	$note = Note::get($this->id);
 
     	// Isolation check
-    	if ($progress->update_time > $update_time) return 'Isolation';
+    	if ($note->update_time > $update_time) return 'Isolation';
     	 
-    	Progress::getTable()->save($this);
+    	Note::getTable()->save($this);
     
     	return 'OK';
     }
@@ -312,12 +254,12 @@ class Progress implements InputFilterAwareInterface
     public function delete($update_time)
     {
     	$context = Context::getCurrent();
-    	$progress = Progress::get($this->id);
+    	$note = Note::get($this->id);
     
     	// Isolation check
-    	if ($progress->update_time > $update_time) return 'Isolation';
+    	if ($note->update_time > $update_time) return 'Isolation';
     	 
-    	Progress::getTable()->delete($this->id);
+    	Note::getTable()->delete($this->id);
     
     	return 'OK';
     }
@@ -334,10 +276,10 @@ class Progress implements InputFilterAwareInterface
 
     public static function getTable()
     {
-    	if (!Progress::$table) {
+    	if (!Note::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		Progress::$table = $sm->get('PpitStudies\Model\ProgressTable');
+    		Note::$table = $sm->get('PpitStudies\Model\NoteTable');
     	}
-    	return Progress::$table;
+    	return Note::$table;
     }
 }

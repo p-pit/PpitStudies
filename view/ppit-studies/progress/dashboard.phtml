@@ -17,7 +17,7 @@ $progress = current($progresses);
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $this->translate('Period', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<input class="form-control" disabled="disabled" value="<?php echo $context->getConfig('progress')['properties']['period']['modalities'][$progress->period][$context->getLocale()] ?>" />
+				<input class="form-control" disabled="disabled" value="<?php echo $context->getConfig('student')['properties']['period']['modalities'][$progress->period][$context->getLocale()] ?>" />
 			</div>
 		</div>
 
@@ -69,7 +69,7 @@ $progress = current($progresses);
 			<th>&nbsp;</th>
 
 			<?php $first = true; foreach ($progresses as $progress) : ?>
-			<th style="text-align: center; <?php if (!$first) echo 'font-weight: normal; font-style: italic;' ?>"><?php echo $context->getConfig('progress')['properties']['period']['modalities'][$progress->period][$context->getLocale()] ?></th>
+			<th style="text-align: center; <?php if (!$first) echo 'font-weight: normal; font-style: italic;' ?>"><?php echo $context->getConfig('student')['properties']['period']['modalities'][$progress->period][$context->getLocale()] ?></th>
 			<?php if ($first) echo '<th>&nbsp;</th>' ?>
 			<?php $first = false; endforeach;?>
 		
