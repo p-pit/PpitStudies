@@ -3,16 +3,26 @@
 		<th>&nbsp;</th>
 		<th>&nbsp;</th>
 
-<?php foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
+<?php $first=true; foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
 		<th align="center">
 	<?php $label = $context->getConfig('commitmentAccount')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 	<?php if ($label) : ?>
-			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
+			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor"
 				<span><?php echo $label ?></span>
-<?php if ($major == $propertyId) : ?>
+		<?php if ($major == $propertyId) : ?>
 				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
-<?php endif ?>
+		<?php endif ?>
 			</button>
+		<?php if ($first && $context->isDemoModeActive()) : ?>
+			<a href="#" class="ppittooltip">
+			    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+			    <span style="font-weight: normal">
+			        <img class="callout" src="img/callout.gif" />
+			        <strong><?php echo $this->translate('Ordering', 'ppit-core', $context->getLocale()) ?></strong><br>
+			        <?php echo $this->translate('The list can be sorted according to each column in ascending or descending order.', 'ppit-core', $context->getLocale()) ?><br><br>
+			    </span>
+			</a>
+		<?php $first=false; endif;?>
 	<?php endif;?>
 		</th>
 <?php endforeach;?>
@@ -28,7 +38,23 @@
 			</button>
 		</td>
 		
-		<td colspan="6">&nbsp;</td>
+		<td colspan="6">
+<?php if ($context->isDemoModeActive()) : ?>
+				<a href="#" class="ppittooltip">
+				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+				    <span>
+				        <img class="callout" src="img/callout.gif" />
+				        <strong><?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale()) ?></strong><br>
+				        <?php echo $this->translate('The group action button operates along with the individual or global checkboxes on the left column', 'ppit-core', $context->getLocale()) ?><br><br>
+				        <?php echo $this->translate('It opens a new panel proposing actions to apply to a sublist of students.', 'ppit-studies', $context->getLocale()) ?><br><br>
+				        <?php echo $this->translate('For example you can just check students that are absent today and add an absence event applying on this list,', 'ppit-studies', $context->getLocale()) ?><br><br>
+				        <?php echo $this->translate('Or select the students from a class and easily input the notes of a control...', 'ppit-studies', $context->getLocale()) ?><br><br>
+				    </span>
+				</a>
+				<br>
+<?php endif;?>
+		
+		</td>
 	</tr>
 
 	<input type="hidden" id="account-number" value="<?php echo count($accounts) ?>" />
