@@ -89,7 +89,7 @@ class Absence implements InputFilterAwareInterface
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('status', 'deleted');
-		$where->equalTo('type', $type);
+		$where->equalTo('student_absence.type', $type);
 		
     	// Todo list vs search modes
     	if ($mode == 'todo') {

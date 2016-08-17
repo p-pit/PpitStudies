@@ -3,9 +3,9 @@
 		<th>&nbsp;</th>
 		<th>&nbsp;</th>
 
-<?php $first=true; foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
+<?php $first=true; foreach ($context->getConfig('commitmentAccount/list/p-pit-studies') as $propertyId => $rendering) : ?>
 		<th align="center">
-	<?php $label = $context->getConfig('commitmentAccount')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	<?php $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor"
 				<span><?php echo $label ?></span>
@@ -74,7 +74,7 @@
 			</button>
 		</td>
 
-	<?php foreach ($context->getConfig('commitmentAccount/list') as $propertyId => $rendering) : ?>
+	<?php foreach ($context->getConfig('commitmentAccount/list/p-pit-studies') as $propertyId => $rendering) : ?>
 	
 		<?php if ($propertyId == 'customer_name') : ?>
 		<td><?php echo $account->customer_name ?></td>

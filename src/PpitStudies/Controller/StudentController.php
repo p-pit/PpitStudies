@@ -101,7 +101,7 @@ class StudentController extends AbstractActionController
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
     	// Retrieve the list
-    	$accounts = Account::getList($params, $major, $dir, $mode);
+    	$accounts = Account::getList('p-pit-studies', $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(

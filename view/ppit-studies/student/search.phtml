@@ -3,7 +3,7 @@
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
 			<?php 
-			$title = (isset ($context->getConfig('commitmentAccount/search')['title']) ? $context->getConfig('commitmentAccount/search')['title'][$context->getLocale()] : $this->translate('Accounts', 'ppit-commitment', $context->getLocale()));
+			$title = (isset ($context->getConfig('commitmentAccount/search/p-pit-studies')['title']) ? $context->getConfig('commitmentAccount/search/p-pit-studies')['title'][$context->getLocale()] : $this->translate('Accounts', 'ppit-commitment', $context->getLocale()));
 			echo $title;
 			?>
 			(<span id="mode-text"></span>)
@@ -48,8 +48,8 @@
 			</div>
 		</div>
 		
-<?php foreach ($context->getConfig('commitmentAccount/search')['main'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('commitmentAccount')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+	<?php $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 	
 	<?php if ($rendering == 'contains') : ?>
 		<div class="form-group">
@@ -79,7 +79,7 @@
 
 		<?php
 		$modalities = array();
-		foreach ($context->getConfig('commitmentAccount')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+		foreach ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
 			$modalities[$modalityId] = $modality[$context->getLocale()];
 		} 
 		?>
@@ -101,8 +101,8 @@
 		<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
 		<div id="search-area">
 		
-<?php foreach ($context->getConfig('commitmentAccount/search')['more'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('commitmentAccount')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+	<?php $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 
 	<?php if ($propertyId == 'place_id') : ?>
 			<div class="form-group">
@@ -145,7 +145,7 @@
 
 		<?php
 		$modalities = array();
-		foreach ($context->getConfig('commitmentAccount')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+		foreach ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
 			$modalities[$modalityId] = $modality[$context->getLocale()];
 		} 
 		?>

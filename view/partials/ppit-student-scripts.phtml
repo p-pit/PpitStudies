@@ -12,7 +12,7 @@ function getParams() {
 	// Create a new FormData object.
 	var params = '?', todo = true;
 
-<?php foreach ($context->getConfig('commitmentAccount/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	
@@ -33,7 +33,7 @@ function getParams() {
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('commitmentAccount/search')['more'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	
@@ -60,8 +60,8 @@ function getParams() {
 <?php endforeach;?>
 
 	<?php
-	$todoTitle = (isset ($context->getConfig('commitmentAccount/search')['todoTitle']) ? $context->getConfig('commitmentAccount/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
-	$searchTitle = (isset ($context->getConfig('commitmentAccount/search')['searchTitle']) ? $context->getConfig('commitmentAccount/search')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
+	$todoTitle = (isset ($context->getConfig('commitmentAccount/search/p-pit-studies')['todoTitle']) ? $context->getConfig('commitmentAccount/search/p-pit-studies')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	$searchTitle = (isset ($context->getConfig('commitmentAccount/search/p-pit-studies')['searchTitle']) ? $context->getConfig('commitmentAccount/search/p-pit-studies')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
 
@@ -72,12 +72,12 @@ function getParams() {
 function exportStudentList() {
 
 	var params = getParams();
-	document.location.href = '<?php echo $this->url('commitmentAccount/export') ?>' + params;
+	document.location.href = '<?php echo $this->url('commitmentAccount/export', array('type' => '/p-pit-studies')) ?>' + params;
 }
 
 function eraseStudentSearch() {
 
-<?php foreach ($context->getConfig('commitmentAccount/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').val('');
@@ -90,7 +90,7 @@ function eraseStudentSearch() {
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('commitmentAccount/search')['more'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').val('');
@@ -137,13 +137,13 @@ function connectStudentSearchInputs() {
 	$('#erase-button').unbind();
 	$('#erase-button').click(function () { eraseStudentSearch(); });
 
-<?php foreach ($context->getConfig('commitmentAccount/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 
-		<?php if ($context->getConfig('commitmentAccount')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterStudentList(); });
@@ -156,7 +156,7 @@ function connectStudentSearchInputs() {
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 
-		<?php if ($context->getConfig('commitmentAccount')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_<?php echo $propertyId ?>").datepicker();
 	$('#search_<?php echo $propertyId ?>').change(function () { filterStudentList(); });
 		<?php endif;?>
@@ -165,13 +165,13 @@ function connectStudentSearchInputs() {
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('commitmentAccount/search')['more'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 
-		<?php if ($context->getConfig('commitmentAccount')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterStudentList(); });
@@ -184,7 +184,7 @@ function connectStudentSearchInputs() {
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 
-		<?php if ($context->getConfig('commitmentAccount')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_<?php echo $propertyId ?>").datepicker();
 	$('#search_<?php echo $propertyId ?>').change(function () { filterStudentList(); });
 		<?php endif;?>
@@ -637,7 +637,7 @@ function activateStudent() {
 	$(studentAnchor).removeClass("btn-default").addClass("btn-primary");
 
 	<?php
-	$todoTitle = (isset ($context->getConfig('commitmentAccount/search')['todoTitle']) ? $context->getConfig('commitmentAccount/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	$todoTitle = (isset ($context->getConfig('commitmentAccount/search/p-pit-studies')['todoTitle']) ? $context->getConfig('commitmentAccount/search/p-pit-studies')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text('<?php echo $todoTitle ?>');
 		
