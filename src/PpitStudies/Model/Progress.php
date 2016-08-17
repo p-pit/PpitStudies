@@ -96,7 +96,7 @@ class Progress implements InputFilterAwareInterface
     		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('status', 'deleted');
-		$where->equalTo('type', $type);
+		$where->equalTo('student_progress.type', $type);
 		
     	// Todo list vs search modes
     	if ($mode == 'todo') {

@@ -618,7 +618,208 @@ return array(
 					),
 			),
 	),
-
+	'commitmentAccount/p-pit-studies' => array(
+			'statuses' => array(),
+			'properties' => array(
+					'customer_name' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Name',
+									'fr_FR' => 'Nom',
+							),
+					),
+					'n_first' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Fisrst name',
+									'fr_FR' => 'Prénom',
+							),
+					),
+					'n_last' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Last name',
+									'fr_FR' => 'Nom',
+							),
+					),
+					'email' => array(
+							'type' => 'email',
+							'labels' => array(
+									'en_US' => 'Email',
+									'fr_FR' => 'Email',
+							),
+					),
+					'place_id' => array(
+							'type' => 'select',
+							'labels' => array(
+									'en_US' => 'Center',
+									'fr_FR' => 'Centre',
+							),
+					),
+					'opening_date' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Account opening date',
+									'fr_FR' => 'Date ouverture compte',
+							),
+					),
+					'closing_date' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Account closing date',
+									'fr_FR' => 'Date fermeture compte',
+							),
+					),
+					'property_1' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'Basketball' => array('fr_FR' => 'Basketball'),
+									'Equitation' => array('fr_FR' => 'Equitation'),
+									'Football' => array('fr_FR' => 'Football'),
+									'Golf' => array('fr_FR' => 'Golf'),
+									'Tennis' => array('fr_FR' => 'Tennis'),
+							),
+							'labels' => array(
+									'en_US' => 'Sport',
+									'fr_FR' => 'Sport',
+							),
+					),
+					'property_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Emergency phone',
+									'fr_FR' => 'Tél. urgence',
+							),
+					),
+					'property_3' => array(
+							'type' => 'photo',
+							'labels' => array(
+									'en_US' => '',
+									'fr_FR' => '',
+							),
+					),
+					'property_4' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'6e' => array('fr_FR' => '6e'),
+									'5e' => array('fr_FR' => '5e'),
+									'4e' => array('fr_FR' => '4e'),
+									'3e' => array('fr_FR' => '3e'),
+									'2nde' => array('fr_FR' => '2nde'),
+									'1ère' => array('fr_FR' => '1ère'),
+									'Term.' => array('fr_FR' => 'Term.'),
+							),
+							'labels' => array(
+									'en_US' => 'Class',
+									'fr_FR' => 'Classe',
+							),
+					),
+					'property_5' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'S' => array('fr_FR' => 'S'),
+									'ES' => array('fr_FR' => 'ES'),
+									'STMG' => array('fr_FR' => 'STMG'),
+							),
+							'labels' => array(
+									'en_US' => 'Specialty',
+									'fr_FR' => 'Spécialité',
+							),
+					),
+					'property_6' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'Interne' => array('fr_FR' => 'Interne'),
+									'Externe' => array('fr_FR' => 'Externe'),
+									'Weekend' => array('fr_FR' => 'Weekend'),
+									'Dimanche' => array('fr_FR' => 'Dimanche'),
+							),
+							'labels' => array(
+									'en_US' => 'Boarding-school',
+									'fr_FR' => 'Internat',
+							),
+					),
+			),
+	),
+	'commitmentAccount/index/p-pit-studies' => array(
+			'title' => array('en_US' => 'P-PIT Commitments', 'fr_FR' => 'P-PIT Engagements'),
+	),
+	'commitmentAccount/search/p-pit-studies' => array(
+			'title' => array('en_US' => 'Students', 'fr_FR' => 'Eleves'),
+			'todoTitle' => array('en_US' => 'registered', 'fr_FR' => 'inscrits'),
+			'main' => array(
+					'property_1' => 'select',
+					'customer_name' => 'contains',
+					'property_4' => 'select',
+			),
+			'more' => array(
+					'place_id' => 'select',
+					'opening_date' => 'range',
+					'closing_date' => 'range',
+			),
+	),
+	'commitmentAccount/list/p-pit-studies' => array(
+			'property_1' => 'image',
+			'property_3' => 'photo',
+			'customer_name' => 'text',
+			'property_2' => 'phone',
+	),
+	'commitmentAccount/detail/p-pit-studies' => array(
+			'title' => array('en_US' => 'Student sheet:', 'fr_FR' => 'FICHE ELEVE'),
+			'displayAudit' => false,
+	),
+	'commitmentAccount/update/p-pit-studies' => array(
+			'n_first' => array('mandatory' => true),
+			'n_last' => array('mandatory' => true),
+			'email' => array('mandatory' => true),
+			'place_id' => array('mandatory' => true),
+			'opening_date' => array('mandatory' => true),
+			'closing_date' => array('mandatory' => false),
+			'property_1' => array('mandatory' => true),
+			'property_2' => array('mandatory' => false),
+	),
+	'commitmentAccount/register/p-pit-studies' => array(),
+	'commitment/accountList/p-pit-studies' => array(
+			'title' => array('en_US' => 'Registrations', 'fr_FR' => 'INSCRIPTIONS'),
+			'addRoute' => 'eleve/add',
+			'glyphicons' => array(
+					'eleve/eleve' => array(
+							'labels' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
+							'glyphicon' => 'glyphicon-edit',
+					),
+					'eleve/delete' => array(
+							'labels' => array('en_US' => 'Delete', 'fr_FR' => 'Supprimer'),
+							'glyphicon' => 'glyphicon-trash',
+					),
+			),
+			'properties' => array(
+					'caption' => 'text',
+					'property_1' => 'text',
+					'property_2' => 'text',
+			),
+			'anchors' => array(
+					'document' => array(
+							'type' => 'nav',
+							'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
+							'entries' => array(
+									'eleve/accuse' => array(
+											'labels' => array('en_US' => 'Acknowledgement', 'fr_FR' => 'Accusé réception'),
+									),
+									'eleve/confirmation' => array(
+											'labels' => array('en_US' => 'Confirmation', 'fr_FR' => 'Confirmation'),
+									),
+									'eleve/attestation' => array(
+											'labels' => array('en_US' => 'Attestation', 'fr_FR' => 'Attestation'),
+									),
+							),
+					),
+					'bill' => array(
+							'type' => 'btn',
+							'labels' => array('en_US' => 'Bill', 'fr_FR' => 'Facture'),
+					),
+			),
+	),
+		
 	'student' => array(
 			'schoolYears' => array(
 					'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017'),
