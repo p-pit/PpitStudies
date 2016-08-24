@@ -22,9 +22,9 @@
 	
 	<input type="hidden" id="absence_<?php echo $i ?>" value="<?php echo $absence->id ?>" />
 	
-	<tr style="text-align: center">
+	<tr>
 
-		<td style="text-align: center">
+		<td>
 			<button type="button" class="btn btn-default btn-xs index-btn absence-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="absence-detail-anchor_<?php echo $absence->id ?>">
 				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
 			</button>
@@ -39,8 +39,14 @@
 
 		<?php elseif ($propertyId == 'sport') : ?>
 		<td style="text-align: center">
-			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$absence->sport.'.png') ?>" title="<?php echo $absence->sport ?>" alt="<?php echo $absence->sport ?>" />
+			<img height="20" src="<?php echo $this->basePath('/img/p-pit-studies/'.$absence->sport.'.png') ?>" title="<?php echo $absence->sport ?>" alt="<?php echo $absence->sport ?>" />
 		</td>
+
+		<?php elseif ($propertyId == 'class') : ?>
+		<td><?php echo $property['modalities'][$absence->class][$context->getLocale()] ?>
+
+		<?php elseif ($propertyId == 'specialty') : ?>
+		<td><?php echo $property['modalities'][$absence->specialty][$context->getLocale()] ?>
 	
 		<?php elseif ($propertyId == 'photo') : ?>
 		<td>

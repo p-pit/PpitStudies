@@ -347,6 +347,7 @@ function connectAbsenceDeleteForm(id)
 		xhttp.onload = function () {
 			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 				document.getElementById(target).innerHTML = xhttp.responseText;
+				connectRemoveIcon('remove-anchor', 'form_action');
 				filterAbsenceList();
 			}
 		};

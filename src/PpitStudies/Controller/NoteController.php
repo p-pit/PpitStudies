@@ -3,6 +3,7 @@
 namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Account;
+use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
@@ -192,27 +193,6 @@ class NoteController extends AbstractActionController
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-    }
-
-    public function dashboardAction()
-    {
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-    
-    	$account_id = (int) $this->params()->fromRoute('account_id');
-    	$account = Account::get($account_id);
-    
-    	$notes = Note::retrieveAll('schooling', $account_id);
-    	 
-    	// Return the link list
-    	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'account' => $account,
-    			'notes' => $notes,
     	));
     	$view->setTerminal(true);
     	return $view;

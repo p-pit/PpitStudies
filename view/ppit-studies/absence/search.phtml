@@ -22,8 +22,16 @@
 		</div>
 		
 <?php foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
-	
+	<?php 
+	if (array_key_exists($propertyId, $context->getConfig('student')['properties'])) {
+		$property = $context->getConfig('student')['properties'][$propertyId];
+	}
+	else {
+		$property = $context->getConfig('absence')['types']['boarding_school'][$propertyId];
+	}
+	$label = $property['labels'][$context->getLocale()];
+	?>
+
 	<?php if ($rendering == 'contains') : ?>
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
@@ -52,7 +60,7 @@
 
 		<?php
 		$modalities = array();
-		foreach ($context->getConfig('student')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+		foreach ($property['modalities'] as $modalityId => $modality) {
 			$modalities[$modalityId] = $modality[$context->getLocale()];
 		} 
 		?>
@@ -75,7 +83,15 @@
 		<div id="search-area">
 		
 <?php foreach ($context->getConfig('absence/search')['more'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	<?php 
+	if (array_key_exists($propertyId, $context->getConfig('student')['properties'])) {
+		$property = $context->getConfig('student')['properties'][$propertyId];
+	}
+	else {
+		$property = $context->getConfig('absence')['types']['boarding-school'][$propertyId];
+	}
+	$label = $property['labels'][$context->getLocale()];
+	?>
 
 	<?php if ($propertyId == 'place_id') : ?>
 			<div class="form-group">
@@ -118,7 +134,7 @@
 
 		<?php
 		$modalities = array();
-		foreach ($context->getConfig('student')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+		foreach ($property['modalities'] as $modalityId => $modality) {
 			$modalities[$modalityId] = $modality[$context->getLocale()];
 		} 
 		?>

@@ -351,8 +351,8 @@ class UserImport implements InputFilterAwareInterface
     	$instance = $controller->getInstanceTable()->get($this->instance_id);
     	$this->currency = $instance->currency;
     	$this->currency_symbol = $instance->currency_symbol;
-    	$this->header_code = $instance->header_code;
-    	$this->pdf_header_code = $instance->pdf_header_code;
+/*    	$this->header_code = $instance->header_code;
+    	$this->pdf_header_code = $instance->pdf_header_code;*/
 
     	// Retrieve the role captions;
     	$serviceLocator = $controller->getServiceLocator();

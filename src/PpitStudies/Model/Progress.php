@@ -59,7 +59,7 @@ class Progress implements InputFilterAwareInterface
         $this->date = (isset($data['date'])) ? $data['date'] : null;
         $this->period = (isset($data['period'])) ? $data['period'] : null;
         $this->criteria = (isset($data['criteria'])) ? json_decode($data['criteria'], true) : null;
-        $this->observations = (isset($data['observations'])) ? json_decode($data['observations'], true) : null;
+        $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
         $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
@@ -91,16 +91,16 @@ class Progress implements InputFilterAwareInterface
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
     	$select = Progress::getTable()->getSelect()
-    		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array('sport' => 'property_1', 'photo' => 'property_3'), 'left')
-    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name'), 'left')
+    		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array('sport' => 'property_1'), 'left')
+    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'main_contact_id'), 'left')
     		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
 		$where = new Where;
-		$where->notEqualTo('status', 'deleted');
+		$where->notEqualTo('commitment_account.status', 'deleted');
 		$where->equalTo('student_progress.type', $type);
 		
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-    		$where->notEqualTo('status', 'completed');
+    		$where->notEqualTo('commitment_account.status', 'completed');
     	}
     	else {
 
@@ -198,7 +198,7 @@ class Progress implements InputFilterAwareInterface
     	return $progresses;
     }
 
-    public function loadData($data) {
+    public function loadData($type, $data) {
     
     	$context = Context::getCurrent();
 
@@ -227,7 +227,7 @@ class Progress implements InputFilterAwareInterface
 		    if (!$this->period || strlen($this->period) > 255) return 'Integrity';
 		}
 
-        $subject = $context->getConfig('progress/detail')['types']['sport']['subjects'][$this->subject];
+        $subject = $context->getConfig('progress'.(($type) ? '/'.$type : ''))['criteria'];
 
 		if (array_key_exists('qualitative_criteria', $subject)) {
 			foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) {
@@ -278,6 +278,7 @@ class Progress implements InputFilterAwareInterface
     	$context = Context::getCurrent();
 
     	$this->id = null;
+    	$this->status = 'new';
     	Progress::getTable()->save($this);
     
     	return ('OK');

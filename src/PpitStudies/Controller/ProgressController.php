@@ -3,6 +3,7 @@
 namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Account;
+use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
@@ -17,8 +18,8 @@ class ProgressController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-		$instance_id = $context->getInstanceId();
-		$community_id = (int) $context->getCommunityId();
+
+		$type = $this->params()->fromRoute('type', 'Football');
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
@@ -26,9 +27,9 @@ class ProgressController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'type' => $type,
     			'applicationName' => 'p-pit-studies',
     			'active' => 'application',
-    			'community_id' => $community_id,
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
     	));
@@ -71,11 +72,14 @@ class ProgressController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
+
+    	$type = $this->params()->fromRoute('type');
+    	 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'type' => $type,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -86,6 +90,8 @@ class ProgressController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
 
+    	$type = $this->params()->fromRoute('type');
+
     	$params = $this->getFilters($this->params());
 
     	$major = ($this->params()->fromQuery('major', 'name'));
@@ -94,12 +100,13 @@ class ProgressController extends AbstractActionController
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
 
     	// Retrieve the list
-    	$progresses = Progress::getList('sport', $params, $major, $dir, $mode);
+    	$progresses = Progress::getList($type, $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'type' => $type,
     			'progresses' => $progresses,
     			'mode' => $mode,
     			'params' => $params,
@@ -159,7 +166,7 @@ class ProgressController extends AbstractActionController
     			$data = array();
     			$data['date'] = $request->getPost('date');
     			 
-    			$subject = $context->getConfig('progress/detail')['types']['sport']['subjects'][$progress->subject];
+    			$subject = $context->getConfig('progress'.(($type) ? '/'.$type : ''))['criteria'];
 				if (array_key_exists('qualitative_criteria', $subject)) {
 					foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) {
 						if ($criterion['type'] != 'subtitle') $data[$criterionId] = $request->getPost('qualitative_'.$criterionId);
@@ -175,11 +182,12 @@ class ProgressController extends AbstractActionController
 				$data['update_time'] = $request->getPost('update_time');
 				$data['observations'] = $request->getPost('observations');
 				$data['comment'] = $request->getPost('comment');
-				$rc = $progress->loadData($data);
+
+				$rc = $progress->loadData($type, $data);
 				if ($rc != 'OK') throw new \Exception('View error');
 
     			// Atomically save
-    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection = Progress::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
     				$rc = $progress->update($progress->update_time);
@@ -202,33 +210,12 @@ class ProgressController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'type' => $type,
     			'id' => $id,
     			'progress' => $progress,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-    }
-
-    public function dashboardAction()
-    {
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-
-    	$account_id = (int) $this->params()->fromRoute('account_id');
-    	$account = Account::get($account_id);
-
-//    	$progresses = Progress::getList('sport', array('account_id' => $account_id), 'school_year', 'ASC', null);
-  		$progresses = Progress::retrieveAll('sport', $account_id);
-    	
-    	// Return the link list
-    	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'account' => $account,
-    			'progresses' => $progresses,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -259,7 +246,7 @@ class ProgressController extends AbstractActionController
     			$data = array();
     			$data['status'] = 'deleted';
     			$data['update_time'] = $request->getPost('update_time');
-				$rc = $progress->loadData($data);
+				$rc = $progress->loadData($progress->type, $data);
 				if ($rc != 'OK') throw new \Exception('View error');
 
     			// Atomically save

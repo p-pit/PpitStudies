@@ -1,0 +1,213 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
+		<strong><?php echo $this->translate('Detail', 'ppit-core', $context->getLocale()) ?></strong>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		 </div>
+	</div>
+	<div class="panel-body">
+
+<!-- Menu -->
+		<div>
+			<button type="button" class="btn btn-default btn-xs detail-menu-btn" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale())?>" id="delete-anchor">
+				<span class="glyphicon glyphicon-trash" id="group-glyphicon"></span>
+			</button>
+		</div>
+
+<!-- Display the audit -->
+		<div>&nbsp;</div>
+		<?php echo $this->translate('History', 'ppit-core', $context->getLocale()) ?> (<a id="audit-label"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)
+		<div id="audit-panel" class="panel panel-default">
+			<div class="panel-body">
+	<?php foreach ($event->audit as $comment) : ?>
+				<div class="row">
+					<div class="col-md-12">
+						<strong><?php echo $context->decodeDate(substr($comment['time'], 0, 10)).substr($comment['time'], 10) ?>:</strong>&nbsp;
+						<?php if (array_key_exists('status', $comment)) echo $comment['status'] ?>&nbsp;
+						(<?php echo $comment['n_fn'] ?>)
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2" align="right">&nbsp;</div>
+					<div class="col-md-10"><em><?php echo $comment['comment'] ?></em></div>
+				</div>
+	<?php endforeach;?>
+			</div>
+		</div>
+		<div>&nbsp;</div>
+
+<!-- Form header -->
+<?php echo $this->partial('/partials/form-header', array(
+		'update_time' => $event->update_time,
+		'message' => $message,
+		'error' => $error,
+		'csrfForm' => $csrfForm,
+		'context' => $context,
+));
+?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Up submit -->
+	<?php if (!$isDisabled) : ?>
+		<div class="form-group">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+				<input name="submit" type="submit" id="up-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Update', 'ppit-core', $context->getLocale()) ?>">
+			</div>
+		</div>
+	<?php endif;?>
+
+<!-- Category -->
+		<div class="form-group" id="category_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Category', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="category" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+	<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+					<option value="<?php echo $categoryId ?>" <?php if ($event->category == $categoryId) echo ' selected="selected"' ?>><?php echo $category['labels'][$context->getLocale()] ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="category_error"></p></div>
+		</div>
+
+<!-- Title -->
+		<div class="form-group" id="title_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Object', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="title" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $event->title ?></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="title_error"></p></div>
+		</div>
+		
+<!-- Begin time -->
+<?php $beginDate = ($event->begin_time) ? substr($event->begin_time, 0, 10) : Date('Y-m-d') ?>
+		<input type="hidden" id="begin_date" />
+		<div class="form-group" id="input_begin_date_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Begin', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_begin_date" value="<?php echo $context->decodeDate($beginDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"></label>
+			<div class="col-sm-3">
+				<select class="form-control" id="begin_h" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+<?php for ($i = 0; $i < 24; $i++) : ?>
+					<option value="<?php echo sprintf('%02d', $i) ?>" <?php if ((int)substr($event->begin_time, 11,2) == $i) echo ' selected="selected"' ?>><?php echo sprintf('%02d', $i) ?></option>
+<?php endfor;?>
+				</select>
+			</div>
+			<label class="col-sm-1 control-label"></label>
+			<div class="col-sm-3">
+				<select class="form-control" id="begin_m" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+<?php for ($i = 0; $i < 60; $i++) : ?>
+					<option value="<?php echo sprintf('%02d', $i) ?>" <?php if ((int)substr($event->begin_time, 14,2) == $i) echo ' selected="selected"' ?>><?php echo sprintf('%02d', $i) ?></option>
+<?php endfor;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_begin_date_error"></p></div>
+		</div>
+
+<!-- End time -->
+<?php $endDate = ($event->end_time) ? substr($event->end_time, 0, 10) : null ?>
+		<input type="hidden" id="end_date" />
+		<div class="form-group" id="input_end_date_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Display end', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_end_date" value="<?php echo $context->decodeDate($endDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"></label>
+			<div class="col-sm-3">
+				<select class="form-control" id="end_h" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+<?php for ($i = 0; $i < 24; $i++) : ?>
+					<option value="<?php echo sprintf('%02d', $i) ?>" <?php if ((int)substr($event->end_time, 11,2) == $i) echo ' selected="selected"' ?>><?php echo sprintf('%02d', $i) ?></option>
+<?php endfor;?>
+				</select>
+			</div>
+			<label class="col-sm-1 control-label"></label>
+			<div class="col-sm-3">
+				<select class="form-control" id="end_m" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+<?php for ($i = 0; $i < 60; $i++) : ?>
+					<option value="<?php echo sprintf('%02d', $i) ?>" <?php if ((int)substr($event->end_time, 14,2) == $i) echo ' selected="selected"' ?>><?php echo sprintf('%02d', $i) ?></option>
+<?php endfor;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_end_date_error"></p></div>
+		</div>
+
+<!-- Location -->
+		<div class="form-group" id="location_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Location', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" id="location" value="<?php echo $event->location ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="location_error"></p></div>
+		</div>
+
+<!--  Criteria -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Targeting', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">&nbsp;</div>
+			<div class="col-sm-12"><p class="help-block"></p></div>
+		</div>
+
+<?php foreach ($context->getConfig('commitmentEvent/update/p-pit-studies')['criteria'] as $criterionId => $unused) : ?>
+	<?php $criterion = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$criterionId] ?>
+		<div class="form-group" id="<?php echo $criterionId?>_group">
+			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="<?php echo $criterionId ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+	<?php foreach ($criterion['modalities'] as $modalityId => $modality) : ?>
+					<option value="<?php echo $modalityId ?>" <?php if (array_key_exists($criterionId, $event->criteria) && $event->criteria[$criterionId] == $modalityId) echo ' selected="selected"' ?>><?php echo $modality[$context->getLocale()] ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="category_error"></p></div>
+		</div>
+<?php endforeach;?>
+
+		<input type="hidden" id="matching-account-number" value="<?php echo count($event->matchingAccounts) ?>"/>
+<?php $i=0; foreach ($event->matchingAccounts as $account) : ?>
+		<input type="hidden" id="matching-account_<?php echo $i ?>" value="<?php echo $account->id ?>"/>
+		<input type="hidden" id="target_<?php echo $account->id ?>"></input>
+		<div class="form-group" id="target_<?php echo $account->id ?>_checkbox_group">
+			<label class="col-sm-5 control-label"><?php echo $account->customer_name ?></label>
+			<div class="col-sm-7">
+				<input type="checkbox" id="target_<?php echo $account->id ?>_checkbox" value="<?php echo (array_key_exists($account->id, $event->target)) ? 1 : 0 ?>" <?php if (array_key_exists($account->id, $event->target)) echo 'checked="checked"' ?>></input>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="target_<?php echo $account->id ?>_checkbox_error"></p></div>
+		</div>
+<?php $i++; endforeach;?>
+
+		<hr/>
+
+<!-- Comment -->
+	<?php if (!$isDisabled) : ?>
+		<div class="form-group" id="comment_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Comment (non visible to the student)', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="comment"></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="comment_error"></p></div>
+		</div>
+	<?php endif;?>
+
+	<?php if (!$isDisabled) : ?>
+		<div class="form-group">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+				<input name="submit" type="submit" id="submit-button" class="btn btn-warning" value="<?php echo $this->translate('Update', 'ppit-core', $context->getLocale()) ?>">
+			</div>
+		</div>
+	<?php endif;?>
+
+	</form>
+	</div>
+</div>

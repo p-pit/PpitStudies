@@ -1,3 +1,38 @@
+<div>&nbsp;</div>
+
+<div id="notification-panel">
+
+<?php foreach ($notifications as $notification) : ?>
+
+		<div>
+		
+<?php if ($notification->image) : ?>
+				<div align="center">
+	<?php if (array_key_exists('href', $notification->image)) : ?>
+					<a href="<?php echo $notification->image['href'] ?>" target="<?php echo (array_key_exists('target', $notification->image)) ? $notification->image['target'] : '_blank' ?>">
+	<?php endif;?>
+						<img 
+	<?php foreach ($notification->image as $attr => $value) : ?>
+		<?php if ($attr == 'src') : ?>
+							src="<?php echo $this->basePath($value) ?>"
+		<?php elseif ($attr != 'href' && $attr != 'target') : ?>
+							<?php echo $attr ?>="<?php echo $value ?>"
+		<?php endif;?>
+	<?php endforeach;?>
+						/>
+	<?php if (array_key_exists('href', $notification->image)) : ?>
+					</a>
+	<?php endif;?>
+				</div>
+<?php endif;?>
+			
+				<div><?php echo $notification->content ?></div>
+		</div>
+		<hr/>
+
+<?php endforeach;?>
+
+</div>
 
 <h4><?php echo $this->translate('Last absences', 'ppit-studies', $context->getLocale()) ?></h4>
 
@@ -13,3 +48,5 @@
 		</div>
 
 <?php $first=false; endforeach;?>
+<hr/>
+<div id='calendar'></div>

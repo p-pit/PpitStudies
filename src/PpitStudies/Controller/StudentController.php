@@ -3,11 +3,14 @@
 namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Account;
+use PpitCommitment\Model\Event;
+use PpitCommitment\Model\Notification;
 use PpitCommitment\ViewHelper\SsmlAccountViewHelper;
 use PpitContact\Model\Vcard;
+use PpitCore\Form\CsrfForm;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
-use PpitCore\Form\CsrfForm;
+use PpitCore\Model\Instance;
 use PpitMasterData\Model\Place;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
@@ -26,7 +29,7 @@ class StudentController extends AbstractActionController
 		$contact = Vcard::getNew($instance_id, $community_id);
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
-		$currentEntry = $this->params()->fromQuery('entry', 'account');
+		$currentEntry = $this->params()->fromQuery('entry');
 
     	return new ViewModel(array(
     			'context' => $context,
@@ -40,6 +43,32 @@ class StudentController extends AbstractActionController
     	));
     }
 
+    public function registrationIndexAction()
+    {
+    	$context = Context::getCurrent();
+		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
+		
+		$instance_id = $context->getInstanceId();
+		$community_id = (int) $context->getCommunityId();
+		$contact = Vcard::getNew($instance_id, $community_id);
+
+		$applicationName = 'P-PIT Studies';
+		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
+		$currentEntry = $this->params()->fromQuery('entry');
+
+    	return new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getConfig(),
+    			'active' => 'application',
+    			'applicationName' => $applicationName,
+    			'community_id' => $community_id,
+    			'menu' => $menu,
+    			'contact' => $contact,
+    			'currentEntry' => $currentEntry,
+    			'type' => 'p-pit-studies',
+    	));
+    }
+
     public function getFilters($params)
     {
 		$context = Context::getCurrent();
@@ -50,7 +79,7 @@ class StudentController extends AbstractActionController
     	$customer_name = ($params()->fromQuery('customer_name', null));
     	if ($customer_name) $filters['customer_name'] = $customer_name;
 
-    	foreach ($context->getConfig('commitmentAccount/search')['main'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -60,7 +89,7 @@ class StudentController extends AbstractActionController
     		if ($max_property) $filters['max_'.$propertyId] = $max_property;
     	}
 
-    	foreach ($context->getConfig('commitmentAccount/search')['more'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) {
     	
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -92,9 +121,7 @@ class StudentController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
     	$params = $this->getFilters($this->params());
-    
     	$major = ($this->params()->fromQuery('major', 'customer_name'));
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
     
@@ -138,7 +165,7 @@ class StudentController extends AbstractActionController
 		header('Content-Disposition:inline;filename=Fichier.xlsx ');
 		$writer->save('php://output');
     }
-
+    
     public function detailAction()
     {
     	// Retrieve the context
@@ -176,10 +203,31 @@ class StudentController extends AbstractActionController
        		$accounts[] = $account;
        	}
 
+       	$criteria = array();
+       	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) {
+       		if ($rendering == 'range') {
+       			if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
+       			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
+       		}
+       		else {
+       			if ($request->getPost($propertyId)) $criteria[$propertyId] = $request->getPost($propertyId);
+       		}
+       	}
+       	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) {
+       		if ($rendering == 'range') {
+       			if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
+       			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
+       		}
+       		else {
+       			if ($request->getPost($propertyId)) $criteria[$propertyId] = $request->getPost($propertyId);
+       		}
+       	}
+       	
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'type' => $type,
+    			'criteria' => $criteria,
     			'accounts' => $accounts,
     	));
     	$view->setTerminal(true);
@@ -203,20 +251,27 @@ class StudentController extends AbstractActionController
     	$message = null;
     
     	$request = $this->getRequest();
-    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
-    	$nbAccount = $request->getPost('nb-account');
-    	$accounts = array();
-    	for ($i = 0; $i < $nbAccount; $i++) {
-    		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[] = $account;
-    	}
-    
-    	if ($request->getPost('date')) {
+    	if ($request->isPost()) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
-    
+
+    			$nbAccount = $request->getPost('nb-account');
+    			$accounts = array();
+    			for ($i = 0; $i < $nbAccount; $i++) {
+    				$account = Account::get($request->getPost('account_'.$i));
+    				$accounts[] = $account;
+    			}
+
+    			$nbCriteria = $request->getPost('nb-criteria');
+    			$criteria = array();
+    			for ($i = 0; $i < $nbCriteria; $i++) {
+    				$criterionId = $request->getPost('criterion-id_'.$i);
+    				$criterionValue = $request->getPost('criterion_'.$i);
+    				$criteria[$criterionId] = $criterionValue;
+    			}
+    			 
     			// Load the input data
     			$data = array();
     			$data['school_year'] = $request->getPost('school_year');
@@ -256,7 +311,6 @@ class StudentController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'type' => $type,
-    			'accounts' => $accounts,
     			'absence' => $absence,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
@@ -266,6 +320,92 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
+    public function addEventAction() {
+    
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	// Retrieve the type
+    	$category = $this->params()->fromRoute('category', null);
+    
+    	$event = Event::instanciate('p-pit-studies');
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
+    	$request = $this->getRequest();
+    	if ($request->isPost()) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the input data
+    			$data = array();
+    			$data['category'] = $category;
+    			$data['title'] = $request->getPost('title');
+    			$data['location'] = $request->getPost('location');
+    			if ($request->getPost('begin_date')) $data['begin_time'] = $request->getPost('begin_date').' '.$request->getPost('begin_h').':'.$request->getPost('begin_m').':00';
+    			else $data['begin_time'] = null;
+    			if ($request->getPost('end_date')) $data['end_time'] = $request->getPost('end_date').' '.$request->getPost('end_h').':'.$request->getPost('end_m').':00';
+    			else $data['end_time'] = null;
+    			 
+    			$nbCriteria = $request->getPost('nb-criteria');
+    			$data['criteria'] = array();
+    			for ($i = 0; $i < $nbCriteria; $i++) {
+    				$criterionId = $request->getPost('criterion-id_'.$i);
+    				$criterionValue = $request->getPost('criterion_'.$i);
+    				$data['criteria'][$criterionId] = $criterionValue;
+    			}
+    
+    			$nbAccount = $request->getPost('nb-account');
+    			$data['target'] = array();
+    			for ($i = 0; $i < $nbAccount; $i++) {
+    				$data['target'][$request->getPost('account_'.$i)] = null;
+    			}
+    			$data['comment'] = $request->getPost('comment');
+    			 
+    			// Atomically save
+    			$connection = Event::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				$rc = $event->loadData($data);
+    				if ($rc != 'OK') throw new \Exception('View error');
+    
+    				$rc = $event->add();
+    				if ($rc != 'OK') {
+    					$connection->rollback();
+    					$error = $rc;
+    					break;
+    				}
+    				if (!$error) {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'category' => $category,
+    			'event' => $event,
+    			'csrfForm' => $csrfForm,
+    			'error' => $error,
+    			'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
     public function addNoteAction() {
     
     	// Retrieve the context
@@ -290,12 +430,21 @@ class StudentController extends AbstractActionController
     		$account = Account::get($request->getPost('account_'.$i));
     		$accounts[] = $account;
     	}
+    	
+    	$nbCriteria = $request->getPost('nb-criteria');
+    	$criteria = array();
+    	for ($i = 0; $i < $nbCriteria; $i++) {
+    		$criterionId = $request->getPost('criterion-id_'.$i);
+    		$criterionValue = $request->getPost('criterion_'.$i);
+   			$criteria[$criterionId] = $criterionValue;
+    	}
+
     	if ($request->getPost('date')) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
-    
+    			 
     			// Load the input data
     			$data = array();
     			$data['school_year'] = $request->getPost('school_year');
@@ -304,7 +453,6 @@ class StudentController extends AbstractActionController
     			$data['reference_value'] = $request->getPost('reference_value');
     			$data['weight'] = $request->getPost('weight');
     			$data['comment'] = $request->getPost('comment');
-    			$data['status'] = 'new';
 
     			// Atomically save
     			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
@@ -347,17 +495,16 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+
+    public function addNotificationAction() {
     
-    public function addProgressAction() {
-    	 
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
+
     	// Retrieve the type
-    	$type = $this->params()->fromRoute('type', null);
-    
-    	$progress = Progress::instanciate($type);
-    	$accountProperty = $context->getConfig('progress')['types'][$type]['accountProperty']; // ex. 'property_1' for 'sport' at FM Sports
+    	$category = $this->params()->fromRoute('category', null);
+    	 
+    	$notification = Notification::instanciate('p-pit-studies');
     
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -366,20 +513,125 @@ class StudentController extends AbstractActionController
     	$message = null;
     
     	$request = $this->getRequest();
-    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
-    	$nbAccount = $request->getPost('nb-account');
-    	$accounts = array();
-    	for ($i = 0; $i < $nbAccount; $i++) {
-    		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[] = $account;
-    	}
-    
-    	if ($request->getPost('period')) {
+    	if ($request->isPost()) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
     
+    			// Load the input data
+    			$data = array();
+    			$data['category'] = $category;
+    			$data['title'] = $request->getPost('title');
+
+    			$data['content'] = $request->getPost('content');
+    			if ($request->getPost('image_src')) {
+	    		   	$data['image'] = array(
+	    				'src' => $request->getPost('image_src'),
+	    		   		'style' => $request->getPost('image_style'),
+	    				'width' => $request->getPost('image_width'),
+	    				'href' => $request->getPost('image_href'),
+	    				'target' => '_blank',
+	    		   	);
+    			}
+
+    		   	$data['begin_date'] = $request->getPost('begin_date');
+    			$data['end_date'] = $request->getPost('end_date');    			
+    			$data['comment'] = $request->getPost('comment');
+
+    			$nbCriteria = $request->getPost('nb-criteria');
+    			$data['criteria'] = array();
+    			for ($i = 0; $i < $nbCriteria; $i++) {
+    				$criterionId = $request->getPost('criterion-id_'.$i);
+    				$criterionValue = $request->getPost('criterion_'.$i);
+    				$data['criteria'][$criterionId] = $criterionValue;
+    			}
+    		    
+    			$nbAccount = $request->getPost('nb-account');
+    			$data['target'] = array();
+    			for ($i = 0; $i < $nbAccount; $i++) {
+    				$data['target'][$request->getPost('account_'.$i)] = null;
+    			}
+
+    			// Atomically save
+    			$connection = Notification::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+					$rc = $notification->loadData($data);
+    				if ($rc != 'OK') throw new \Exception('View error');
+    
+    				$rc = $notification->add();
+    				if ($rc != 'OK') {
+    					$connection->rollback();
+    					$error = $rc;
+   						break;
+   					}
+    				if (!$error) {
+    					// Write the loaded images
+						$files = $request->getFiles()->toArray();
+						if ($files) foreach ($files as $file) Instance::saveFile($file);
+
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'category' => $category,
+    			'notification' => $notification,
+    			'csrfForm' => $csrfForm,
+    			'error' => $error,
+    			'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
+	public function addProgressAction() {
+    	 
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	// Retrieve the type
+    	$type = $this->params()->fromRoute('type', null);
+    	$progress = Progress::instanciate($type);
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
+    	$request = $this->getRequest();
+    	if ($request->isPost()) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+
+    			$nbAccount = $request->getPost('nb-account');
+    			$accounts = array();
+    			for ($i = 0; $i < $nbAccount; $i++) {
+    				$account = Account::get($request->getPost('account_'.$i));
+    				$accounts[] = $account;
+    			}
+    			
+    			$nbCriteria = $request->getPost('nb-criteria');
+    			$criteria = array();
+    			for ($i = 0; $i < $nbCriteria; $i++) {
+    				$criterionId = $request->getPost('criterion-id_'.$i);
+    				$criterionValue = $request->getPost('criterion_'.$i);
+    				$criteria[$criterionId] = $criterionValue;
+    			}
+    			 
     			// Load the input data
     			$data = array();
     			$data['school_year'] = $request->getPost('school_year');
@@ -393,11 +645,10 @@ class StudentController extends AbstractActionController
     				foreach ($accounts as $account) {
     
     					$data['account_id'] = $account->id;
-    					$progress->subject = $account->properties[$accountProperty]; // ex. value of 'property_1 for 'sport' at FM Sports
+    					$progress->subject = $account->properties['property_1'];
     
-    					$rc = $progress->loadData($data);
+    					$rc = $progress->loadData($account->property_1, $data);
     					if ($rc != 'OK') throw new \Exception('View error');
-    					$progress->status = 'new';
     
     					// Check the existence and ignore in that case
     					if (Progress::retrieveExisting($progress)) break;
@@ -429,7 +680,6 @@ class StudentController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'type' => $type,
-    			'accounts' => $accounts,
     			'progress' => $progress,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
@@ -469,5 +719,39 @@ class StudentController extends AbstractActionController
 		}
 		
 //		return $this->redirect()->toRoute('home');
+	}
+
+	public function dashboardAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+	
+		$category = $this->params()->fromRoute('category');
+	
+		$absences = Absence::retrieveAll($category, $account_id);
+		$events = Event::retrieveComing('p-pit-studies', $category, $account_id);
+		$notifications = Notification::retrieveCurrents('p-pit-studies', $category, $account_id);
+		$notes = Note::retrieveAll($category, $account_id);
+		if ($category == 'sport') $progresses = Progress::retrieveAll($account->property_1, $account_id);
+		else $progresses = array();
+		
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'category' => $category,
+				'type' => $account->property_1,
+				'account' => $account,
+				'absences' => $absences,
+				'events' => $events,
+				'notifications' => $notifications,
+				'notes' => $notes,
+				'progresses' => $progresses,
+		));
+		$view->setTerminal(true);
+		return $view;
 	}
 }

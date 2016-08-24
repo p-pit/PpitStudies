@@ -1,0 +1,504 @@
+
+function connectRemoveIcon(id, target)
+{
+	$('#' + id).click(function () {
+		$('#' + target).hide();
+		$('.progress-detail-anchor').removeClass('btn-primary').addClass('btn-default');
+	});
+}
+
+function getParams() {
+
+	var params = '?', todo = true;
+
+<?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	
+	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
+	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
+	if (min_<?php echo $propertyId ?>.length >= 2) { params += 'min_<?php echo $propertyId ?>=' + min_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	var max_<?php echo $propertyId ?> = document.getElementById('search_max_<?php echo $propertyId ?>').value;
+	if (max_<?php echo $propertyId ?>) max_<?php echo $propertyId ?> = encodeDate(max_<?php echo $propertyId ?>);
+	if (max_<?php echo $propertyId ?>.length >= 2) { params += 'max_<?php echo $propertyId ?>=' + max_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	<?php else : ?>
+
+	var v_<?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (v_<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + v_<?php echo $propertyId ?> + '&'; todo = false; }
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	
+	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
+	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
+	if (min_<?php echo $propertyId ?>.length >= 2) { params += 'min_<?php echo $propertyId ?>=' + min_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	var max_<?php echo $propertyId ?> = document.getElementById('search_max_<?php echo $propertyId ?>').value;
+	if (max_<?php echo $propertyId ?>) max_<?php echo $propertyId ?> = encodeDate(max_<?php echo $propertyId ?>);
+	if (max_<?php echo $propertyId ?>.length >= 2) { params += 'max_<?php echo $propertyId ?>=' + max_<?php echo $propertyId ?> + '&'; todo = false; }
+	
+	<?php else : ?>
+
+	var v_<?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (v_<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + v_<?php echo $propertyId ?> + '&'; todo = false; }
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+	<?php
+	$todoTitle = (isset ($context->getConfig('commitmentNotification/search/p-pit-studies')['todoTitle']) ? $context->getConfig('commitmentNotification/search/p-pit-studies')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	$searchTitle = (isset ($context->getConfig('commitmentNotification/search/p-pit-studies')['searchTitle']) ? $context->getConfig('commitmentNotification/search/p-pit-studies')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
+	?>
+	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
+
+	return params;
+}
+
+// Export the list
+function exportNotificationList() {
+
+	$('#form_action').hide();
+
+	var params = getParams();
+	document.location.href = '<?php echo $this->url('studentNotification/export') ?>' + params;
+}
+
+function eraseNotificationSearch() {
+
+<?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+
+	$('#form_action').hide();
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').val('');
+	$('#search_max_<?php echo $propertyId ?>').val('');
+
+	<?php else : ?>
+	$('#search_<?php echo $propertyId ?>').val('');
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').val('');
+	$('#search_max_<?php echo $propertyId ?>').val('');
+
+	<?php else : ?>
+	$('#search_<?php echo $propertyId ?>').val('');
+	
+	<?php endif;?>
+
+<?php endforeach;?>
+
+	getNotificationList(getParams(), 'end_date', 'ASC');
+}
+
+function sortNotificationList(criterion) {
+
+	$('#form_action').hide();
+
+	var dir;
+	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	if (criterion + '-anchor' == ascCriterion) dir = 'DESC'; else dir = 'ASC';
+	getNotificationList(getParams(), criterion, dir);
+}
+
+function filterNotificationList() {
+
+	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	if (ascCriterion) {
+		criterion = ascCriterion.split('-')[0];
+		dir = 'ASC';
+	}
+	else {
+		criterion = descCriterion.split('-')[0];
+		dir = 'ASC';
+	}
+	getNotificationList(getParams(), criterion, dir);
+}
+
+function connectNotificationSearchInputs() {
+
+	$('#export-button').click(function () { exportNotificationList(); });
+	
+	$('#erase-button').unbind();
+	$('#erase-button').click(function () { eraseNotificationSearch(); });
+
+<?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
+
+		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_min_<?php echo $propertyId ?>").datepicker();
+	$("#search_max_<?php echo $propertyId ?>").datepicker();
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+		<?php endif;?>
+	
+	<?php elseif ($rendering == 'select') : ?>
+		$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+	
+	<?php else : ?>
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
+
+		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_<?php echo $propertyId ?>").datepicker();
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+		<?php endif;?>
+
+	<?php endif;?>
+
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
+
+		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_min_<?php echo $propertyId ?>").datepicker();
+	$("#search_max_<?php echo $propertyId ?>").datepicker();
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+		<?php endif;?>
+	
+	<?php elseif ($rendering == 'select') : ?>
+		$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+
+	<?php else : ?>
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
+
+		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_<?php echo $propertyId ?>").datepicker();
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
+		<?php endif;?>
+		
+	<?php endif;?>
+
+<?php endforeach;?>
+}
+
+// Load the list
+function getNotificationList(params, major, dir) {		
+
+	// Execute the ajax request
+	route = '<?php echo $this->url('studentNotification/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('notification-list-panel').innerHTML = xhttp.responseText;
+			
+			// Connect the sort anchors
+			$('.ppit-sort-anchor').each(function () {
+				$(this).click(function () {
+					sortNotificationList($(this).attr('id').split('-')[0]);
+				});
+			});
+			
+			// Connect the detail anchors
+			$('.notification-detail-anchor').each(function () {
+				$(this).click(function () {
+					getNotificationUpdate($(this).attr('id').split('_')[1]);
+				});
+			});
+		}
+	}
+	xhttp.send();
+}
+
+function connectAuditPanel()
+{
+	$('#audit-panel').hide();
+	$('#audit-label').click(function () {
+		if ($('#audit-label').text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#audit-panel').show();
+			$('#audit-label').text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+		}
+		else {
+			$('#audit-panel').hide();
+			$('#audit-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+		}
+	});
+}
+
+function uploadImage()
+{
+	// Create a new FormData object.
+	var formData = new FormData();
+
+	// Get the uploaded images
+	var fileSelect = document.getElementById('image-upload');
+	if (fileSelect) {
+		var files = fileSelect.files;
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			formData.append('order_form', file, file.name);
+		}
+	}
+
+	var xhttp = new XMLHttpRequest();
+	var route, target;
+	route = '<?php echo $this->url('instance/addImage') ?>';
+	xhttp.open('POST', route, true);
+	// Set up a handler for when the request finishes.
+	xhttp.onload = function () {
+		if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('image-preview').innerHTML = xhttp.responseText;
+			$('.image-select').each(function () {
+				$(this).click(function () {
+					$('.image-select').css('border-style', 'none');
+					$(this).css('border-style', 'solid');
+					$('#image_src').val($('#image_' + $(this).attr('id').split('_')[1]).val());
+				});
+			});
+			
+			$('#image-delete-btn').click(function () {
+				$('.image-select').css('border-style', 'none');
+				$('#image_src').val('');
+			});
+		}
+	};
+	xhttp.send(formData);
+}
+
+function connectContentPanel()
+{
+	$('#content-panel').hide();
+	$('#content-label').click(function () {
+		if ($('#content-label').text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#content-panel').show();
+			$('#content-label').text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+		}
+		else {
+			$('#content-panel').hide();
+			$('#content-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+		}
+	});
+}
+
+<?php 
+$properties = array();
+
+foreach ($context->getConfig('commitmentNotification/update/p-pit-studies')['criteria'] as $criterionId => $unused) {
+	$criterion = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$criterionId];
+	$properties[$criterionId] = array('type' => $criterion['type'], 'mandatory' => false, 'maxSize' => 255);
+}
+
+$properties['category'] = array('type' => 'select', 'mandatory' => true);
+$properties['title'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 255);
+$properties['content'] = array('type' => 'ckeditor', 'mandatory' => false, 'maxSize' => 16777215);
+$properties['image_src'] = array('type' => 'select', 'mandatory' => false);
+$properties['image_style'] = array('type' => 'select', 'mandatory' => false);
+$properties['image_width'] = array('type' => 'input', 'mandatory' => false, 'maxSize' => 255);
+$properties['image_href'] = array('type' => 'input', 'mandatory' => false, 'maxSize' => 255);
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
+
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Notification', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectNotificationUpdateForm(id)
+{
+	$('#input_begin_date').datepicker();
+	$('#input_end_date').datepicker();
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Check validity
+		var validity = checkNotificationUpdateProperties();
+
+		if (validity) {
+
+			// Create a new FormData object.
+			var formData = new FormData();
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+	<?php if ($property['type'] == 'ckeditor') : ?>
+			formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
+	<?php else : ?>	
+			formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+	<?php endif;?>
+<?php endforeach ?>
+
+			var account_id, val;
+			for (i=0; i < $('#matching-account-number').val(); i++) {
+				account_id = $('#matching-account_' + i).val();
+				if (document.getElementById('target_' + account_id + '_checkbox').checked) {
+					$('#target_' + account_id).val(1);
+				}
+				else {
+					$('#target_' + account_id).val(0);
+				}
+				formData.append('target_' + account_id, $('#target_' + account_id).val());
+			}
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('studentNotification/update') ?>/' + id;
+			target = 'form_action';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					connectRemoveIcon('remove-anchor', 'form_action');
+					connectAuditPanel();
+					CKEDITOR.replace('content');
+					connectContentPanel();
+					filterNotificationList();
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function getNotificationUpdate(id) {
+
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('studentNotification/update') ?>/' + id;
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			$('#form_action').show();
+			$(location).attr('href', '#form_action');
+			document.getElementById('form_action').innerHTML = xhttp.responseText;			
+			connectRemoveIcon('remove-anchor', 'form_action');
+			connectAuditPanel();
+			CKEDITOR.replace('content');
+			connectContentPanel();
+			connectNotificationUpdateForm(id);
+			$('#image-upload-btn').click(uploadImage);
+			$('.image-select').each(function () {
+				$(this).click(function () {
+					$('.image-select').css('border-style', 'none');
+					$(this).css('border-style', 'solid');
+					$('#image_src').val($('#image_' + $(this).attr('id').split('_')[1]).val());
+				});
+			});
+			
+			$('#image-delete-btn').click(function () {
+				$('.image-select').css('border-style', 'none');
+				$('#image_src').val('');
+			});
+			
+			// Connect the delete anchor
+			$('#delete-anchor').click(function () {
+				getNotificationDelete(id);
+			});
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#notification-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
+}
+
+function connectNotificationDeleteForm(id)
+{
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Create a new FormData object.
+		var formData = new FormData();
+			
+		// Get the properties values
+		formData.append('status', 'deleted');
+		formData.append('update_time', $('#update_time').val());
+
+		var xhttp = new XMLHttpRequest();
+		var route, target;
+		route = '<?php echo $this->url('studentNotification/delete') ?>/' + id;
+		target = 'form_action';
+		xhttp.open('POST', route, true);
+		// Set up a handler for when the request finishes.
+		xhttp.onload = function () {
+			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				document.getElementById(target).innerHTML = xhttp.responseText;
+				filterNotificationList();
+			}
+		};
+		xhttp.send(formData);
+	}
+}
+
+function getNotificationDelete(id) {
+
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('studentNotification/delete') ?>/' + id;
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			$('#form_action').show();
+			document.getElementById('form_action').innerHTML = xhttp.responseText;			
+			connectRemoveIcon('remove-anchor', 'form_action');
+			connectNotificationDeleteForm(id);
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.detail-menu-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#delete-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+function activateNotification() {
+
+	// Load the search panel and highlight the menu entry
+	loadPanel('index_action', '<?php echo $this->url('studentNotification/search') ?>');
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	var notificationAnchor = '#notification-anchor';
+	$(notificationAnchor).removeClass("btn-default").addClass("btn-primary");
+
+	<?php
+	$todoTitle = (isset ($context->getConfig('commitmentNotification/search/p-pit-studies')['todoTitle']) ? $context->getConfig('commitmentNotification/search/p-pit-studies')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	?>
+	$('#mode-text').text('<?php echo $todoTitle ?>');
+		
+	// Connect the search inputs
+	connectNotificationSearchInputs();
+	
+	getNotificationList('?', 'end_date', 'ASC');
+	
+	$('#add-criteria').click(function () {
+		mode = $('#add-criteria').text();
+		if (mode == '<?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale()) ?>') {
+			$('#add-criteria').text('<?php echo $this->translate('Less criteria', 'ppit-core', $context->getLocale()) ?>');
+			$('#search-area').show();
+		}
+		else {
+			$('#add-criteria').text('<?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale()) ?>');
+			$('#search-area').hide();
+		}
+	});
+	$('#search-area').hide();
+}

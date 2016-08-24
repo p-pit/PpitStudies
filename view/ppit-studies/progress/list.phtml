@@ -3,7 +3,7 @@
 		<th>&nbsp;</th>
 
 <?php foreach ($context->getConfig('progress/list') as $propertyId => $rendering) : ?>
-		<th align="center">
+		<th>
 	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -21,8 +21,9 @@
 <?php foreach ($progresses as $progress) : ?>
 	
 	<input type="hidden" id="progress_<?php echo $i ?>" value="<?php echo $progress->id ?>" />
+	<input type="hidden" id="progress-sport_<?php echo $i ?>" value="<?php echo $progress->subject ?>" />
 	
-	<tr style="text-align: center">
+	<tr>
 
 		<td style="text-align: center">
 			<button type="button" class="btn btn-default btn-xs index-btn progress-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="progress-detail-anchor_<?php echo $progress->id ?>">
@@ -39,7 +40,7 @@
 
 		<?php elseif ($propertyId == 'sport') : ?>
 		<td style="text-align: center">
-			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$progress->sport.'.png') ?>" title="<?php echo $progress->sport ?>" alt="<?php echo $progress->properties[$propertyId] ?>" />
+			<img height="20" src="<?php echo $this->basePath('/img/p-pit-studies/'.$type.'.png') ?>" title="<?php echo $type ?>" alt="<?php echo $type ?>" />
 		</td>
 	
 		<?php elseif ($propertyId == 'photo') : ?>

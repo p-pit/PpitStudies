@@ -29,6 +29,8 @@ class Absence implements InputFilterAwareInterface
     // Joined properties
     public $name;
     public $sport;
+    public $class;
+    public $specialty;
     public $photo;
     
     // Transient properties
@@ -62,6 +64,8 @@ class Absence implements InputFilterAwareInterface
         // Joined properties
         $this->name = (isset($data['name'])) ? $data['name'] : null;
         $this->sport = (isset($data['sport'])) ? $data['sport'] : null;
+        $this->class = (isset($data['class'])) ? $data['class'] : null;
+        $this->specialty = (isset($data['specialty'])) ? $data['specialty'] : null;
         $this->photo = (isset($data['photo'])) ? $data['photo'] : null;
     }
     
@@ -84,12 +88,12 @@ class Absence implements InputFilterAwareInterface
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
     	$select = Absence::getTable()->getSelect()
-    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'photo' => 'property_3'), 'left')
-    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name'), 'left')
+    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'), 'left')
+    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'main_contact_id'), 'left')
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
-		$where->notEqualTo('status', 'deleted');
-		$where->equalTo('student_absence.type', $type);
+		$where->notEqualTo('student_absence.status', 'deleted');
+		if ($type) $where->equalTo('student_absence.type', $type);
 		
     	// Todo list vs search modes
     	if ($mode == 'todo') {
@@ -118,8 +122,12 @@ class Absence implements InputFilterAwareInterface
     public static function retrieveAll($type, $account_id)
     {
     	$select = Absence::getTable()->getSelect()
-    		->where(array('status != ?' => 'deleted', 'account_id' => $account_id, 'type' => $type))
     		->order(array('date DESC', 'subject ASC'));
+    	$where = new Where;
+    	$where->notEqualTo('status', 'deleted');
+    	$where->equalTo('account_id', $account_id);
+    	if ($type) $where->equalTo('type', $type);
+    	$select->where($where);
     	$cursor = Absence::getTable()->selectWith($select);
     	$absences = array();
     	foreach ($cursor as $absence) $absences[] = $absence;
@@ -199,6 +207,7 @@ class Absence implements InputFilterAwareInterface
     	$context = Context::getCurrent();
 
     	$this->id = null;
+    	$this->status = 'new';
     	Absence::getTable()->save($this);
     
     	return ('OK');

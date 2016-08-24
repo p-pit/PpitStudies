@@ -1,0 +1,260 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
+		<strong>
+			<?php 
+			$title = $context->getConfig('commitmentEvent/search/p-pit-studies')['title'][$context->getLocale()];
+			echo $title;
+			?>
+			(<span id="mode-text"></span>)
+		</strong>
+	</div>
+	<div class="panel-body">
+
+<!-- Filters -->
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><span class="glyphicon glyphicon-search"></span></label>
+			<div class="col-sm-7">
+	    		<button type="button" class="form-control btn btn-default btn-xs" title="<?php echo $this->translate('Erase', 'ppit-core', $context->getLocale()) ?>" id="erase-button">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</div>
+		</div>
+		
+<?php foreach ($context->getConfig('commitmentEvent/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+
+	<?php if ($propertyId == 'title') : ?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Title', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" type="text" id="search_title" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+	
+	<?php elseif ($propertyId == 'begin_time') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Start', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_min_begin_time" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_max_begin_time" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+	
+	<?php elseif ($propertyId == 'end_time') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('End', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_min_end_time" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_max_end_time" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+	
+	<?php elseif ($propertyId == 'category') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Category', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select id="search_category" class="form-control">
+					<option value=""></option>
+		<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $labels) : ?>
+		    		<option value="<?php echo $categoryId ?>"><?php echo $labels[$context->getLocale()] ?></option>
+		<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
+	
+	<?php else : ?>
+
+		<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	
+		<?php if ($rendering == 'contains') : ?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<?php elseif ($rendering == 'range') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<?php elseif ($rendering == 'select') : ?>
+
+		<?php
+		$modalities = array();
+		foreach ($context->getConfig('student')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+			$modalities[$modalityId] = $modality[$context->getLocale()];
+		} 
+		?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+				<select id="search_<?php echo $propertyId ?>" class="form-control">
+					<option value=""></option>
+		<?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
+		    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
+		<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
+
+		<?php endif;?>
+	<?php endif;?>
+<?php endforeach;?>
+	
+		<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
+		<div id="search-area">
+		
+<?php foreach ($context->getConfig('commitmentEvent/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($propertyId == 'title') : ?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Title', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" type="text" id="search_title" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+	
+	<?php elseif ($propertyId == 'begin_time') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Start', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_min_begin_time" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_max_begin_time" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+	
+	<?php elseif ($propertyId == 'end_time') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('End', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_min_end_time" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_max_end_time" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+	
+	<?php elseif ($propertyId == 'category') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Category', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select id="search_category" class="form-control">
+					<option value=""></option>
+		<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+		    		<option value="<?php echo $categoryId ?>"><?php echo $category['labels'][$context->getLocale()] ?></option>
+		<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
+	
+	<?php else : ?>
+
+		<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	
+		<?php if ($rendering == 'contains') : ?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $label ?></label>
+				<div class="col-sm-7">
+					<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+
+		<?php elseif ($rendering == 'range') : ?>
+
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $label ?></label>
+				<div class="col-sm-7">
+		    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-5 control-label">&nbsp;</label>
+				<div class="col-sm-7">
+		    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+				</div>
+			</div>
+
+		<?php elseif ($rendering == 'select') : ?>
+
+			<?php
+			$modalities = array();
+			foreach ($context->getConfig('student')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
+				$modalities[$modalityId] = $modality[$context->getLocale()];
+			} 
+			?>
+			<div class="form-group">
+				<label class="col-sm-5 control-label"><?php echo $label ?></label>
+				<div class="col-sm-7">
+					<select id="search_<?php echo $propertyId ?>" class="form-control">
+						<option value=""></option>
+			<?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
+			    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
+			<?php endforeach;?>
+			    	</select>
+				</div>
+			</div>
+
+		<?php endif;?>
+	<?php endif;?>
+<?php endforeach;?>
+
+		</div>
+
+	    <div>&nbsp;</div>
+
+<!-- Actions -->
+	    <div>
+	    		<button type="button" class="btn btn-default" title="<?php echo $this->translate('Export', 'ppit-core', $context->getLocale()) ?>" id="export-button">
+					<span class="glyphicon glyphicon-cloud-download"></span>
+					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
+				</button>
+	    </div>
+	    
+		<div>&nbsp;</div>
+
+<!-- Add or update section -->
+		<div id="event-list-panel"></div>
+	</div>
+</div>

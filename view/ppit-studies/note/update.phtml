@@ -18,7 +18,7 @@
 
 <!-- Display the audit -->
 		<div>&nbsp;</div>
-		<?php echo $this->translate('History', 'ppit-core', $context->getLocale()) ?> (<a id="audit-label" href="#"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)
+		<?php echo $this->translate('History', 'ppit-core', $context->getLocale()) ?> (<a id="audit-label"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)
 		<div id="audit-panel" class="panel panel-default">
 			<div class="panel-body">
 	<?php foreach ($note->audit as $comment) : ?>

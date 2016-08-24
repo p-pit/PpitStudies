@@ -10,18 +10,19 @@
 	<div class="panel-body">
 
 <!-- Photo -->
-		<div style="text-align: center"><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->properties['property_3'])) ?>"/></div>
+		<div style="text-align: center"><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->main_contact_id)) ?>"/></div>
+
+		<div>&nbsp;</div>
 				
 		<ul class="nav nav-tabs">
-		  <li data-toggle="tab" class="student-tab active" id="news-flash-tab" data-target="#student-detail-panel"><a><?php echo $this->translate('News flash', 'ppit-studies', $context->getLocale()) ?></a></li>
-		  <li data-toggle="tab" class="student-tab"><a id="sport-tab" data-target="#student-detail-panel"><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></a></li>
-		  <li data-toggle="tab" class="student-tab"><a id="schooling-tab" data-target="#student-detail-panel"><?php echo $this->translate('Schooling', 'ppit-studies', $context->getLocale()) ?></a></li>
+		  <li data-toggle="tab" class="student-tab active" id="news_flash-tab"><a><?php echo $this->translate('News flash', 'ppit-studies', $context->getLocale()) ?></a></li>
+		  <li data-toggle="tab" class="student-tab"><a id="sport-tab"><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></a></li>
+		  <li data-toggle="tab" class="student-tab"><a id="schooling-tab"><?php echo $this->translate('Schooling', 'ppit-studies', $context->getLocale()) ?></a></li>
+		  <li data-toggle="tab" class="student-tab"><a id="medical-tab"><?php echo $this->translate('Medical', 'ppit-studies', $context->getLocale()) ?></a></li>
 		</ul>
 
 		<div class="tab-content">
-			<div class="tab-pane fade in active" id="student-detail-panel"></div>
-			<div class="tab-pane fade" id="sport-panel"></div>
-			<div class="tab-pane fade" id="schooling-panel"></div>
+			<div class="tab-pane fade in active" id="news_flash-panel"></div>
 		</div>
 	</div>
 </div>

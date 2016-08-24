@@ -5,7 +5,9 @@ return array(
 	'controllers' => array(
         'invokables' => array(
         	'PpitStudies\Controller\Absence' => 'PpitStudies\Controller\AbsenceController',
+        	'PpitStudies\Controller\Event' => 'PpitStudies\Controller\EventController',
         	'PpitStudies\Controller\Note' => 'PpitStudies\Controller\NoteController',
+        	'PpitStudies\Controller\Notification' => 'PpitStudies\Controller\NotificationController',
         	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
         	'PpitStudies\Controller\Sms' => 'PpitStudies\Controller\SmsController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
@@ -96,18 +98,88 @@ return array(
 		        								),
 		        						),
 		        				),
-	       						'dashboard' => array(
+	       						'delete' => array(
+				                    'type' => 'segment',
+				                    'options' => array(
+				                        'route' => '/delete[/:id]',
+					                    'constraints' => array(
+					                    	'id' => '[0-9]*',
+					                    ),
+				                    	'defaults' => array(
+				                            'action' => 'delete',
+				                        ),
+				                    ),
+				                ),
+	       		),
+            ),
+        	'studentEvent' => array(
+                'type'    => 'literal',
+                'options' => array(
+                    'route'    => '/student-event',
+                    'defaults' => array(
+                        'controller' => 'PpitStudies\Controller\Event',
+                        'action'     => 'index',
+                    ),
+                ),
+           		'may_terminate' => true,
+	       		'child_routes' => array(
+        						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/dashboard[/:account_id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
+        										'route' => '/index',
         										'defaults' => array(
-        												'action' => 'dashboard',
+        												'action' => 'index',
         										),
         								),
         						),
+        						'search' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search',
+        										'defaults' => array(
+        												'action' => 'search',
+        										),
+        								),
+        						),
+        						'list' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list',
+        										'defaults' => array(
+        												'action' => 'list',
+        										),
+        								),
+        						),
+        						'get' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/get',
+        										'defaults' => array(
+        												'action' => 'get',
+        										),
+        								),
+        						),
+	       						'export' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/export',
+        										'defaults' => array(
+        												'action' => 'export',
+        										),
+        								),
+        						),
+	       						'update' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'update',
+		        								),
+		        						),
+		        				),
 	       						'delete' => array(
 				                    'type' => 'segment',
 				                    'options' => array(
@@ -193,18 +265,6 @@ return array(
 		        								),
 		        						),
 		        				),
-	       						'dashboard' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/dashboard[/:account_id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'dashboard',
-        										),
-        								),
-        						),
 	       						'delete' => array(
 				                    'type' => 'segment',
 				                    'options' => array(
@@ -219,12 +279,12 @@ return array(
 				                ),
 	       		),
             ),
-        	'progress' => array(
+        	'studentNotification' => array(
                 'type'    => 'literal',
                 'options' => array(
-                    'route'    => '/progress',
+                    'route'    => '/student-notification',
                     'defaults' => array(
-                        'controller' => 'PpitStudies\Controller\Progress',
+                        'controller' => 'PpitStudies\Controller\Notification',
                         'action'     => 'index',
                     ),
                 ),
@@ -267,6 +327,79 @@ return array(
         								),
         						),
 	       						'update' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'update',
+		        								),
+		        						),
+		        				),
+	       						'delete' => array(
+				                    'type' => 'segment',
+				                    'options' => array(
+				                        'route' => '/delete[/:id]',
+					                    'constraints' => array(
+					                    	'id' => '[0-9]*',
+					                    ),
+				                    	'defaults' => array(
+				                            'action' => 'delete',
+				                        ),
+				                    ),
+				                ),
+	       		),
+            ),
+        	'progress' => array(
+                'type'    => 'literal',
+                'options' => array(
+                    'route'    => '/progress',
+                    'defaults' => array(
+                        'controller' => 'PpitStudies\Controller\Progress',
+                        'action'     => 'index',
+                    ),
+                ),
+           		'may_terminate' => true,
+	       		'child_routes' => array(
+        						'index' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index[/:type]',
+        										'defaults' => array(
+        												'action' => 'index',
+        										),
+        								),
+        						),
+        						'search' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search[/:type]',
+        										'defaults' => array(
+        												'action' => 'search',
+        										),
+        								),
+        						),
+        						'list' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list[/:type]',
+        										'defaults' => array(
+        												'action' => 'list',
+        										),
+        								),
+        						),
+        						'export' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/export[/:type]',
+        										'defaults' => array(
+        												'action' => 'export',
+        										),
+        								),
+        						),
+	       						'update' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/update[/:type][/:id]',
@@ -275,18 +408,6 @@ return array(
         										),
         										'defaults' => array(
         												'action' => 'update',
-        										),
-        								),
-        						),
-	       						'dashboard' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/dashboard[/:account_id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'dashboard',
         										),
         								),
         						),
@@ -382,7 +503,16 @@ return array(
         										),
         								),
         						),
-        						'search' => array(
+        						'registrationIndex' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/registration-index',
+        										'defaults' => array(
+        												'action' => 'registrationIndex',
+        										),
+        								),
+        						),
+	       						'search' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/search',
@@ -439,12 +569,30 @@ return array(
         										),
         								),
         						),
+	       						'addEvent' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-event[/:category]',
+        										'defaults' => array(
+        												'action' => 'addEvent',
+        										),
+        								),
+        						),
 	       						'addNote' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-note[/:type]',
         										'defaults' => array(
         												'action' => 'addNote',
+        										),
+        								),
+        						),
+	       						'addNotification' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-notification[/:category]',
+        										'defaults' => array(
+        												'action' => 'addNotification',
         										),
         								),
         						),
@@ -467,8 +615,20 @@ return array(
         								),
         						
         						),
-				),
-	       	),
+	       						'dashboard' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/dashboard[/:account_id][/:category]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'dashboard',
+        										),
+        								),
+        						),
+			    		),
+	    	   	),
 	    ),
     ),
 	'bjyauthorize' => array(
@@ -483,8 +643,15 @@ return array(
 				array('route' => 'absence/export', 'roles' => array('user')),
 				array('route' => 'absence/detail', 'roles' => array('user')),
 				array('route' => 'absence/update', 'roles' => array('admin')),
-				array('route' => 'absence/dashboard', 'roles' => array('user')),
 				array('route' => 'absence/delete', 'roles' => array('admin')),
+				array('route' => 'studentEvent', 'roles' => array('user')),
+				array('route' => 'studentEvent/index', 'roles' => array('user')),
+				array('route' => 'studentEvent/search', 'roles' => array('user')),
+            	array('route' => 'studentEvent/list', 'roles' => array('user')),
+            	array('route' => 'studentEvent/get', 'roles' => array('user')),
+				array('route' => 'studentEvent/export', 'roles' => array('user')),
+				array('route' => 'studentEvent/update', 'roles' => array('admin')),
+				array('route' => 'studentEvent/delete', 'roles' => array('admin')),
 				array('route' => 'note', 'roles' => array('user')),
 				array('route' => 'note/index', 'roles' => array('user')),
 				array('route' => 'note/search', 'roles' => array('user')),
@@ -492,15 +659,20 @@ return array(
 				array('route' => 'note/export', 'roles' => array('user')),
 				array('route' => 'note/detail', 'roles' => array('user')),
 				array('route' => 'note/update', 'roles' => array('admin')),
-				array('route' => 'note/dashboard', 'roles' => array('user')),
 				array('route' => 'note/delete', 'roles' => array('admin')),
+				array('route' => 'studentNotification', 'roles' => array('user')),
+				array('route' => 'studentNotification/index', 'roles' => array('user')),
+				array('route' => 'studentNotification/search', 'roles' => array('user')),
+            	array('route' => 'studentNotification/list', 'roles' => array('user')),
+				array('route' => 'studentNotification/export', 'roles' => array('user')),
+				array('route' => 'studentNotification/update', 'roles' => array('admin')),
+				array('route' => 'studentNotification/delete', 'roles' => array('admin')),
 				array('route' => 'progress', 'roles' => array('user')),
 				array('route' => 'progress/index', 'roles' => array('user')),
 				array('route' => 'progress/search', 'roles' => array('user')),
             	array('route' => 'progress/list', 'roles' => array('user')),
 				array('route' => 'progress/export', 'roles' => array('user')),
 				array('route' => 'progress/update', 'roles' => array('user')),
-				array('route' => 'progress/dashboard', 'roles' => array('user')),
 				array('route' => 'progress/delete', 'roles' => array('admin')),
 				array('route' => 'sms', 'roles' => array('responsible')),
 				array('route' => 'sms/delete', 'roles' => array('responsible')),
@@ -508,16 +680,21 @@ return array(
 				array('route' => 'sms/simulate', 'roles' => array('responsible')),
 				array('route' => 'sms/update', 'roles' => array('responsible')),
 				array('route' => 'student', 'roles' => array('user')),
+				array('route' => 'student/registrationIndex', 'roles' => array('admin')),
 				array('route' => 'student/index', 'roles' => array('user')),
 				array('route' => 'student/search', 'roles' => array('user')),
-				array('route' => 'student/detail', 'roles' => array('user')),
-            	array('route' => 'student/group', 'roles' => array('user')),
-            	array('route' => 'student/addAbsence', 'roles' => array('user')),
-            	array('route' => 'student/addNote', 'roles' => array('user')),
-				array('route' => 'student/addProgress', 'roles' => array('user')),
 				array('route' => 'student/export', 'roles' => array('user')),
             	array('route' => 'student/list', 'roles' => array('user')),
+				array('route' => 'student/detail', 'roles' => array('user')),
+				array('route' => 'student/group', 'roles' => array('user')),
+            	array('route' => 'student/addAbsence', 'roles' => array('user')),
+            	array('route' => 'student/addEvent', 'roles' => array('user')),
+				array('route' => 'student/addNote', 'roles' => array('user')),
+            	array('route' => 'student/addNotification', 'roles' => array('user')),
+				array('route' => 'student/addProgress', 'roles' => array('user')),
 				array('route' => 'student/import', 'roles' => array('admin')),
+				array('route' => 'student/dashboard', 'roles' => array('user')),
+				array('route' => 'student/update', 'roles' => array('user')),
 			)
 		)
 	),
@@ -577,43 +754,66 @@ return array(
 	'menus' => array(
 			'p-pit-studies' => array(
 					'student' => array(
-							'action' => 'Student',
 							'route' => 'student',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
 							'label' => array(
 									'en_US' => 'Students',
-									'fr_FR' => 'Eleves',
+									'fr_FR' => 'Elèves',
+							),
+					),
+					'account' => array(
+							'route' => 'student/registrationIndex',
+							'params' => array('type' => 'p-pit-studies'),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Registrations',
+									'fr_FR' => 'Inscriptions',
+							),
+					),
+					'notification' => array(
+							'route' => 'studentNotification',
+							'params' => array('type' => ''),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Notifications',
+									'fr_FR' => 'Notifications',
+							),
+					),
+					'progress' => array(
+							'route' => 'progress/index',
+							'params' => array(),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Sport progress',
+									'fr_FR' => 'Suivi sportif',
 							),
 					),
 					'note' => array(
-							'action' => 'Note',
 							'route' => 'note',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
 							'label' => array(
-									'en_US' => 'Notes',
-									'fr_FR' => 'Notes',
+									'en_US' => 'Evaluations',
+									'fr_FR' => 'Evaluations',
+							),
+					),
+					'event' => array(
+							'route' => 'studentEvent',
+							'params' => array('type' => ''),
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Appointments',
+									'fr_FR' => 'Rendez-vous',
 							),
 					),
 					'absence' => array(
-							'action' => 'Absence',
 							'route' => 'absence',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
 							'label' => array(
 									'en_US' => 'Absences',
 									'fr_FR' => 'Absences',
-							),
-					),
-					'progress' => array(
-							'action' => 'Progress',
-							'route' => 'progress',
-							'params' => array('type' => ''),
-							'urlParams' => array(),
-							'label' => array(
-									'en_US' => 'Sport progress',
-									'fr_FR' => 'Suivi sportif',
 							),
 					),
 			),
@@ -651,6 +851,9 @@ return array(
 					),
 					'place_id' => array(
 							'type' => 'select',
+							'modalities' => array(
+									'default' => array('en_US' => 'Main place', 'fr_FR' => 'Centre principal'),
+							),
 							'labels' => array(
 									'en_US' => 'Center',
 									'fr_FR' => 'Centre',
@@ -771,12 +974,16 @@ return array(
 	'commitmentAccount/update/p-pit-studies' => array(
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
+			'property_3' => array('mandatory' => false),
 			'email' => array('mandatory' => true),
 			'place_id' => array('mandatory' => true),
 			'opening_date' => array('mandatory' => true),
 			'closing_date' => array('mandatory' => false),
 			'property_1' => array('mandatory' => true),
 			'property_2' => array('mandatory' => false),
+			'property_4' => array('mandatory' => false),
+			'property_5' => array('mandatory' => false),
+			'property_6' => array('mandatory' => false),
 	),
 	'commitmentAccount/register/p-pit-studies' => array(),
 	'commitment/accountList/p-pit-studies' => array(
@@ -819,7 +1026,115 @@ return array(
 					),
 			),
 	),
+
+	'commitmentEvent/p-pit-studies' => array(
+			'category' => array(
+					'news_flash' => array(
+							'labels' => array('en_US' => 'News flash', 'fr_FR' => 'Flash info'),
+							'color' => array('green' => null),
+					),
+					'sport' => array(
+							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+							'color' => array('blue' => null),
+					),
+					'schooling' => array(
+							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+							'color' => array('orange' => null),
+					),
+					'medical' => array(
+							'labels' => array('en_US' => 'Medical', 'fr_FR' => 'Médical'),
+							'color' => array('red' => null),
+					),
+			),
+	),
+	
+	'commitmentEvent/index/p-pit-studies' => array(
+			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
+	),
+	
+	'commitmentEvent/search/p-pit-studies' => array(
+			'title' => array('en_US' => 'Appointments', 'fr_FR' => 'Rendez-vous'),
+			'todoTitle' => array('en_US' => 'To come', 'fr_FR' => 'A venir'),
+			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
+			'main' => array(
+					'sport' => 'select',
+					'class' => 'select',
+					'title' => 'contains',
+			),
+			'more' => array(
+					'category' => 'contains',
+					'specialty' => 'select',
+					'begin_time' => 'range',
+					'end_time' => 'range',
+			),
+	),
+	
+	'commitmentEvent/list/p-pit-studies' => array(
+			'begin_time' => 'date',
+			'end_time' => 'date',
+			'title' => 'text',
+	),
+	
+	'commitmentEvent/update/p-pit-studies' => array(
+			'criteria' => array(
+					'property_1' => 'select',
+					'property_4' => 'select',
+					'place_id' => 'select',
+			)
+	),
 		
+	'commitmentNotification/p-pit-studies' => array(
+			'category' => array(
+					'news_flash' => array(
+							'labels' => array('en_US' => 'News flash', 'fr_FR' => 'Flash infos'),
+					),
+					'sport' => array(
+							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+					),
+					'schooling' => array(
+							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+					),
+					'boarding_school' => array(
+							'labels' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
+					),
+			),
+	),
+
+	'commitmentNotification/index/p-pit-studies' => array(
+			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
+	),
+
+	'commitmentNotification/search/p-pit-studies' => array(
+			'title' => array('en_US' => 'Notifications', 'fr_FR' => 'Notifications'),
+			'todoTitle' => array('en_US' => 'visible', 'fr_FR' => 'visibles'),
+			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
+			'main' => array(
+					'sport' => 'select',
+					'class' => 'select',
+					'title' => 'contains',
+			),
+			'more' => array(
+					'category' => 'contains',
+					'specialty' => 'select',
+					'begin_date' => 'range',
+					'end_date' => 'range',
+			),
+	),
+	
+	'commitmentNotification/list/p-pit-studies' => array(
+			'begin_date' => 'date',
+			'end_date' => 'date',
+			'title' => 'text',
+	),
+	
+	'commitmentNotification/update/p-pit-studies' => array(
+			'criteria' => array(
+					'property_1' => 'select',
+					'property_4' => 'select',
+					'place_id' => 'select',
+			)
+	),
+	
 	'student' => array(
 			'schoolYears' => array(
 					'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017'),
@@ -890,6 +1205,47 @@ return array(
 									'fr_FR' => '',
 							),
 					),
+					'class' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'6e' => array('fr_FR' => '6e'),
+									'5e' => array('fr_FR' => '5e'),
+									'4e' => array('fr_FR' => '4e'),
+									'3e' => array('fr_FR' => '3e'),
+									'2nde' => array('fr_FR' => '2nde'),
+									'1ère' => array('fr_FR' => '1ère'),
+									'Term.' => array('fr_FR' => 'Term.'),
+							),
+							'labels' => array(
+									'en_US' => 'Class',
+									'fr_FR' => 'Classe',
+							),
+					),
+					'specialty' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'S' => array('fr_FR' => 'S'),
+									'ES' => array('fr_FR' => 'ES'),
+									'STMG' => array('fr_FR' => 'STMG'),
+							),
+							'labels' => array(
+									'en_US' => 'Specialty',
+									'fr_FR' => 'Spécialité',
+							),
+					),
+					'boarding_school' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'Interne' => array('fr_FR' => 'Interne'),
+									'Externe' => array('fr_FR' => 'Externe'),
+									'Weekend' => array('fr_FR' => 'Weekend'),
+									'Dimanche' => array('fr_FR' => 'Dimanche'),
+							),
+							'labels' => array(
+									'en_US' => 'Boarding-school',
+									'fr_FR' => 'Internat',
+							),
+					),
 			),
 	),
 
@@ -899,8 +1255,47 @@ return array(
 
 	'absence' => array(
 			'types' => array(
-					'boarding-school' => array(
+					'sport' => array(
+							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+							'subject' => array(
+									'type' => 'select',
+									'labels' => array('en_US' => 'Date', 'fr_FR' => 'Rendez-vous'),
+									'modalities' => array(
+											'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
+											'footing' => array('en_US' => 'Footing', 'fr_FR' => 'Footing'),
+									),
+							),
+					),
+					'schooling' => array(
+							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+							'subject' => array(
+									'type' => 'select',
+									'labels' => array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
+									'modalities' => array(
+											'Français' => array('en_US' => 'French', 'fr_FR' => 'Français'),
+											'Mathématiques' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
+											'Physique/chimie' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
+											'SVT' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+											'LV1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
+											'LV2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
+											'Economie' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
+											'Histoire/géographie' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+									),
+							),
+					),
+					'boarding_school' => array(
 							'labels' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
+							'subject' => array(
+									'type' => 'select',
+									'labels' => array('en_US' => 'Prestation', 'fr_FR' => 'Prestation'),
+									'modalities' => array(
+											'morning' => array('en_US' => 'Morning', 'fr_FR' => 'Matin'),
+											'lunch' => array('en_US' => 'Lunch', 'fr_FR' => 'Déjeuner'),
+											'evening' => array('en_US' => 'Evening', 'fr_FR' => 'Soir'),
+											'weekend' => array('en_US' => 'Weekend', 'fr_FR' => 'Week-end'),
+											'sunday_evening' => array('en_US' => 'Sunday evening', 'fr_FR' => 'Dimanche soir'),
+									),
+							),
 					),
 			),
 	),
@@ -909,43 +1304,17 @@ return array(
 			'title' => array('en_US' => 'Absences', 'fr_FR' => 'Absences'),
 			'todoTitle' => array('en_US' => 'to check', 'fr_FR' => 'à viser'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
-			'main' => array('school_year' => 'select', 'name' => 'contains'/*, 'subject' => 'select'*/),
+			'main' => array('school_year' => 'select', 'name' => 'contains', 'subject' => 'select'),
 			'more' => array(),
 	),
 	
 	'absence/list' => array(
 			'sport' => 'image',
+			'class' => 'select',
+			'specialty' => 'select',
 			'photo' => 'photo',
 			'name' => 'text',
 //			'subject' => 'select',
-	),
-
-	'absence/update' => array(
-			'types' => array(
-					'boarding-school' => array(
-							'labels' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
-							'subjects' => array(
-									'Matin' => array('en_US' => 'Morning', 'fr_FR' => 'Matin'),
-									'Soir' => array('en_US' => 'Evening', 'fr_FR' => 'Soir'),
-									'Week-end' => array('en_US' => 'Weekend', 'fr_FR' => 'Week-end'),
-									'Dimanche' => array('en_US' => 'Sunday', 'fr_FR' => 'Dimanche'),
-									'Footing' => array('en_US' => 'Footing', 'fr_FR' => 'Footing'),
-							),
-					),
-					'schooling' => array(
-							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
-							'subjects' => array(
-									'Français' => array('en_US' => 'French', 'fr_FR' => 'Français'),
-									'Mathématiques' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
-									'Physique/chimie' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
-									'SVT' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
-									'LV1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
-									'LV2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
-									'Economie' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
-									'Histoire/géographie' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
-							),
-					),
-			),
 	),
 
 	'note' => array(
@@ -969,10 +1338,9 @@ return array(
 	),
 	
 	'note/list' => array(
-			'sport' => 'image',
+			'subject' => 'select',
 			'photo' => 'photo',
 			'name' => 'text',
-			//			'subject' => 'select',
 	),
 	
 	'note/update' => array(
@@ -992,13 +1360,168 @@ return array(
 					),
 			),
 	),
+
+	'progress/Basketball' => array(
+			'criteria' => array(
+					'modalities' => array(
+							'NA' => array('fr_FR' => 'Non acquis'),
+							'EC' => array('fr_FR' => 'En cours'),
+							'AC' => array('fr_FR' => 'Acquis'),
+					),
+					'quantitative_criteria' => array(
+							'passe' => array(
+									'labels' => array('fr_FR' => 'Passes'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'controle' => array(
+									'labels' => array('fr_FR' => 'Contrôle ballon'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'placement' => array(
+									'labels' => array('fr_FR' => 'Placement'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'demarquage' => array(
+									'labels' => array('fr_FR' => 'Démarquage'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+					),
+			),
+	),
 		
-	'progress' => array(
-			'types' => array(
-					'sport' => array(
-							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
-							'accountProperty' => 'property_1',
-							'subjects' => array(),
+	'progress/Equitation' => array(
+			'criteria' => array(
+					'qualitative_criteria' => array(
+							'posture' => array(
+									'labels' => array('fr_FR' => 'Mise en selle'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'obstacle' => array(
+									'labels' => array('fr_FR' => 'Obstacle'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'soin' => array(
+									'labels' => array('fr_FR' => 'Soins'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+					),
+			),
+	),
+
+	'progress/Football' => array(
+			'criteria' => array(
+					'modalities' => array(
+							'NA' => array('fr_FR' => 'Non acquis'),
+							'EC' => array('fr_FR' => 'En cours'),
+							'AC' => array('fr_FR' => 'Acquis'),
+					),
+					'quantitative_criteria' => array(
+							'passe-pd' => array(
+									'labels' => array('fr_FR' => 'Passes'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'controle' => array(
+									'labels' => array('fr_FR' => 'Contrôle ballon'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'tir-pd' => array(
+									'labels' => array('fr_FR' => 'Tirs'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'tete' => array(
+									'labels' => array('fr_FR' => 'Jeu de tête'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'placement-def' => array(
+									'labels' => array('fr_FR' => 'Placement'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+							'demarquage' => array(
+									'labels' => array('fr_FR' => 'Démarquage'),
+									'type' => 'select',
+									'maxLength'  => '255',
+							),
+					),
+			),
+	),
+
+	'progress/Golf' => array(
+			'criteria' => array(
+					'qualitative_criteria' => array(
+							'chipping' => array(
+									'labels' => array('fr_FR' => 'Chipping'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'putting' => array(
+									'labels' => array('fr_FR' => 'Putting'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'bunker' => array(
+									'labels' => array('fr_FR' => 'Bunker'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'parcours' => array(
+									'labels' => array('fr_FR' => 'Parcours'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+					),
+			),
+	),
+
+	'progress/Tennis' => array(
+			'criteria' => array(
+					'qualitative_criteria' => array(
+							'coup-droit' => array(
+									'labels' => array('fr_FR' => 'Coup droit'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'revers' => array(
+									'labels' => array('fr_FR' => 'Revers'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'service' => array(
+									'labels' => array('fr_FR' => 'Service'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'volee' => array(
+									'labels' => array('fr_FR' => 'Volée'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'smash' => array(
+									'labels' => array('fr_FR' => 'Smash'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'placement' => array(
+									'labels' => array('fr_FR' => 'Placement'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
+							'jeu-jambe' => array(
+									'labels' => array('fr_FR' => 'Jeux de jambe'),
+									'type' => 'input',
+									'maxLength'  => '255',
+							),
 					),
 			),
 	),
@@ -1011,185 +1534,15 @@ return array(
 			'types' => array(
 					'sport' => array(
 							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
-							'subjects' => array(
-									'Basketball' => array(),
-									'Equitation' => array(
-											'qualitative_criteria' => array(
-													'posture' => array(
-															'labels' => array('fr_FR' => 'Mise en selle'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'obstacle' => array(
-															'labels' => array('fr_FR' => 'Obstacle'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'soin' => array(
-															'labels' => array('fr_FR' => 'Soins'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-											),
-									),
-									'Football' => array(
-											'modalities' => array(
-													'NA' => array('fr_FR' => 'Non acquis'),
-													'EC' => array('fr_FR' => 'En cours'),
-													'AC' => array('fr_FR' => 'Acquis'),
-											),
-											'quantitative_criteria' => array(
-													'passe-pd' => array(
-															'labels' => array('fr_FR' => 'Passes'),
-															'type' => 'select',
-															'maxLength'  => '255',
-													),
-													'controle' => array(
-															'labels' => array('fr_FR' => 'Contrôle ballon'),
-															'type' => 'select',
-															'maxLength'  => '255',
-													),
-													'tir-pd' => array(
-															'labels' => array('fr_FR' => 'Tirs'),
-															'type' => 'select',
-															'maxLength'  => '255',
-													),
-													'tete' => array(
-															'labels' => array('fr_FR' => 'Jeu de tête'),
-															'type' => 'select',
-															'maxLength'  => '255',
-													),
-													'placement-def' => array(
-															'labels' => array('fr_FR' => 'Placement'),
-															'type' => 'select',
-															'maxLength'  => '255',
-													),
-													'demarquage' => array(
-															'labels' => array('fr_FR' => 'Démarquage'),
-															'type' => 'select',
-															'maxLength'  => '255',
-													),
-											),
-									),
-									'Golf' => array(
-											'qualitative_criteria' => array(
-													'chipping' => array(
-															'labels' => array('fr_FR' => 'Chipping'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'putting' => array(
-															'labels' => array('fr_FR' => 'Putting'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'bunker' => array(
-															'labels' => array('fr_FR' => 'Bunker'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'parcours' => array(
-															'labels' => array('fr_FR' => 'Parcours'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-											),
-									),
-									'Tennis' => array(
-											'qualitative_criteria' => array(
-													array(
-															'labels' => array('fr_FR' => 'TECHNIQUE'),
-															'type' => 'subtitle',
-													),
-													'coup-droit' => array(
-															'labels' => array('fr_FR' => 'Coup droit'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'revers' => array(
-															'labels' => array('fr_FR' => 'Revers'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'service' => array(
-															'labels' => array('fr_FR' => 'Service'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'volee' => array(
-															'labels' => array('fr_FR' => 'Volée'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'smash' => array(
-															'labels' => array('fr_FR' => 'Smash'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													array(
-															'labels' => array('fr_FR' => 'PHYSIQUE'),
-															'type' => 'subtitle',
-													),
-													'placement' => array(
-															'labels' => array('fr_FR' => 'Placement'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'jeu-jambe' => array(
-															'labels' => array('fr_FR' => 'Jeux de jambe'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'foncier' => array(
-															'labels' => array('fr_FR' => 'Foncier'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'vitesse' => array(
-															'labels' => array('fr_FR' => 'Vitesse'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'test' => array(
-															'labels' => array('fr_FR' => 'Tests'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													array(
-															'labels' => array('fr_FR' => 'MENTAL'),
-															'type' => 'subtitle',
-													),
-													'mental' => array(
-															'labels' => array('fr_FR' => ''),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													array(
-															'labels' => array('fr_FR' => 'OBJECTIFS'),
-															'type' => 'subtitle',
-													),
-													'objectif-ct' => array(
-															'labels' => array('fr_FR' => 'Objectifs court-terme'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-													'objectif-lt' => array(
-															'labels' => array('fr_FR' => 'Objectifs long-terme'),
-															'type' => 'input',
-															'maxLength'  => '255',
-													),
-											),
-									),
-							),
 					),
 			),
 	),
 
 	'progress/search' => array(
-			'title' => array('en_US' => 'Sport progress', 'fr_FR' => 'Suivi sportif'),
-			'todoTitle' => array('en_US' => 'to be completed', 'fr_FR' => 'à compléter'),
+			'title' => array('en_US' => 'Progress', 'fr_FR' => 'Progression'),
+			'todoTitle' => array('en_US' => 'in progress', 'fr_FR' => 'en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
-			'main' => array('school_year' => 'select', 'name' => 'contains', 'period' => 'select'),
+			'main' => array('sport' => 'select', 'school_year' => 'select', 'name' => 'contains', 'period' => 'select'),
 			'more' => array(),
 	),
 

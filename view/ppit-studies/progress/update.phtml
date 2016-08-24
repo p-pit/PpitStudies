@@ -18,7 +18,7 @@
 
 <!-- Display the audit -->
 		<div>&nbsp;</div>
-		<?php echo $this->translate('History', 'ppit-core', $context->getLocale()) ?> (<a id="audit-label" href="#"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)
+		<?php echo $this->translate('History', 'ppit-core', $context->getLocale()) ?> (<a id="audit-label"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)
 		<div id="audit-panel" class="panel panel-default">
 			<div class="panel-body">
 	<?php foreach ($progress->audit as $comment) : ?>
@@ -107,10 +107,10 @@
 			<div class="col-sm-12"><p class="help-block" id="input_date_error"></p></div>
 		</div>
 
-<?php $subject = $context->getConfig('progress/detail')['types']['sport']['subjects'][$progress->subject] ?>
+<?php $criteria = $context->getConfig('progress'.(($type) ? '/'.$type : ''))['criteria'] ?>
 
-<?php if (array_key_exists('qualitative_criteria', $subject)) : ?>
-	<?php foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) : ?>
+<?php if (array_key_exists('qualitative_criteria', $criteria)) : ?>
+	<?php foreach ($criteria['qualitative_criteria'] as $criterionId => $criterion) : ?>
 
 		<?php $criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null ?>
 
@@ -134,8 +134,8 @@
 	<?php endforeach;?>
 <?php endif;?>
 
-<?php if (array_key_exists('quantitative_criteria', $subject)) : ?>
-	<?php foreach ($subject['quantitative_criteria'] as $criterionId => $criterion) : ?>
+<?php if (array_key_exists('quantitative_criteria', $criteria)) : ?>
+	<?php foreach ($criteria['quantitative_criteria'] as $criterionId => $criterion) : ?>
 
 		<?php 
 		$criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null;
@@ -161,8 +161,8 @@
 			<div class="col-sm-5">
 				<select class="form-control" id="quantitative_<?php echo $criterionId ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
-		<?php foreach ($subject['modalities'] as $key => $value) : ?>
-					<option value="<?php echo $key ?>" <?php if ($criterionValue == $key) echo ' selected="selected"' ?>><?php echo $subject['modalities'][$key][$context->getLocale()] ?></option>
+		<?php foreach ($criteria['modalities'] as $key => $value) : ?>
+					<option value="<?php echo $key ?>" <?php if ($criterionValue == $key) echo ' selected="selected"' ?>><?php echo $criteria['modalities'][$key][$context->getLocale()] ?></option>
 		<?php endforeach;?>
 				</select>
 			</div>

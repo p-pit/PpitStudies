@@ -1,3 +1,107 @@
+<div>&nbsp;</div>
+
+<?php if (count($notifications) > 0) : ?>
+
+<!-- Notifications -->
+<div id="notification-panel">
+<?php foreach ($notifications as $notification) : ?>
+
+		<div>
+		
+<?php if ($notification->image) : ?>
+				<div align="center">
+	<?php if (array_key_exists('href', $notification->image)) : ?>
+					<a href="<?php echo $notification->image['href'] ?>" target="<?php echo (array_key_exists('target', $notification->image)) ? $notification->image['target'] : '_blank' ?>">
+	<?php endif;?>
+						<img 
+	<?php foreach ($notification->image as $attr => $value) : ?>
+		<?php if ($attr == 'src') : ?>
+							src="<?php echo $this->basePath($value) ?>"
+		<?php elseif ($attr != 'href' && $attr != 'target') : ?>
+							<?php echo $attr ?>="<?php echo $value ?>"
+		<?php endif;?>
+	<?php endforeach;?>
+						/>
+	<?php if (array_key_exists('href', $notification->image)) : ?>
+					</a>
+	<?php endif;?>
+				</div>
+<?php endif;?>
+			
+				<div><?php echo $notification->content ?></div>
+		</div>
+		<hr/>
+
+<?php endforeach;?>
+</div>
+<?php endif;?>
+
+<?php if (count($absences) > 0) : ?>
+
+<!-- Absences -->
+<div id="absence-panel">
+<h4><?php echo $this->translate('Last absences', 'ppit-studies', $context->getLocale()) ?></h4>
+
+	<?php $first=true; foreach ($absences as $absence) : ?>
+
+		<div>
+			<strong><?php echo $context->decodeDate($absence->date) ?></strong>
+			<?php echo $absence->subject ?>
+		<?php if ($absence->observations) : ?>
+			<br><?php echo $absence->observations ?>
+		<?php endif;?>
+		</div>
+
+	<?php $first=false; endforeach;?>
+<hr/>
+</div>
+<?php endif;?>
+
+<?php if (count($events) > 0) : ?>
+
+<!-- Events -->
+<div id="event-panel">
+<h4><?php echo $this->translate('Coming events', 'ppit-commitment', $context->getLocale()) ?></h4>
+
+	<?php $first=true; foreach ($events as $event) : ?>
+
+		<?php if (!$first) : ?><div>&nbsp;</div><?php endif;?>
+		<div>
+			<strong><?php echo $this->translate('Begin', 'ppit-commitment', $context->getLocale()) ?></strong>: <?php echo $context->decodeDate(substr($event->begin_time, 0, 10)).' '.substr($event->begin_time, 11, 8) ?>
+		<?php if ($event->end_time) : ?>
+			<br><strong><?php echo $this->translate('End', 'ppit-commitment', $context->getLocale()) ?></strong>: <?php echo $context->decodeDate(substr($event->end_time, 0, 10)).' '.substr($event->end_time, 11, 8) ?>
+		<?php endif;?>
+			<br><strong><?php echo $this->translate('Location', 'ppit-commitment', $context->getLocale()) ?></strong>: <?php echo $event->location ?>
+			<br><strong><?php echo $event->title ?></strong>
+		<?php if ($event->content) : ?>
+			<br><?php echo $event->content ?>
+		<?php endif;?>
+		</div>
+
+	<?php $first=false; endforeach;?>
+</div>
+<?php endif;?>
+
+<?php if (count($notes) > 0) : ?>
+
+<!-- Notes -->
+<div id="note-panel">
+<h4><?php echo $this->translate('Last notes', 'ppit-studies', $context->getLocale()) ?></h4>
+	<?php $first=true; foreach ($notes as $note) : ?>
+
+		<?php if (!$first) : ?><div>&nbsp;</div><?php endif;?>
+		<div>
+			<strong><?php echo $context->decodeDate($note->date) ?></strong>
+			<?php echo $note->subject ?>:
+			<?php echo $context->formatFLoat($note->value, 2) ?>/<?php echo $context->formatFloat($note->reference_value, 0) ?>
+		<?php if ($note->observations) : ?>
+			<br><?php echo $note->observations ?>
+		<?php endif;?>
+		</div>
+	<?php $first=false; endforeach;?>
+</div>
+<?php endif;?>
+
 <?php 
 reset($progresses);
 $progress = current($progresses);
@@ -5,6 +109,8 @@ $progress = current($progresses);
 
 <?php if ($progress) : ?>
 
+<!-- Events -->
+<div id="progress-panel">
 <!-- School year -->
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
@@ -30,7 +136,7 @@ $progress = current($progresses);
 		</div>
 
 	<?php 
-	$subject = $context->getConfig('progress/detail')['types']['sport']['subjects'][$account->property_1];
+	$subject = $context->getConfig('progress'.(($type) ? '/'.$type : ''))['criteria'];
 	$columnNumber = count($progresses) + 1;
 	?>
 
@@ -111,4 +217,17 @@ $progress = current($progresses);
 
 </table>
 	<?php endif;?>
+
+<!-- Observations -->
+		<div class="form-group" id="observations_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="observations" disabled="disabled"><?php echo $progress->observations ?></textarea>
+			</div>
+		</div>
+<?php endif;?>
+
+<?php if ($category == 'news_flash') : ?>
+<div>&nbsp;</div>
+<div id='calendar'></div>
 <?php endif;?>

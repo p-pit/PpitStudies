@@ -14,13 +14,11 @@
 		<?php endif ?>
 			</button>
 		<?php if ($first && $context->isDemoModeActive()) : ?>
-			<a href="#" class="ppittooltip">
+			<a href="#" title="
+<h4><?php echo $this->translate('Ordering', 'ppit-core', $context->getLocale()) ?></h4>
+<p><?php echo $this->translate('The list can be sorted according to each column in ascending or descending order.', 'ppit-core', $context->getLocale()) ?></p>
+">
 			    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-			    <span style="font-weight: normal">
-			        <img class="callout" src="img/callout.gif" />
-			        <strong><?php echo $this->translate('Ordering', 'ppit-core', $context->getLocale()) ?></strong><br>
-			        <?php echo $this->translate('The list can be sorted according to each column in ascending or descending order.', 'ppit-core', $context->getLocale()) ?><br><br>
-			    </span>
 			</a>
 		<?php $first=false; endif;?>
 	<?php endif;?>
@@ -28,7 +26,7 @@
 <?php endforeach;?>
 
 	<tr>
-		<td>
+		<td style="text-align: center">
 			<input type="checkbox" class="account-checkbox" id="account-checkbox" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
 		</td>
 
@@ -40,16 +38,14 @@
 		
 		<td colspan="6">
 <?php if ($context->isDemoModeActive()) : ?>
-				<a href="#" class="ppittooltip">
+				<a href="#" title="
+<h4><?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale()) ?></h4>
+<p><?php echo $this->translate('The group action button operates along with the individual or global checkboxes on the left column', 'ppit-core', $context->getLocale()) ?></p>
+<p><?php echo $this->translate('It opens a new panel proposing actions to apply to a sublist of students.', 'ppit-studies', $context->getLocale()) ?></p>
+<p><?php echo $this->translate('For example you can just check students that are absent today and add an absence event applying on this list,', 'ppit-studies', $context->getLocale()) ?></p>
+<p><?php echo $this->translate('Or select the students from a class and easily input the notes of a control...', 'ppit-studies', $context->getLocale()) ?></p>
+">
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-				    <span>
-				        <img class="callout" src="img/callout.gif" />
-				        <strong><?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale()) ?></strong><br>
-				        <?php echo $this->translate('The group action button operates along with the individual or global checkboxes on the left column', 'ppit-core', $context->getLocale()) ?><br><br>
-				        <?php echo $this->translate('It opens a new panel proposing actions to apply to a sublist of students.', 'ppit-studies', $context->getLocale()) ?><br><br>
-				        <?php echo $this->translate('For example you can just check students that are absent today and add an absence event applying on this list,', 'ppit-studies', $context->getLocale()) ?><br><br>
-				        <?php echo $this->translate('Or select the students from a class and easily input the notes of a control...', 'ppit-studies', $context->getLocale()) ?><br><br>
-				    </span>
 				</a>
 				<br>
 <?php endif;?>
@@ -69,7 +65,7 @@
 		</td>
 
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default btn-xs index-btn account-detail-anchor" title="<?php echo $this->translate('Unitary actions', 'ppit-core', $context->getLocale())?>" id="account-detail-anchor_<?php echo $account->id ?>">
+			<button type="button" class="btn btn-default btn-xs index-btn account-detail-anchor" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account-detail-anchor_<?php echo $account->id ?>">
 				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
 			</button>
 		</td>
@@ -85,14 +81,14 @@
 		<?php elseif ($rendering == 'photo') : ?>
 		<td>
 			<span class="info">
-				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $account->properties[$propertyId])) ?>"/>
-				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->properties[$propertyId])) ?>"/></span>
+				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $account->main_contact_id)) ?>"/>
+				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->main_contact_id)) ?>"/></span>
 			</span>
 		</td>
 
 		<?php elseif ($rendering == 'image') : ?>
 		<td style="text-align: center">
-			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$account->properties[$propertyId].'.png') ?>" title="<?php echo $account->properties[$propertyId] ?>" alt="<?php echo $account->properties[$propertyId] ?>" /><br>
+			<img height="20" src="<?php echo $this->basePath('/img'.(($account->type) ? '/'.$account->type : '').'/'.$account->properties[$propertyId].'.png') ?>" title="<?php echo $account->properties[$propertyId] ?>" alt="<?php echo $account->properties[$propertyId] ?>" /><br>
 		</td>
 
 		<?php elseif ($rendering == 'phone') : ?>
@@ -111,12 +107,12 @@
 <?php $i++; endforeach; ?>
 
 	<tr>
-		<td>
+		<td style="text-align: center">
 			<input type="checkbox" class="account-checkbox" id="down-account-checkbox"></input>
 		</td>
 
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default btn-xs bindex-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-down-group-anchor">
+			<button type="button" class="btn btn-default btn-xs index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-down-group-anchor">
 				<span class="glyphicon glyphicon-list-alt" id="down-group-glyphicon"></span>
 			</button>
 		</td>

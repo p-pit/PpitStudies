@@ -1,4 +1,3 @@
-
 <div class="panel panel-default">
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
@@ -10,14 +9,13 @@
 		</strong>
 	
 <?php if ($context->isDemoModeActive()) : ?>
-		<a href="#" class="ppittooltip">
+		<a href="#"
+title="
+<h4><?php echo $this->translate('Student list', 'ppit-studies', $context->getLocale()) ?></h4>
+<p><?php echo $this->translate('As a default, all the currently registered students are presented in the list.', 'ppit-studies', $context->getLocale()) ?></p>
+<p><?php echo $this->translate('As soon as a criterion below is specified, the list switch in search mode.', 'ppit-studies', $context->getLocale()) ?></p>
+">
 		    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-		    <span style="text-align: left">
-		        <img class="callout" src="img/callout.gif" />
-		        <strong><?php echo $this->translate('Student list', 'ppit-studies', $context->getLocale()) ?></strong><br>
-		        <?php echo $this->translate('As a default, all the currently registered students are presented in the list.', 'ppit-studies', $context->getLocale()) ?><br><br>
-		        <?php echo $this->translate('As soon as a criterion below is specified, the list switch in search mode.', 'ppit-studies', $context->getLocale()) ?>
-		    </span>
 		</a>
 <?php endif;?>
 	</div>
@@ -31,13 +29,12 @@
 			</label>
 			<div class="col-sm-1 control-label">
 <?php if ($context->isDemoModeActive()) : ?>
-				<a href="#" class="ppittooltip">
+				<a href="#"
+title="
+<h4><?php echo $this->translate('Return in default mode', 'ppit-studies', $context->getLocale()) ?></h4>
+<p><?php echo $this->translate('The <code>x</code> button reinitializes all the search criteria and reset the list in default mode (registered students).', 'ppit-studies', $context->getLocale()) ?></p>
+">
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-				    <span>
-				        <img class="callout" src="img/callout.gif" />
-				        <strong><?php echo $this->translate('Return in default mode', 'ppit-studies', $context->getLocale()) ?></strong><br>
-				        <?php echo $this->translate('The "x" button reinitializes all the search criteria and reset the list in default mode (registered students).', 'ppit-studies', $context->getLocale()) ?><br><br>
-				    </span>
 				</a>
 <?php endif;?>
 			</div>
@@ -175,13 +172,11 @@
 					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
 				</button>
 <?php if ($context->isDemoModeActive()) : ?>
-				<a href="#" class="ppittooltip">
+				<a href="#" title="
+<h4><?php echo $this->translate('List export', 'ppit-core', $context->getLocale()) ?></h4>
+<p><?php echo $this->translate('The list is exported as it is presented: defaulting list or list resulting of a multi-criteria search.', 'ppit-core', $context->getLocale()) ?></p>
+">
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-				    <span>
-				        <img class="callout" src="img/callout.gif" />
-				        <strong><?php echo $this->translate('List export', 'ppit-core', $context->getLocale()) ?></strong><br>
-				        <?php echo $this->translate('The list is exported as it is presented: defaulting list or list resulting of a multi-criteria search.', 'ppit-core', $context->getLocale()) ?><br><br>
-				    </span>
 				</a>
 <?php endif;?>
 	    </div>

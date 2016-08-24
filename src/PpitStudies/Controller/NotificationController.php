@@ -7,28 +7,24 @@ use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
-use PpitStudies\Model\Absence;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class AbsenceController extends AbstractActionController
+class NotificationController extends AbstractActionController
 {
     public function indexAction()
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-		$instance_id = $context->getInstanceId();
-		$community_id = (int) $context->getCommunityId();
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
-		$currentEntry = $this->params()->fromQuery('entry', 'account');
+		$currentEntry = $this->params()->fromQuery('entry', 'notification');
 
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
     			'applicationName' => 'p-pit-studies',
     			'active' => 'application',
-    			'community_id' => $community_id,
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
     	));
@@ -40,11 +36,8 @@ class AbsenceController extends AbstractActionController
     	
     	// Retrieve the query parameters
     	$filters = array();
-    
-    	$name = ($params()->fromQuery('name', null));
-    	if ($name) $filters['name'] = $customer_name;
 
-    	foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -54,7 +47,7 @@ class AbsenceController extends AbstractActionController
     		if ($max_property) $filters['max_'.$propertyId] = $max_property;
     	}
 
-    	foreach ($context->getConfig('absence/search')['more'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['more'] as $propertyId => $rendering) {
     	
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -88,19 +81,18 @@ class AbsenceController extends AbstractActionController
     
     	$params = $this->getFilters($this->params());
     
-    	$major = ($this->params()->fromQuery('major', 'name'));
+    	$major = ($this->params()->fromQuery('major', 'end_date'));
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
-    
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
     	// Retrieve the list
-    	$absences = Absence::getList(null, $params, $major, $dir, $mode);
+    	$notifications = Notification::getList('p-pit-studies', $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
-    			'absences' => $absences,
+    			'notifications' => $notifications,
     			'mode' => $mode,
     			'params' => $params,
     			'major' => $major,
@@ -123,41 +115,23 @@ class AbsenceController extends AbstractActionController
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
 		$workbook = new \PHPExcel;
-		(new SsmlAbsenceViewHelper)->formatXls($workbook, $view);		
+		(new SsmlNotificationViewHelper)->formatXls($workbook, $view);		
 		$writer = new \PHPExcel_Writer_Excel2007($workbook);
 		
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition:inline;filename=Fichier.xlsx ');
 		$writer->save('php://output');
     }
-/*
-    public function detailAction()
-    {
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-    
-    	$id = (int) $this->params()->fromRoute('id', 0);
-    	if ($id) $account= Account::get($id);
-    	else $account = Account::instanciate();
-    
-    	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'id' => $account->id,
-    			'account' => $account,
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-    }*/
     
     public function updateAction()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
     
-    	// Retrieve the absence
+    	// Retrieve the notification
     	$id = (int) $this->params()->fromRoute('id', 0);
- 		$absence = Absence::get($id);
+ 		$notification = Notification::get($id);
+ 		$notification->retrieveTarget();
     
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -172,22 +146,45 @@ class AbsenceController extends AbstractActionController
     		if ($csrfForm->isValid()) { // CSRF check
     
     			// Load the input data
-
-    			// Load the input data
     			$data = array();
-				$data['update_time'] = $request->getPost('update_time');
-    			$data['date'] = $request->getPost('date');
-				$data['observations'] = $request->getPost('observations');
+    			$data['category'] = $request->getPost('category');
+    			$data['title'] = $request->getPost('title');
+
+    			$data['content'] = $request->getPost('content');
+    			if ($request->getPost('image_src')) {
+	    		   	$data['image'] = array(
+	    				'src' => $request->getPost('image_src'),
+	    		   		'style' => $request->getPost('image_style'),
+	    				'width' => $request->getPost('image_width'),
+	    				'href' => $request->getPost('image_href'),
+	    				'target' => '_blank',
+	    		   	);
+    			}
+    			else $data['image'] = array();
+
+    		   	$data['begin_date'] = $request->getPost('begin_date');
+    			$data['end_date'] = $request->getPost('end_date');
+
+    			$data['criteria'] = array();
+    			foreach ($context->getConfig('commitmentNotification/update/p-pit-studies')['criteria'] as $criterionId => $unused) {
+    				if ($request->getPost($criterionId)) $data['criteria'][$criterionId] = $request->getPost($criterionId);
+    			}
+    			$data['target'] = array();
+    		   	foreach ($notification->matchingAccounts as $account) {
+    		   		if ($request->getPost('target_'.$account->id)) $data['target'][$account->id] = null;
+    		   	}
+    			
+    		   	$data['update_time'] = $request->getPost('update_time');
 				$data['comment'] = $request->getPost('comment');
 
-				$rc = $absence->loadData($data);
+				$rc = $notification->loadData($data);
 				if ($rc != 'OK') throw new \Exception('View error');
 
     			// Atomically save
-    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection = Notification::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-					$rc = $absence->update($absence->update_time);
+					$rc = $notification->update($notification->update_time);
     				if ($rc != 'OK') {
     					$connection->rollback();
     					$error = $rc;
@@ -203,12 +200,12 @@ class AbsenceController extends AbstractActionController
     			}
     		}
     	}
-    
+
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'id' => $id,
-    			'absence' => $absence,
+    			'notification' => $notification,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message
@@ -224,7 +221,7 @@ class AbsenceController extends AbstractActionController
     
     	// Retrieve the params
     	$id = (int) $this->params()->fromRoute('id');
-    	$absence = Absence::get($id);
+    	$notification = Notification::get($id);
     	
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -242,14 +239,14 @@ class AbsenceController extends AbstractActionController
     			$data = array();
     			$data['status'] = 'deleted';
     			$data['update_time'] = $request->getPost('update_time');
-				$rc = $absence->loadData($data);
+				$rc = $notification->loadData($data);
 				if ($rc != 'OK') throw new \Exception('View error');
 
     			// Atomically save
-    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection = Notification::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-    				$rc = $absence->update($absence->update_time);
+    				$rc = $notification->update($notification->update_time);
     				if ($rc != 'OK') {
     					$connection->rollback();
     					$error = $rc;
@@ -270,10 +267,10 @@ class AbsenceController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'id' => $id,
-    			'absence' => $absence,
+    			'notification' => $notification,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
-    			'message' => $message
+    			'message' => $message,
     	));
     	$view->setTerminal(true);
     	return $view;

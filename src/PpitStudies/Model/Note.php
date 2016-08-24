@@ -93,11 +93,11 @@ class Note implements InputFilterAwareInterface
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
     	$select = Note::getTable()->getSelect()
-    		->join('commitment_account', 'student_note.account_id = commitment_account.id', array('sport' => 'property_1', 'photo' => 'property_3'), 'left')
-    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name'), 'left')
+    		->join('commitment_account', 'student_note.account_id = commitment_account.id', array('sport' => 'property_1'), 'left')
+    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'main_contact_id'), 'left')
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
-		$where->notEqualTo('status', 'deleted');
+		$where->notEqualTo('student_note.status', 'deleted');
 		$where->equalTo('student_note.type', $type);
 		
     	// Todo list vs search modes
@@ -220,6 +220,7 @@ class Note implements InputFilterAwareInterface
     	$context = Context::getCurrent();
 
     	$this->id = null;
+    	$this->status = 'new';
     	Note::getTable()->save($this);
     
     	return ('OK');

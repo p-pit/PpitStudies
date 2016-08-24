@@ -4,6 +4,7 @@ function connectRemoveIcon(id, target)
 	$('#' + id).click(function () {
 		$('#' + target).hide();
 		$('.account-checkbox').attr('disabled', null);
+		$('.index-btn').removeClass("btn-primary").addClass("btn-default");
 	});
 }
 
@@ -217,6 +218,15 @@ function getStudentList(params, major, dir) {
 			$('#account-checkbox').click(function () {
 				var current = document.getElementById('account-checkbox').checked;
 				var accountNumber = $('#account-number').val();
+				document.getElementById('down-account-checkbox').checked = (current) ? true : false;
+				for (i = 0; i < accountNumber; i++) {
+					document.getElementById('account-checkbox_' + i).checked = (current) ? true : false;
+				}
+			});
+			$('#down-account-checkbox').click(function () {
+				var current = document.getElementById('down-account-checkbox').checked;
+				var accountNumber = $('#account-number').val();
+				document.getElementById('account-checkbox').checked = (current) ? true : false;
 				for (i = 0; i < accountNumber; i++) {
 					document.getElementById('account-checkbox_' + i).checked = (current) ? true : false;
 				}
@@ -240,6 +250,58 @@ function getStudentList(params, major, dir) {
 	xhttp.send();
 }
 
+// Retrieve the events
+function getEvents(id) {
+
+	// Execute the ajax request
+	route = '<?php echo $this->url('studentEvent/get') ?>?account_id=' + id;
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		    $('#calendar').fullCalendar({
+		    	lang: '<?php echo substr($context->getLocale(), 0, 2) ?>',
+		        defaultView: 'agendaWeek'
+		    });
+			obj = jQuery.parseJSON(xhttp.responseText);
+
+			jQuery.each(obj, function (name, value) {
+				var color;			
+<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+	<?php foreach ($category['color'] as $color => $unused) : ?>
+				if (value.category == '<?php echo $categoryId ?>') color = '<?php echo $color ?>';
+	<?php endforeach;?>
+<?php endforeach;?>
+
+				var event={
+					id:value.id,
+					title: value.title + ' (' + value.location + ')',
+					color: color,
+					start:  $.fullCalendar.moment(value.begin_time), 
+					end:  $.fullCalendar.moment(value.end_time)
+				};
+				$('#calendar').fullCalendar('renderEvent', event, true);
+			});
+		}
+	}
+	xhttp.send();
+}
+
+// Load the detail panel
+function connectNewsFlashTab(route, id) {
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
+			getEvents(id);
+		}
+	}
+	xhttp.send();
+}
+
 // Load the detail panel
 function connectStudentTab(route) {
 
@@ -248,7 +310,7 @@ function connectStudentTab(route) {
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-			document.getElementById('student-detail-panel').innerHTML = xhttp.responseText;
+			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
 		}
 	}
 	xhttp.send();
@@ -273,24 +335,30 @@ function getStudentDetail(id) {
 			document.getElementById('form_action').innerHTML = xhttp.responseText;
 			
 			connectRemoveIcon('remove-anchor', 'form_action');
-			connectStudentTab('<?php echo $this->url('absence/dashboard') ?>/' + id);
+			connectNewsFlashTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/news_flash', id);
 			
-			$('#news-flash-tab').click(function () {
+			$('#news_flash-tab').click(function () {
 				$('.student-tab').removeClass('active');
-				$('#news-flash-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('absence/dashboard') ?>/' + id);
+				$('#news_flash-tab').addClass('active');
+				connectNewsFlashTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/news_flash', id);
 			});
 
 			$('#sport-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#sport-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('progress/dashboard') ?>/' + id);
+				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/sport');
 			});
 
 			$('#schooling-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#schooling-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('note/dashboard') ?>/' + id);
+				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/schooling');
+			});
+
+			$('#medical-tab').click(function () {
+				$('.student-tab').removeClass('active');
+				$('#medical-tab').addClass('active');
+				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/medical');
 			});
 		}
 	}
@@ -315,7 +383,9 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Absence', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAddAbsenceForm()
+<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
+
+function connectAdd<?php echo $typeId ?>AbsenceForm()
 {
 	$('#input_date').datepicker();
 
@@ -332,6 +402,13 @@ function connectAddAbsenceForm()
 			// Create a new FormData object.
 			var formData = new FormData();
 
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
 			var accountNumber = $('#group-nb-account').val();
 			for (i = 0; i < accountNumber; i++) {
 				formData.append('account_' + i, $('#group-account_' + i).val());
@@ -345,8 +422,8 @@ function connectAddAbsenceForm()
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('student/addAbsence', array('type' => 'boarding-school')) ?>';
-			target = 'account-grouped-action-panel';
+			route = '<?php echo $this->url('student/addAbsence', array('type' => $typeId)) ?>';
+			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -361,28 +438,137 @@ function connectAddAbsenceForm()
 	}
 }
 
-function getAddAbsence() {
+function getAdd<?php echo $typeId?>Absence() {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addAbsence', array('type' => 'boarding-school')) ?>';
+	var route = '<?php echo $this->url('student/addAbsence', array('type' => $typeId)) ?>';
 
-	xhttp.open('POST', route, true);
+	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-			document.getElementById('account-grouped-action-panel').innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('account-grouped-action-panel, route = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
-			
-			connectAddAbsenceForm();
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
+			connectAdd<?php echo $typeId ?>AbsenceForm();
 		}
 	}
 	xhttp.send();
 
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#absence-add-anchor').removeClass("btn-default").addClass("btn-primary");
+	$('#<?php echo $typeId ?>-absence-add-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+<?php endforeach;?>
+
+//////////////////////
+// student/addEvent //
+//////////////////////
+
+<?php 
+$properties = array();
+
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['begin_h'] = array('type' => 'select', 'mandatory' => false);
+$properties['begin_m'] = array('type' => 'select', 'mandatory' => false);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['end_h'] = array('type' => 'select', 'mandatory' => false);
+$properties['end_m'] = array('type' => 'select', 'mandatory' => false);
+$properties['location'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
+$properties['title'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Event', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectAddEventForm(category)
+{
+	$('#input_begin_date').datepicker();
+	$('#input_end_date').datepicker();
+
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Check validity
+		var validity = checkEventUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+			}
+			formData.append('nb-account', accountNumber);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addEvent') ?>/' + category;
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function getAddEvent(category) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addEvent') ?>/' + category;
+	var formData = new FormData();
+
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+			connectAddEventForm(category);
+			$('#subject').focus();
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#' + category + '-event-add-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
 /////////////////////
@@ -418,6 +604,13 @@ function connectAddNoteForm()
 			// Create a new FormData object.
 			var formData = new FormData();
 
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
 			var accountNumber = $('#group-nb-account').val();
 			for (var i = 0; i < accountNumber; i++) {
 				account_id = $('#group-account_' + i).val();
@@ -447,7 +640,7 @@ function connectAddNoteForm()
 			var xhttp = new XMLHttpRequest();
 			var route, target;
 			route = '<?php echo $this->url('student/addNote', array('type' => 'schooling')) ?>';
-			target = 'account-grouped-action-panel';
+			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -468,6 +661,13 @@ function getAddNote() {
 	var route = '<?php echo $this->url('student/addNote', array('type' => 'schooling')) ?>';
 	var formData = new FormData();
 
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
 	var accountNumber = $('#account-number').val();
 	for (i = 0, j = 0; i < accountNumber; i++) {
 		if (document.getElementById('account-checkbox_' + i).checked) {
@@ -480,12 +680,7 @@ function getAddNote() {
 	xhttp.open('POST', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-			document.getElementById('account-grouped-action-panel').innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('account-grouped-action-panel, route = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
-			
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
 			connectAddNoteForm();
 			$('#subject').focus();
 		}
@@ -494,7 +689,194 @@ function getAddNote() {
 
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#note-add-anchor').removeClass("btn-default").addClass("btn-primary");
+	$('#evaluation-add-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+/////////////////////////////
+// student/addNotification //
+/////////////////////////////
+
+function connectContentPanel()
+{
+	$('#content-panel').hide();
+	$('#content-label').click(function () {
+		if ($('#content-label').text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#content-panel').show();
+			$('#content-label').text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+		}
+		else {
+			$('#content-panel').hide();
+			$('#content-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+		}
+	});
+}
+
+function uploadImage()
+{
+	// Create a new FormData object.
+	var formData = new FormData();
+
+	// Get the uploaded images
+	var fileSelect = document.getElementById('image-upload');
+	if (fileSelect) {
+		var files = fileSelect.files;
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			formData.append('order_form', file, file.name);
+		}
+	}
+
+	var xhttp = new XMLHttpRequest();
+	var route, target;
+	route = '<?php echo $this->url('instance/addImage') ?>';
+	xhttp.open('POST', route, true);
+	// Set up a handler for when the request finishes.
+	xhttp.onload = function () {
+		if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('image-preview').innerHTML = xhttp.responseText;
+			$('.image-select').each(function () {
+				$(this).click(function () {
+					$('.image-select').css('border-style', 'none');
+					$(this).css('border-style', 'solid');
+					$('#image_src').val($('#image_' + $(this).attr('id').split('_')[1]).val());
+				});
+			});
+			
+			$('#image-delete-btn').click(function () {
+				$('.image-select').css('border-style', 'none');
+				$('#image_src').val('');
+			});
+		}
+	};
+	xhttp.send(formData);
+}
+
+<?php 
+$properties = array();
+
+$properties['title'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 255);
+$properties['content'] = array('type' => 'ckeditor', 'mandatory' => false, 'maxSize' => 16777215);
+$properties['image_src'] = array('type' => 'select', 'mandatory' => false);
+$properties['image_style'] = array('type' => 'select', 'mandatory' => false);
+$properties['image_width'] = array('type' => 'input', 'mandatory' => false, 'maxSize' => 255);
+$properties['image_href'] = array('type' => 'input', 'mandatory' => false, 'maxSize' => 255);
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Notification', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectAddNotificationForm(category)
+{
+	$('#input_begin_date').datepicker();
+	$('#input_end_date').datepicker();
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+
+		event.preventDefault();
+
+		// Check validity
+		var validity = checkNotificationUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+			}
+			formData.append('nb-account', accountNumber);
+
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+	<?php if ($property['type'] == 'ckeditor') : ?>
+			formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
+	<?php else : ?>	
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+	<?php endif;?>
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addNotification') ?>/' + category;
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+					CKEDITOR.replace('content');
+					connectContentPanel();
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function getAddNotification(category) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addNotification') ?>/' + category;
+	var formData = new FormData();
+
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+			CKEDITOR.replace('content');
+			connectContentPanel();
+			connectAddNotificationForm(category);
+			$('#image-upload-btn').click(uploadImage);
+			$('#subject').focus();
+			$('.image-select').each(function () {
+				$(this).click(function () {
+					$('.image-select').css('border-style', 'none');
+					$(this).css('border-style', 'solid');
+					$('#image_src').val($('#image_' + $(this).attr('id').split('_')[1]).val());
+				});
+			});
+			
+			$('#image-delete-btn').click(function () {
+				$('.image-select').css('border-style', 'none');
+				$('#image_src').val('');
+			});
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#' + category + '-notification-add-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
 /////////////////////////
@@ -510,13 +892,13 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Progress', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAddProgressForm()
+function connectAddProgressForm(sport)
 {
 	$('#input_date').datepicker();
 
 	var form = document.getElementById('ppit-form');
 	form.onsubmit = function(event) {
-		
+
 		event.preventDefault();
 
 		// Check validity
@@ -526,6 +908,13 @@ function connectAddProgressForm()
 		
 			// Create a new FormData object.
 			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
 
 			var accountNumber = $('#group-nb-account').val();
 			for (i = 0; i < accountNumber; i++) {
@@ -540,8 +929,8 @@ function connectAddProgressForm()
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('student/addProgress', array('type' => 'sport')) ?>';
-			target = 'account-grouped-action-panel';
+			route = '<?php echo $this->url('student/addProgress') ?>/' + sport;
+			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -557,27 +946,22 @@ function connectAddProgressForm()
 	}
 }
 
-function getAddProgress() {
+function getAddProgress(sport) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addProgress', array('type' => 'sport')) ?>';
+	var route = '<?php echo $this->url('student/addProgress') ?>/' + sport;
 
-	xhttp.open('POST', route, true);
+	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-			document.getElementById('account-grouped-action-panel').innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('account-grouped-action-panel, route = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
-			
-			connectAddProgressForm();
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
+			connectAddProgressForm(sport);
 		}
 	}
 	xhttp.send();
 
 	// Highlight the clicked button (and only it in its class)
-	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
 	$('#progress-add-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
@@ -585,8 +969,6 @@ function getStudentGroup() {
 
 	// Ensure the target is displayed
 	$('#form_action').show();
-
-	// Anchor to the new panel
 	$(location).attr('hash', 'form_action');
 
 	// Disabled the list checkboxes
@@ -603,6 +985,42 @@ function getStudentGroup() {
 	}
 	formData.append('nb-account', j);
 
+	var sport;
+
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+	<?php if ($rendering == 'range') : ?>
+
+	formData.append('min_<?php echo $propertyId ?>', $('#search_min_<?php echo $propertyId ?>').val());
+	formData.append('max_<?php echo $propertyId ?>', $('#search_max_<?php echo $propertyId ?>').val());
+
+	<?php else : ?>
+
+	<?php if ($propertyId == 'property_1') : ?>
+	sport = $('#search_property_1').val();
+	<?php endif;?>
+
+	formData.append('<?php echo $propertyId ?>', $('#search_<?php echo $propertyId ?>').val());
+	
+	<?php endif;?>
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+	<?php if ($rendering == 'range') : ?>
+	
+	formData.append('min_<?php echo $propertyId ?>', $('#search_min_<?php echo $propertyId ?>').val());
+	formData.append('max_<?php echo $propertyId ?>', $('#search_max_<?php echo $propertyId ?>').val());
+
+	<?php else : ?>
+
+	<?php if ($propertyId == 'property_1') : ?>
+	sport = $('#search_property_1').val();
+	<?php endif;?>
+
+	formData.append('<?php echo $propertyId ?>', $('#search_<?php echo $propertyId ?>').val());
+	
+	<?php endif;?>
+<?php endforeach;?>
+
 	// Execute the ajax request
 	xhttp = new XMLHttpRequest();
 	xhttp.open("POST", route, true);
@@ -615,16 +1033,92 @@ function getStudentGroup() {
 <?php endif;?>
 			
 			connectRemoveIcon('remove-anchor', 'form_action');
-			$('#absence-add-anchor').click(function () { getAddAbsence(); });
-			$('#evaluation-add-anchor').click(function () { getAddNote(); });
-			$('#progress-add-anchor').click(function () { getAddProgress(); });
+	
+			$('.group-panel').hide();
+			$('#news_flash-panel').show();
+			
+			$('#news_flash-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				$('.group-tab').removeClass('active');
+				$('#news_flash-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#news_flash-panel').show();
+			});
+
+			$('#sport-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				$('.group-tab').removeClass('active');
+				$('#sport-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#sport-panel').show();
+			});
+
+			$('#schooling-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				$('.group-tab').removeClass('active');
+				$('#schooling-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#schooling-panel').show();
+			});
+
+			$('#boarding_school-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				$('.group-tab').removeClass('active');
+				$('#boarding_school-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#boarding_school-panel').show();
+			});
+
+			$('#medical-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+				$('.group-tab').removeClass('active');
+				$('#medical-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#medical-panel').show();
+			});
+
+<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
+			$('#<?php echo $typeId ?>-absence-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAdd<?php echo $typeId ?>Absence(); 
+			});
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentNotification/p-pit-studies')['category'] as $categoryId => $category) : ?>
+			$('#<?php echo $categoryId ?>-notification-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddNotification('<?php echo $categoryId ?>'); 
+			});
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+			$('#<?php echo $categoryId ?>-event-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddEvent('<?php echo $categoryId ?>'); 
+			});
+<?php endforeach;?>
+
+			$('#evaluation-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddNote(); 
+			});
+
+			$('#progress-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddProgress(sport); 
+			});
 		}
 	}
 	xhttp.send(formData);
 
 	// Highlight the clicked button (and only it in its class)
 	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#account-group-anchor').removeClass("btn-default").addClass("btn-primary");
+	$('.account-group-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
 function activateStudent() {

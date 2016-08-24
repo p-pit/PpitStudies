@@ -1,0 +1,84 @@
+<table class="table table-striped ppit_index">
+	<tr>
+		<th>&nbsp;</th>
+
+<?php foreach ($context->getConfig('commitmentNotification/list/p-pit-studies') as $propertyId => $rendering) : ?>
+		<th align="center">
+	<?php
+	if ($propertyId == 'category') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'begin_date') $label = $this->translate('Display start', 'ppit-commitment', $context->getLocale());
+	elseif ($propertyId == 'end_date') $label = $this->translate('Display end', 'ppit-commitment', $context->getLocale());
+	elseif ($propertyId == 'title') $label =  $this->translate('Title', 'ppit-commitment', $context->getLocale());
+	else $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()];
+	?>
+	<?php if ($label) : ?>
+			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
+				<span><?php echo $label ?></span>
+<?php if ($major == $propertyId) : ?>
+				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+			</button>
+	<?php endif;?>
+		</th>
+<?php endforeach;?>
+
+	</tr>
+
+<?php foreach ($notifications as $notification) : ?>
+	
+	<input type="hidden" id="notification_<?php echo $i ?>" value="<?php echo $notification->id ?>" />
+	
+	<tr style="text-align: center">
+
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default btn-xs index-btn notification-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="notification-detail-anchor_<?php echo $notification->id ?>">
+				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
+			</button>
+		</td>
+
+	<?php foreach ($context->getConfig('commitmentNotification/list/p-pit-studies') as $propertyId => $rendering) : ?>
+
+		<?php if ($propertyId == 'begin_date') : ?>
+		<td><?php echo $context->decodeDate($notification->begin_date) ?></td>
+			
+		<?php elseif ($propertyId == 'end_date') : ?>
+		<td><?php echo $context->decodeDate($notification->end_date) ?></td>
+			
+		<?php elseif ($propertyId == 'title') : ?>
+		<td><?php echo $notification->title ?></td>
+
+		<?php else : ?>	
+	
+			<?php $property = $context->getConfig('student')['properties'][$propertyId] ?>
+		
+			<?php if ($rendering == 'text') : ?>
+		<td><?php echo $notification->properties[$propertyId] ?></td>
+
+			<?php elseif ($rendering == 'image') : ?>
+		<td style="text-align: center">
+			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$notification->properties[$propertyId].'.png') ?>" title="<?php echo $notification->properties[$propertyId] ?>" alt="<?php echo $notification->properties[$propertyId] ?>" />
+		</td>
+
+			<?php elseif ($rendering == 'phone') : ?>
+		<td>
+			<a href="tel:<?php echo $notification->properties[$propertyId] ?>"><?php echo $notification->properties[$propertyId] ?></a>
+		</td>
+
+			<?php elseif ($rendering == 'select') : ?>
+		<td>
+			<?php echo $property['modalities'][$notification->properties[$propertyId]][$context->getLocale()] ?>
+		</td>
+	
+			<?php else : ?>
+		<td><?php echo $notification->properties[$propertyId] ?></td>
+
+			<?php endif;?>		
+		<?php endif;?>
+		
+	<?php endforeach;?>
+	
+	</tr>
+	
+<?php endforeach; ?>
+
+</table>
