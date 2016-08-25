@@ -104,7 +104,7 @@ function eraseStudentSearch() {
 
 <?php endforeach;?>
 
-	getStudentList(getParams(), 'customer_name', 'ASC');
+	getStudentList(getParams(), 'n_fn', 'ASC');
 }
 
 function sortStudentList(criterion) {
@@ -206,6 +206,14 @@ function getStudentList(params, major, dir) {
 
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 			document.getElementById('account-list-panel').innerHTML = xhttp.responseText;
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
 			
 			// Connect the sort anchors
 			$('.ppit-sort-anchor').each(function () {
@@ -333,6 +341,14 @@ function getStudentDetail(id) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 			document.getElementById('form_action').innerHTML = xhttp.responseText;
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
 			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectNewsFlashTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/news_flash', id);
@@ -853,6 +869,15 @@ function getAddNotification(category) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
+
 			CKEDITOR.replace('content');
 			connectContentPanel();
 			connectAddNotificationForm(category);
@@ -1027,10 +1052,14 @@ function getStudentGroup() {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 			document.getElementById('form_action').innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('showing panel: form_action, url = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
 			
 			connectRemoveIcon('remove-anchor', 'form_action');
 	
@@ -1138,7 +1167,7 @@ function activateStudent() {
 	// Connect the search inputs
 	connectStudentSearchInputs();
 	
-	getStudentList('?', 'customer_name', 'ASC');
+	getStudentList('?', 'n_fn', 'ASC');
 	
 	$('#add-criteria').click(function () {
 		mode = $('#add-criteria').text();

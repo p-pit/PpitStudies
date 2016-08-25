@@ -831,7 +831,7 @@ return array(
 					'n_first' => array(
 							'type' => 'input',
 							'labels' => array(
-									'en_US' => 'Fisrst name',
+									'en_US' => 'First name',
 									'fr_FR' => 'Prénom',
 							),
 					),
@@ -839,6 +839,13 @@ return array(
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Last name',
+									'fr_FR' => 'Nom',
+							),
+					),
+					'n_fn' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Name',
 									'fr_FR' => 'Nom',
 							),
 					),
@@ -943,6 +950,7 @@ return array(
 							),
 					),
 			),
+			'order' => 'n_fn',
 	),
 	'commitmentAccount/index/p-pit-studies' => array(
 			'title' => array('en_US' => 'P-PIT Commitments', 'fr_FR' => 'P-PIT Engagements'),
@@ -964,7 +972,7 @@ return array(
 	'commitmentAccount/list/p-pit-studies' => array(
 			'property_1' => 'image',
 			'property_3' => 'photo',
-			'customer_name' => 'text',
+			'n_fn' => 'text',
 			'property_2' => 'phone',
 	),
 	'commitmentAccount/detail/p-pit-studies' => array(
@@ -1311,7 +1319,6 @@ return array(
 	'absence/list' => array(
 			'sport' => 'image',
 			'class' => 'select',
-			'specialty' => 'select',
 			'photo' => 'photo',
 			'name' => 'text',
 //			'subject' => 'select',
