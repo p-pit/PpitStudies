@@ -5,11 +5,11 @@
 <?php foreach ($context->getConfig('commitmentNotification/list/p-pit-studies') as $propertyId => $rendering) : ?>
 		<th align="center">
 	<?php
-	if ($propertyId == 'category') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
-	elseif ($propertyId == 'begin_date') $label = $this->translate('Display start', 'ppit-commitment', $context->getLocale());
+	if ($propertyId == 'begin_date') $label = $this->translate('Display start', 'ppit-commitment', $context->getLocale());
 	elseif ($propertyId == 'end_date') $label = $this->translate('Display end', 'ppit-commitment', $context->getLocale());
 	elseif ($propertyId == 'title') $label =  $this->translate('Title', 'ppit-commitment', $context->getLocale());
-	else $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()];
+	elseif ($rendering == 'select') $label = $context->getConfig('student/'.$propertyId)['labels'][$context->getLocale()];
+	else $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()];
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -49,7 +49,7 @@
 
 		<?php else : ?>	
 	
-			<?php $property = $context->getConfig('student')['properties'][$propertyId] ?>
+			<?php $property = $context->getConfig('student/property/'.$propertyId) ?>
 		
 			<?php if ($rendering == 'text') : ?>
 		<td><?php echo $notification->properties[$propertyId] ?></td>

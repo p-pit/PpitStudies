@@ -143,12 +143,19 @@ function connectAbsenceSearchInputs() {
 	$('#erase-button').click(function () { eraseAbsenceSearch(); });
 
 <?php foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'type'
+		||	$propertyId == 'school_year'
+		||	$propertyId == 'period'
+		||	$propertyId == 'subject') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
@@ -160,23 +167,25 @@ function connectAbsenceSearchInputs() {
 	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
-
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
-		<?php endif;?>
 
 	<?php endif;?>
 
 <?php endforeach;?>
 
 <?php foreach ($context->getConfig('absence/search')['more'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'type'
+		||	$propertyId == 'school_year'
+		||	$propertyId == 'period'
+		||	$propertyId == 'subject') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
@@ -185,15 +194,10 @@ function connectAbsenceSearchInputs() {
 	
 	<?php elseif ($rendering == 'select') : ?>
 		$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
-
+	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
-		<?php endif;?>
-		
 	<?php endif;?>
 
 <?php endforeach;?>
@@ -207,8 +211,11 @@ function getAbsenceList(params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('absence-list-panel').innerHTML = xhttp.responseText;
 			
 			// Connect the sort anchors
@@ -224,6 +231,9 @@ function getAbsenceList(params, major, dir) {
 					getAbsenceUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -303,7 +313,11 @@ function getAbsenceUpdate(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			$(location).attr('href', '#form_action');
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
@@ -315,6 +329,9 @@ function getAbsenceUpdate(id) {
 			$('#delete-anchor').click(function () {
 				getAbsenceDelete(id);
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -362,11 +379,18 @@ function getAbsenceDelete(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectAbsenceDeleteForm(id);
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();

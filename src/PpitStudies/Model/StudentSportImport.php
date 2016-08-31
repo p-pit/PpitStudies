@@ -396,7 +396,7 @@ class StudentSportImport implements InputFilterAwareInterface
 	    		Vcard::getTable()->save($vcard);
 	
 	    		$community->name = $vcard->n_fn;
-	    		$community->main_contact_id = $vcard->id;
+	    		$community->contact_1_id = $vcard->id;
 	    		Community::getTable()->save($community);
 	    		
 	    		$user = new User;
@@ -471,7 +471,7 @@ class StudentSportImport implements InputFilterAwareInterface
 					Vcard::getTable()->save($vcard);
 
 		    		$community->name = $vcard->n_fn;
-		    		$community->main_contact_id = $vcard->id;
+		    		$community->contact_1_id = $vcard->id;
 		    		Community::getTable()->save($community);
 				}
 				$account->customer_community_id = $community->id;

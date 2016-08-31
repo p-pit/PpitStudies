@@ -4,7 +4,13 @@
 
 <?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
 		<th align="center">
-	<?php $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+	<?php 
+	if ($propertyId == 'discipline') $property = $context->getConfig('student/property/discipline');
+	elseif ($propertyId == 'level') $property = $context->getConfig('student/property/level');
+	elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
+	else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+	$label = $property['labels'][$context->getLocale()];
+	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
 				<span><?php echo $label ?></span>
@@ -32,23 +38,18 @@
 
 	<?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
 	
-		<?php $property = $context->getConfig('student')['properties'][$propertyId] ?>
-	
 		<?php if ($propertyId == 'name') : ?>
 		<td><?php echo $absence->name ?></td>
 
-		<?php elseif ($propertyId == 'sport') : ?>
+		<?php elseif ($propertyId == 'discipline') : ?>
 		<td style="text-align: center">
 			<img height="20" src="<?php echo $this->basePath('/img/p-pit-studies/'.$absence->sport.'.png') ?>" title="<?php echo $absence->sport ?>" alt="<?php echo $absence->sport ?>" />
 		</td>
 
-		<?php elseif ($propertyId == 'class') : ?>
-		<td><?php echo $property['modalities'][$absence->class][$context->getLocale()] ?>
-
-		<?php elseif ($propertyId == 'specialty') : ?>
-		<td><?php echo $property['modalities'][$absence->specialty][$context->getLocale()] ?>
+		<?php elseif ($propertyId == 'level') : ?>
+		<td><?php echo $context->getConfig('student/property/level')['modalities'][$absence->class][$context->getLocale()] ?>
 	
-		<?php elseif ($propertyId == 'photo') : ?>
+		<?php elseif ($propertyId == 'contact_1_id') : ?>
 		<td>
 			<span class="info">
 				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $absence->photo)) ?>"/>
@@ -62,15 +63,6 @@
 		<?php elseif ($rendering == 'image') : ?>
 		<td style="text-align: center">
 			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$absence->properties[$propertyId].'.png') ?>" title="<?php echo $absence->properties[$propertyId] ?>" alt="<?php echo $absence->properties[$propertyId] ?>" />
-		</td>
-
-		<?php elseif ($rendering == 'phone') : ?>
-		<td>
-			<a href="tel:<?php echo $absence->properties[$propertyId] ?>"><?php echo $absence->properties[$propertyId] ?></a>
-		</td>
-
-		<?php elseif ($rendering == 'select') : ?>
-		<td><?php echo $property['modalities'][$absence->properties[$propertyId]][$context->getLocale()] ?>
 		</td>
 	
 		<?php else : ?>

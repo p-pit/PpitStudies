@@ -93,7 +93,7 @@ class NoteController extends AbstractActionController
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
     	// Retrieve the list
-    	$notes = Note::getList('schooling', $params, $major, $dir, $mode);
+    	$notes = Note::getList(null, $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(

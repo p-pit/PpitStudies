@@ -92,7 +92,7 @@ class Progress implements InputFilterAwareInterface
     {
     	$select = Progress::getTable()->getSelect()
     		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array('sport' => 'property_1'), 'left')
-    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'main_contact_id'), 'left')
+    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
     		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('commitment_account.status', 'deleted');
@@ -100,7 +100,7 @@ class Progress implements InputFilterAwareInterface
 		
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-    		$where->notEqualTo('commitment_account.status', 'completed');
+    		$where->notEqualTo('student_progress.status', 'completed');
     	}
     	else {
 

@@ -9,12 +9,7 @@
 		</strong>
 	
 <?php if ($context->isDemoModeActive()) : ?>
-		<a class="tip" href="#"
-title="
-<h4><?php echo $this->translate('Student list', 'ppit-studies', $context->getLocale()) ?></h4>
-<p><?php echo $this->translate('As a default, all the currently registered students are presented in the list.', 'ppit-studies', $context->getLocale()) ?></p>
-<p><?php echo $this->translate('As soon as a criterion below is specified, the list switch in search mode.', 'ppit-studies', $context->getLocale()) ?></p>
-">
+		<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/title'][$context->getLocale()] ?>">
 		    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
 		</a>
 <?php endif;?>
@@ -29,11 +24,7 @@ title="
 			</label>
 			<div class="col-sm-1 control-label">
 <?php if ($context->isDemoModeActive()) : ?>
-				<a class="tip" href="#"
-title="
-<h4><?php echo $this->translate('Return in default mode', 'ppit-studies', $context->getLocale()) ?></h4>
-<p><?php echo $this->translate('The <code>x</code> button reinitializes all the search criteria and reset the list in default mode (registered students).', 'ppit-studies', $context->getLocale()) ?></p>
-">
+				<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/x'][$context->getLocale()] ?>">
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
 				</a>
 <?php endif;?>
@@ -46,9 +37,46 @@ title="
 		</div>
 		
 <?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
+
+	<?php if ($rendering != 'select') $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()]; ?>
+
+	<?php if ($rendering == 'select') : ?>
+
+		<?php
+		if ($propertyId == 'place_id') $property = $context->getConfig('student/property/place');
+		elseif ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
+		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
+		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
+		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
+		else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+
+		$label = $property['labels'][$context->getLocale()];
+		
+		$modalities = array();
+		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
+			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
+				$modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
+			} 
+		}
+		else {
+			foreach ($property['modalities'] as $modalityId => $modality) {
+				$modalities[$modalityId] = $modality[$context->getLocale()];
+			} 
+		}
+		?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+				<select id="search_<?php echo $propertyId ?>" class="form-control">
+					<option value=""></option>
+		<?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
+		    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
+		<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
 	
-	<?php if ($rendering == 'contains') : ?>
+	<?php elseif ($rendering == 'contains') : ?>
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
 			<div class="col-sm-7">
@@ -72,13 +100,39 @@ title="
 			</div>
 		</div>
 
-	<?php elseif ($rendering == 'select') : ?>
+	<?php endif;?>
+<?php endforeach;?>
+	
+		<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
+		<div id="search-area">
+		
+<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+
+	<?php if ($rendering != 'select') $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()]; ?>
+
+	<?php if ($rendering == 'select') : ?>
 
 		<?php
+		if ($propertyId == 'place_id') $property = $context->getConfig('student/property/place');
+		elseif ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
+		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
+		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
+		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
+		else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+
+		$label = $property['labels'][$context->getLocale()];
+		
 		$modalities = array();
-		foreach ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
-			$modalities[$modalityId] = $modality[$context->getLocale()];
-		} 
+		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
+			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
+				$modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
+			} 
+		}
+		else {
+			foreach ($property['modalities'] as $modalityId => $modality) {
+				$modalities[$modalityId] = $modality[$context->getLocale()];
+			} 
+		}
 		?>
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
@@ -91,72 +145,30 @@ title="
 		    	</select>
 			</div>
 		</div>
-
-	<?php endif;?>
-<?php endforeach;?>
-	
-		<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
-		<div id="search-area">
-		
-<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
-	<?php $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()] ?>
-
-	<?php if ($propertyId == 'place_id') : ?>
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-					<select id="search_<?php echo $propertyId ?>" class="form-control">
-						<option value=""><-- <?php echo $this->translate('Please select a value', 'ppit-core', $context->getLocale()) ?> --></option>
-			<?php foreach ($places as $place) : ?>
-			    		<option value="<?php echo $place->id ?>"><?php echo $place->name ?></option>
-			<?php endforeach;?>
-			    	</select>
-				</div>
-			</div>
 	
 	<?php elseif ($rendering == 'contains') : ?>
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-					<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
-				</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
+		</div>
 
 	<?php elseif ($rendering == 'range') : ?>
 
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-		    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
-				</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
+		</div>
 
-			<div class="form-group">
-				<label class="col-sm-5 control-label">&nbsp;</label>
-				<div class="col-sm-7">
-		    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
-				</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
-
-	<?php elseif ($rendering == 'select') : ?>
-
-		<?php
-		$modalities = array();
-		foreach ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['modalities'] as $modalityId => $modality) {
-			$modalities[$modalityId] = $modality[$context->getLocale()];
-		} 
-		?>
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-					<select id="search_<?php echo $propertyId ?>" class="form-control">
-						<option value=""></option>
-		<?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
-			    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
-		<?php endforeach;?>
-			    	</select>
-				</div>
-			</div>
+		</div>
 
 	<?php endif;?>
 <?php endforeach;?>
@@ -172,10 +184,7 @@ title="
 					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
 				</button>
 <?php if ($context->isDemoModeActive()) : ?>
-				<a class="tip" href="#" title="
-<h4><?php echo $this->translate('List export', 'ppit-core', $context->getLocale()) ?></h4>
-<p><?php echo $this->translate('The list is exported as it is presented: defaulting list or list resulting of a multi-criteria search.', 'ppit-core', $context->getLocale()) ?></p>
-">
+				<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/export'][$context->getLocale()] ?>">
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
 				</a>
 <?php endif;?>

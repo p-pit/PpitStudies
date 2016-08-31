@@ -89,12 +89,12 @@ class Absence implements InputFilterAwareInterface
     {
     	$select = Absence::getTable()->getSelect()
     		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'), 'left')
-    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'main_contact_id'), 'left')
+    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');
 		if ($type) $where->equalTo('student_absence.type', $type);
-		
+
     	// Todo list vs search modes
     	if ($mode == 'todo') {
 //    		$where->equalTo('date', date('Y-m-d'));
@@ -105,7 +105,7 @@ class Absence implements InputFilterAwareInterface
     		foreach ($params as $propertyId => $property) {
 				if (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
-    			else $where->like($propertyId, '%'.$params[$propertyId].'%');
+    			else $where->like((($propertyId == 'type') ? 'student_absence.' : '').$propertyId, '%'.$params[$propertyId].'%');
     		}
     	}
 		

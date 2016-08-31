@@ -147,12 +147,20 @@ function connectProgressSearchInputs() {
 	$('#erase-button').click(function () { eraseProgressSearch(); });
 
 <?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+	
+	<?php if ($propertyId == 'discipline') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { document.location('<?php echo $this->url('progress/index') ?>/' + $('#search_<?php echo $propertyId ?>').val(); });
+	
+	<?php elseif (
+			$propertyId == 'school_year'
+		||	$propertyId == 'discipline_period') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
@@ -164,23 +172,24 @@ function connectProgressSearchInputs() {
 	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
-
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
-		<?php endif;?>
 
 	<?php endif;?>
 
 <?php endforeach;?>
 
 <?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'discipline'
+		||	$propertyId == 'school_year'
+		||	$propertyId == 'discipline_period') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
@@ -189,15 +198,10 @@ function connectProgressSearchInputs() {
 	
 	<?php elseif ($rendering == 'select') : ?>
 		$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
-
+	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
-		<?php endif;?>
-		
 	<?php endif;?>
 
 <?php endforeach;?>
@@ -211,8 +215,11 @@ function getProgressList(params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('progress-list-panel').innerHTML = xhttp.responseText;
 			
 			// Connect the sort anchors
@@ -228,6 +235,9 @@ function getProgressList(params, major, dir) {
 					getProgressUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -341,7 +351,11 @@ function getProgressUpdate(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			$(location).attr('href', '#form_action');
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
@@ -354,6 +368,9 @@ function getProgressUpdate(id) {
 			$('#delete-anchor').click(function () {
 				getProgressDelete(id);
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -401,11 +418,18 @@ function getProgressDelete(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectProgressDeleteForm(id);
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();

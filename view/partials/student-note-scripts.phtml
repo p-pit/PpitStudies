@@ -143,28 +143,64 @@ function connectNoteSearchInputs() {
 	$('#erase-button').click(function () { eraseNoteSearch(); });
 
 <?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'category'
+		||	$propertyId == 'level'
+		||	$propertyId == 'school_subject'
+		||	$propertyId == 'school_period'
+		||	$propertyId == 'school_year'
+		||	$propertyId == 'specialty') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
 
-	<?php if ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+	<?php elseif ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
 		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+		$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
 	
 	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+	<?php endif;?>
+
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'category'
+		||	$propertyId == 'level'
+		||	$propertyId == 'school_subject'
+		||	$propertyId == 'school_period'
+		||	$propertyId == 'school_year'
+		||	$propertyId == 'specialty') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+
+	<?php elseif ($rendering == 'range') : ?>
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
+
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+	$("#search_min_<?php echo $propertyId ?>").datepicker();
+	$("#search_max_<?php echo $propertyId ?>").datepicker();
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
 		<?php endif;?>
+	
+	<?php elseif ($rendering == 'select') : ?>
+		$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+	
+	<?php else : ?>
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
 	<?php endif;?>
 
@@ -176,7 +212,7 @@ function connectNoteSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
@@ -189,7 +225,7 @@ function connectNoteSearchInputs() {
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
-		<?php if ($context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_<?php echo $propertyId ?>").datepicker();
 	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 		<?php endif;?>
@@ -207,8 +243,11 @@ function getNoteList(params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('note-list-panel').innerHTML = xhttp.responseText;
 			
 			// Connect the sort anchors
@@ -224,6 +263,9 @@ function getNoteList(params, major, dir) {
 					getNoteUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -303,7 +345,11 @@ function getNoteUpdate(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			$(location).attr('href', '#form_action');
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
@@ -315,6 +361,9 @@ function getNoteUpdate(id) {
 			$('#delete-anchor').click(function () {
 				getNoteDelete(id);
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -362,11 +411,18 @@ function getNoteDelete(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectNoteDeleteForm(id);
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();

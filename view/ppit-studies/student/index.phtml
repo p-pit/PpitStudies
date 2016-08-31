@@ -15,6 +15,12 @@ echo $this->partial('/partials/header');
 	<div id="main_menu" >
 	    <div class="col-md-10 col-md-offset-1">
 			<div align="center">
+	
+<?php if ($context->isDemoModeActive()) : ?>
+		<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/menu'][$context->getLocale()] ?>">
+		    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+		</a>
+<?php endif;?>
 
 <?php foreach ($menu as $entryId => $entry) : ?>
 	<?php if ($context->isAllowed($entry['route'])) : ?>

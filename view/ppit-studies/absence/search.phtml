@@ -22,17 +22,31 @@
 		</div>
 		
 <?php foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) : ?>
-	<?php 
-	if (array_key_exists($propertyId, $context->getConfig('student')['properties'])) {
-		$property = $context->getConfig('student')['properties'][$propertyId];
-	}
-	else {
-		$property = $context->getConfig('absence')['types']['boarding_school'][$propertyId];
-	}
-	$label = $property['labels'][$context->getLocale()];
-	?>
 
-	<?php if ($rendering == 'contains') : ?>
+	<?php if ($propertyId == 'type') : ?> 
+
+		<div class="form-group">
+		<label class="col-sm-5 control-label"><?php echo $this->translate('Type', 'ppit-studies', $context->getLocale()) ?></label>
+		<div class="col-sm-7">
+			<select id="search_type" class="form-control">
+				<option value=""></option>
+		<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
+	    		<option value="<?php echo $typeId ?>"><?php echo $type['labels'][$context->getLocale()] ?></option>
+		<?php endforeach;?>
+	    	</select>
+		</div>
+
+	<?php else : ?>
+	
+		<?php
+		if ($propertyId == 'school_year') $property = $context->getConfig('student/property/school_year');
+		elseif ($propertyId == 'period') $property = $context->getConfig('student/property/school_period');
+		elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
+		else $property = $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+		$label = $property['labels'][$context->getLocale()];
+		?>
+
+		<?php if ($rendering == 'contains') : ?>
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
 			<div class="col-sm-7">
@@ -40,7 +54,7 @@
 			</div>
 		</div>
 
-	<?php elseif ($rendering == 'range') : ?>
+		<?php elseif ($rendering == 'range') : ?>
 
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
@@ -56,13 +70,20 @@
 			</div>
 		</div>
 
-	<?php elseif ($rendering == 'select') : ?>
-
+		<?php elseif ($rendering == 'select') : ?>
+		
 		<?php
 		$modalities = array();
-		foreach ($property['modalities'] as $modalityId => $modality) {
-			$modalities[$modalityId] = $modality[$context->getLocale()];
-		} 
+		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
+			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
+				$modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
+			} 
+		}
+		else {
+			foreach ($property['modalities'] as $modalityId => $modality) {
+				$modalities[$modalityId] = $modality[$context->getLocale()];
+			} 
+		}
 		?>
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
@@ -76,6 +97,7 @@
 			</div>
 		</div>
 
+		<?php endif;?>
 	<?php endif;?>
 <?php endforeach;?>
 	
@@ -83,73 +105,82 @@
 		<div id="search-area">
 		
 <?php foreach ($context->getConfig('absence/search')['more'] as $propertyId => $rendering) : ?>
-	<?php 
-	if (array_key_exists($propertyId, $context->getConfig('student')['properties'])) {
-		$property = $context->getConfig('student')['properties'][$propertyId];
-	}
-	else {
-		$property = $context->getConfig('absence')['types']['boarding-school'][$propertyId];
-	}
-	$label = $property['labels'][$context->getLocale()];
-	?>
 
-	<?php if ($propertyId == 'place_id') : ?>
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-					<select id="search_<?php echo $propertyId ?>" class="form-control">
-						<option value=""><-- <?php echo $this->translate('Please select a value', 'ppit-core', $context->getLocale()) ?> --></option>
-			<?php foreach ($places as $place) : ?>
-			    		<option value="<?php echo $place->id ?>"><?php echo $place->name ?></option>
-			<?php endforeach;?>
-			    	</select>
-				</div>
-			</div>
+	<?php if ($propertyId == 'type') : ?> 
+
+		<div class="form-group">
+		<label class="col-sm-5 control-label"><?php echo $this->translate('Type', 'ppit-studies', $context->getLocale()) ?></label>
+		<div class="col-sm-7">
+			<select id="search_type" class="form-control">
+				<option value=""></option>
+		<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
+	    		<option value="<?php echo $typeId ?>"><?php echo $type['labels'][$context->getLocale()] ?></option>
+		<?php endforeach;?>
+	    	</select>
+		</div>
+
+	<?php else : ?>
 	
-	<?php elseif ($rendering == 'contains') : ?>
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-					<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
-				</div>
+		<?php
+		if ($propertyId == 'school_year') $property = $context->getConfig('student/property/school_year');
+		elseif ($propertyId == 'period') $property = $context->getConfig('student/property/school_period');
+		elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
+		else $property = $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+		$label = $property['labels'][$context->getLocale()];
+		?>
+
+		<?php if ($rendering == 'contains') : ?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
+		</div>
 
-	<?php elseif ($rendering == 'range') : ?>
+		<?php elseif ($rendering == 'range') : ?>
 
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-		    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
-				</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
+		</div>
 
-			<div class="form-group">
-				<label class="col-sm-5 control-label">&nbsp;</label>
-				<div class="col-sm-7">
-		    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
-				</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
+		</div>
 
-	<?php elseif ($rendering == 'select') : ?>
+		<?php elseif ($rendering == 'select') : ?>
 
 		<?php
 		$modalities = array();
-		foreach ($property['modalities'] as $modalityId => $modality) {
-			$modalities[$modalityId] = $modality[$context->getLocale()];
-		} 
+		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
+			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
+				$modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
+			} 
+		}
+		else {
+			foreach ($property['modalities'] as $modalityId => $modality) {
+				$modalities[$modalityId] = $modality[$context->getLocale()];
+			} 
+		}
 		?>
-			<div class="form-group">
-				<label class="col-sm-5 control-label"><?php echo $label ?></label>
-				<div class="col-sm-7">
-					<select id="search_<?php echo $propertyId ?>" class="form-control">
-						<option value=""></option>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+				<select id="search_<?php echo $propertyId ?>" class="form-control">
+					<option value=""></option>
 		<?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
-			    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
+		    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
 		<?php endforeach;?>
-			    	</select>
-				</div>
+		    	</select>
 			</div>
+		</div>
 
+		<?php endif;?>
 	<?php endif;?>
 <?php endforeach;?>
 

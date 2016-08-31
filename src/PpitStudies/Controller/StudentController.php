@@ -24,11 +24,10 @@ class StudentController extends AbstractActionController
     public function indexAction()
     {
     	$context = Context::getCurrent();
-    	$instance_id = $context->getInstanceId();
-		$community_id = (int) $context->getCommunityId();
-		$contact = Vcard::getNew($instance_id, $community_id);
 
-		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
+    	if ($context->hasRole('student')) return $this->redirect()->toRoute('student/studentHome');
+
+    	$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry');
 
     	return new ViewModel(array(
@@ -36,10 +35,22 @@ class StudentController extends AbstractActionController
     			'config' => $context->getConfig(),
     			'applicationName' => 'p-pit-studies',
     			'active' => 'application',
-    			'community_id' => $community_id,
     			'menu' => $menu,
-    			'contact' => $contact,
     			'currentEntry' => $currentEntry,
+    	));
+    }
+
+	public function studentHomeAction()
+    {
+    	$context = Context::getCurrent();
+    	$account_id = Account::get($context->getCommunityId(), 'customer_community_id')->id;
+    	
+     	return new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getConfig(),
+    			'applicationName' => 'p-pit-studies',
+    			'active' => 'application',
+     			'account_id' => $account_id,
     	));
     }
 
@@ -47,10 +58,6 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-		
-		$instance_id = $context->getInstanceId();
-		$community_id = (int) $context->getCommunityId();
-		$contact = Vcard::getNew($instance_id, $community_id);
 
 		$applicationName = 'P-PIT Studies';
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
@@ -61,9 +68,7 @@ class StudentController extends AbstractActionController
     			'config' => $context->getConfig(),
     			'active' => 'application',
     			'applicationName' => $applicationName,
-    			'community_id' => $community_id,
     			'menu' => $menu,
-    			'contact' => $contact,
     			'currentEntry' => $currentEntry,
     			'type' => 'p-pit-studies',
     	));
@@ -414,7 +419,7 @@ class StudentController extends AbstractActionController
     	// Retrieve the type
     	$type = $this->params()->fromRoute('type', null);
     
-    	$note = Note::instanciate($type);
+    	$note = Note::instanciate('note' /*$type*/);
     
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -428,7 +433,7 @@ class StudentController extends AbstractActionController
     	$accounts = array();
     	for ($i = 0; $i < $nbAccount; $i++) {
     		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[] = $account;
+    		$accounts[$account->id] = $account;
     	}
     	
     	$nbCriteria = $request->getPost('nb-criteria');
@@ -444,32 +449,70 @@ class StudentController extends AbstractActionController
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
-    			 
+
     			// Load the input data
     			$data = array();
     			$data['school_year'] = $request->getPost('school_year');
+    			$data['level'] = $request->getPost('level');
+    			$data['school_period'] = $request->getPost('school_period');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
     			$data['reference_value'] = $request->getPost('reference_value');
     			$data['weight'] = $request->getPost('weight');
+    			$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
+    			 
+    			$nbCriteria = $request->getPost('nb-criteria');
+    			$data['criteria'] = array();
+    			for ($i = 0; $i < $nbCriteria; $i++) {
+    				$criterionId = $request->getPost('criterion-id_'.$i);
+    				$criterionValue = $request->getPost('criterion_'.$i);
+    				$data['criteria'][$criterionId] = $criterionValue;
+    			}
 
     			// Atomically save
     			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-    				foreach ($accounts as $account) {
-    					$data['account_id'] = $account->id;
-    					$data['value'] = $request->getPost('value_'.$account->id);
-    					$rc = $note->loadData($data);
-    					if ($rc != 'OK') throw new \Exception('View error');
+//    				foreach ($accounts as $account) {
+//    					$data['account_id'] = $account->id;
+//    					$data['value'] = $request->getPost('value_'.$account->id);
+    			    			
+	    			$nbAccount = $request->getPost('nb-account');
+	    			$data['results'] = array();
+	    			for ($i = 0; $i < $nbAccount; $i++) {
+	    				$account = $accounts[$request->getPost('account_'.$i)];
+	    				$value = $request->getPost('value_'.$account->id);
+	    				$data['results'][$request->getPost('account_'.$i)] = $value;
+	    			}
+    				$rc = $note->loadData($data);
+
+    				// Save the note at the student level
+    				for ($i = 0; $i < $nbAccount; $i++) {
+    					$account = $accounts[$request->getPost('account_'.$i)];
+    					$value = $request->getPost('value_'.$account->id);
+						$account->json_property_1[] = array(
+								'date' => $note->date,
+								'subject' => $note->subject,
+								'reference_value' => $note->reference_value,
+								'weight' => $note->weight,
+								'note' => $value,
+								'average_note' => $note->average_note,
+								'higher_note' => $note->higher_note,
+								'lower_note' => $note->lower_note,
+								'observations' => $note->observations,
+						);
+						$account->update($account->update_time);
+    				}
+								
+    				if ($rc != 'OK') throw new \Exception('View error');
     					$rc = $note->add();
     					if ($rc != 'OK') {
     						$connection->rollback();
     						$error = $rc;
     						break;
     					}
-    				}
+//    				}
     				if (!$error) {
     					$connection->commit();
     					$message = 'OK';
@@ -645,7 +688,7 @@ class StudentController extends AbstractActionController
     				foreach ($accounts as $account) {
     
     					$data['account_id'] = $account->id;
-    					$progress->subject = $account->properties['property_1'];
+    					$progress->type = $account->properties['property_1'];
     
     					$rc = $progress->loadData($account->property_1, $data);
     					if ($rc != 'OK') throw new \Exception('View error');
@@ -728,13 +771,11 @@ class StudentController extends AbstractActionController
 	
 		$account_id = (int) $this->params()->fromRoute('account_id');
 		$account = Account::get($account_id);
-	
 		$category = $this->params()->fromRoute('category');
-	
 		$absences = Absence::retrieveAll($category, $account_id);
 		$events = Event::retrieveComing('p-pit-studies', $category, $account_id);
 		$notifications = Notification::retrieveCurrents('p-pit-studies', $category, $account_id);
-		$notes = Note::retrieveAll($category, $account_id);
+//		$notes = Note::retrieveAll($category, $account_id);
 		if ($category == 'sport') $progresses = Progress::retrieveAll($account->property_1, $account_id);
 		else $progresses = array();
 		
@@ -748,7 +789,7 @@ class StudentController extends AbstractActionController
 				'absences' => $absences,
 				'events' => $events,
 				'notifications' => $notifications,
-				'notes' => $notes,
+//				'notes' => $notes,
 				'progresses' => $progresses,
 		));
 		$view->setTerminal(true);

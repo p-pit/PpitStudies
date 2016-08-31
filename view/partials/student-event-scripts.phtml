@@ -138,12 +138,20 @@ function connectEventSearchInputs() {
 	$('#erase-button').click(function () { eraseEventSearch(); });
 
 <?php foreach ($context->getConfig('commitmentEvent/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'category'
+		||	$propertyId == 'discipline'
+		||	$propertyId == 'level'
+		||	$propertyId == 'specialty'
+		||	$propertyId == 'school_year') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterEventList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterEventList(); });
@@ -155,40 +163,37 @@ function connectEventSearchInputs() {
 	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
-
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterEventList(); });
-		<?php endif;?>
 
 	<?php endif;?>
 
 <?php endforeach;?>
 
 <?php foreach ($context->getConfig('commitmentEvent/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'category'
+		||	$propertyId == 'discipline'
+		||	$propertyId == 'level'
+		||	$propertyId == 'specialty'
+		||	$propertyId == 'school_year') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterEventList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+	<?php elseif ($rendering == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterEventList(); });
 	$('#search_max_<?php echo $propertyId ?>').change(function () { filterEventList(); });
-		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
 		$('#search_<?php echo $propertyId ?>').change(function () { filterEventList(); });
-
+	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterEventList(); });
-		<?php endif;?>
-		
 	<?php endif;?>
 
 <?php endforeach;?>
@@ -202,8 +207,11 @@ function getEventList(params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('event-list-panel').innerHTML = xhttp.responseText;
 			
 			// Connect the sort anchors
@@ -219,6 +227,9 @@ function getEventList(params, major, dir) {
 					getEventUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -329,7 +340,11 @@ function getEventUpdate(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			$(location).attr('href', '#form_action');
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
@@ -343,6 +358,9 @@ function getEventUpdate(id) {
 			$('#delete-anchor').click(function () {
 				getEventDelete(id);
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -390,11 +408,18 @@ function getEventDelete(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectEventDeleteForm(id);
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();

@@ -14,7 +14,7 @@
 			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<select class="form-control" id="school_year" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
-	<?php foreach ($context->getConfig('student')['properties']['school_year']['modalities'] as $schoolYearId => $schoolYear) : ?>
+	<?php foreach ($context->getConfig('student/property/school_year')['modalities'] as $schoolYearId => $schoolYear) : ?>
 					<option value="<?php echo $schoolYearId ?>"><?php echo $schoolYear[$context->getLocale()] ?></option>
 	<?php endforeach;?>
 				</select>
@@ -28,7 +28,7 @@
 			<div class="col-sm-7">
 				<select class="form-control" id="period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
-	<?php foreach ($context->getConfig('student')['properties']['period']['modalities'] as $periodId => $period) : ?>
+	<?php foreach ($context->getConfig('student/property/discipline_period')['modalities'] as $periodId => $period) : ?>
 					<option value="<?php echo $periodId ?>"><?php echo $period[$context->getLocale()] ?></option>
 	<?php endforeach;?>
 				</select>

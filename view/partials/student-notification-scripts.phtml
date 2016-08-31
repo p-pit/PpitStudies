@@ -13,7 +13,19 @@ function getParams() {
 
 <?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
 
-	<?php if ($rendering == 'range') : ?>
+	<?php if ($rendering == 'select') : ?>
+
+		<?php
+/*		if ($propertyId == 'property_1') $propertyId = 'discipline';
+		elseif ($propertyId == 'property_4') $propertyId = 'level';
+		elseif ($propertyId == 'property_5') $propertyId = 'specialty';
+		elseif ($propertyId == 'property_6') $propertyId = 'boarding_school';*/
+		?>
+
+	var v_<?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (v_<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + v_<?php echo $propertyId ?> + '&'; todo = false; }
+
+	<?php elseif ($rendering == 'range' || $rendering == 'date') : ?>
 	
 	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
 	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
@@ -34,7 +46,7 @@ function getParams() {
 
 <?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
 
-	<?php if ($rendering == 'range') : ?>
+	<?php if ($rendering == 'range' || $rendering == 'date') : ?>
 	
 	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
 	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
@@ -77,7 +89,7 @@ function eraseNotificationSearch() {
 
 	$('#form_action').hide();
 
-	<?php if ($rendering == 'range') : ?>
+	<?php if ($rendering == 'range' || $rendering == 'date') : ?>
 	$('#search_min_<?php echo $propertyId ?>').val('');
 	$('#search_max_<?php echo $propertyId ?>').val('');
 
@@ -90,7 +102,7 @@ function eraseNotificationSearch() {
 
 <?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
 
-	<?php if ($rendering == 'range') : ?>
+	<?php if ($rendering == 'range' || $rendering == 'date') : ?>
 	$('#search_min_<?php echo $propertyId ?>').val('');
 	$('#search_max_<?php echo $propertyId ?>').val('');
 
@@ -138,57 +150,59 @@ function connectNotificationSearchInputs() {
 	$('#erase-button').click(function () { eraseNotificationSearch(); });
 
 <?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'discipline'
+		||	$propertyId == 'level'
+		||	$propertyId == 'category'
+		||	$propertyId == 'specialty') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
 
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+	<?php elseif ($rendering == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
 	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
-		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
 		$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
 	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
-
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
-		<?php endif;?>
 
 	<?php endif;?>
 
 <?php endforeach;?>
 
 <?php foreach ($context->getConfig('commitmentNotification/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
+	
+	<?php if (
+			$propertyId == 'discipline'
+		||	$propertyId == 'level'
+		||	$propertyId == 'category'
+		||	$propertyId == 'specialty') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
 
-	<?php if ($rendering == 'range') : ?>
+	<?php elseif ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
 
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
+	<?php elseif ($rendering == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
 	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
-		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
 		$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
-
+	
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNotificationList(); });
 
-		<?php if (array_key_exists($propertyId, $context->getConfig('student')['properties']) && $context->getConfig('student')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterNotificationList(); });
-		<?php endif;?>
-		
 	<?php endif;?>
 
 <?php endforeach;?>
@@ -202,8 +216,11 @@ function getNotificationList(params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('notification-list-panel').innerHTML = xhttp.responseText;
 			
 			// Connect the sort anchors
@@ -219,6 +236,9 @@ function getNotificationList(params, major, dir) {
 					getNotificationUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -384,7 +404,11 @@ function getNotificationUpdate(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			$(location).attr('href', '#form_action');
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
@@ -411,6 +435,9 @@ function getNotificationUpdate(id) {
 			$('#delete-anchor').click(function () {
 				getNotificationDelete(id);
 			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -458,11 +485,18 @@ function getNotificationDelete(id) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectNotificationDeleteForm(id);
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
 		}
 	}
 	xhttp.send();

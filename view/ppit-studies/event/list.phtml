@@ -4,12 +4,11 @@
 
 <?php foreach ($context->getConfig('commitmentEvent/list/p-pit-studies') as $propertyId => $rendering) : ?>
 		<th align="center">
-	<?php
-	if ($propertyId == 'category') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
-	elseif ($propertyId == 'begin_time') $label = $this->translate('Begin', 'ppit-commitment', $context->getLocale());
+	<?php 
+	if ($propertyId == 'begin_time') $label = $this->translate('Begin', 'ppit-commitment', $context->getLocale());
 	elseif ($propertyId == 'end_time') $label = $this->translate('End', 'ppit-commitment', $context->getLocale());
 	elseif ($propertyId == 'title') $label =  $this->translate('Title', 'ppit-commitment', $context->getLocale());
-	else $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()];
+	else $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()];
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -48,8 +47,10 @@
 		<td><?php echo $event->title ?></td>
 
 		<?php else : ?>	
-	
-			<?php $property = $context->getConfig('student')['properties'][$propertyId] ?>
+			<?php 
+			if ($rendering == 'select') $property = $context->getConfig('student/'.$propertyId);
+			else $property = $property = $context->getConfig('commitment/account/p-pit-studies')['properties'][$propertyId];
+			?>
 		
 			<?php if ($rendering == 'text') : ?>
 		<td><?php echo $event->properties[$propertyId] ?></td>

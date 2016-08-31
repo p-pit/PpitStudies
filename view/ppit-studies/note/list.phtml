@@ -4,10 +4,13 @@
 
 <?php foreach ($context->getConfig('note/list') as $propertyId => $rendering) : ?>
 		<th align="center">
-
 	<?php 
-	if ($propertyId == 'subject') $label = $this->translate('Subject', 'ppit-studies', $context->getLocale());
-	else $label = $context->getConfig('student')['properties'][$propertyId]['labels'][$context->getLocale()];
+	if ($propertyId == 'type') $label = $this->translate('Type', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'level') $label = $context->getConfig('student/property/level')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'school_year') $label = $context->getConfig('student/property/school_year')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'school_period') $label = $context->getConfig('student/property/school_period')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'specialty') $label = $context->getConfig('student/property/specialty')['labels'][$context->getLocale()];
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -34,50 +37,24 @@
 
 	<?php foreach ($context->getConfig('note/list') as $propertyId => $rendering) : ?>
 	
-		<?php if ($propertyId == 'name') : ?>
-		<td><?php echo $note->name ?></td>
+		<?php if ($propertyId == 'type') : ?>
+		<td><?php echo $context->getConfig('note')['types'][$note->type]['labels'][$context->getLocale()] ?></td>
+
+		<?php elseif ($propertyId == 'level') : ?>
+		<td><?php echo $context->getConfig('student/property/level')['modalities'][$note->level][$context->getLocale()] ?></td>
 
 		<?php elseif ($propertyId == 'subject') : ?>
-		<td><?php echo $context->getConfig('note/update')['types']['schooling']['subjects'][$note->subject][$context->getLocale()] ?>
+		<td><?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
 
-		<?php elseif ($propertyId == 'sport') : ?>
-		<td style="text-align: center">
-			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$note->sport.'.png') ?>" title="<?php echo $note->sport ?>" alt="<?php echo $note->sport ?>" />
-		</td>
-	
-		<?php elseif ($propertyId == 'photo') : ?>
-		<td>
-			<span class="info">
-				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $note->photo)) ?>"/>
-				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $note->photo)) ?>"/></span>
-			</span>
-		</td>
-	
-		<?php else : ?>	
+		<?php elseif ($propertyId == 'school_year') : ?>
+		<td><?php echo $context->getConfig('student/property/school_year')['modalities'][$note->school_year][$context->getLocale()] ?></td>
 
-			<?php $property = $context->getConfig('student')['properties'][$propertyId] ?>
-	
-			<?php if ($rendering == 'text') : ?>
-		<td><?php echo $note->properties[$propertyId] ?></td>
+		<?php elseif ($propertyId == 'school_period') : ?>
+		<td><?php echo $context->getConfig('student/property/school_period')['modalities'][$note->school_period][$context->getLocale()] ?></td>
 
-			<?php elseif ($rendering == 'image') : ?>
-		<td style="text-align: center">
-			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$note->properties[$propertyId].'.png') ?>" title="<?php echo $note->properties[$propertyId] ?>" alt="<?php echo $note->properties[$propertyId] ?>" />
-		</td>
-
-			<?php elseif ($rendering == 'phone') : ?>
-		<td>
-			<a href="tel:<?php echo $note->properties[$propertyId] ?>"><?php echo $note->properties[$propertyId] ?></a>
-		</td>
-
-			<?php elseif ($rendering == 'select') : ?>
-		<td><?php echo $property['modalities'][$note->properties[$propertyId]][$context->getLocale()] ?>
-		</td>
-	
-			<?php else : ?>
-		<td><?php echo $note->properties[$propertyId] ?></td>
+		<?php elseif ($propertyId == 'specialty') : ?>
+		<td><?php echo $context->getConfig('student/property/specialty')['modalities'][$note->specialty][$context->getLocale()] ?></td>
 		
-			<?php endif;?>
 		<?php endif;?>
 	<?php endforeach;?>
 	
