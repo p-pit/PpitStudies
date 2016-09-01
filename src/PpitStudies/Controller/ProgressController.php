@@ -74,7 +74,7 @@ class ProgressController extends AbstractActionController
     	$context = Context::getCurrent();
 
     	$type = $this->params()->fromRoute('type');
-    	 
+
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
@@ -97,7 +97,7 @@ class ProgressController extends AbstractActionController
     	$major = ($this->params()->fromQuery('major', 'name'));
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
 
-    	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
+    	if (!$type && count($params) == 0) $mode = 'todo'; else $mode = 'search';
 
     	// Retrieve the list
     	$progresses = Progress::getList($type, $params, $major, $dir, $mode);

@@ -1193,7 +1193,7 @@ return array(
 	'student/property/place' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'default' => array('en_US' => 'Main place', 'fr_FR' => 'Centre principal'),
+					'1' => array('en_US' => 'Main place', 'fr_FR' => 'Centre principal'),
 			),
 			'labels' => array(
 					'en_US' => 'Center',
@@ -1797,6 +1797,16 @@ return array(
 <p>Il ouvre un nouveau panneau proposant des actions à appliquer à une sous-liste d\'élèves.</p>
 <p>Par exemple vous pouvez simplement cocher les élèves absents aujourd\'hui et ajouter un évènement d\'absence pour cette liste,</p>
 <p>ou sélectionner les élèves d\'une classe et entrer facilement les notes d\'un contrôle...</p>
+',
+			),
+			'student/list/detail' => array(
+					'en_US' => '
+<h4>Student home page</h4>
+<p>The magnifier button gives access to the student home page as he sees it.</p>
+					',
+					'fr_FR' => '
+<h4>Home page élève</h4>
+<p>La loupe donne accès à la home page élève telle que celui-ci la voit.</p>
 ',
 			),
 			'student/group/tabs' => array(

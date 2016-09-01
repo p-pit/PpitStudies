@@ -59,6 +59,11 @@
 			<button type="button" class="btn btn-default btn-xs index-btn account-detail-anchor" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account-detail-anchor_<?php echo $account->id ?>">
 				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
 			</button>
+		<?php if ($i == 0 && $context->isDemoModeActive()) : ?>
+			<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/list/detail'][$context->getLocale()] ?>">
+			    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+			</a>
+		<?php $first=false; endif;?>
 		</td>
 
 	<?php foreach ($context->getConfig('commitmentAccount/list/p-pit-studies') as $propertyId => $rendering) : ?>

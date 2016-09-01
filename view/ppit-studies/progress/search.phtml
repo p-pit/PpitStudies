@@ -36,7 +36,7 @@
 				<select id="search_<?php echo $propertyId ?>" class="form-control">
 					<option value=""></option>
 		<?php foreach ($property['modalities'] as $modalityId => $modality) : ?>
-		    		<option value="<?php echo $modalityId ?>"><?php echo $modality[$context->getLocale()] ?></option>
+		    		<option value="<?php echo $modalityId ?>" <?php if ($propertyId == 'property_1' && $modalityId == $type) echo 'selected="selected"' ?>><?php echo $modality[$context->getLocale()] ?></option>
 		<?php endforeach;?>
 		    	</select>
 			</div>

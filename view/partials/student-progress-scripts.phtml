@@ -148,8 +148,8 @@ function connectProgressSearchInputs() {
 
 <?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
 	
-	<?php if ($propertyId == 'discipline') : ?>
-	$('#search_<?php echo $propertyId ?>').change(function () { document.location('<?php echo $this->url('progress/index') ?>/' + $('#search_<?php echo $propertyId ?>').val(); });
+	<?php if ($propertyId == 'property_1') : ?>
+	$('#search_<?php echo $propertyId ?>').change(function () { document.location = '<?php echo $this->url('progress/index') ?>/' + $('#search_<?php echo $propertyId ?>').val(); });
 	
 	<?php elseif (
 			$propertyId == 'school_year'
