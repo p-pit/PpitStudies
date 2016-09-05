@@ -901,8 +901,8 @@ return array(
 							'type' => 'specific',
 							'definition' => 'student/property/discipline',
 							'labels' => array(
-									'en_US' => 'Sport',
-									'fr_FR' => 'Sport',
+									'en_US' => 'Discipline',
+									'fr_FR' => 'Discipline',
 							),
 					),
 					'property_2' => array(

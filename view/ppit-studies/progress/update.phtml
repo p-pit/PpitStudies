@@ -107,6 +107,10 @@
 			<div class="col-sm-12"><p class="help-block" id="input_date_error"></p></div>
 		</div>
 
+<hr>
+<h4 style="text-align: center"><?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale()) ?></h4>
+<br>
+
 <?php $criteria = $context->getConfig('progress'.(($type) ? '/'.$type : ''))['criteria'] ?>
 
 <?php if (array_key_exists('qualitative_criteria', $criteria)) : ?>
@@ -124,7 +128,7 @@
 		<div class="form-group" id="qualitative_<?php echo $criterionId ?>_group">
 			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
 			<div class="col-sm-7">
-				<input class="form-control" id="qualitative_<?php echo $criterionId ?>" value="<?php echo $criterionValue ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+				<textarea class="form-control" id="qualitative_<?php echo $criterionId ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $criterionValue ?></textarea>
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="qualitative_<?php echo $criterionId ?>_error"></p></div>
 		</div>

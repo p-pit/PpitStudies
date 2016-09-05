@@ -186,6 +186,10 @@ $progress = current($progresses);
 			</div>
 		</div>
 
+<div>&nbsp;</div>
+<hr>
+<h4 style="text-align: center"><?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale())?></h4>
+<br />
 	<?php 
 	$subject = $context->getConfig('progress/'.$progress->type)['criteria'];
 	$columnNumber = count($progresses) + 1;
@@ -208,7 +212,7 @@ $progress = current($progresses);
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
 			<div class="col-sm-7">
-				<input class="form-control" disabled="disabled" value="<?php echo $criterionValue ?>" />
+				<textarea class="form-control" disabled="disabled"><?php echo $criterionValue ?></textarea>
 			</div>
 		</div>
 			
@@ -254,7 +258,6 @@ $progress = current($progresses);
 				?>
 				
 			<td title="<?php echo $subject['modalities'][$criterionValue][$context->getLocale()] ?>" style="text-align: center; color: white; <?php if ($colorCoding) echo 'background-color: '.$colorCoding.';' ?> <?php echo (!$first)  ? 'font-weight: normal; font-style: italic;' : 'font-weight: bold;' ?>">
-				<?php echo $criterionValue ?>
 			</td>
 			
 			<?php if ($first) echo '<td>&nbsp;</td>' ?>

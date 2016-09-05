@@ -95,7 +95,7 @@ class Progress implements InputFilterAwareInterface
     		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
     		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
 		$where = new Where;
-		$where->notEqualTo('commitment_account.status', 'deleted');
+		$where->notEqualTo('student_progress.status', 'deleted');
 		$where->equalTo('student_progress.type', $type);
 		
     	// Todo list vs search modes

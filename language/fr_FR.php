@@ -29,6 +29,7 @@
 		'Emergency' => 'Urgence',
 		'Emergency email' => 'Email d\'urgence',
 		'Emergency phone' => 'Téléphone d\'urgence',
+		'Evaluation' => 'Evaluation',
 		'Evaluations' => 'Evaluations',
 		'Extern' => 'Externe',
 		'Father' => 'Père',
