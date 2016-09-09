@@ -828,6 +828,9 @@ return array(
 					),
 			),
 	),
+
+	'currentApplication' => 'p-pit-studies',
+		
 	'commitmentAccount/p-pit-studies' => array(
 			'statuses' => array(),
 			'properties' => array(
@@ -1345,7 +1348,7 @@ return array(
 	'student/index' => array(
 			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
 	),
-
+		
 	'absence' => array(
 			'types' => array(
 					'sport' => array(
@@ -1719,6 +1722,14 @@ return array(
 									'fr_FR' => 'Représentant légal',
 							),
 					),
+			),
+	),
+
+	'contact/perimeters' => array(
+			'p-pit-studies' => array(
+					'student/property/place' => null,
+					'student/property/discipline' => null,
+					'student/property/level' => null,
 			),
 	),
 		
