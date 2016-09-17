@@ -7,6 +7,7 @@ use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
+use PpitDocument\Model\Document;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -19,7 +20,6 @@ class NotificationController extends AbstractActionController
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'notification');
-
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
@@ -132,7 +132,15 @@ class NotificationController extends AbstractActionController
     	$id = (int) $this->params()->fromRoute('id', 0);
  		$notification = Notification::get($id);
  		$notification->retrieveTarget();
-    
+
+ 		$documentList = array();
+ 		if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) {
+ 			require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+ 			$dropboxClient = new \Dropbox\Client($context->getConfig('ppitDocument')['dropboxCredential'], "P-PIT");
+ 			$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
+ 			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
+ 		}
+
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
@@ -164,6 +172,10 @@ class NotificationController extends AbstractActionController
 
     		   	$data['begin_date'] = $request->getPost('begin_date');
     			$data['end_date'] = $request->getPost('end_date');
+
+    			$data['attachment_type'] = 'dropbox';
+    			$data['attachment_label'] = $request->getPost('attachment_label');
+    			$data['attachment_path'] = $request->getPost('attachment_path');
 
     			$data['criteria'] = array();
     			foreach ($context->getConfig('commitmentNotification/update/p-pit-studies')['criteria'] as $criterionId => $unused) {
@@ -206,6 +218,7 @@ class NotificationController extends AbstractActionController
     			'config' => $context->getconfig(),
     			'id' => $id,
     			'notification' => $notification,
+    			'documentList' => $documentList,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message

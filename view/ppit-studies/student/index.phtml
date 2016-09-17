@@ -11,15 +11,24 @@ echo $this->partial('/partials/header');
 <div class="container">
 	
 	<div>&nbsp;</div>
+
+<?php if ($outOfStockCredits) : ?>
+				<div class="alert alert-danger" style="text-align: center">
+					<strong>
+						<?php echo sprintf($context->getConfig('community/consumeCredit')['messages']['suspendedServiceMessage'][$context->getLocale()], $this->url('credit')) ?><br>
+					</strong>
+				</div>
+				<div>&nbsp;</div>
+<?php endif;?>
 	
 	<div id="main_menu" >
 	    <div class="col-md-10 col-md-offset-1">
 			<div align="center">
 	
 <?php if ($context->isDemoModeActive()) : ?>
-		<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/menu'][$context->getLocale()] ?>">
-		    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-		</a>
+				<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/menu'][$context->getLocale()] ?>">
+				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+				</a>
 <?php endif;?>
 
 <?php foreach ($menu as $entryId => $entry) : ?>

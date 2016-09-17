@@ -10,6 +10,7 @@ use PpitContact\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
+use PpitCore\Model\Credit;
 use PpitCore\Model\Instance;
 use PpitMasterData\Model\Place;
 use PpitStudies\Model\Absence;
@@ -29,6 +30,14 @@ class StudentController extends AbstractActionController
 
     	$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry');
+		
+		if ($context->getInstanceId() == 0) $outOfStockCredits = false;
+		elseif ($context->getConfig('credit')['unlimitedCredits']) $outOfStockCredits = false;
+		else {
+			$credit = Credit::get('p-pit-communities');
+			if (!$credit) $outOfStockCredits = true;
+			else $outOfStockCredits = ($credit->quantity < 0);
+		}
 
     	return new ViewModel(array(
     			'context' => $context,
@@ -37,6 +46,7 @@ class StudentController extends AbstractActionController
     			'active' => 'application',
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
+    			'outOfStockCredits' => $outOfStockCredits,
     	));
     }
 
@@ -546,9 +556,17 @@ class StudentController extends AbstractActionController
 
     	// Retrieve the type
     	$category = $this->params()->fromRoute('category', null);
-    	 
+
     	$notification = Notification::instanciate('p-pit-studies');
-    
+
+		$documentList = array();
+    	if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) {
+	    	require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+	    	$dropboxClient = new \Dropbox\Client($context->getConfig('ppitDocument')['dropboxCredential'], "P-PIT");
+			$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
+			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
+		}
+
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
@@ -580,6 +598,11 @@ class StudentController extends AbstractActionController
 
     		   	$data['begin_date'] = $request->getPost('begin_date');
     			$data['end_date'] = $request->getPost('end_date');    			
+
+    			$data['attachment_type'] = 'dropbox';
+    			$data['attachment_label'] = $request->getPost('attachment_label');
+    			$data['attachment_path'] = $request->getPost('attachment_path');
+ 
     			$data['comment'] = $request->getPost('comment');
 
     			$nbCriteria = $request->getPost('nb-criteria');
@@ -630,6 +653,7 @@ class StudentController extends AbstractActionController
     			'config' => $context->getconfig(),
     			'category' => $category,
     			'notification' => $notification,
+    			'documentList' => $documentList,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message

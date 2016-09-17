@@ -67,6 +67,10 @@ table.note-report tr.period {
 <?php endif;?>
 			
 				<div><?php echo $notification->content ?></div>
+
+<?php if ($notification->attachment_type) : ?>
+				<div><a href="<?php echo $notification->link ?>" target="_blank"><?php echo ($notification->attachment_label) ? $notification->attachment_label : $notification->link ?></a></div>
+<?php endif;?>
 		</div>
 		<hr/>
 

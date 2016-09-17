@@ -121,12 +121,12 @@ title="
 			</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 		
-<?php foreach ($images as $name => $path) : ?>
+	<?php foreach ($images as $name => $path) : ?>
 			<input type="hidden" id="image_<?php echo substr($name, 0, strpos($name, '.')) ?>" value="<?php echo $path?>" />
 			<a class="image-select" id="image-select_<?php echo substr($name, 0, strpos($name, '.')) ?>" <?php if (array_key_exists('src', $notification->image) && $notification->image['src'] == $path) echo 'style="border-style: solid"' ?>>
 				<img width="30" src="<?php echo $this->basePath($path) ?>"/>
 			</a>&nbsp;&nbsp;&nbsp;&nbsp;
-<?php endforeach;?>
+	<?php endforeach;?>
 		</div>
 		<div>&nbsp;</div>
 	    <div class="form-group">
@@ -170,6 +170,33 @@ title="
 
 		<hr/>
 <?php endif;?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">&nbsp;</div>
+		</div>
+
+		<div class="form-group" id="attachment_label_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Caption', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input class="form-control" id="attachment_label" value="<?php echo $notification->attachment_label ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="attachment_label_error"></p></div>
+		</div>
+
+		<div class="form-group" id="attachment_path_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('File name', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="attachment_path" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+					<option />
+	<?php foreach ($documentList as $document) : ?>
+					<option value="<?php echo $document ?>" <?php if ($notification->attachment_path == $document) echo 'selected="selected"' ?>><?php echo $document ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="attachment_path_error"></p></div>
+		</div>
+		<hr/>
 
 <!-- Comment -->
 	<?php if (!$isDisabled) : ?>
