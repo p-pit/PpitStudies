@@ -1680,6 +1680,13 @@ return array(
 									'fr_FR' => 'Gestionnaire',
 							),
 					),
+					'accountant' => array(
+							'show' => true,
+							'labels' => array(
+									'en_US' => 'Accountant',
+									'fr_FR' => 'Comptable',
+							),
+					),
 					'coach' => array(
 							'show' => true,
 							'labels' => array(
