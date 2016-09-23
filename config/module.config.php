@@ -1665,26 +1665,12 @@ return array(
 	),
 
 	'ppitRoles' => array(
-			'p-pit-studies' => array(
-/*					'admin' => array(
-							'show' => true,
-							'labels' => array(
-									'en_US' => 'Admin',
-									'fr_FR' => 'Admin',
-							),
-					),*/
+			'PpitStudies' => array(
 					'manager' => array(
 							'show' => true,
 							'labels' => array(
 									'en_US' => 'Manager',
 									'fr_FR' => 'Gestionnaire',
-							),
-					),
-					'accountant' => array(
-							'show' => true,
-							'labels' => array(
-									'en_US' => 'Accountant',
-									'fr_FR' => 'Comptable',
 							),
 					),
 					'coach' => array(
