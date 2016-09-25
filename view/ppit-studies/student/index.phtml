@@ -2,13 +2,13 @@
 <!-- Load the common form javascript functions -->
 <?php echo $this->partial('/partials/common-form-js.phtml'); ?>
 
+<div class="container">
+
 <?php
 $title = $context->getConfig('student/index')['title'][$context->getLocale()];
 $this->headTitle($title);
 echo $this->partial('/partials/header');
 ?>
-
-<div class="container">
 	
 	<div>&nbsp;</div>
 
@@ -30,7 +30,6 @@ echo $this->partial('/partials/header');
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
 				</a>
 <?php endif;?>
-
 <?php foreach ($menu as $entryId => $entry) : ?>
 	<?php if ($context->isAllowed($entry['route'])) : ?>
 				<button type="button" class="btn btn-default menu-btn" id="<?php echo $entryId ?>-anchor">

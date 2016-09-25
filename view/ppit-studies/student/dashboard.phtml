@@ -234,7 +234,7 @@ $progress = current($progresses);
 			<th>&nbsp;</th>
 
 			<?php $first = true; foreach ($progresses as $progress) : ?>
-			<th style="text-align: center; <?php if (!$first) echo 'font-weight: normal; font-style: italic;' ?>"><?php echo $context->getConfig('student/property/discipline_period')['modalities'][$progress->period][$context->getLocale()] ?></th>
+			<th style="text-align: center; <?php if (!$first) echo 'font-weight: normal; font-style: italic;' ?>"><?php echo $progress->period //$context->getConfig('student/property/discipline_period')['modalities'][$progress->period][$context->getLocale()] ?></th>
 			<?php if ($first) echo '<th>&nbsp;</th>' ?>
 			<?php $first = false; endforeach;?>
 		
@@ -249,7 +249,7 @@ $progress = current($progresses);
 			<?php else : ?>
 			
 		<tr>
-			<td style="text-align: right"><?php echo $criterion['labels'][$context->getlocale()] ?></td>
+			<td style="text-align: right; font-size: 85%"><?php echo $criterion['labels'][$context->getlocale()] ?></td>
 
 			<?php $first = true; foreach ($progresses as $progress) : ?>
 	

@@ -4,6 +4,7 @@ namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Notification;
+use PpitContact\Model\Vcard;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Form\CsrfForm;
@@ -19,7 +20,22 @@ class ProgressController extends AbstractActionController
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
 
-		$type = $this->params()->fromRoute('type', 'Football');
+		$type = $this->params()->fromRoute('type');
+		if (!$type) {
+			$contact = Vcard::get($context->getContactId());
+			if (array_key_exists('p-pit-studies', $contact->perimeters)) {
+				if (array_key_exists('property_1', $contact->perimeters['p-pit-studies'])) {
+					reset($contact->perimeters['p-pit-studies']['property_1']);
+					$type = current($contact->perimeters['p-pit-studies']['property_1']);
+				}
+			}
+		}
+		if (!$type) {
+			foreach($context->getConfig('student/property/discipline')['modalities'] as $modalityId => $unused) {
+				$type = $modalityId;
+				break;
+			}
+		}
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');

@@ -30,11 +30,11 @@ class StudentController extends AbstractActionController
 
     	$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry');
-		
+
 		if ($context->getInstanceId() == 0) $outOfStockCredits = false;
 		elseif ($context->getConfig('credit')['unlimitedCredits']) $outOfStockCredits = false;
 		else {
-			$credit = Credit::get('p-pit-communities');
+			$credit = Credit::get('p-pit-communities', 'type');
 			if (!$credit) $outOfStockCredits = true;
 			else $outOfStockCredits = ($credit->quantity < 0);
 		}

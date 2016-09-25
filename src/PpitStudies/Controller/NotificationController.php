@@ -173,9 +173,11 @@ class NotificationController extends AbstractActionController
     		   	$data['begin_date'] = $request->getPost('begin_date');
     			$data['end_date'] = $request->getPost('end_date');
 
-    			$data['attachment_type'] = 'dropbox';
-    			$data['attachment_label'] = $request->getPost('attachment_label');
-    			$data['attachment_path'] = $request->getPost('attachment_path');
+    			if ($request->getPost('attachment_label')) {
+	    			$data['attachment_type'] = 'dropbox';
+	    			$data['attachment_label'] = $request->getPost('attachment_label');
+	    			$data['attachment_path'] = $request->getPost('attachment_path');
+    			}
 
     			$data['criteria'] = array();
     			foreach ($context->getConfig('commitmentNotification/update/p-pit-studies')['criteria'] as $criterionId => $unused) {

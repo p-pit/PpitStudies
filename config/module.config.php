@@ -689,7 +689,7 @@ return array(
 				array('route' => 'sms/simulate', 'roles' => array('manager')),
 				array('route' => 'sms/update', 'roles' => array('manager')),
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/registrationIndex', 'roles' => array('manager','business_owner')),
+				array('route' => 'student/registrationIndex', 'roles' => array('sales_manager','business_owner')),
 				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/studentHome', 'roles' => array('student')),
 				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
@@ -1207,9 +1207,9 @@ return array(
 	'student/property/discipline' => array(
 			'type' => 'select',
 			'modalities' => array(
+					'Football' => array('fr_FR' => 'Football'),
 					'Basketball' => array('fr_FR' => 'Basketball'),
 					'Equitation' => array('fr_FR' => 'Equitation'),
-					'Football' => array('fr_FR' => 'Football'),
 					'Golf' => array('fr_FR' => 'Golf'),
 					'Tennis' => array('fr_FR' => 'Tennis'),
 			),

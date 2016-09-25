@@ -321,7 +321,13 @@ function connectProgressUpdateForm(id)
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
+	<?php if ($property['type'] == 'checkbox') : ?>
+				if (document.getElementById('<?php echo $propertyId ?>').checked) {
+	<?php endif;?>
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+	<?php if ($property['type'] == 'checkbox') : ?>
+				}
+	<?php endif;?>
 <?php endforeach ?>
 
 			var xhttp = new XMLHttpRequest();

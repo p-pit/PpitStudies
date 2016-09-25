@@ -1,13 +1,13 @@
 <!-- Load the common form javascript functions -->
 <?php echo $this->partial('/partials/common-form-js.phtml'); ?>
 
+<div class="container">
+
 <?php
 $title = $context->getConfig('progress/index')['title'][$context->getLocale()];
 $this->headTitle($title);
 echo $this->partial('/partials/header');
 ?>
-
-<div class="container">
 	
 	<div>&nbsp;</div>
 	
