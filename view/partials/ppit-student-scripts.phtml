@@ -73,13 +73,6 @@ function getParams() {
 	return params;
 }
 
-// Export the list
-function exportStudentList() {
-
-	var params = getParams();
-	document.location.href = '<?php echo $this->url('commitmentAccount/export', array('type' => 'p-pit-studies')) ?>' + params;
-}
-
 function eraseStudentSearch() {
 
 <?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
@@ -136,8 +129,6 @@ function filterStudentList() {
 }
 
 function connectStudentSearchInputs() {
-
-	$('#export-button').click(function () { exportStudentList(); });
 	
 	$('#erase-button').unbind();
 	$('#erase-button').click(function () { eraseStudentSearch(); });
@@ -1151,6 +1142,7 @@ function getStudentGroup() {
 			connectRemoveIcon('remove-anchor', 'form_action');
 	
 			$('.group-panel').hide();
+			$('#news_flash-tab').addClass('active');
 			$('#news_flash-panel').show();
 			
 			$('#news_flash-tab').click(function () {

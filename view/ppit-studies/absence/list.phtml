@@ -5,11 +5,14 @@
 <?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
 		<th align="center">
 	<?php 
-	if ($propertyId == 'discipline') $property = $context->getConfig('student/property/discipline');
-	elseif ($propertyId == 'level') $property = $context->getConfig('student/property/level');
-	elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
-	else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
-	$label = $property['labels'][$context->getLocale()];
+	if ($propertyId == 'subject') $label = $this->translate('Subject', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
+	else {
+		if ($propertyId == 'level') $property = $context->getConfig('student/property/level');
+		elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
+		else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+		$label = $property['labels'][$context->getLocale()];
+	}
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -59,6 +62,9 @@
 	
 		<?php elseif ($rendering == 'text') : ?>
 		<td><?php echo $absence->properties[$propertyId] ?></td>
+	
+		<?php elseif ($rendering == 'date') : ?>
+		<td><?php echo $context->decodeDate($absence->properties[$propertyId]) ?></td>
 
 		<?php elseif ($rendering == 'image') : ?>
 		<td style="text-align: center">

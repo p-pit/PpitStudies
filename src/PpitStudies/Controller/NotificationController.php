@@ -137,8 +137,11 @@ class NotificationController extends AbstractActionController
  		if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) {
  			require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
  			$dropboxClient = new \Dropbox\Client($context->getConfig('ppitDocument')['dropboxCredential'], "P-PIT");
- 			$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
- 			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
+ 			try {
+	 			$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
+	 			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
+	 		}
+ 			catch(\Exception $e) {}
  		}
 
     	// Instanciate the csrf form

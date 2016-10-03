@@ -657,7 +657,7 @@ return array(
 				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
             	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-            	array('route' => 'studentEvent/get', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
+            	array('route' => 'studentEvent/get', 'roles' => array('student', 'manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
@@ -688,21 +688,21 @@ return array(
 				array('route' => 'sms/index', 'roles' => array('manager')),
 				array('route' => 'sms/simulate', 'roles' => array('manager')),
 				array('route' => 'sms/update', 'roles' => array('manager')),
-				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/registrationIndex', 'roles' => array('sales_manager','business_owner')),
+				array('route' => 'student', 'roles' => array('student', 'manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
+				array('route' => 'student/registrationIndex', 'roles' => array('sales_manager')),
 				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/studentHome', 'roles' => array('student')),
 				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
             	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
+				array('route' => 'student/detail', 'roles' => array('student', 'manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
             	array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
             	array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'student/addNote', 'roles' => array('manager', 'teacher')),
             	array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
-				array('route' => 'student/import', 'roles' => array('business_owner')),
+				array('route' => 'student/import', 'roles' => array('admin')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
 				array('route' => 'student/update', 'roles' => array('business_owner')),
 			)
@@ -767,8 +767,8 @@ return array(
 							'params' => array('type' => ''),
 							'urlParams' => array(),
 							'label' => array(
-									'en_US' => 'News flash',
-									'fr_FR' => 'Flash info',
+									'en_US' => 'Notifications',
+									'fr_FR' => 'Notifications',
 							),
 					),
 					'progress' => array(
@@ -877,10 +877,8 @@ return array(
 							),
 					),
 					'place_id' => array(
-							'type' => 'select',
-							'modalities' => array(
-									'default' => array('en_US' => 'Main place', 'fr_FR' => 'Centre principal'),
-							),
+							'type' => 'repository',
+							'definition' => 'student/property/place',
 							'labels' => array(
 									'en_US' => 'Center',
 									'fr_FR' => 'Centre',
@@ -901,11 +899,11 @@ return array(
 							),
 					),
 					'property_1' => array(
-							'type' => 'specific',
+							'type' => 'repository',
 							'definition' => 'student/property/discipline',
 							'labels' => array(
-									'en_US' => 'Discipline',
-									'fr_FR' => 'Discipline',
+									'en_US' => 'Sport',
+									'fr_FR' => 'Sport',
 							),
 					),
 					'property_2' => array(
@@ -923,7 +921,7 @@ return array(
 							),
 					),
 					'property_4' => array(
-							'type' => 'specific',
+							'type' => 'repository',
 							'definition' => 'student/property/level',
 							'labels' => array(
 									'en_US' => 'Class',
@@ -931,7 +929,7 @@ return array(
 							),
 					),
 					'property_5' => array(
-							'type' => 'specific',
+							'type' => 'repository',
 							'definition' => 'student/property/specialty',
 							'labels' => array(
 									'en_US' => 'Specialty',
@@ -939,7 +937,7 @@ return array(
 							),
 					),
 					'property_6' => array(
-							'type' => 'specific',
+							'type' => 'repository',
 							'definition' => 'student/property/boarding_school',
 							'labels' => array(
 									'en_US' => 'Boarding-school',
@@ -947,7 +945,7 @@ return array(
 							),
 					),
 					'property_7' => array(
-							'type' => 'specific',
+							'type' => 'repository',
 							'definition' => 'student/property/school_year',
 							'labels' => array(
 									'en_US' => 'School year',
@@ -1163,7 +1161,7 @@ return array(
 	),
 
 	'commitmentNotification/search/p-pit-studies' => array(
-			'title' => array('en_US' => 'News flash', 'fr_FR' => 'Flash infos'),
+			'title' => array('en_US' => 'News flash', 'fr_FR' => 'Notifications'),
 			'todoTitle' => array('en_US' => 'visible', 'fr_FR' => 'visibles'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
 			'main' => array(
@@ -1398,17 +1396,17 @@ return array(
 		
 	'absence/search' => array(
 			'title' => array('en_US' => 'Absences', 'fr_FR' => 'Absences'),
-			'todoTitle' => array('en_US' => 'to check', 'fr_FR' => 'à viser'),
+			'todoTitle' => array('en_US' => 'today', 'fr_FR' => 'ce jour'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
 			'main' => array('type' => 'select', 'name' => 'contains'),
 			'more' => array('school_year' => 'select', 'period' => 'select'),
 	),
 	
 	'absence/list' => array(
-			'discipline' => 'image',
-			'level' => 'select',
 			'contact_1_id' => 'photo',
 			'name' => 'text',
+			'subject' => 'text',
+			'date' => 'date',
 	),
 
 	'note' => array(
@@ -1669,8 +1667,8 @@ return array(
 					'manager' => array(
 							'show' => true,
 							'labels' => array(
-									'en_US' => 'Manager',
-									'fr_FR' => 'Gestionnaire',
+									'en_US' => 'School life',
+									'fr_FR' => 'Vie scolaire',
 							),
 					),
 					'coach' => array(
@@ -1833,7 +1831,7 @@ return array(
 					'fr_FR' => '
 <h4>Boutons de navigation</h4>
 <p>Les boutons de navigation sont gris par défaut et deviennent bleus une fois activés.</p>
-<p>Vous voyez actuellement en bleu le bouton <em>Elèves</em> du menu de haut de page et le bouton <em>Actions groupées</em> du panneau de liste. Si vous sélectionnez <em>+ Flash infos</em> dans ce menu local, il adoptera la même couleur bleue.</p>
+<p>Vous voyez actuellement en bleu le bouton <em>Elèves</em> du menu de haut de page et le bouton <em>Actions groupées</em> du panneau de liste. Si vous sélectionnez <em>+ Notification</em> dans ce menu local, il adoptera la même couleur bleue.</p>
 <p>Vous avez ainsi un <em>fil d\'ariane</em> visuel de votre navigation courante, bien pratique pour se repérer tandis que l\'écran s\'enrichit.</p>
 ',
 			),

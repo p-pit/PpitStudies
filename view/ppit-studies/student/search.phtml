@@ -177,21 +177,6 @@
 
 	    <div>&nbsp;</div>
 
-<!-- Actions -->
-	    <div>
-	    		<button type="button" class="btn btn-default" title="<?php echo $this->translate('Export', 'ppit-core', $context->getLocale()) ?>" id="export-button">
-					<span class="glyphicon glyphicon-cloud-download"></span>
-					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
-				</button>
-<?php if ($context->isDemoModeActive()) : ?>
-				<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/export'][$context->getLocale()] ?>">
-				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-				</a>
-<?php endif;?>
-	    </div>
-	    
-		<div>&nbsp;</div>
-
 <!-- Add or update section -->
 		<div id="account-list-panel"></div>
 	</div>

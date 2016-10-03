@@ -97,7 +97,7 @@ class Absence implements InputFilterAwareInterface
 
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-//    		$where->equalTo('date', date('Y-m-d'));
+    		$where->equalTo('date', date('Y-m-d'));
     	}
     	else {
 

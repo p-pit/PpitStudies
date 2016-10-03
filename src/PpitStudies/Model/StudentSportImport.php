@@ -16,6 +16,7 @@ use PpitStudies\Model\StudentSport;
 use PpitStudies\Model\UserImport;
 use PpitStudies\Model\VcardImport;
 use PpitUser\Model\User;
+use PpitUser\Model\UserContact;
 use Zend\db\sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
@@ -361,6 +362,10 @@ class StudentSportImport implements InputFilterAwareInterface
     	foreach ($cursor as $userImport) {
     		if ($userImport->contact_id) {
 	    		$community = new Community;
+	    		$community->activation_date = '2016-09-01';
+	    		$community->last_credit_consumption_date = '2016-10-01';
+	    		$community->next_credit_consumption_date = '2016-11-01';
+	    		$community->status = 'new';
 	    		Community::getTable()->save($community);
 
 	    		$document = new Document;
@@ -373,10 +378,16 @@ class StudentSportImport implements InputFilterAwareInterface
 	    		$community->root_document_id = $document->id;
 
 	    		$vcard = new Vcard;
-	    		$vcard->community_id = $community->id;
+    			$vcard->roles = array('student' => true);
+    			$vcard->perimeters = array();
+    			$vcard->credits = array('p-pit-studies' => true);
+    			$vcard->is_notified = false;
+    			$vcard->community_id = $community->id;
 	    		
-    		    if ($userImport->contact_id == 1) {
-    		    	$eleveImport = StudentSportImport::getTable()->transGet($userImport->perimetre);
+    		    $eleveImport = StudentSportImport::getTable()->transGet($userImport->perimetre);
+    		    if (!$eleveImport) continue;
+echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
+	    		if ($userImport->contact_id == 1) {
 		    		$vcard->n_first = $eleveImport->prenoms;
 		    		$vcard->n_last = $eleveImport->nom_famille;
 		    		$vcard->n_fn = $vcard->n_last.', '.$vcard->n_first;
@@ -393,19 +404,70 @@ class StudentSportImport implements InputFilterAwareInterface
 		    		$vcard->tel_cell = $vcardImport->tel_cell;
 		    		$vcard->email = $vcardImport->email;
     			}
-	    		Vcard::getTable()->save($vcard);
-	
-	    		$community->name = $vcard->n_fn;
+				$vcard->photo_link_id = 'eleve'.$eleveImport->id.'.jpg';
+    			$vcard->add();
+    			$community->name = $vcard->n_fn;
 	    		$community->contact_1_id = $vcard->id;
-	    		Community::getTable()->save($community);
-	    		
+
 	    		$user = new User;
 	    		$user->instance_id = $context->getInstanceId();
 	    		$user->username = $userImport->username;
 	    		$user->contact_id = $vcard->id;
-	    		$user->password = $userImport->password;
 	    		$user->state = 1;
-	    		User::getTable()->save($user);
+	    		$user->requires_notifications = 0;
+	    		$user->locale = 'fr_FR';
+	    		$user->add();
+	    		$userContact = UserContact::instanciate();
+	    		$userContact->user_id = $user->user_id;
+	    		$userContact->contact_id = $vcard->id;
+	    		$userContact->add();
+
+	    		// Père
+	    		if ($eleveImport->pere_nom) {
+		    		$vcard->id = null;
+		    		$vcard->n_last = $eleveImport->pere_nom;
+		    		$vcard->n_fn = $eleveImport->pere_nom;
+		    		$vcard->adr_street = $eleveImport->pere_adresse;
+		    		$vcard->adr_zip = $eleveImport->pere_code_postal;
+		    		$vcard->adr_city = $eleveImport->pere_ville;
+		    		$vcard->adr_country = $eleveImport->pere_pays;
+		    		$vcard->email = $eleveImport->pere_email;
+		    		$vcard->tel_work = $eleveImport->pere_num_fixe;
+		    		$vcard->tel_cell = $eleveImport->pere_num_portable;
+    				$vcard->roles = array('representative' => true);
+	    			$vcard->add();
+    				$community->contact_2_id = $vcard->id;
+	    		}
+
+	    		// Mère
+	    		if ($eleveImport->mere_nom) {
+	    			$vcard->id = null;
+	    			$vcard->n_last = $eleveImport->mere_nom;
+	    			$vcard->n_fn = $eleveImport->mere_nom;
+	    			$vcard->adr_street = $eleveImport->mere_adresse;
+	    			$vcard->adr_zip = $eleveImport->mere_code_postal;
+	    			$vcard->adr_city = $eleveImport->mere_ville;
+	    			$vcard->adr_country = $eleveImport->mere_pays;
+	    			$vcard->email = $eleveImport->mere_email;
+	    			$vcard->tel_work = $eleveImport->mere_num_fixe;
+	    			$vcard->tel_cell = $eleveImport->mere_num_portable;
+    				$vcard->roles = array('representative' => true);
+	    			$vcard->add();
+    				$community->contact_3_id = $vcard->id;
+	    		}
+
+	    		// Représentant légal
+	    		if ($eleveImport->nom_repr_legal) {
+	    			$vcard->id = null;
+	    			$vcard->n_last = $eleveImport->nom_repr_legal;
+	    			$vcard->email = $eleveImport->email_repr_legal;
+	    			$vcard->tel_cell = $eleveImport->num_repr_legal;
+    				$vcard->roles = array('representative' => true);
+	    			$vcard->add();
+	    			$community->contact_4_id = $vcard->id;
+	    		}
+	    		 
+	    		$community->update(null);
 			}
     	}
     }
@@ -425,6 +487,8 @@ class StudentSportImport implements InputFilterAwareInterface
     		else $account = null;
     		if (!$account) {
 	    		$account = new Account;	
+	    		$account->status = 'new';
+	    		$account->type = 'p-pit-studies';
 				$account->opening_date = $studentSportImport->date_inscription;
 				$account->closing_date = substr($studentSportImport->annee_scolaire, 5).'-08-31';
 				$account->place_id = Place::getTable()->get($studentSportImport->centre, 'name')->id;
@@ -468,6 +532,7 @@ class StudentSportImport implements InputFilterAwareInterface
 					$vcard->n_last = $studentSportImport->nom_famille;
 					$vcard->n_fn = $vcard->n_last.', '.$vcard->n_first;
 					$vcard->email = $studentSportImport->email;
+					$contact->photo_link_id = 'eleve'.$studentSportImport->id.'.jpg';
 					Vcard::getTable()->save($vcard);
 
 		    		$community->name = $vcard->n_fn;
@@ -502,7 +567,8 @@ class StudentSportImport implements InputFilterAwareInterface
 				Account::getTable()->save($account);
    		}
 			
-    		$commitment = Commitment::instanciate('registration');
+    		$commitment = Commitment::instanciate('p-pit-studies');
+    		$commitment->last_credit_consumption_date = '2016-10-01';
     		if ($studentSportImport->annee_scolaire == '2016-2017') $commitment->status = 'new';
     		else $commitment->status = 'closed';
     		$commitment->account_id = $account->id;

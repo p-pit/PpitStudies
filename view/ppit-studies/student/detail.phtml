@@ -22,23 +22,23 @@ title="
 		<div>&nbsp;</div>
 				
 		<ul class="nav nav-tabs">
-<?php if ($context->hasRole('manager')) : ?>
+<?php if ($context->hasRole('student') || $context->hasRole('manager')) : ?>
 		  <li data-toggle="tab" class="student-tab active" id="news_flash-tab"><a><?php echo $this->translate('News flash', 'ppit-studies', $context->getLocale()) ?></a></li>
 <?php endif;?>
 
-<?php if ($context->hasRole('manager') || $context->hasRole('coach')) : ?>
+<?php if ($context->hasRole('student') || $context->hasRole('manager') || $context->hasRole('coach')) : ?>
 		  <li data-toggle="tab" class="student-tab"><a id="sport-tab"><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></a></li>
 <?php endif;?>
 
-<?php if ($context->hasRole('manager') || $context->hasRole('teacher')) : ?>
+<?php if ($context->hasRole('student') || $context->hasRole('manager') || $context->hasRole('teacher')) : ?>
 		  <li data-toggle="tab" class="student-tab"><a id="schooling-tab"><?php echo $this->translate('Schooling', 'ppit-studies', $context->getLocale()) ?></a></li>
 <?php endif;?>
 
-<?php if ($context->hasRole('manager') || $context->hasRole('boarding_school_headmaster')) : ?>
+<?php if ($context->hasRole('student') || $context->hasRole('manager') || $context->hasRole('boarding_school_headmaster')) : ?>
 		  <li data-toggle="tab" class="student-tab"><a id="boarding-school-tab"><?php echo $this->translate('Boarding school', 'ppit-studies', $context->getLocale()) ?></a></li>
 <?php endif;?>
 
-<?php if ($context->hasRole('manager') || $context->hasRole('medical')) : ?>
+<?php if ($context->hasRole('student') || $context->hasRole('manager') || $context->hasRole('medical')) : ?>
 		  <li data-toggle="tab" class="student-tab"><a id="medical-tab"><?php echo $this->translate('Medical', 'ppit-studies', $context->getLocale()) ?></a></li>
 <?php endif;?>
 		</ul>

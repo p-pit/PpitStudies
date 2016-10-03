@@ -42,7 +42,7 @@ class StudentController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-    			'applicationName' => 'p-pit-studies',
+    			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
@@ -54,11 +54,11 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$account_id = Account::get($context->getCommunityId(), 'customer_community_id')->id;
-    	
+
      	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-    			'applicationName' => 'p-pit-studies',
+    			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
      			'account_id' => $account_id,
     	));
@@ -69,7 +69,7 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
 
-		$applicationName = 'P-PIT Studies';
+		$applicationName = 'P-Pit Studies';
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry');
 
@@ -141,7 +141,8 @@ class StudentController extends AbstractActionController
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-    
+    	if (!array_key_exists('min_closing_date', $params)) $params['min_closing_date'] = date('Y-m-d');
+
     	// Retrieve the list
     	$accounts = Account::getList('p-pit-studies', $params, $major, $dir, $mode);
 
@@ -563,8 +564,11 @@ class StudentController extends AbstractActionController
     	if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) {
 	    	require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
 	    	$dropboxClient = new \Dropbox\Client($context->getConfig('ppitDocument')['dropboxCredential'], "P-PIT");
-			$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
-			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
+	    	try {
+				$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
+				foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
+	    	}
+	    	catch(\Exception $e) {}
 		}
 
     	// Instanciate the csrf form
@@ -773,7 +777,7 @@ class StudentController extends AbstractActionController
 		$connection->beginTransaction();
 		try {
 		
-//			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
+			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
 			StudentSportImport::import();
 
 			$connection->commit();
@@ -784,7 +788,7 @@ class StudentController extends AbstractActionController
 			$connection->rollback();
 			throw $e;
 		}
-		
+    	return $this->getResponse();
 //		return $this->redirect()->toRoute('home');
 	}
 

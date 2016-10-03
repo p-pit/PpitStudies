@@ -121,6 +121,12 @@ function getStudentDetail() {
 				connectStudentTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'schooling')) ?>');
 			});
 
+			$('#boarding-school-tab').click(function () {
+				$('.student-tab').removeClass('active');
+				$('#boarding-school-tab').addClass('active');
+				connectStudentTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'boarding_school')) ?>');
+			});
+
 			$('#medical-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#medical-tab').addClass('active');
