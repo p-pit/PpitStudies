@@ -176,7 +176,7 @@ class NotificationController extends AbstractActionController
     		   	$data['begin_date'] = $request->getPost('begin_date');
     			$data['end_date'] = $request->getPost('end_date');
 
-    			if ($request->getPost('attachment_label')) {
+    			if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument')) && $request->getPost('attachment_label')) {
 	    			$data['attachment_type'] = 'dropbox';
 	    			$data['attachment_label'] = $request->getPost('attachment_label');
 	    			$data['attachment_path'] = $request->getPost('attachment_path');

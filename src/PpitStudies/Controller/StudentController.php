@@ -603,10 +603,10 @@ class StudentController extends AbstractActionController
     		   	$data['begin_date'] = $request->getPost('begin_date');
     			$data['end_date'] = $request->getPost('end_date');    			
 
-    			$data['attachment_type'] = 'dropbox';
     			$data['attachment_label'] = $request->getPost('attachment_label');
     			$data['attachment_path'] = $request->getPost('attachment_path');
- 
+    			if ($data['attachment_path'] && array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) $data['attachment_type'] = 'dropbox';
+    			 
     			$data['comment'] = $request->getPost('comment');
 
     			$nbCriteria = $request->getPost('nb-criteria');

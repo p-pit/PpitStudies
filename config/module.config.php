@@ -1070,6 +1070,9 @@ return array(
 									'eleve/confirmation' => array(
 											'labels' => array('en_US' => 'Confirmation', 'fr_FR' => 'Confirmation'),
 									),
+									'eleve/engagement' => array(
+											'labels' => array('en_US' => 'Coverage', 'fr_FR' => 'Prise en charge'),
+									),
 									'eleve/attestation' => array(
 											'labels' => array('en_US' => 'Attestation', 'fr_FR' => 'Attestation'),
 									),
