@@ -876,6 +876,13 @@ return array(
 									'fr_FR' => 'Email',
 							),
 					),
+					'birth_date' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Birth date',
+									'fr_FR' => 'Date de naissance',
+							),
+					),
 					'place_id' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/place',
@@ -1015,7 +1022,8 @@ return array(
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
 			'property_3' => array('mandatory' => false),
-			'email' => array('mandatory' => true),
+			'email' => array('mandatory' => false),
+			'birth_date' => array('mandatory' => false),
 			'place_id' => array('mandatory' => true),
 			'opening_date' => array('mandatory' => true),
 			'closing_date' => array('mandatory' => false),
@@ -1254,7 +1262,7 @@ return array(
 			'modalities' => array(
 					'Interne' => array('fr_FR' => 'Internat'),
 					'Weekend' => array('fr_FR' => 'Internat + WE'),
-					'Dimanche' => array('fr_FR' => 'Intern. + WE + Dim. soir'),
+					'Dimanche' => array('fr_FR' => 'Internat + dimanche'),
 			),
 			'labels' => array(
 					'en_US' => 'Boarding-school',
