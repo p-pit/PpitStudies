@@ -142,7 +142,7 @@ table.note-report tr.period {
 				<th title="<?php echo $this->translate('Higher note', 'ppit-studies', $context->getLocale()) ?>">+</th>
 				<th title="<?php echo $this->translate('Lower note', 'ppit-studies', $context->getLocale()) ?>">-</th>
 			</tr>
-	<?php $first=true; foreach ($account->json_property_1 as $note) : ?>
+	<?php $first=true; foreach ($notes as $note) : ?>
 			<tr>
 				<td class="subject"><?php echo $note['subject'] ?></td>
 				<td><?php echo $context->decodeDate($note['date']) ?></td>

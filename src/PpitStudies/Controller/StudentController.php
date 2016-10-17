@@ -498,9 +498,15 @@ class StudentController extends AbstractActionController
 	    				$data['results'][$request->getPost('account_'.$i)] = $value;
 	    			}
     				$rc = $note->loadData($data);
-
+    				if ($rc != 'OK') throw new \Exception('View error');
+    				
+    				$rc = $note->add();
+    				if ($rc != 'OK') {
+    					$connection->rollback();
+    					$error = $rc;
+    				}
     				// Save the note at the student level
-    				for ($i = 0; $i < $nbAccount; $i++) {
+    				else for ($i = 0; $i < $nbAccount; $i++) {
     					$account = $accounts[$request->getPost('account_'.$i)];
     					$value = $request->getPost('value_'.$account->id);
 						$account->json_property_1[$note->id] = array(
@@ -516,15 +522,6 @@ class StudentController extends AbstractActionController
 						);
 						$account->update($account->update_time);
     				}
-								
-    				if ($rc != 'OK') throw new \Exception('View error');
-    					$rc = $note->add();
-    					if ($rc != 'OK') {
-    						$connection->rollback();
-    						$error = $rc;
-    						break;
-    					}
-//    				}
     				if (!$error) {
     					$connection->commit();
     					$message = 'OK';
@@ -797,7 +794,11 @@ class StudentController extends AbstractActionController
 		$absences = Absence::retrieveAll($category, $account_id);
 		$events = Event::retrieveComing('p-pit-studies', $category, $account_id);
 		$notifications = Notification::retrieveCurrents('p-pit-studies', $category, $account_id);
-//		$notes = Note::retrieveAll($category, $account_id);
+		$notes = array();
+		foreach ($account->json_property_1 as $noteId => $note) {
+			$evaluation = Note::get($noteId);
+			if ($evaluation->status != 'deleted') $notes[$noteId] = $note;
+		}
 		if ($category == 'sport') $progresses = Progress::retrieveAll($account->property_1, $account_id);
 		else $progresses = array();
 		
@@ -811,7 +812,7 @@ class StudentController extends AbstractActionController
 				'absences' => $absences,
 				'events' => $events,
 				'notifications' => $notifications,
-//				'notes' => $notes,
+				'notes' => $notes,
 				'progresses' => $progresses,
 		));
 		$view->setTerminal(true);
