@@ -106,7 +106,7 @@ function eraseNoteSearch() {
 
 <?php endforeach;?>
 
-	getNoteList(getParams(), 'name', 'ASC');
+	getNoteList(getParams(), 'school_period', 'ASC');
 }
 
 function sortNoteList(criterion) {
@@ -151,24 +151,24 @@ function connectNoteSearchInputs() {
 		||	$propertyId == 'school_period'
 		||	$propertyId == 'school_year'
 		||	$propertyId == 'specialty') : ?>
-	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 
 	<?php elseif ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 	
 	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 	<?php endif;?>
 
@@ -183,24 +183,24 @@ function connectNoteSearchInputs() {
 		||	$propertyId == 'school_period'
 		||	$propertyId == 'school_year'
 		||	$propertyId == 'specialty') : ?>
-	$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 
 	<?php elseif ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
+		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
 	
 	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
 
 	<?php endif;?>
 
@@ -449,7 +449,7 @@ function activateNote() {
 	// Connect the search inputs
 	connectNoteSearchInputs();
 	
-	getNoteList('?', 'name', 'ASC');
+	getNoteList('?', 'school_period', 'ASC');
 	
 	$('#add-criteria').click(function () {
 		mode = $('#add-criteria').text();

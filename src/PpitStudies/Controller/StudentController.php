@@ -13,6 +13,7 @@ use PpitCore\Model\Context;
 use PpitCore\Model\Credit;
 use PpitCore\Model\Instance;
 use PpitMasterData\Model\Place;
+use PpitMasterData\Model\Product;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\Progress;
@@ -502,7 +503,7 @@ class StudentController extends AbstractActionController
     				for ($i = 0; $i < $nbAccount; $i++) {
     					$account = $accounts[$request->getPost('account_'.$i)];
     					$value = $request->getPost('value_'.$account->id);
-						$account->json_property_1[] = array(
+						$account->json_property_1[$note->id] = array(
 								'date' => $note->date,
 								'subject' => $note->subject,
 								'reference_value' => $note->reference_value,
@@ -766,29 +767,22 @@ class StudentController extends AbstractActionController
 		$context = Context::getCurrent();
 
 		// First Ids to delete
-		$firstCommunityId = $this->params()->fromQuery('firstCommunityId');
+/*		$firstCommunityId = $this->params()->fromQuery('firstCommunityId');
 		$firstVcardId = $this->params()->fromQuery('firstVcardId');
 		$firstUserId = $this->params()->fromQuery('firstUserId');
 		$firstDocumentId = $this->params()->fromQuery('firstDocumentId');
-		if (!$firstCommunityId || !$firstVcardId || !$firstUserId || !$firstDocumentId) throw new \Exception('Bad request');
+		if (!$firstCommunityId || !$firstVcardId || !$firstUserId || !$firstDocumentId) throw new \Exception('Bad request');*/
 		
-		// Atomically save
-		$connection = StudentSportImport::getTable()->getAdapter()->getDriver()->getConnection();
-		$connection->beginTransaction();
-		try {
-		
-			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
-			StudentSportImport::import();
-
-			$connection->commit();
-		
-			$message = 'OK';
-		}
-		catch (\Exception $e) {
-			$connection->rollback();
-			throw $e;
-		}
-    	return $this->getResponse();
+//			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
+//			StudentSportImport::import();
+//			StudentSportImport::importProduct();
+//			StudentSportImport::importOption();
+//			StudentSportImport::importBill();
+//			StudentSportImport::importBillRow();
+//			StudentSportImport::importBillOption();
+			StudentSportImport::importBillTerm();
+				
+		return $this->getResponse();
 //		return $this->redirect()->toRoute('home');
 	}
 

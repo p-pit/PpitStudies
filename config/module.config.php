@@ -830,7 +830,61 @@ return array(
 	),
 
 	'currentApplication' => 'p-pit-studies',
+
+	'commitment/p-pit-studies' => array(
+			'statuses' => array(),
+			'properties' => array(
+					'caption' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/school_year',
+							'labels' => array(
+									'en_US' => 'School year',
+									'fr_FR' => 'Année scolaire',
+							),
+					),
+					'description' => array(
+							'type' => 'textarea',
+							'labels' => array(
+									'en_US' => 'Description',
+									'fr_FR' => 'Description',
+							),
+					),
+					'property_1' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/level',
+							'labels' => array(
+									'en_US' => 'Level',
+									'fr_FR' => 'Niveau',
+							),
+					),
+					'property_2' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/specialty',
+							'labels' => array(
+									'en_US' => 'Specialty',
+									'fr_FR' => 'Spécialité',
+							),
+					),
+					'property_3' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/voarding_school',
+							'labels' => array(
+									'en_US' => 'Boarding school',
+									'fr_FR' => 'Internat',
+							),
+					),
+			),
+			'order' => 'school_year DESC',
+	),
 		
+	'commitment/update/p-pit-studies' => array(
+			'caption' => array('mandatory' => true),
+			'description' => array('mandatory' => false),
+			'property_1' => array('mandatory' => true),
+			'property_2' => array('mandatory' => false),
+			'property_3' => array('mandatory' => false),
+	),
+
 	'commitmentAccount/p-pit-studies' => array(
 			'statuses' => array(),
 			'properties' => array(
@@ -1237,7 +1291,7 @@ return array(
 					'3e' => array('fr_FR' => '3e'),
 					'2nde' => array('fr_FR' => '2nde'),
 					'1ère' => array('fr_FR' => '1ère'),
-					'Term.' => array('fr_FR' => 'Term'),
+					'Term' => array('fr_FR' => 'Term'),
 			),
 			'labels' => array(
 					'en_US' => 'School level',

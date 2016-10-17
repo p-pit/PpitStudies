@@ -130,9 +130,9 @@ class Note implements InputFilterAwareInterface
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-				if (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
-    			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
-    			else $where->like($propertyId, '%'.$params[$propertyId].'%');
+				if (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
+    			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
+    			else $where->like('student_note.'.$propertyId, '%'.$params[$propertyId].'%');
     		}
     	}
 		
@@ -254,14 +254,14 @@ class Note implements InputFilterAwareInterface
 				if (!$account_id) return 'Integrity';
 				$this->results[$account_id] = $value;
 			}
-		}
-		if (count($data['results']) > 0) $this->average_note = round($noteSum / count($data['results']), 2);
-		$this->lower_note = $lowerNote;
-		$this->higher_note = $higherNote;
-		if (array_key_exists('observations', $data)) {
-		    $this->observations = trim(strip_tags($data['observations']));
-		    if (strlen($this->observations) > 2047) return 'Integrity';
-		}
+			if (count($data['results']) > 0) $this->average_note = round($noteSum / count($data['results']), 2);
+			$this->lower_note = $lowerNote;
+			$this->higher_note = $higherNote;
+			if (array_key_exists('observations', $data)) {
+			    $this->observations = trim(strip_tags($data['observations']));
+			    if (strlen($this->observations) > 2047) return 'Integrity';
+			}
+        }
 		if (array_key_exists('comment', $data)) {
 		    $this->comment = trim(strip_tags($data['comment']));
 		    if (strlen($this->comment) > 2047) return 'Integrity';

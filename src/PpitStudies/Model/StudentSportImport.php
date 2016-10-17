@@ -3,6 +3,7 @@ namespace PpitStudies\Model;
 
 use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Account;
+use PpitCommitment\Model\Term;
 use PpitContact\Model\Community;
 use PpitContact\Model\Contract;
 use PpitContact\Model\Contact;
@@ -10,11 +11,17 @@ use PpitContact\Model\Vcard;
 use PpitCore\Model\Context;
 use PpitDocument\Model\Document;
 use PpitMasterData\Model\Place;
+use PpitMasterData\Model\Product;
+use PpitMasterData\Model\ProductOption;
 use PpitOrder\Model\Order;
 use PpitStudies\Model\Student;
 use PpitStudies\Model\StudentSport;
 use PpitStudies\Model\UserImport;
 use PpitStudies\Model\VcardImport;
+use CitAccounting\Model\Bill;
+use CitAccounting\Model\BillRow;
+use CitAccounting\Model\BillOption;
+use CitAccounting\Model\BillTerm;
 use PpitUser\Model\User;
 use PpitUser\Model\UserContact;
 use Zend\db\sql\Where;
@@ -581,6 +588,193 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     	}
     }
 
+    public static function importProduct()
+    {
+    	$context = Context::getCurrent();
+    	
+    	Product::getTable()->multipleDelete(array());
+
+    	$select = \CitAccounting\Model\Product::getTable()->getSelect();
+    	$cursor = \CitAccounting\Model\Product::getTable()->transSelectWith($select);
+    	foreach ($cursor as $productImport) {
+			$product = Product::instanciate();
+    		$product->status = 'new';
+			$product->type = 'sport_etudes';
+			$product->brand = 'FM Sports';
+			$product->reference = $productImport->reference;
+			$product->caption = $productImport->package;
+			$product->description = $productImport->caption;
+			$product->is_available = ($productImport->year == '2016') ? true : false;
+			$product->variants = array(array('price' => $productImport->price));
+			$product->vat_1_id = $productImport->category_1_id;
+			$product->vat_2_id = $productImport->category_2_id;
+			$product->vat_3_id = $productImport->category_3_id;
+			$product->vat_4_id = $productImport->category_4_id;
+			$product->vat_5_id = $productImport->category_5_id;
+			$product->vat_1_share = $productImport->category_1_share;
+			$product->vat_2_share = $productImport->category_2_share;
+			$product->vat_3_share = $productImport->category_3_share;
+			$product->vat_4_share = $productImport->category_4_share;
+			$product->vat_5_share = $productImport->category_5_share;
+			$product->add();
+    	}
+    }
+
+    public static function importOption()
+    {
+    	$context = Context::getCurrent();
+    	 
+    	ProductOption::getTable()->multipleDelete(array());
+    
+    	$select = \CitAccounting\Model\ProductOption::getTable()->getSelect();
+    	$cursor = \CitAccounting\Model\ProductOption::getTable()->transSelectWith($select);
+    	foreach ($cursor as $productOptionImport) {
+    		$productOption = ProductOption::instanciate();
+    		$productOption->status = 'new';
+    		$productOption->reference = $productOptionImport->caption;
+    		$productOption->caption = $productOptionImport->caption;
+    		$productOption->is_available = $productOptionImport->is_on_sale;
+			$productOption->variants = array(array('price' => $productOptionImport->unit_price));
+    		$productOption->vat_id = ($productOptionImport->vat_rate) ? '2' : '1';
+    		$productOption->add();
+    	}
+    }
+    
+    public static function importBill() 
+    {
+    	$context = Context::getCurrent();
+    	
+    	$select = Bill::getTable()->getSelect();
+    	$cursor = Bill::getTable()->transSelectWith($select);
+    	foreach ($cursor as $bill) {
+    		$commitment = Commitment::get($bill->customer_id, 'identifier');
+    		if ($commitment) {
+		
+				// Atomically save
+				$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
+				$connection->beginTransaction();
+				try {
+	    			$commitment->invoice_identifier = $bill->bill_ref.'-'.$bill->id;
+	    			$commitment->invoice_date = $bill->bill_date;
+	    			echo $commitment->id.' - '.($commitment->update(null)).'<br>';
+					$connection->commit();
+				}
+				catch (\Exception $e) {
+					throw $e;
+					$connection->rollback();
+					throw $e;
+				}
+			}
+    	}
+    }
+
+    public static function importBillRow()
+    {
+    	$context = Context::getCurrent();
+    	 
+    	$select = BillRow::getTable()->getSelect()
+    		->join('eleve_acc_bill', 'eleve_acc_bill_row.bill_id = eleve_acc_bill.id', array('customer_id'), 'left')
+    		->join('eleve_product', 'eleve_acc_bill_row.product_id = eleve_product.id', array('reference'), 'left');
+    	$cursor = BillRow::getTable()->transSelectWith($select);
+    	foreach ($cursor as $row) {
+    		$commitment = Commitment::get($row->customer_id, 'identifier');
+    		if ($commitment && !$commitment->product_identifier) {
+		
+				// Atomically save
+				$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
+				$connection->beginTransaction();
+				try {
+	    			$commitment->product_identifier = $row->reference;
+	    			$commitment->quantity = $row->quantity;
+	    			$commitment->unit_price = $row->unit_price;
+	    			$commitment->amount = $row->unit_price;
+	    			echo $commitment->id.' - '.($commitment->update(null)).'<br>';
+					$connection->commit();
+				}
+				catch (\Exception $e) {
+					throw $e;
+					$connection->rollback();
+					throw $e;
+				}
+			}
+    	}
+    }
+
+    public static function importBillOption()
+    {
+    	$context = Context::getCurrent();
+
+    	$select = Commitment::getTable()->getSelect()->where(array('options' => '[]'));
+    	$cursor = Commitment::getTable()->selectWith($select);
+    	foreach ($cursor as $commitment) {
+    		$select = BillOption::getTable()->getSelect()
+    			->join('eleve_acc_bill', 'eleve_acc_bill_option.bill_id = eleve_acc_bill.id', array('customer_id'))
+    			->join('eleve_product_option', 'eleve_acc_bill_option.option_id = eleve_product_option.id', array('reference' => 'caption'))
+    			->where(array('customer_id' => $commitment->identifier));
+    		$cursor2 = BillOption::getTable()->transSelectWith($select);
+    		foreach($cursor2 as $option) {
+    
+    			// Atomically save
+    			$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				$commitment->options[$option->reference] = array(
+    						'caption' => $option->reference,
+    						'unit_price' => $option->unit_price,
+				   			'quantity' => $option->quantity,
+    						'amount' => $option->including_vat,
+    						'vat_id' => ($option->vat_rate) ? '2' : '1',
+    				);
+    				echo $commitment->id.' - '.($commitment->update(null)).'<br>';
+    				$connection->commit();
+    			}
+    			catch (\Exception $e) {
+    				throw $e;
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    }
+
+    public static function importBillTerm()
+    {
+    	$context = Context::getCurrent();
+
+    	Term::getTable()->multipleDelete(array());
+
+    	$select = BillTerm::getTable()->getSelect()
+	    	->join('eleve_acc_bill', 'eleve_acc_bill_term.bill_id = eleve_acc_bill.id', array(), 'left')
+	    	->join('commitment', 'eleve_acc_bill.customer_id = commitment.identifier', array('commitment_id' => 'id'), 'left');
+    	$cursor = BillTerm::getTable()->transSelectWith($select);
+    	foreach ($cursor as $billTerm) {
+    		$term = new Term;
+    
+    			// Atomically save
+    			$connection = Term::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				$term->commitment_id = $billTerm->commitment_id;
+    				$term->caption = $billTerm->caption;
+    				$term->due_date = $billTerm->due_date;
+    				$term->amount = $billTerm->amount;
+    				if ($billTerm->method_of_payment == 'Carte bancaire') $term->means_of_payment = 'bank_card';
+    				elseif ($billTerm->method_of_payment == 'Virement') $term->means_of_payment = 'transfer';
+    				elseif ($billTerm->method_of_payment == 'Chèque') $term->means_of_payment = 'check';
+    				elseif ($billTerm->method_of_payment == 'Espèces') $term->means_of_payment = 'cash';
+    				$term->status = ($billTerm->is_paid) ? 'settled' : 'expected';
+    				$term->add();
+    				echo $term->id.' - OK'.'<br>';
+    				$connection->commit();
+    			}
+    			catch (\Exception $e) {
+    				throw $e;
+    				$connection->rollback();
+    				throw $e;
+    			}
+    	}
+    }
+    
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception("Not used");
