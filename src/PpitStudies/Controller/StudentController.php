@@ -559,10 +559,11 @@ class StudentController extends AbstractActionController
     	$notification = Notification::instanciate('p-pit-studies');
 
 		$documentList = array();
-    	if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) {
-	    	require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
-	    	$dropboxClient = new \Dropbox\Client($context->getConfig('ppitDocument')['dropboxCredential'], "P-PIT");
-	    	try {
+    	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
+			require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+		    $dropbox = $context->getConfig('ppitDocument')['dropbox'];
+    		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
+			try {
 				$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
 				foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
 	    	}
@@ -603,7 +604,7 @@ class StudentController extends AbstractActionController
 
     			$data['attachment_label'] = $request->getPost('attachment_label');
     			$data['attachment_path'] = $request->getPost('attachment_path');
-    			if ($data['attachment_path'] && array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) $data['attachment_type'] = 'dropbox';
+    			if ($data['attachment_path'] && array_key_exists('dropbox', $context->getConfig('ppitDocument'))) $data['attachment_type'] = 'dropbox';
     			 
     			$data['comment'] = $request->getPost('comment');
 

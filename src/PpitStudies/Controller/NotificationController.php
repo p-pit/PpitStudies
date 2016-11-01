@@ -134,9 +134,10 @@ class NotificationController extends AbstractActionController
  		$notification->retrieveTarget();
 
  		$documentList = array();
- 		if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument'))) {
+ 		if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
  			require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
- 			$dropboxClient = new \Dropbox\Client($context->getConfig('ppitDocument')['dropboxCredential'], "P-PIT");
+		    $dropbox = $context->getConfig('ppitDocument')['dropbox'];
+    		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
  			try {
 	 			$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
 	 			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
@@ -176,7 +177,7 @@ class NotificationController extends AbstractActionController
     		   	$data['begin_date'] = $request->getPost('begin_date');
     			$data['end_date'] = $request->getPost('end_date');
 
-    			if (array_key_exists('dropboxCredential', $context->getConfig('ppitDocument')) && $request->getPost('attachment_label')) {
+    			if (array_key_exists('dropbox', $context->getConfig('ppitDocument')) && $request->getPost('attachment_label')) {
 	    			$data['attachment_type'] = 'dropbox';
 	    			$data['attachment_label'] = $request->getPost('attachment_label');
 	    			$data['attachment_path'] = $request->getPost('attachment_path');

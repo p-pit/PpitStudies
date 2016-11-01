@@ -606,16 +606,19 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
 			$product->description = $productImport->caption;
 			$product->is_available = ($productImport->year == '2016') ? true : false;
 			$product->variants = array(array('price' => $productImport->price));
-			$product->vat_1_id = $productImport->category_1_id;
-			$product->vat_2_id = $productImport->category_2_id;
-			$product->vat_3_id = $productImport->category_3_id;
-			$product->vat_4_id = $productImport->category_4_id;
-			$product->vat_5_id = $productImport->category_5_id;
-			$product->vat_1_share = $productImport->category_1_share;
-			$product->vat_2_share = $productImport->category_2_share;
-			$product->vat_3_share = $productImport->category_3_share;
-			$product->vat_4_share = $productImport->category_4_share;
-			$product->vat_5_share = $productImport->category_5_share;
+			$product->tax_1_share = 0;
+			$product->tax_2_share = 0;
+			$product->tax_3_share = 0;
+			if ($productImport->category_1_id == 2 || $productImport->category_1_id == 5) $product->tax_1_share += $productImport->category_1_share;
+			elseif ($productImport->category_1_id == 3) $product->tax_3_share += $productImport->category_1_share;
+			if ($productImport->category_2_id == 2 || $productImport->category_2_id == 5) $product->tax_1_share += $productImport->category_2_share;
+			elseif ($productImport->category_2_id == 3) $product->tax_3_share += $productImport->category_2_share;
+			if ($productImport->category_3_id == 2 || $productImport->category_3_id == 5) $product->tax_1_share += $productImport->category_3_share;
+			elseif ($productImport->category_3_id == 3) $product->tax_3_share += $productImport->category_3_share;
+			if ($productImport->category_4_id == 2 || $productImport->category_4_id == 5) $product->tax_1_share += $productImport->category_4_share;
+			elseif ($productImport->category_4_id == 3) $product->tax_3_share += $productImport->category_4_share;
+			if ($productImport->category_5_id == 2 || $productImport->category_5_id == 5) $product->tax_1_share += $productImport->category_5_share;
+			elseif ($productImport->category_5_id == 3) $product->tax_3_share += $productImport->category_5_share;
 			$product->add();
     	}
     }
@@ -671,32 +674,64 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     public static function importBillRow()
     {
     	$context = Context::getCurrent();
-    	 
+/*
+    	$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
+    	$connection->beginTransaction();
+    	try {
+	    	$select = Commitment::getTable()->getSelect();
+	    	$cursor = Commitment::getTable()->selectWith($select);
+	    	foreach ($cursor as $commitment) {
+	    		$commitment->options = array();
+	    		$commitment->unit_price = 0;
+	    		$commitment->amount = 0;
+	    		$commitment->including_options_amount = 0;
+	    		$commitment->taxable_1_amount = 0;
+	    		$commitment->taxable_2_amount = 0;
+	    		$commitment->taxable_3_amount = 0;
+	    		$commitment->update(null);
+	    	}
+	    	$connection->commit();
+		}
+		catch (\Exception $e) {
+			throw $e;
+			$connection->rollback();
+			throw $e;
+		}*/
+
     	$select = BillRow::getTable()->getSelect()
     		->join('eleve_acc_bill', 'eleve_acc_bill_row.bill_id = eleve_acc_bill.id', array('customer_id'), 'left')
-    		->join('eleve_product', 'eleve_acc_bill_row.product_id = eleve_product.id', array('reference'), 'left');
-    	$cursor = BillRow::getTable()->transSelectWith($select);
+    		->join('eleve_product', 'eleve_acc_bill_row.product_id = eleve_product.id', array('reference'), 'left')
+    		->join('md_product', 'eleve_product.reference = md_product.reference', array('tax_1_share', 'tax_2_share', 'tax_3_share'), 'left')
+    		->order(array('eleve_acc_bill_row.id'))
+    		->where(array('eleve_acc_bill_row.id > ?' => 562));
+    		$cursor = BillRow::getTable()->transSelectWith($select);
     	foreach ($cursor as $row) {
     		$commitment = Commitment::get($row->customer_id, 'identifier');
-    		if ($commitment && !$commitment->product_identifier) {
-		
-				// Atomically save
-				$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
-				$connection->beginTransaction();
-				try {
-	    			$commitment->product_identifier = $row->reference;
-	    			$commitment->quantity = $row->quantity;
-	    			$commitment->unit_price = $row->unit_price;
-	    			$commitment->amount = $row->unit_price;
-	    			echo $commitment->id.' - '.($commitment->update(null)).'<br>';
-					$connection->commit();
+    		if ($row->reference) {
+	    		if ($commitment && $commitment->options == array()) {
+
+					// Atomically save
+					$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
+					$connection->beginTransaction();
+					try {
+		    			$commitment->product_identifier = $row->reference;
+		    			$commitment->quantity = $row->quantity;
+		    			$commitment->unit_price += $row->unit_price;
+		    			$commitment->amount += $row->quantity * $row->unit_price;
+		    			$commitment->including_options_amount += $commitment->amount;
+		    			if ($row->category_id == 2 || $row->category_id == 5) $commitment->taxable_1_amount += $row->quantity * $row->unit_price;
+//		    			$commitment->taxable_2_amount += $row->quantity * $row->unit_price;
+		    			if ($row->category_id == 3) $commitment->taxable_3_amount += $row->quantity * $row->unit_price;
+						echo 'row->id : '.$row->id.', commitment->id : '.$commitment->id.' - '.($commitment->update(null)).'<br>';
+						$connection->commit();
+					}
+					catch (\Exception $e) {
+						throw $e;
+						$connection->rollback();
+						throw $e;
+					}
 				}
-				catch (\Exception $e) {
-					throw $e;
-					$connection->rollback();
-					throw $e;
-				}
-			}
+    		}
     	}
     }
 
@@ -704,35 +739,38 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     {
     	$context = Context::getCurrent();
 
-    	$select = Commitment::getTable()->getSelect()->where(array('options' => '[]'));
+    	$select = Commitment::getTable()->getSelect();//->where(array('options' => '[]'));
     	$cursor = Commitment::getTable()->selectWith($select);
     	foreach ($cursor as $commitment) {
+    		$commitment->including_options_amount = $commitment->amount;
     		$select = BillOption::getTable()->getSelect()
     			->join('eleve_acc_bill', 'eleve_acc_bill_option.bill_id = eleve_acc_bill.id', array('customer_id'))
     			->join('eleve_product_option', 'eleve_acc_bill_option.option_id = eleve_product_option.id', array('reference' => 'caption'))
     			->where(array('customer_id' => $commitment->identifier));
     		$cursor2 = BillOption::getTable()->transSelectWith($select);
     		foreach($cursor2 as $option) {
-    
-    			// Atomically save
-    			$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
-    			$connection->beginTransaction();
-    			try {
-    				$commitment->options[$option->reference] = array(
-    						'caption' => $option->reference,
-    						'unit_price' => $option->unit_price,
-				   			'quantity' => $option->quantity,
-    						'amount' => $option->including_vat,
-    						'vat_id' => ($option->vat_rate) ? '2' : '1',
-    				);
-    				echo $commitment->id.' - '.($commitment->update(null)).'<br>';
-    				$connection->commit();
-    			}
-    			catch (\Exception $e) {
-    				throw $e;
-    				$connection->rollback();
-    				throw $e;
-    			}
+    			$commitment->options[] = array(
+    					'identifier' => $option->reference,
+    					'caption' => $option->reference,
+    					'unit_price' => $option->unit_price,
+    					'quantity' => $option->quantity,
+    					'amount' => $option->including_vat,
+    					'vat_id' => ($option->vat_rate) ? '1' : '0',
+    			);
+    			$commitment->including_options_amount += $option->including_vat;
+    		}
+	
+    		// Atomically save
+    		$connection = Commitment::getTable()->getAdapter()->getDriver()->getConnection();
+    		$connection->beginTransaction();
+    		try {
+    			echo $commitment->id.' - '.($commitment->update(null)).'<br>';
+    			$connection->commit();
+    		}
+    		catch (\Exception $e) {
+    			throw $e;
+    			$connection->rollback();
+    			throw $e;
     		}
     	}
     }
@@ -757,6 +795,7 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     				$term->commitment_id = $billTerm->commitment_id;
     				$term->caption = $billTerm->caption;
     				$term->due_date = $billTerm->due_date;
+    				$term->settlement_date = $billTerm->due_date;
     				$term->amount = $billTerm->amount;
     				if ($billTerm->method_of_payment == 'Carte bancaire') $term->means_of_payment = 'bank_card';
     				elseif ($billTerm->method_of_payment == 'Virement') $term->means_of_payment = 'transfer';

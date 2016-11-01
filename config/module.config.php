@@ -832,8 +832,49 @@ return array(
 	'currentApplication' => 'p-pit-studies',
 
 	'commitment/p-pit-studies' => array(
-			'statuses' => array(),
+/*			'statuses' => array(
+					'new' => array(
+							'labels' => array(
+									'en_US' => 'To be approved',
+									'fr_FR' => 'A valider',
+							)
+					),
+					'confirmed' => array(
+							'labels' => array(
+									'en_US' => 'Confirmed',
+									'fr_FR' => 'Confirmé',
+							)
+					),
+					'settled' => array(
+							'labels' => array(
+									'en_US' => 'Settled',
+									'fr_FR' => 'Réglé',
+							)
+					),
+			),*/
+			'tax' => 'including',
+			'currencySymbol' => '€',
 			'properties' => array(
+					'status' => array(
+							'type' => 'select',
+							'modalities' => array(
+								'new' => array('en_US' => 'To be confirmed', 'fr_FR' => 'A confirmer'),
+								'confirmed' => array('en_US' => 'Confirmed', 'fr_FR' => 'Confirmé'),
+								'settled' => array('en_US' => 'Settled', 'fr_FR' => 'Réglé'),
+								'closed' => array('en_US' => 'Closed', 'fr_FR' => 'Clôturé'),
+							),
+							'labels' => array(
+									'en_US' => 'Status',
+									'fr_FR' => 'Statut',
+							),
+					),
+					'customer_name' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Name',
+									'fr_FR' => 'Nom',
+							),
+					),
 					'caption' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/school_year',
@@ -867,14 +908,113 @@ return array(
 					),
 					'property_3' => array(
 							'type' => 'repository',
-							'definition' => 'student/property/voarding_school',
+							'definition' => 'student/property/boarding_school',
 							'labels' => array(
 									'en_US' => 'Boarding school',
 									'fr_FR' => 'Internat',
 							),
 					),
+					'including_options_amount' => array(
+							'type' => 'number',
+							'labels' => array(
+									'en_US' => 'Amount',
+									'fr_FR' => 'Montant',
+							),
+					),
 			),
 			'order' => 'school_year DESC',
+			'todo' => array(
+					'sales_manager' => array(
+							'status' => array('selector' => 'in', 'value' => array('new')),
+					),
+			),
+			'actions' => array(
+					'' => array(
+							'currentStatuses' => array(),
+							'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
+							'properties' => array(
+									'account_id' => 'update',
+									//								'subscription_id' => 'update',
+									'caption' => 'update',
+									'description' => 'update',
+									'quantity' => 'update',
+									'unit_price' => 'update',
+									'amount' => 'update',
+									'identifier' => 'update',
+									'comment' => 'update',
+									'product_identifier' => 'update',
+							),
+					),
+					'update' => array(
+							'currentStatuses' => array('new' => null),
+							'glyphicon' => 'glyphicon-edit',
+							'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
+							'properties' => array(
+									'status' => 'display',
+									'account_id' => 'update',
+									//								'subscription_id' => 'update',
+									'caption' => 'update',
+									'description' => 'update',
+									'quantity' => 'update',
+									'unit_price' => 'update',
+									'amount' => 'update',
+									'identifier' => 'update',
+									'comment' => 'update',
+									'product_identifier' => 'update',
+							),
+					),
+					'delete' => array(
+							'currentStatuses' => array('new' => null),
+							'targetStatus' => 'deleted',
+							'glyphicon' => 'glyphicon-trash',
+							'label' => array('en_US' => 'Delete', 'fr_FR' => 'Supprimer'),
+							'properties' => array(
+							),
+					),
+					'confirm' => array(
+							'currentStatuses' => array('new' => null),
+							'targetStatus' => 'confirmed',
+							'label' => array('en_US' => 'Confirm', 'fr_FR' => 'Confirmer'),
+							'properties' => array(
+							),
+					),
+					'reject' => array(
+							'currentStatuses' => array('new' => null),
+							'targetStatus' => 'rejected',
+							'label' => array('en_US' => 'Reject', 'fr_FR' => 'Rejeter'),
+							'properties' => array(
+							),
+					),
+					'settle' => array(
+							'currentStatuses' => array('approved' => null),
+							'targetStatus' => 'settled',
+							'label' => array('en_US' => 'Settle', 'fr_FR' => 'Régler'),
+							'properties' => array(
+							),
+					),
+			),
+	),
+		
+	'commitment/index/p-pit-studies' => array(
+			'title' => array('en_US' => 'P-PIT Commitments', 'fr_FR' => 'P-PIT Engagements'),
+	),
+
+	'commitment/search/p-pit-studies' => array(
+			'title' => array('en_US' => 'Subscriptions', 'fr_FR' => 'Inscriptions'),
+			'todoTitle' => array('en_US' => 'active', 'fr_FR' => 'actifs'),
+			'main' => array(
+					'status' => 'select',
+					'including_options_amount' => 'range',
+					'customer_name' => 'contains',
+			),
+	),
+
+	'commitment/list/p-pit-studies' => array(
+			'property_1' => 'select',
+			'property_2' => 'select',
+			'property_3' => 'select',
+			'including_options_amount' => 'number',
+			'status' => 'select',
 	),
 		
 	'commitment/update/p-pit-studies' => array(
@@ -1314,6 +1454,7 @@ return array(
 	'student/property/boarding_school' => array(
 			'type' => 'select',
 			'modalities' => array(
+					'Externe' => array('fr_FR' => 'Externe'),
 					'Interne' => array('fr_FR' => 'Internat'),
 					'Weekend' => array('fr_FR' => 'Internat + WE'),
 					'Dimanche' => array('fr_FR' => 'Internat + dimanche'),
