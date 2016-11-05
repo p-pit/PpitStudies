@@ -831,6 +831,25 @@ return array(
 
 	'currentApplication' => 'p-pit-studies',
 
+	'ppitProduct/p-pit-studies' => array(
+			'properties' => array(),
+			'criteria' => array(),
+			'todo' => array(
+					'sales_manager' => array(),
+					'business_owner' => array(),
+			),
+	),
+		
+	'ppitProduct/index/p-pit-studies' => array(
+			'title' => array('en_US' => 'Sport studies', 'fr_FR' => 'Sport études'),
+	),
+		
+	'ppitProduct/search/p-pit-studies' => array(),
+		
+	'ppitProduct/list/p-pit-studies' => array(),
+		
+	'ppitProduct/update/p-pit-studies' => array(),
+		
 	'commitment/p-pit-studies' => array(
 /*			'statuses' => array(
 					'new' => array(

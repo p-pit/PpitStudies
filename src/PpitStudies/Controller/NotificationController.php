@@ -23,7 +23,8 @@ class NotificationController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-    			'applicationName' => 'p-pit-studies',
+    			'applicationId' => 'p-pit-studies',
+    			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
@@ -139,7 +140,7 @@ class NotificationController extends AbstractActionController
 		    $dropbox = $context->getConfig('ppitDocument')['dropbox'];
     		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
  			try {
-	 			$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
+	 			$properties = $dropboxClient->getMetadataWithChildren($context->getConfig('ppitDocument')['dropbox']['folders'][$commitment->category]);
 	 			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
 	 		}
  			catch(\Exception $e) {}

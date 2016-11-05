@@ -43,6 +43,7 @@ class StudentController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'applicationId' => 'p-pit-studies',
     			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
     			'menu' => $menu,
@@ -59,8 +60,9 @@ class StudentController extends AbstractActionController
      	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'applicationId' => 'p-pit-studies',
     			'applicationName' => 'P-Pit Studies',
-    			'active' => 'application',
+     			'active' => 'application',
      			'account_id' => $account_id,
     	));
     }
@@ -70,7 +72,6 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
 
-		$applicationName = 'P-Pit Studies';
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry');
 
@@ -78,7 +79,8 @@ class StudentController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getConfig(),
     			'active' => 'application',
-    			'applicationName' => $applicationName,
+    			'applicationId' => 'p-pit-studies',
+    			'applicationName' => 'P-Pit Studies',
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
     			'type' => 'p-pit-studies',
@@ -564,7 +566,7 @@ class StudentController extends AbstractActionController
 		    $dropbox = $context->getConfig('ppitDocument')['dropbox'];
     		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
 			try {
-				$properties = $dropboxClient->getMetadataWithChildren('/P-PIT Finance');
+				$properties = $dropboxClient->getMetadataWithChildren($context->getConfig('ppitDocument')['dropbox']['folders'][$category]);
 				foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
 	    	}
 	    	catch(\Exception $e) {}
@@ -774,11 +776,11 @@ class StudentController extends AbstractActionController
 //			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
 //			StudentSportImport::import();
 //			StudentSportImport::importProduct();
-//			StudentSportImport::importOption();
+			StudentSportImport::importOption();
 //			StudentSportImport::importBill();
 //			StudentSportImport::importBillRow();
 //			StudentSportImport::importBillOption();
-			StudentSportImport::importBillTerm();
+//			StudentSportImport::importBillTerm();
 				
 		return $this->getResponse();
 //		return $this->redirect()->toRoute('home');

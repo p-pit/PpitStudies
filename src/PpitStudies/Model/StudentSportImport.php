@@ -599,7 +599,7 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     	foreach ($cursor as $productImport) {
 			$product = Product::instanciate();
     		$product->status = 'new';
-			$product->type = 'sport_etudes';
+			$product->type = 'p-pit-studies';
 			$product->brand = 'FM Sports';
 			$product->reference = $productImport->reference;
 			$product->caption = $productImport->package;
@@ -634,11 +634,12 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     	foreach ($cursor as $productOptionImport) {
     		$productOption = ProductOption::instanciate();
     		$productOption->status = 'new';
+    		$productOption->type = 'p-pit-studies';
     		$productOption->reference = $productOptionImport->caption;
     		$productOption->caption = $productOptionImport->caption;
     		$productOption->is_available = $productOptionImport->is_on_sale;
 			$productOption->variants = array(array('price' => $productOptionImport->unit_price));
-    		$productOption->vat_id = ($productOptionImport->vat_rate) ? '2' : '1';
+    		$productOption->vat_id = ($productOptionImport->vat_rate) ? '1' : '0';
     		$productOption->add();
     	}
     }

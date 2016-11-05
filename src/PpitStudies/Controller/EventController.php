@@ -24,7 +24,8 @@ class EventController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-    			'applicationName' => 'p-pit-studies',
+    			'applicationId' => 'p-pit-studies',
+    			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
