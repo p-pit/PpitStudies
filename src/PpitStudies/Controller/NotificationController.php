@@ -140,7 +140,7 @@ class NotificationController extends AbstractActionController
 		    $dropbox = $context->getConfig('ppitDocument')['dropbox'];
     		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
  			try {
-	 			$properties = $dropboxClient->getMetadataWithChildren($context->getConfig('ppitDocument')['dropbox']['folders'][$commitment->category]);
+	 			$properties = $dropboxClient->getMetadataWithChildren($context->getConfig('ppitDocument')['dropbox']['folders'][$notification->category]);
 	 			foreach ($properties['contents'] as $content) $documentList[] = $content['path'];
 	 		}
  			catch(\Exception $e) {}

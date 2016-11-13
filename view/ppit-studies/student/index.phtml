@@ -11,15 +11,6 @@ echo $this->partial('/partials/header');
 ?>
 	
 	<div>&nbsp;</div>
-
-<?php if ($outOfStockCredits) : ?>
-				<div class="alert alert-danger" style="text-align: center">
-					<strong>
-						<?php echo sprintf($context->getConfig('community/consumeCredit')['messages']['suspendedServiceMessage'][$context->getLocale()], $this->url('credit')) ?><br>
-					</strong>
-				</div>
-				<div>&nbsp;</div>
-<?php endif;?>
 	
 	<div id="main_menu" >
 	    <div class="col-md-10 col-md-offset-1">

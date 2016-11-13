@@ -22,6 +22,8 @@ use CitAccounting\Model\Bill;
 use CitAccounting\Model\BillRow;
 use CitAccounting\Model\BillOption;
 use CitAccounting\Model\BillTerm;
+use Sejour\Model\SejourProduct;
+use Sejour\Model\Sejour;
 use PpitUser\Model\User;
 use PpitUser\Model\UserContact;
 use Zend\db\sql\Where;
@@ -484,7 +486,7 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     	$context = Context::getCurrent();
 
     	Account::getTable()->multipleDelete(array());
-    	Commitment::getTable()->multipleDelete(array());
+    	Commitment::getTable()->multipleDelete(array('type' => 'p-pit-studies'));
     	 
     	$select = StudentSportImport::getTable()->getSelect();
     	$cursor = StudentSportImport::getTable()->transSelectWith($select);
@@ -812,6 +814,91 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     				$connection->rollback();
     				throw $e;
     			}
+    	}
+    }
+
+    public static function importSejour()
+    {
+    	$context = Context::getCurrent();
+    
+    	Product::getTable()->multipleDelete(array('type' => 'prestation'));    
+    	ProductOption::getTable()->multipleDelete(array('type' => 'prestation'));    
+    	$select = SejourProduct::getTable()->getSelect();
+    	$cursor = SejourProduct::getTable()->transSelectWith($select);
+    	foreach ($cursor as $sejourProduct) {
+    		$product = new Product;
+    		$product->status = 'new';
+    		$product->type = 'service';
+    		$product->brand = 'FM Sports';
+    		$product->reference = $sejourProduct->caption;
+    		$product->caption = $sejourProduct->caption;
+    		$product->description = $sejourProduct->description;
+    		$product->is_available = false;
+    		$product->property_1 = $sejourProduct->pays;
+    		$product->property_3 = $sejourProduct->langue;
+    		$product->property_4 = $sejourProduct->age_min;
+    		$product->property_5 = $sejourProduct->age_max;
+    		$product->tax_1_share = 1;
+    		
+	    	$select = Sejour::getTable()->getSelect()->where(array('product_id' => $sejourProduct->id));
+	    	$cursor2 = Sejour::getTable()->transSelectWith($select);
+    		$product->variants = array();
+    		$i = 1;
+    		foreach ($cursor2 as $sejour) {
+    			$product->variants["$i"] = array(
+    					'identifier' => $sejour->ref_catalogue,
+    					'stay_type' => $sejour->type_sejour,
+    					'package' => $sejour->formule,
+    					'activity' => $sejour->sport,
+    					'language' => $sejour->langue,
+    					'begin_date' => $sejour->date_debut,
+    					'end_date' => $sejour->date_fin,
+    					'duration' => $sejour->duree,
+    					'hosting' => $sejour->hebergement,
+    					'price' => $sejour->tarif,
+    			);
+    			$i++;
+    		}
+    		
+    		// Atomically save
+    		$connection = Term::getTable()->getAdapter()->getDriver()->getConnection();
+    		$connection->beginTransaction();
+    		try {
+    			$product->add();
+    		
+	    		if ($sejourProduct->vol_transfert_paris) {
+	    			$option = new ProductOption;
+	    			$option->status = 'new';
+	    			$option->type = 'service';
+	    			$option->product_id = $product->id;
+	    			$option->reference = $product->reference.' - '.'Vol Paris';
+	    			$option->caption = 'Vol + transfert départ Paris';
+	    			$option->is_available = false;
+	    			$option->variants = array(array('price' => $sejourProduct->vol_transfert_paris));
+	    			$option->vat_id = 0;
+    				$option->add();
+	    		}
+	
+	    		if ($sejourProduct->vol_transfert_nice) {
+	    			$option = new ProductOption;
+	    			$option->status = 'new';
+	    			$option->type = 'service';
+	    			$option->product_id = $product->id;
+	    			$option->reference = $product->reference.' - '.'Vol Nice';
+	    			$option->caption = 'Vol + transfert départ Nice';
+	    			$option->is_available = false;
+	    			$option->variants = array(array('price' => $sejourProduct->vol_transfert_nice));
+	    			$option->vat_id = 0;
+    				$option->add();
+	    		}
+    			echo $product->id.' - OK'.'<br>';
+	    		$connection->commit();
+    		}
+    		catch (\Exception $e) {
+    			throw $e;
+    			$connection->rollback();
+    			throw $e;
+    		}
     	}
     }
     

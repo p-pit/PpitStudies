@@ -144,10 +144,10 @@ class StudentController extends AbstractActionController
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-    	if (!array_key_exists('min_closing_date', $params)) $params['min_closing_date'] = date('Y-m-d');
+//    	if (!array_key_exists('min_closing_date', $params)) $params['min_closing_date'] = date('Y-m-d');
 
     	// Retrieve the list
-    	$accounts = Account::getList('p-pit-studies', $params, $major, $dir, $mode);
+    	$accounts = Account::getList(null, $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(
@@ -776,12 +776,13 @@ class StudentController extends AbstractActionController
 //			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
 //			StudentSportImport::import();
 //			StudentSportImport::importProduct();
-			StudentSportImport::importOption();
+//			StudentSportImport::importOption();
 //			StudentSportImport::importBill();
 //			StudentSportImport::importBillRow();
 //			StudentSportImport::importBillOption();
 //			StudentSportImport::importBillTerm();
-				
+			StudentSportImport::importSejour();
+		
 		return $this->getResponse();
 //		return $this->redirect()->toRoute('home');
 	}

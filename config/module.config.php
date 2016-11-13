@@ -1047,6 +1047,19 @@ return array(
 	'commitmentAccount/p-pit-studies' => array(
 			'statuses' => array(),
 			'properties' => array(
+					'status' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+									'active' => array('en_US' => 'Active', 'fr_FR' => 'Actif'),
+									'inactive' => array('en_US' => 'Inactive', 'fr_FR' => 'Inactif'),
+									'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
+							),
+							'labels' => array(
+									'en_US' => 'Status',
+									'fr_FR' => 'Statut',
+							),
+					),
 					'customer_name' => array(
 							'type' => 'input',
 							'labels' => array(
@@ -1182,6 +1195,7 @@ return array(
 			'title' => array('en_US' => 'Students', 'fr_FR' => 'Eleves'),
 			'todoTitle' => array('en_US' => 'registered', 'fr_FR' => 'inscrits'),
 			'main' => array(
+					'status' => 'select',
 					'place_id' => 'select',
 					'property_1' => 'select',
 					'property_4' => 'select',
@@ -1232,6 +1246,7 @@ return array(
 			),
 	),
 	'commitmentAccount/update/p-pit-studies' => array(
+			'status' => array('mandatory' => true),
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
 			'property_3' => array('mandatory' => false),
@@ -1488,6 +1503,7 @@ return array(
 			'type' => 'select',
 			'modalities' => array(
 					'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017'),
+					'2017-2018' => array('fr_FR' => '2017-2018', 'en_US' => '2017-2018'),
 			),
 			'labels' => array(
 					'en_US' => 'School year',
