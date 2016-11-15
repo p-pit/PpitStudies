@@ -16,6 +16,16 @@ title="
 	</div>
 	<div class="panel-body">
 
+<!-- Blocked community -->
+<?php if ($account->customer_status == 'blocked') : ?>
+		<div class="form-group">
+			<div class="alert alert-danger" style="text-align: center">
+				<?php echo $this->translate('The access is temporarily blocked due to a lack of <em>p-pit-community credits</em>.', 'ppit-core', $context->getLocale()) ?><br>
+				<?php echo sprintf($this->translate('But you can release it by <strong><a href="%s">subscribing credits</a></strong>.', 'ppit-core', $context->getLocale()), $this->url('credit')) ?>
+			</div>
+		</div>
+<?php endif;?>
+
 <!-- Photo -->
 		<div style="text-align: center"><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->contact_1_id)) ?>"/></div>
 
