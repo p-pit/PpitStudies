@@ -3,6 +3,7 @@
 namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Account;
+use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Event;
 use PpitCommitment\Model\Notification;
 use PpitCommitment\ViewHelper\SsmlAccountViewHelper;
@@ -18,6 +19,7 @@ use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\Progress;
 use PpitStudies\Model\StudentSportImport;
+use PpitStudies\ViewHelper\DocumentTemplate;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -822,4 +824,470 @@ class StudentController extends AbstractActionController
 		$view->setTerminal(true);
 		return $view;
 	}
+
+	public function letter($template, $data)
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+
+		$noImage = 1; //on incrémentera pour chaque image différente
+		$extImage = explode(".",$context->getConfig('headerParams')['logo']);
+		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
+		$logo = "<w:pict>\n";
+		$logo .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
+		$content = file_get_contents('public/logos/'.$context->getConfig('headerParams')['logo']);
+		$logo .= base64_encode($content);
+		$logo .= "\n</w:binData>\n";
+		$logo .= '<v:shape id="_x0000_i' . $noImage
+			   . '" type="#_x0000_t75" style="width:'.$context->getConfig('headerParams')['logo-width'].'pt;height:'.$context->getConfig('headerParams')['logo-height'].'pt">'."\n";
+		$logo .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['logo'].'"/>';
+		$logo .= "</v:shape>\n</w:pict>\n";
+
+		$noImage = 2; //on incrémentera pour chaque image différente
+		$extImage = explode(".",$context->getConfig('headerParams')['footer-img']);
+		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
+		$footer = "<w:pict>\n";
+		$footer .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
+		$content = file_get_contents('public/logos/'.$context->getConfig('headerParams')['footer-img']);
+		$footer .= base64_encode($content);
+		$footer .= "\n</w:binData>\n";
+		$footer .= '<v:shape id="_x0000_i' . $noImage
+		. '" type="#_x0000_t75" style="width:'.$context->getConfig('headerParams')['footer-width'].'pt;height:'.$context->getConfig('headerParams')['footer-height'].'pt">'."\n";
+		$footer .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['footer-img'].'"/>';
+		$footer .= "</v:shape>\n</w:pict>\n";
+		
+		DocumentTemplate::$letterTemplate = str_replace("@LOGO@", $logo, DocumentTemplate::$letterTemplate);
+		DocumentTemplate::$letterTemplate = str_replace("@FOOTER@", $footer, DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('address1', $template)) {
+			$arguments = array();
+			foreach ($template['address1']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_1@", vsprintf($template['address1']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_1@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('address2', $template)) {
+			$arguments = array();
+			foreach ($template['address2']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_2@", vsprintf($template['address2']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_2@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('address3', $template)) {
+			$arguments = array();
+			foreach ($template['address3']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_3@", vsprintf($template['address3']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_3@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('address4', $template)) {
+			$arguments = array();
+			foreach ($template['address4']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_4@", vsprintf($template['address4']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_4@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('address5', $template)) {
+			$arguments = array();
+			foreach ($template['address5']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_5@", vsprintf($template['address5']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_5@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('address6', $template)) {
+			$arguments = array();
+			foreach ($template['address6']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_6@", vsprintf($template['address6']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@ADDRESS_6@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('title', $template)) {
+			$arguments = array();
+			foreach ($template['title']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@TITLE@", vsprintf($template['title']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@TITLE@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph1a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph1a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P1A@", vsprintf($template['paragraph1a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P1A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph1B', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph1b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P1B@", vsprintf($template['paragraph1b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P1B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph2a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph2a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P2A@", vsprintf($template['paragraph2a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P2A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph2b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph2b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P2B@", vsprintf($template['paragraph2b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P2B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph3a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph3a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P3A@", vsprintf($template['paragraph3a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P3A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph3b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph3b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P3B@", vsprintf($template['paragraph3b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P3B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph4a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph4a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P4A@", vsprintf($template['paragraph4a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P4A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph4b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph4b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P4B@", vsprintf($template['paragraph4b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P4B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph5a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph5a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P5A@", vsprintf($template['paragraph5a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P5A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph5b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph5b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P5B@", vsprintf($template['paragraph5b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P5B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph6a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph6a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P6A@", vsprintf($template['paragraph6a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P6A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph6b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph6b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P6B@", vsprintf($template['paragraph6b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P6B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph7a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph7a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P7A@", vsprintf($template['paragraph7a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P7A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph7b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph7b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P7B@", vsprintf($template['paragraph7b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P7B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph8a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph8a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P8A@", vsprintf($template['paragraph8a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P8A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph8b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph8b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P8B@", vsprintf($template['paragraph8b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P8B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph9a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph9a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P9A@", vsprintf($template['paragraph9a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P9A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph9b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph9b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P9B@", vsprintf($template['paragraph9b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P9B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph10a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph10a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P10A@", vsprintf($template['paragraph10a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P10A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph10b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph10b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P10B@", vsprintf($template['paragraph10b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P10B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph11a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph11a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P11A@", vsprintf($template['paragraph11a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P11A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph11b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph11b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P11B@", vsprintf($template['paragraph11b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P11B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph12a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph12a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P12A@", vsprintf($template['paragraph12a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P12A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph12b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph12b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P12B@", vsprintf($template['paragraph12b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P12B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph13a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph13a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P13A@", vsprintf($template['paragraph13a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P13A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph13b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph13b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P13B@", vsprintf($template['paragraph13b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P13B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph14a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph14a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P14A@", vsprintf($template['paragraph14a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P14A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph14b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph14b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P14B@", vsprintf($template['paragraph14b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P14B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph15a', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph15a']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P15A@", vsprintf($template['paragraph15a']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P15A@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('paragraph15b', $template)) {
+			$arguments = array();
+			foreach ($template['paragraph15b']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@P15B@", vsprintf($template['paragraph15b']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@P15B@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('signature1', $template)) {
+			$arguments = array();
+			foreach ($template['signature1']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_1@", vsprintf($template['signature1']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_1@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('signature2', $template)) {
+			$arguments = array();
+			foreach ($template['signature2']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_2@", vsprintf($template['signature2']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_2@", '', DocumentTemplate::$letterTemplate);
+		
+		if (array_key_exists('signature3', $template)) {
+			$arguments = array();
+			foreach ($template['signature3']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_3@", vsprintf($template['signature3']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_3@", '', DocumentTemplate::$letterTemplate);
+
+		if (array_key_exists('signature4', $template)) {
+			$arguments = array();
+			foreach ($template['signature4']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_4@", vsprintf($template['signature4']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_4@", '', DocumentTemplate::$letterTemplate);
+
+		if (array_key_exists('signature5', $template)) {
+			$arguments = array();
+			foreach ($template['signature5']['params'] as $param) $arguments[] = $data[$param];
+			DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_5@", vsprintf($template['signature5']['text'], $arguments), DocumentTemplate::$letterTemplate);
+		}
+		else DocumentTemplate::$letterTemplate = str_replace("@SIGNATURE_5@", '', DocumentTemplate::$letterTemplate);
+
+		header('Content-Type: application/msword; charset=utf-8');
+		header("Content-disposition: filename=confirmation.doc");
+		echo DocumentTemplate::$letterTemplate;
+		return $this->response;
+	}
+	
+    public function confirmationAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+
+    	$id = (int) $this->params()->fromRoute('id', 0);
+    	if (!$id) return $this->redirect()->toRoute('home');
+    	$commitment = Commitment::get($id);
+    	
+    	$template = $context->getConfig('student/confirmation');
+
+    	$data = array(
+    		'date' => date('d/m/Y'),
+    		'n_last' => $commitment->account->contact_1->n_last,
+    		'n_first' => $commitment->account->contact_1->n_first,
+    		'adr_street' => $commitment->account->contact_1->adr_street,
+    		'adr_zip' => $commitment->account->contact_1->adr_zip,
+    		'adr_city' => $commitment->account->contact_1->adr_city,
+    		'adr_country' => $commitment->account->contact_1->adr_country,
+    		'birth_date' => $commitment->account->contact_1->birth_date,
+    		'caption' => $commitment->caption,
+    		'sport' => $commitment->account->property_1,
+    		'class' => $commitment->property_1.' '.$commitment->property_2,
+    		'place' => $context->getConfig('student/property/place')['modalities'][$commitment->account->place_id][$context->getLocale()],
+    	);
+    	
+    	return $this->letter($template, $data);
+    }
+
+    public function certificateAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$id = (int) $this->params()->fromRoute('eid', 0);
+    	if (!$id) {
+    		return $this->redirect()->toRoute('eleve', array(
+    				'action' => 'index'
+    		));
+    	}
+    	$eleve = Eleve::getTable()->getEleve($id);
+
+    	DocumentTemplate::$attestationTemplate = str_replace("@PRENOM@", $eleve->prenoms, DocumentTemplate::$attestationTemplate);
+    	DocumentTemplate::$attestationTemplate = str_replace("@NOM@", $eleve->nom_famille, DocumentTemplate::$attestationTemplate);
+    	DocumentTemplate::$attestationTemplate = str_replace("@CLASSE@", $eleve->classe, DocumentTemplate::$attestationTemplate);
+    	DocumentTemplate::$attestationTemplate = str_replace("@DATE@", date('d/m/Y'), DocumentTemplate::$attestationTemplate);
+    
+    	$view = new ViewModel(array(
+    			'content' => DocumentTemplate::$attestationTemplate,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function acknowledgementAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+
+    	$id = (int) $this->params()->fromRoute('id', 0);
+    	if (!$id) return $this->redirect()->toRoute('home');
+    	$commitment = Commitment::get($id);
+
+    	$template = $context->getConfig('student/acknowledgement');
+
+    	if ($commitment->account->contact_2) $invoicing_contact = $commitment->account->contact_2;
+    	elseif ($commitment->account->contact_3) $invoicing_contact = $commitment->account->contact_2;
+    	else $invoicing_contact = Vcard::instanciate();
+
+    	$data = array(
+    			'invoicing_n_title' => $invoicing_contact->n_title,
+    			'invoicing_n_last' => $invoicing_contact->n_last,
+    			'invoicing_n_first' => $invoicing_contact->n_first,
+    			'adr_street' => $invoicing_contact->adr_street,
+    			'adr_zip' => $invoicing_contact->adr_zip,
+    			'adr_city' => $invoicing_contact->adr_city,
+    			'adr_country' => $invoicing_contact->adr_country,
+    			'place' => $context->getConfig('student/property/place')['modalities'][$commitment->account->place_id][$context->getLocale()],
+    			'date' => date('d/m/Y'),
+    			'n_first' => $commitment->account->contact_1->n_first,
+    			'n_last' => $commitment->account->contact_1->n_last,
+    			'school_year' => $commitment->caption,
+    	);
+
+    	return $this->letter($template, $data);
+    }
+
+    public function attestationAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$id = (int) $this->params()->fromRoute('id', 0);
+    	if (!$id) return $this->redirect()->toRoute('home');
+    	$commitment = Commitment::get($id);
+    
+    	$template = $context->getConfig('student/attestation');
+    
+    	$data = array(
+    			'n_first' => $commitment->account->contact_1->n_first,
+    			'n_last' => $commitment->account->contact_1->n_last,
+    			'school_level' => $commitment->property_1,
+    			'date' => date('d/m/Y'),
+    	);
+    
+    	return $this->letter($template, $data);
+    }
+    
+    public function commitmentAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+
+    	$id = (int) $this->params()->fromRoute('id', 0);
+    	if (!$id) return $this->redirect()->toRoute('home');
+    	$commitment = Commitment::get($id);
+    	
+    	$template = $context->getConfig('student/commitment');
+    	
+    	$data = array(
+    			'date' => date('d/m/Y'),
+    			'n_first' => $commitment->account->contact_1->n_first,
+    			'n_last' => $commitment->account->contact_1->n_last,
+    			'birth_date' => $context->decodeDate($commitment->account->contact_1->birth_date),
+    			'sport' => $commitment->account->property_1,
+    			'school_year' => $commitment->caption,
+    			'school_level' => $commitment->property_1,
+    	);
+    	
+    	return $this->letter($template, $data);
+    }
 }

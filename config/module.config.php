@@ -636,7 +636,67 @@ return array(
         										),
         								),
         						),
-			    		),
+	       						'letter' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/letter[/:template][/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'letter',
+		        								),
+		        						),
+		        				),
+	       						'confirmation' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/confirmation[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'confirmation',
+		        								),
+		        						),
+		        				),
+	       						'attestation' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/attestation[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'attestation',
+		        								),
+		        						),
+		        				),
+	       						'acknowledgement' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/acknowledgement[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'acknowledgement',
+		        								),
+		        						),
+		        				),
+	       						'commitment' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/commitment[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'commitment',
+		        								),
+		        						),
+		        				),
+	       		),
 	    	   	),
 	    ),
     ),
@@ -705,6 +765,11 @@ return array(
 				array('route' => 'student/import', 'roles' => array('admin')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
 				array('route' => 'student/update', 'roles' => array('business_owner')),
+				array('route' => 'student/letter', 'roles' => array('manager')),
+				array('route' => 'student/confirmation', 'roles' => array('manager')),
+				array('route' => 'student/attestation', 'roles' => array('manager')),
+				array('route' => 'student/acknowledgement', 'roles' => array('manager')),
+				array('route' => 'student/commitment', 'roles' => array('manager')),
 			)
 		)
 	),
@@ -1300,16 +1365,16 @@ return array(
 							'type' => 'nav',
 							'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
 							'entries' => array(
-									'eleve/accuse' => array(
+									'student/acknowledgement' => array(
 											'labels' => array('en_US' => 'Acknowledgement', 'fr_FR' => 'Accusé réception'),
 									),
-									'eleve/confirmation' => array(
+									'student/confirmation' => array(
 											'labels' => array('en_US' => 'Confirmation', 'fr_FR' => 'Confirmation'),
 									),
-									'eleve/engagement' => array(
+									'student/commitment' => array(
 											'labels' => array('en_US' => 'Coverage', 'fr_FR' => 'Prise en charge'),
 									),
-									'eleve/attestation' => array(
+									'student/attestation' => array(
 											'labels' => array('en_US' => 'Attestation', 'fr_FR' => 'Attestation'),
 									),
 							),
@@ -1586,6 +1651,81 @@ return array(
 
 	'student/index' => array(
 			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
+	),
+
+	'student/acknowledgement' => array(
+			'address1' => array('text' => '%s %s %s', 'params' => array('invoicing_n_title', 'invoicing_n_last', 'invoicing_n_first')),
+			'address2' => array('text' => '%s', 'params' => array('adr_street')),
+			'address3' => array('text' => '%s %s', 'params' => array('adr_zip', 'adr_city')),
+			'address4' => array('text' => '%s', 'params' => array('adr_country')),
+			'address6' => array('text' => '%s, le %s', 'params' => array('place', 'date')),
+			'title' => array('text' => 'ACCUSE DE RECEPTION', 'params' => array()),
+			'paragraph1a' => array('text' => 'Chers parents,', 'params' => array()),
+			'paragraph3a' => array('text' => 'Nous avons bien reçu l’inscription de %s %s en Sport Etudes à %s pour l’année scolaire %s et nous vous en remercions.', 'params' => array('n_first', 'n_last', 'place', 'school_year')),
+			'paragraph5a' => array('text' => 'Vous trouverez ci-joint :', 'params' => array()),
+			'paragraph7a' => array('text' => '- La confirmation d’inscription', 'params' => array()),
+			'paragraph8a' => array('text' => '- Le trousseau', 'params' => array()),
+			'paragraph9a' => array('text' => '- La facture', 'params' => array()),
+			'paragraph10a' => array('text' => '- La fiche sanitaire de liaison (à remplir et à faire signer par un médecin, et nous la retourner avant la rentrée).', 'params' => array()),
+			'paragraph11a' => array('text' => '- Les informations sur la rentrée scolaire, les vacances scolaires et la liste des documents à nous fournir avant la rentrée.', 'params' => array()),
+			'paragraph12a' => array('text' => '- Le calendrier de l’année et la liste des fournitures scolaires.', 'params' => array()),
+			'paragraph14a' => array('text' => 'Restant, à votre entière disposition, nous vous prions d’agréer, Chers parents, nos salutations sportives.', 'params' => array()),
+	),
+
+	'student/attestation' => array(
+			'title' => array('text' => 'ATTESTATION SCOLAIRE', 'params' => array()),
+			'paragraph1a' => array('text' => 'Notre Sports Etudes propose aux élèves de la classe de 6ème à la Terminale de suivre les cours du Centre National d’Etudes à Distance (CNED). Le CNED est un collège et lycée public (mêmes assurances scolaires, mêmes équivalences pour réintégrer un établissement réglementé classique). Nous apportons en complément un corps enseignant qui utilise les cours du CNED, qui supervise les études de chaque élève et qui vérifie que les devoirs sont réalisés en fonction du calendrier fourni par le CNED.', 'params' => array()),
+			'paragraph3a' => array('text' => 'CNED de Rouen (collège public)', 'params' => array()),
+			'paragraph4a' => array('text' => 'BP 288', 'params' => array()),
+			'paragraph5a' => array('text' => '76137 MONT ST AIGNAN', 'params' => array()),
+			'paragraph6a' => array('text' => 'Cedex Tel : 02 35 59 87 95', 'params' => array()),
+			'paragraph8a' => array('text' => 'CNED de Rennes (lycée public)', 'params' => array()),
+			'paragraph9a' => array('text' => '7 Rue du Clos Courtel', 'params' => array()),
+			'paragraph10a' => array('text' => '35050 RENNES Cedex 09', 'params' => array()),
+			'paragraph11a' => array('text' => 'Tel : 02 99 63 03 71', 'params' => array()),
+			'paragraph13a' => array('text' => '%s %s sera inscrit en classe de %s.', 'params' => array('n_first', 'n_last', 'school_level')),
+			'paragraph15a' => array('text' => 'Pour faire valoir ce que de droit.', 'params' => array()),
+			'signature1' => array('text' => 'Fait à Verneuil sur Seine, le %s', 'params' => array('date')),
+			'signature3' => array('text' => 'Thierry DERKX', 'params' => array()),
+			'signature5' => array('text' => 'Directeur', 'params' => array()),
+	),
+
+	'student/commitment' => array(
+			'address1' => array('text' => 'Verneuil sur Seine, le %s', 'params' => array('date')),
+			'title' => array('text' => 'ENGAGEMENT DE PRISE EN CHARGE', 'params' => array()),
+			'paragraph1a' => array('text' => 'Je soussigné,', 'params' => array()),
+			'paragraph2a' => array('text' => 'Monsieur Thierry DERKX, Directeur de F.M. SPORTS ETUDES', 'params' => array()),
+			'paragraph4a' => array('text' => 'Nationalité : Française', 'params' => array()),
+			'paragraph5a' => array('text' => 'Né le 29 mars 1964', 'params' => array()),
+			'paragraph7a' => array('text' => 'Adresse : 61 Avenue du Château 78480 VERNEUIL SUR SEINE France', 'params' => array()),
+			'paragraph8a' => array('text' => 'Numéro de téléphone travail : 01 39 71 12 12', 'params' => array()),
+			'paragraph10a' => array('text' => 'M’engage à héberger %s %s', 'params' => array('n_first', 'n_last')),
+			'paragraph12a' => array('text' => 'dans notre résidence du SPORTS ETUDES située : 15 Quai Rennequin Sualem - 78380 Bougival - France, en pension complète du lundi au vendredi, avec possibilité de rester en internat les week-ends également.', 'params' => array('n_first', 'n_last')),
+			'paragraph14a' => array('text' => '%s %s, né le %s, est inscrit en SPORTS ETUDES section %s pour l’année scolaire %s. Il sera inscrit en parallèle au CNED (L’Education Nationale Française) en classe de %s.', 'params' => array('n_first', 'n_last', 'birth_date', 'sport', 'school_year', 'school_level')),
+			'paragraph16a' => array('text' => 'Fait à la demande de l’intéressé,', 'params' => array()),
+			'signature1' => array('text' => 'Thierry DERKX', 'params' => array()),
+			'signature3' => array('text' => 'Directeur', 'params' => array()),
+	),
+		
+	'student/confirmation' => array(
+			'address1' => array('text' => 'Verneuil sur Seine, le %s', 'params' => array('date')),
+			'title' => array('text' => 'CONFIRMATION D\'INSCRIPTION', 'params' => array()),
+			'paragraph1a' => array('text' => 'FM SPORTS ET ETUDES certifie que l’élève dont les coordonnées figurent ci-dessous :', 'params' => array()),
+			'paragraph4a' => array('text' => 'Nom :', 'params' => array()),
+			'paragraph4b' => array('text' => '%s', 'params' => array('n_last')),
+			'paragraph6a' => array('text' => 'Prénom :', 'params' => array()),
+			'paragraph6b' => array('text' => '%s', 'params' => array('n_first')),
+			'paragraph8a' => array('text' => 'Adresse :', 'params' => array()),
+			'paragraph8b' => array('text' => '%s', 'params' => array('adr_street')),
+			'paragraph9a' => array('text' => '', 'params' => array()),
+			'paragraph9b' => array('text' => '%s %s', 'params' => array('adr_zip', 'adr_city')),
+			'paragraph10a' => array('text' => '', 'params' => array()),
+			'paragraph10b' => array('text' => '%s', 'params' => array('adr_country')),
+			'paragraph12a' => array('text' => 'Date de naissance :', 'params' => array()),
+			'paragraph12b' => array('text' => '%s', 'params' => array('birth_date')),
+			'paragraph14a' => array('text' => 'Est inscrit à nos cours SPORTS ETUDES pour l’année scolaire %s section %s en classe de %s à %s.', 'params' => array('caption', 'sport', 'class', 'place')),
+			'signature1' => array('text' => 'Thierry DERKX', 'params' => array()),
+			'signature3' => array('text' => 'Directeur', 'params' => array()),
 	),
 		
 	'absence' => array(
