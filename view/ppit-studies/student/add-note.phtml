@@ -58,7 +58,7 @@
 			<div class="col-sm-7">
 	    		<select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option />
-<?php foreach ($config['note/update']['types'][$type]['subjects'] as $subject) : ?>
+<?php foreach ($config['note/update']['types']['schooling']['subjects'] as $subject) : ?>
 	<?php $caption = $subject[$context->getLocale()]; ?>
 	    			<option value="<?php echo $caption ?>" <?php if ($note->subject == $caption) echo 'selected="selected"' ?>><?php echo $caption ?></option>
 <?php endforeach;?>
@@ -107,10 +107,22 @@
 		<div class="form-group" id="input_value_<?php echo $account->id ?>_group">
 			<label class="col-sm-5 control-label"><?php echo $account->customer_name ?></label>
 			<div class="col-sm-7">
-				<input class="form-control" id="input_value_<?php echo $account->id ?>" <?php if ($message == 'OK') echo 'value="'.$context->formatFloat($note->results[$account->id], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
+				<input class="form-control" id="input_value_<?php echo $account->id ?>" <?php if ($type == 'report') echo 'placeholder="'.$this->translate('Average (computed if not input)', 'ppit-studies', $context->getLocale()).'"'?> <?php if ($message == 'OK') echo 'value="'.$context->formatFloat($note->results[$account->id], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="input_value_<?php echo $account->id ?>_error"></p></div>
 		</div>
+
+<?php if ($type == 'report') : ?>
+
+<!-- Student observation -->
+		<div class="form-group" id="observations_<?php echo $account->id ?>_group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="observations_<?php echo $account->id ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Observations for the student', 'ppit-studies', $context->getLocale()) ?>"></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="observations_<?php echo $account->id ?>_error"></p></div>
+		</div>
+<?php endif ?>
 
 <?php $first=false; endforeach;?>
 
@@ -140,18 +152,18 @@
 		</div>
 <?php endif;?>
 
-<!-- Observations -->
+<!-- Class observations -->
 		<div class="form-group" id="observations_group">
 			<label class="col-sm-5 control-label"><?php echo $this->translate('Observations', 'ppit-core', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+				<textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Observations for the class', 'ppit-studies', $context->getLocale()) ?>"></textarea>
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="observations_error"></p></div>
 		</div>
 
 <!-- Coment -->
 		<div class="form-group" id="comment_group">
-			<label class="col-sm-5 control-label"><?php echo $this->translate('Comment (non visible to the student)', 'ppit-studies', $context->getLocale()) ?></label>
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Internal comment (non visible to the parents)', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
 			</div>

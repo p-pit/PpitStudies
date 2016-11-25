@@ -155,7 +155,7 @@ function connectAbsenceSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('absence')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
@@ -185,7 +185,7 @@ function connectAbsenceSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterAbsenceList(); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('absence')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterAbsenceList(); });
@@ -256,8 +256,12 @@ function connectAuditPanel()
 
 <?php 
 $properties = array();
-$properties['date'] = array('type' => 'date', 'mandatory' => false);
+$properties['category'] = array('type' => 'select', 'mandatory' => true);
+$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['motive'] = array('type' => 'select', 'mandatory' => false);
+$properties['date'] = array('type' => 'date', 'mandatory' => false);
+$properties['duration'] = array('type' => 'number', 'mandatory' => false, 'minValue' => 0, 'maxValue' => 999);
 $properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['update_time'] = array('type' => 'hidden');
@@ -265,7 +269,7 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Absence', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAbsenceUpdateForm(id)
+function connectAbsenceUpdateForm(id, action)
 {
 	$('#input_date').datepicker();
 	var form = document.getElementById('ppit-form');
@@ -285,10 +289,12 @@ function connectAbsenceUpdateForm(id)
 <?php foreach ($properties as $propertyId => $property) : ?>
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
 <?php endforeach ?>
+//			formData.append('duration', $('#duration').val());
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
 			route = '<?php echo $this->url('absence/update') ?>/' + id;
+			if (action) route += '/' + action;
 			target = 'form_action';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -298,6 +304,8 @@ function connectAbsenceUpdateForm(id)
 					connectRemoveIcon('remove-anchor', 'form_action');
 					connectAuditPanel();
 					filterAbsenceList();
+					if ($('#category').val() == 'lateness') $('#input_duration_group').show();
+					else $('#input_duration_group').hide();
 				}
 			};
 			xhttp.send(formData);
@@ -306,10 +314,11 @@ function connectAbsenceUpdateForm(id)
 	}
 }
 
-function getAbsenceUpdate(id) {
+function getAbsenceUpdate(id, action) {
 
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('absence/update') ?>/' + id;
+	if (action) route += '/' + action;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -323,12 +332,21 @@ function getAbsenceUpdate(id) {
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectAuditPanel();
-			connectAbsenceUpdateForm(id);
-			
-			// Connect the delete anchor
-			$('#delete-anchor').click(function () {
-				getAbsenceDelete(id);
+			connectAbsenceUpdateForm(id, action);
+
+			if (id) {
+				$('#update-anchor').click(function () { getAbsenceUpdate(id, 'update'); });
+				$('#delete-anchor').click(function () { getAbsenceUpdate(id, 'delete'); });
+			}
+			else $('#add-anchor').click(function () { getAbsenceUpdate(id, 'add'); });
+
+			if ($('#category').val() == 'lateness') $('#input_duration_group').show();
+			else $('#input_duration_group').hide();
+			$('#category').change(function () {
+				if ($('#category').val() == 'lateness') $('#input_duration_group').show();
+				else $('#input_duration_group').hide();
 			});
+
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
 <?php endif;?>
@@ -339,65 +357,6 @@ function getAbsenceUpdate(id) {
 	// Highlight the clicked button (and only it in its class)
 	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
 	$('#absence-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
-}
-
-function connectAbsenceDeleteForm(id)
-{
-	var form = document.getElementById('ppit-form');
-	form.onsubmit = function(event) {
-		
-		event.preventDefault();
-
-		// Create a new FormData object.
-		var formData = new FormData();
-			
-		// Get the properties values
-		formData.append('status', 'deleted');
-		formData.append('update_time', $('#update_time').val());
-
-		var xhttp = new XMLHttpRequest();
-		var route, target;
-		route = '<?php echo $this->url('absence/delete') ?>/' + id;
-		target = 'form_action';
-		xhttp.open('POST', route, true);
-		// Set up a handler for when the request finishes.
-		xhttp.onload = function () {
-			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-				document.getElementById(target).innerHTML = xhttp.responseText;
-				connectRemoveIcon('remove-anchor', 'form_action');
-				filterAbsenceList();
-			}
-		};
-		xhttp.send(formData);
-	}
-}
-
-function getAbsenceDelete(id) {
-
-	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('absence/delete') ?>/' + id;
-
-	xhttp.open('GET', route, true);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
-		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
-			if (xhttp.status == 200) {
-	<?php endif;?>
-			$('#form_action').show();
-			document.getElementById('form_action').innerHTML = xhttp.responseText;			
-			connectRemoveIcon('remove-anchor', 'form_action');
-			connectAbsenceDeleteForm(id);
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
-			}
-<?php endif;?>
-		}
-	}
-	xhttp.send();
-
-	// Highlight the clicked button (and only it in its class)
-	$('.detail-menu-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#delete-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
 function activateAbsence() {

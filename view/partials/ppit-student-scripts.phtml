@@ -440,9 +440,13 @@ function getStudentDetail(id) {
 
 <?php 
 $properties = array();
+$properties['category'] = array('type' => 'select', 'mandatory' => true);
 $properties['school_year'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['motive'] = array('type' => 'select', 'mandatory' => false);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
+//$properties['duration'] = array('type' => 'number', 'mandatory' => false, 'minValue' => 0, 'maxValue' => 999);
+$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Absence', 'context' => $context, 'properties' => $properties)) 
@@ -484,6 +488,7 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 <?php foreach ($properties as $propertyId => $property) : ?>
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
 <?php endforeach ?>
+			formData.append('duration', $('#duration').val());
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
@@ -517,6 +522,13 @@ function getAdd<?php echo $typeId?>Absence() {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
 			connectAdd<?php echo $typeId ?>AbsenceForm();
+
+			$('#input_duration_group').hide();
+			$('#category').change(function () {
+				if ($('#category').val() == 'lateness') $('#input_duration_group').show();
+				else $('#input_duration_group').hide();
+			});
+
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
 <?php endif;?>
@@ -669,7 +681,7 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAddNoteForm()
+function connectAddNoteForm(type)
 {
 	$('#input_date').datepicker();
 
@@ -721,7 +733,7 @@ function connectAddNoteForm()
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('student/addNote', array('type' => 'schooling')) ?>';
+			route = '<?php echo $this->url('student/addNote') ?>/' + type;
 			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -737,10 +749,10 @@ function connectAddNoteForm()
 	}
 }
 
-function getAddNote() {
+function getAddNote(type) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addNote', array('type' => 'schooling')) ?>';
+	var route = '<?php echo $this->url('student/addNote') ?>/' + type;
 	var formData = new FormData();
 
 	var criteriaNumber = $('#group-nb-criteria').val();
@@ -767,7 +779,7 @@ function getAddNote() {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
-			connectAddNoteForm();
+			connectAddNoteForm(type);
 			$('#school_year').focus();
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
@@ -778,7 +790,8 @@ function getAddNote() {
 
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#evaluation-add-anchor').removeClass("btn-default").addClass("btn-primary");
+	if (type == 'note') $('#evaluation-add-anchor').removeClass("btn-default").addClass("btn-primary");
+	else $('#report-add-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
 /////////////////////////////
@@ -1213,7 +1226,12 @@ function getStudentGroup() {
 
 			$('#evaluation-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddNote(); 
+				getAddNote('note'); 
+			});
+
+			$('#report-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddNote('report'); 
 			});
 
 			$('#progress-add-anchor').click(function () { 

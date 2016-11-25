@@ -42,7 +42,7 @@
 		if ($propertyId == 'school_year') $property = $context->getConfig('student/property/school_year');
 		elseif ($propertyId == 'period') $property = $context->getConfig('student/property/school_period');
 		elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
-		else $property = $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+		else $property = $property = $context->getConfig('absence')['properties'][$propertyId];
 		$label = $property['labels'][$context->getLocale()];
 		?>
 
@@ -125,7 +125,7 @@
 		if ($propertyId == 'school_year') $property = $context->getConfig('student/property/school_year');
 		elseif ($propertyId == 'period') $property = $context->getConfig('student/property/school_period');
 		elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
-		else $property = $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
+		else $property = $property = $context->getConfig('absence')['properties'][$propertyId];
 		$label = $property['labels'][$context->getLocale()];
 		?>
 

@@ -6,20 +6,14 @@
 		<th align="center">
 	<?php 
 	if ($propertyId == 'subject') $label = $this->translate('Subject', 'ppit-studies', $context->getLocale());
-	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
-	else {
-		if ($propertyId == 'level') $property = $context->getConfig('student/property/level');
-		elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
-		else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
-		$label = $property['labels'][$context->getLocale()];
-	}
+	else $label = $context->getConfig('absence')['properties'][$propertyId]['labels'][$context->getLocale()];
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
 				<span><?php echo $label ?></span>
-<?php if ($major == $propertyId) : ?>
+		<?php if ($major == $propertyId) : ?>
 				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
-<?php endif ?>
+		<?php endif ?>
 			</button>
 	<?php endif;?>
 		</th>
@@ -27,53 +21,45 @@
 
 	</tr>
 
-<?php foreach ($absences as $absence) : ?>
+<?php $sum = 0;
+foreach ($absences as $absence) : ?>
+	<?php $sum += $absence->duration; ?> 
 	
 	<input type="hidden" id="absence_<?php echo $i ?>" value="<?php echo $absence->id ?>" />
 	
 	<tr>
 
 		<td>
-			<button type="button" class="btn btn-default btn-xs index-btn absence-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="absence-detail-anchor_<?php echo $absence->id ?>">
+			<button type="button" class="btn btn-default index-btn absence-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="absence-detail-anchor_<?php echo $absence->id ?>">
 				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
 			</button>
 		</td>
 
 	<?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
 	
-		<?php if ($propertyId == 'name') : ?>
+		<?php if ($propertyId == 'subject') : ?>
+		<td><?php echo $context->getConfig('absence')['types'][$absence->type]['subject']['modalities'][$absence->subject][$context->getLocale()] ?></td>
+		
+		<?php else : ?>
+			<?php $property = $context->getConfig('absence')['properties'][$propertyId] ?>
+			<?php if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']) ?>
+	
+			<?php if ($propertyId == 'name') : ?>
 		<td><?php echo $absence->name ?></td>
 
-		<?php elseif ($propertyId == 'discipline') : ?>
-		<td style="text-align: center">
-			<img height="20" src="<?php echo $this->basePath('/img/p-pit-studies/'.$absence->sport.'.png') ?>" title="<?php echo $absence->sport ?>" alt="<?php echo $absence->sport ?>" />
-		</td>
-
-		<?php elseif ($propertyId == 'level') : ?>
-		<td><?php echo $context->getConfig('student/property/level')['modalities'][$absence->class][$context->getLocale()] ?>
-	
-		<?php elseif ($propertyId == 'contact_1_id') : ?>
-		<td>
-			<span class="info">
-				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $absence->photo)) ?>"/>
-				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $absence->photo)) ?>"/></span>
-			</span>
-		</td>
-	
-		<?php elseif ($rendering == 'text') : ?>
-		<td><?php echo $absence->properties[$propertyId] ?></td>
-	
-		<?php elseif ($rendering == 'date') : ?>
+			<?php elseif ($rendering == 'date') : ?>
 		<td><?php echo $context->decodeDate($absence->properties[$propertyId]) ?></td>
 
-		<?php elseif ($rendering == 'image') : ?>
-		<td style="text-align: center">
-			<img height="20" src="<?php echo $this->basePath('/img/'.$context->getInstance()->caption.'/'.$absence->properties[$propertyId].'.png') ?>" title="<?php echo $absence->properties[$propertyId] ?>" alt="<?php echo $absence->properties[$propertyId] ?>" />
-		</td>
-	
-		<?php else : ?>
+			<?php elseif ($rendering == 'number') : ?>
+		<td style="text-align: right"><?php if ($absence->category == 'lateness') echo $absence->properties[$propertyId] ?></td>
+
+			<?php elseif ($rendering =='select') : ?>
+		<td><?php echo $property['modalities'][$absence->properties[$propertyId]][$context->getLocale()] ?></td>
+
+			<?php else : ?>
 		<td><?php echo $absence->properties[$propertyId] ?></td>
-		
+
+			<?php endif;?>
 		<?php endif;?>
 		
 	<?php endforeach;?>
@@ -81,5 +67,10 @@
 	</tr>
 	
 <?php endforeach; ?>
+	
+	<tr>
+		<td colspan="<?php echo count($context->getConfig('absence/list')) ?>" style="font-weight: bold; text-align:right"><?php echo $this->translate('Total lateness time', 'ppit-studies', $context->getLocale()) ?> (mn)</td>
+		<td style="font-weight: bold; text-align:right"><?php echo $sum ?></td>
+	</tr>
 
 </table>

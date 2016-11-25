@@ -295,9 +295,13 @@ class StudentController extends AbstractActionController
     			 
     			// Load the input data
     			$data = array();
+    			$data['category'] = $request->getPost('category');
     			$data['school_year'] = $request->getPost('school_year');
     			$data['subject'] = $request->getPost('subject');
+    			$data['motive'] = $request->getPost('motive');
     			$data['date'] = $request->getPost('date');
+    			$data['duration'] = $request->getPost('duration');
+				$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
     
     			// Atomically save
@@ -428,14 +432,14 @@ class StudentController extends AbstractActionController
     }
     
     public function addNoteAction() {
-    
+
     	// Retrieve the context
     	$context = Context::getCurrent();
     
     	// Retrieve the type
     	$type = $this->params()->fromRoute('type', null);
     
-    	$note = Note::instanciate('note' /*$type*/);
+    	$note = Note::instanciate($type);
     
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -477,7 +481,7 @@ class StudentController extends AbstractActionController
     			$data['weight'] = $request->getPost('weight');
     			$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
-    			 
+
     			$nbCriteria = $request->getPost('nb-criteria');
     			$data['criteria'] = array();
     			for ($i = 0; $i < $nbCriteria; $i++) {

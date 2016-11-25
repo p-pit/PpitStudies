@@ -158,26 +158,34 @@ class AbsenceController extends AbstractActionController
     
     	// Retrieve the absence
     	$id = (int) $this->params()->fromRoute('id', 0);
- 		$absence = Absence::get($id);
-    
+ 		if ($id) $absence = Absence::get($id);
+ 		else $absence = Absence::instanciate();
+ 		$action = $this->params()->fromRoute('act', null);
+
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
     	$error = null;
-    	$message = null;
+    	if ($action == 'delete') $message = 'confirm-delete';
+    	elseif ($action) $message =  'confirm-update';
+    	else $message = null;
     	$request = $this->getRequest();
     	if ($request->isPost()) {
+    		$message = null;
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     		 
     		if ($csrfForm->isValid()) { // CSRF check
-    
-    			// Load the input data
 
     			// Load the input data
     			$data = array();
 				$data['update_time'] = $request->getPost('update_time');
+    			$data['category'] = $request->getPost('category');
+    			$data['school_year'] = $request->getPost('school_year');
+    			$data['subject'] = $request->getPost('subject');
+    			$data['motive'] = $request->getPost('motive');
     			$data['date'] = $request->getPost('date');
+    			$data['duration'] = ($data['category'] == 'lateness') ? $request->getPost('duration') : 0;
 				$data['observations'] = $request->getPost('observations');
 				$data['comment'] = $request->getPost('comment');
 
@@ -188,7 +196,9 @@ class AbsenceController extends AbstractActionController
     			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-					$rc = $absence->update($absence->update_time);
+	    			if (!$absence->id) $rc = $absence->add();
+	    			elseif ($action == 'delete') $rc = $absence->delete($request->getPost('update_time'));
+	    			else $rc = $absence->update($request->getPost('update_time'));
     				if ($rc != 'OK') {
     					$connection->rollback();
     					$error = $rc;
@@ -209,6 +219,7 @@ class AbsenceController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'id' => $id,
+    			'action' => $action,
     			'absence' => $absence,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
@@ -217,7 +228,7 @@ class AbsenceController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
+ /*   
 	public function deleteAction()
     {
     	// Retrieve the context
@@ -278,5 +289,5 @@ class AbsenceController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
-	}
+	}*/
 }

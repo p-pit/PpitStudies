@@ -9,9 +9,21 @@
 
 <?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
 
+<!-- Category -->
+		<div class="form-group" id="category_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="category" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+					<option value="absence"><?php echo $this->translate('Absence', 'ppit-studies', $context->getLocale()) ?></option>
+					<option value="lateness"><?php echo $this->translate('Lateness', 'ppit-studies', $context->getLocale()) ?></option>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="category_error"></p></div>
+		</div>
+
 <!-- School year -->
 		<div class="form-group" id="school_year_group">
-			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<select class="form-control" id="school_year" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	<?php foreach ($context->getConfig('student/property/school_year')['modalities'] as $schoolYearId => $schoolYear) : ?>
@@ -25,13 +37,13 @@
 <!-- Subject -->
 <?php $subject = $context->getConfig('absence')['types'][$type]['subject'] ?>
 		<div class="form-group" id="subject_group">
-			<label class="col-sm-5 control-label"><?php echo $subject['labels'][$context->getLocale()] ?></label>
+			<label class="col-sm-5 control-label">* <?php echo $subject['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 	    		<select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
-<?php foreach ($subject['modalities'] as $modality) : ?>
+<?php foreach ($subject['modalities'] as $modalityId => $modality) : ?>
 	<?php $caption = $modality[$context->getLocale()]; ?>
-	    			<option value="<?php echo $caption ?>" <?php if ($absence->subject == $caption) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+	    			<option value="<?php echo $modalityId ?>" <?php if ($absence->subject == $modalityId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
 <?php endforeach;?>
 	    		</select>
 			</div>
@@ -42,16 +54,51 @@
 <?php $absenceDate = ($absence->date) ? $absence->date : Date('Y-m-d') ?>
 		<input type="hidden" id="date" />
 		<div class="form-group" id="input_date_group">
-			<label class="col-sm-5 control-label"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<input class="form-control" id="input_date" value="<?php echo $context->decodeDate($absenceDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="input_date_error"></p></div>
 		</div>
 
+<!-- Duration -->
+		<input type="hidden" id="duration" />
+		<div class="form-group" id="input_duration_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Lateness duration', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="input_duration" value="<?php echo $absence->duration ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="input_duration_error"></p></div>
+		</div>
+
+<!-- Motive -->
+<?php $motive = $context->getConfig('absence/property/motive') ?>
+		<div class="form-group" id="motive_group">
+			<label class="col-sm-5 control-label"><?php echo $motive['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+	    		<select class="form-control" id="motive" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+<?php foreach ($motive['modalities'] as $modalityId => $modality) : ?>
+	<?php $caption = $modality[$context->getLocale()]; ?>
+	    			<option value="<?php echo $modalityId ?>" <?php if ($absence->motive == $modalityId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+<?php endforeach;?>
+	    		</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="motive_error"></p></div>
+		</div>
+
+<!-- Observations -->
+		<div class="form-group" id="observations_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="observations_error"></p></div>
+		</div>
+
 <!-- Comment -->
 		<div class="form-group" id="comment_group">
-			<label class="col-sm-5 control-label"><?php echo $this->translate('Comment', 'ppit-core', $context->getLocale()) ?></label>
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Comment (non visible to the student)', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
 			</div>

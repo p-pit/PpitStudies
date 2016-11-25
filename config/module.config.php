@@ -89,7 +89,7 @@ return array(
 	       						'update' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/update[/:id]',
+		        								'route' => '/update[/:id][/:act]',
 		        								'constraints' => array(
 		        										'id'     => '[0-9]*',
 		        								),
@@ -98,7 +98,7 @@ return array(
 		        								),
 		        						),
 		        				),
-	       						'delete' => array(
+/*	       						'delete' => array(
 				                    'type' => 'segment',
 				                    'options' => array(
 				                        'route' => '/delete[/:id]',
@@ -109,7 +109,7 @@ return array(
 				                            'action' => 'delete',
 				                        ),
 				                    ),
-				                ),
+				                ),*/
 	       		),
             ),
         	'studentEvent' => array(
@@ -712,7 +712,7 @@ return array(
 				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'absence/delete', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+//				array('route' => 'absence/delete', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
@@ -974,6 +974,13 @@ return array(
 									'fr_FR' => 'Description',
 							),
 					),
+					'product_brand' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Brand',
+									'fr_FR' => 'Marque',
+							),
+					),
 					'property_1' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/level',
@@ -1003,6 +1010,13 @@ return array(
 							'labels' => array(
 									'en_US' => 'Amount',
 									'fr_FR' => 'Montant',
+							),
+					),
+					'invoice_date' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Invoice date',
+									'fr_FR' => 'Date de facture',
 							),
 					),
 			),
@@ -1107,6 +1121,32 @@ return array(
 			'property_1' => array('mandatory' => true),
 			'property_2' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
+	),
+
+	'commitment/invoice/p-pit-studies' => array(
+			'header' => array(),
+			'description' => array(
+					array(
+							'left' => array('en_US' => 'Description', 'fr_FR' => 'Description'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('description'),
+					),
+					array(
+							'left' => array('en_US' => 'Caption', 'fr_FR' => 'Libellé'),
+							'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Année scolaire %s %s'),
+							'params' => array('product_brand', 'caption'),
+					),
+					array(
+							'left' => array('en_US' => 'Invoice date', 'fr_FR' => 'Date de facture'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('date'),
+					),
+					array(
+							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('customer_name'),
+					),
+			),
 	),
 
 	'commitmentAccount/p-pit-studies' => array(
@@ -1498,7 +1538,7 @@ return array(
 	'student/property/place' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'1' => array('en_US' => 'Main place', 'fr_FR' => 'Centre principal'),
+					'1' => array('en_US' => 'Main place', 'fr_FR' => 'Centre principal', 'address' => 'P-Pit SAS au capital de 10 000 € - R.C.S PARIS 804 199 594 - 14, rue Charles V - 75004 PARIS'),
 			),
 			'labels' => array(
 					'en_US' => 'Center',
@@ -1550,6 +1590,7 @@ return array(
 					'fr_FR' => 'Spécialité',
 			),
 	),
+
 	'student/property/boarding_school' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -1747,14 +1788,14 @@ return array(
 									'type' => 'select',
 									'labels' => array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
 									'modalities' => array(
-											'Français' => array('en_US' => 'French', 'fr_FR' => 'Français'),
-											'Mathématiques' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
-											'Physique/chimie' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
-											'SVT' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
-											'LV1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
-											'LV2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
-											'Economie' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
-											'Histoire/géographie' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+											'french' => array('en_US' => 'French', 'fr_FR' => 'Français'),
+											'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
+											'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
+											'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+											'll1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
+											'll2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
+											'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
+											'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
 									),
 							),
 					),
@@ -1773,21 +1814,98 @@ return array(
 							),
 					),
 			),
+			'properties' => array(
+					'category' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'absence' => array('en_US' => 'Absence', 'fr_FR' => 'Absence'),
+									'lateness' => array('en_US' => 'Lateness', 'fr_FR' => 'Retard'),
+							),
+							'labels' => array(
+									'en_US' => 'Category',
+									'fr_FR' => 'Catégorie',
+							),
+					),
+					'school_year' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/school_year',
+					),
+					'type' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'sport' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+									'schooling' => array('en_US' => 'Scolarité', 'fr_FR' => 'Scolarité'),
+									'boarding_school' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
+							),
+							'labels' => array(
+									'en_US' => 'Type',
+									'fr_FR' => 'Type',
+							),
+					),
+					'name' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Name',
+									'fr_FR' => 'Nom',
+							),
+					),
+					'motive' => array(
+							'type' => 'repository',
+							'definition' => 'absence/property/motive',
+					),
+					'date' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Date',
+									'fr_FR' => 'Date',
+							),
+					),
+					'duration' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Lateness (mn)',
+									'fr_FR' => 'Retard (mn)',
+							),
+					),
+					'observations' => array(
+							'type' => 'textarea',
+							'labels' => array(
+									'en_US' => 'Observations',
+									'fr_FR' => 'Observations',
+							),
+					),
+			),
+	),
+
+	'absence/property/motive' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'medical' => array('en_US' => 'Medical', 'fr_FR' => 'Médical'),
+					'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
+					'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
+					'transport' => array('en_US' => 'Transport', 'fr_FR' => 'Transport'),
+					'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
+			),
+			'labels' => array(
+					'en_US' => 'Motive',
+					'fr_FR' => 'Motif',
+			),
 	),
 		
 	'absence/search' => array(
 			'title' => array('en_US' => 'Absences', 'fr_FR' => 'Absences'),
 			'todoTitle' => array('en_US' => 'today', 'fr_FR' => 'ce jour'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
-			'main' => array('type' => 'select', 'name' => 'contains'),
+			'main' => array('type' => 'select', 'name' => 'contains', 'date' => 'range'),
 			'more' => array('school_year' => 'select', 'period' => 'select'),
 	),
 	
 	'absence/list' => array(
-			'contact_1_id' => 'photo',
 			'name' => 'text',
+			'category' => 'select',
 			'subject' => 'text',
 			'date' => 'date',
+			'duration' => 'number',
 	),
 
 	'note' => array(
@@ -2047,6 +2165,7 @@ return array(
 			'PpitStudies' => array(
 					'manager' => array(
 							'show' => true,
+							'default' => true,
 							'labels' => array(
 									'en_US' => 'School life',
 									'fr_FR' => 'Vie scolaire',

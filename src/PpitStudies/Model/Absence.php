@@ -16,11 +16,14 @@ class Absence implements InputFilterAwareInterface
 {
     public $id;
     public $instance_id;
+    public $category;
     public $school_year;
     public $type;
     public $account_id;
     public $subject;
+    public $motive;
     public $date;
+    public $duration;
     public $observations;
     public $status;
     public $audit;
@@ -51,11 +54,14 @@ class Absence implements InputFilterAwareInterface
     {
         $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->instance_id = (isset($data['instance_id'])) ? $data['instance_id'] : null;
+        $this->category = (isset($data['category'])) ? $data['category'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
+        $this->motive = (isset($data['motive'])) ? $data['motive'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
+        $this->duration = (isset($data['duration'])) ? $data['duration'] : null;
         $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
         $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
@@ -74,11 +80,14 @@ class Absence implements InputFilterAwareInterface
     	$data = array();
     	$data['id'] = (int) $this->id;
     	$data['instance_id'] = (int) $this->instance_id;
+    	$data['category'] = $this->category;
     	$data['school_year'] = $this->school_year;
     	$data['type'] = $this->type;
     	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
+    	$data['motive'] = $this->motive;
     	$data['date'] =  ($this->date) ? $this->date : null;
+    	$data['duration'] = (int) $this->duration;
     	$data['observations'] =  ($this->observations) ? $this->observations : null;
     	$data['status'] =  ($this->status) ? $this->status : null;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
@@ -155,7 +164,11 @@ class Absence implements InputFilterAwareInterface
     
     	$context = Context::getCurrent();
 
-        if (array_key_exists('school_year', $data)) {
+        if (array_key_exists('category', $data)) {
+		    $this->category = trim(strip_tags($data['category']));
+		    if (!$this->category || strlen($this->category) > 255) return 'Integrity';
+		}
+    	if (array_key_exists('school_year', $data)) {
 	    	$this->school_year = trim(strip_tags($data['school_year']));
 		    if (!$this->school_year || strlen($this->school_year) > 255) return 'Integrity';
 		}
@@ -171,10 +184,15 @@ class Absence implements InputFilterAwareInterface
 		    $this->subject = trim(strip_tags($data['subject']));
 		    if (!$this->subject || strlen($this->subject) > 255) return 'Integrity';
 		}
+        if (array_key_exists('motive', $data)) {
+		    $this->motive = trim(strip_tags($data['motive']));
+		    if (!$this->motive || strlen($this->motive) > 255) return 'Integrity';
+		}
 		if (array_key_exists('date', $data)) {
 	    	$this->date = trim(strip_tags($data['date']));
 	    	if (!$this->date || !checkdate(substr($this->date, 5, 2), substr($this->date, 8, 2), substr($this->date, 0, 4))) return 'Integrity';
 		}
+        if (array_key_exists('duration', $data)) $this->duration = (int) $data['duration'];
 		if (array_key_exists('observations', $data)) {
 		    $this->observations = trim(strip_tags($data['observations']));
 		    if (strlen($this->observations) > 2047) return 'Integrity';
@@ -246,8 +264,9 @@ class Absence implements InputFilterAwareInterface
     
     	// Isolation check
     	if ($absence->update_time > $update_time) return 'Isolation';
-    	 
-    	Absence::getTable()->delete($this->id);
+
+    	$this->status = 'deleted';
+    	Absence::getTable()->save($this);
     
     	return 'OK';
     }
