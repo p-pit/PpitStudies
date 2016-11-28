@@ -146,10 +146,10 @@ class StudentController extends AbstractActionController
     	$dir = ($this->params()->fromQuery('dir', 'ASC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-//    	if (!array_key_exists('min_closing_date', $params)) $params['min_closing_date'] = date('Y-m-d');
+    	$params['status'] = 'active';
 
     	// Retrieve the list
-    	$accounts = Account::getList(null, $params, $major, $dir, $mode);
+    	$accounts = Account::getList('p-pit-studies', $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(
@@ -498,14 +498,28 @@ class StudentController extends AbstractActionController
 //    					$data['account_id'] = $account->id;
 //    					$data['value'] = $request->getPost('value_'.$account->id);
     			    			
-	    			$nbAccount = $request->getPost('nb-account');
+    				if ($type == 'report') {
+    					$computedAverages = Note::computePeriodAverages($data['school_year'], $data['level'], $data['school_period'], $data['subject']);
+    				}
+    				$nbAccount = $request->getPost('nb-account');
 	    			$data['results'] = array();
 	    			for ($i = 0; $i < $nbAccount; $i++) {
 	    				$account = $accounts[$request->getPost('account_'.$i)];
 	    				$value = $request->getPost('value_'.$account->id);
-	    				$data['results'][$request->getPost('account_'.$i)] = $value;
+	    				if ($value == '') {
+	    					if (array_key_exists($account->id, $computedAverages)) {
+	    						$data['results'][$account->id]['note'] = $computedAverages[$account->id]['note'];
+	    						$data['results'][$account->id]['notes'] = $computedAverages[$account->id]['notes'];
+	    					}
+	    				}
+	    				else {
+	    					$data['results'][$account->id]['note'] = $value;
+	    				}
+	    				$assessment = $request->getPost('assessment_'.$account->id);
+	    				$data['results'][$account->id]['assessment'] = $assessment;
 	    			}
-    				$rc = $note->loadData($data);
+
+	    			$rc = $note->loadData($data);
     				if ($rc != 'OK') throw new \Exception('View error');
     				
     				$rc = $note->add();
@@ -517,17 +531,24 @@ class StudentController extends AbstractActionController
     				else for ($i = 0; $i < $nbAccount; $i++) {
     					$account = $accounts[$request->getPost('account_'.$i)];
     					$value = $request->getPost('value_'.$account->id);
-						$account->json_property_1[$note->id] = array(
-								'date' => $note->date,
+    					$data2 = array(
+    							'school_year' => $note->school_year,
+    							'school_period' => $note->school_period,
+    							'class' => $note->level,
+    							'date' => $note->date,
 								'subject' => $note->subject,
 								'reference_value' => $note->reference_value,
 								'weight' => $note->weight,
-								'note' => $value,
 								'average_note' => $note->average_note,
 								'higher_note' => $note->higher_note,
 								'lower_note' => $note->lower_note,
-								'observations' => $note->observations,
+								'note' => $data['results'][$account->id]['note'],
+								'assessment' => $data['results'][$account->id]['assessment'],
+    							'observations' => $note->observations,
 						);
+    					if (array_key_exists('notes', $data['results'][$account->id])) $data2['notes'] = $data['results'][$account->id]['notes'];
+						if ($type == 'note') $account->json_property_1[$note->id] = $data2;
+						else $account->json_property_2[$note->id] = $data2;
 						$account->update($account->update_time);
     				}
     				if (!$error) {
@@ -802,13 +823,17 @@ class StudentController extends AbstractActionController
 		$account = Account::get($account_id);
 		$category = $this->params()->fromRoute('category');
 		$absences = Absence::retrieveAll($category, $account_id);
+		$periods = array();
+		foreach($account->json_property_2 as $reportId => $report) {
+			$key = $report['school_year'].'.'.$report['school_period'];
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $report;
+		}
+		krsort($periods);
+
 		$events = Event::retrieveComing('p-pit-studies', $category, $account_id);
 		$notifications = Notification::retrieveCurrents('p-pit-studies', $category, $account_id);
-		$notes = array();
-		foreach ($account->json_property_1 as $noteId => $note) {
-			$evaluation = Note::get($noteId);
-			if ($evaluation->status != 'deleted') $notes[$noteId] = $note;
-		}
+		
 		if ($category == 'sport') $progresses = Progress::retrieveAll($account->property_1, $account_id);
 		else $progresses = array();
 		
@@ -821,8 +846,8 @@ class StudentController extends AbstractActionController
 				'account' => $account,
 				'absences' => $absences,
 				'events' => $events,
+				'periods' => $periods,
 				'notifications' => $notifications,
-				'notes' => $notes,
 				'progresses' => $progresses,
 		));
 		$view->setTerminal(true);

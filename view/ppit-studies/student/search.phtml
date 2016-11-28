@@ -2,7 +2,7 @@
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
 			<?php 
-			$title = (isset ($context->getConfig('commitmentAccount/search/p-pit-studies')['title']) ? $context->getConfig('commitmentAccount/search/p-pit-studies')['title'][$context->getLocale()] : $this->translate('Accounts', 'ppit-commitment', $context->getLocale()));
+			$title = (isset ($context->getConfig('student/search')['title']) ? $context->getConfig('student/search')['title'][$context->getLocale()] : $this->translate('Accounts', 'ppit-commitment', $context->getLocale()));
 			echo $title;
 			?>
 			(<span id="mode-text"></span>)
@@ -36,7 +36,7 @@
 			</div>
 		</div>
 
-<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
 
 	<?php if ($rendering != 'select') $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()]; ?>
 
@@ -102,78 +102,6 @@
 
 	<?php endif;?>
 <?php endforeach;?>
-	
-		<div><a id="add-criteria" href="#"><?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale())?></a></div>
-		<div id="search-area">
-		
-<?php foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) : ?>
-
-	<?php if ($rendering != 'select') $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()]; ?>
-
-	<?php if ($rendering == 'select') : ?>
-
-		<?php
-		if ($propertyId == 'place_id') $property = $context->getConfig('student/property/place');
-		elseif ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
-		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
-		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
-		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
-		else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
-
-		$label = $property['labels'][$context->getLocale()];
-		
-		$modalities = array();
-		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
-			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
-				$modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
-			} 
-		}
-		else {
-			foreach ($property['modalities'] as $modalityId => $modality) {
-				$modalities[$modalityId] = $modality[$context->getLocale()];
-			} 
-		}
-		?>
-		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $label ?></label>
-			<div class="col-sm-7">
-				<select id="search_<?php echo $propertyId ?>" class="form-control">
-					<option value=""></option>
-		<?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
-		    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
-		<?php endforeach;?>
-		    	</select>
-			</div>
-		</div>
-	
-	<?php elseif ($rendering == 'contains') : ?>
-		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $label ?></label>
-			<div class="col-sm-7">
-				<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
-			</div>
-		</div>
-
-	<?php elseif ($rendering == 'range') : ?>
-
-		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $label ?></label>
-			<div class="col-sm-7">
-	    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
-			</div>
-		</div>
-
-		<div class="form-group">
-			<label class="col-sm-5 control-label">&nbsp;</label>
-			<div class="col-sm-7">
-	    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
-			</div>
-		</div>
-
-	<?php endif;?>
-<?php endforeach;?>
-
-		</div>
 
 	    <div>&nbsp;</div>
 

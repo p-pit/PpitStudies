@@ -24,7 +24,6 @@ class Note implements InputFilterAwareInterface
     public $account_id;
     public $subject;
     public $date;
-    public $value;
     public $reference_value;
     public $weight;
     public $observations;
@@ -67,7 +66,6 @@ class Note implements InputFilterAwareInterface
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
-        $this->value = (isset($data['value'])) ? $data['value'] : null;
         $this->reference_value = (isset($data['reference_value'])) ? $data['reference_value'] : null;
         $this->weight = (isset($data['weight'])) ? $data['weight'] : null;
         $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
@@ -98,7 +96,6 @@ class Note implements InputFilterAwareInterface
     	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
     	$data['date'] =  ($this->date) ? $this->date : null;
-    	$data['value'] =  ($this->value) ? $this->value : null;
     	$data['reference_value'] =  ($this->reference_value) ? $this->reference_value : null;
     	$data['weight'] =  ($this->weight) ? $this->weight : null;
     	$data['observations'] =  ($this->observations) ? $this->observations : null;
@@ -172,7 +169,42 @@ class Note implements InputFilterAwareInterface
     	foreach ($cursor as $note) $notes[] = $note;
     	return $notes;
     }
-    
+
+    public static function computePeriodAverages($school_year, $class, $period, $subject)
+    {
+    	$select = Note::getTable()->getSelect()
+	    	->order(array('date DESC', 'subject ASC'));
+    	$where = new Where;
+    	$where->notEqualTo('status', 'deleted');
+    	$where->equalTo('type', 'note');
+    	$where->equalTo('school_year', $school_year);
+    	$where->equalTo('level', $class);
+    	$where->equalTo('school_period', $period);
+    	$where->equalTo('subject', $subject);
+    	$select->where($where);
+    	$cursor = Note::getTable()->selectWith($select);
+    	$periodNotes = array();
+    	foreach ($cursor as $evaluation) {
+    		foreach ($evaluation->results as $account_id => $student) {
+	    		$periodNotes[$account_id][] = array('reference_value' => $evaluation->reference_value, 'weight' => $evaluation->weight, 'note' => $student['note']);
+    		}
+    	}
+    	$averages = array();
+    	foreach ($periodNotes as $account_id => $notes) {
+    		$average = 0;
+    		$globalWeight = 0;
+    		foreach ($notes as $note) {
+    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
+    			$globalWeight += $note['weight'];
+    		}
+    		if ($globalWeight != 0) {
+    			$average /= $globalWeight;
+	    		$averages[$account_id] = array('note' => $average, 'notes' => $notes);
+    		}
+    	}
+    	return $averages;
+    }
+
     public static function get($id, $column = 'id')
     {
     	$note = Note::getTable()->get($id, $column);
@@ -246,13 +278,16 @@ class Note implements InputFilterAwareInterface
 		$noteSum = 0; $lowerNote = 100; $higherNote = 0;
         if (array_key_exists('results', $data)) {
 			$this->results = array();
-			foreach ($data['results'] as $account_id => $value) {
-				$noteSum += $value;
-				if ($value < $lowerNote) $lowerNote = $value;
-				if ($value > $higherNote) $higherNote = $value;
+			foreach ($data['results'] as $account_id => $result) {
+				$note = $result['note'];
+				$assessment = $result['assessment'];
+				$noteSum += $note;
+				if ($note < $lowerNote) $lowerNote = $note;
+				if ($note > $higherNote) $higherNote = $note;
 				$account_id = (int) $account_id;
 				if (!$account_id) return 'Integrity';
-				$this->results[$account_id] = $value;
+				$this->results[$account_id] = array('note' => $note, 'assessment' => $assessment);
+				if (array_key_exists('notes', $result)) $this->results[$account_id]['notes'] = $result['notes'];
 			}
 			if (count($data['results']) > 0) $this->average_note = round($noteSum / count($data['results']), 2);
 			$this->lower_note = $lowerNote;

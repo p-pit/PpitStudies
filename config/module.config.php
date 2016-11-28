@@ -1694,6 +1694,19 @@ return array(
 			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
 	),
 
+	'student/search' => array(
+			'title' => array('en_US' => 'Students', 'fr_FR' => 'Eleves'),
+			'todoTitle' => array('en_US' => 'registered', 'fr_FR' => 'inscrits'),
+			'main' => array(
+					'place_id' => 'select',
+					'property_1' => 'select',
+					'property_4' => 'select',
+					'property_5' => 'select',
+					'property_6' => 'select',
+					'customer_name' => 'contains',
+			),
+	),
+
 	'student/acknowledgement' => array(
 			'address1' => array('text' => '%s %s %s', 'params' => array('invoicing_n_title', 'invoicing_n_last', 'invoicing_n_first')),
 			'address2' => array('text' => '%s', 'params' => array('adr_street')),
@@ -2285,21 +2298,33 @@ return array(
 <p>La liste peut être triée selon chaque colonne en ordre ascendant ou descendant.</p>
 ',
 			),
+			'student/list/checkAll' => array(
+					'en_US' => '
+<h4>Check all</h4>
+<p>This check-box allows to check at one time all the items of the list.</p>
+					',
+					'fr_FR' => '
+<h4>Tout sélectionner</h4>
+<p>Cette case à cocher permet de sélectionner d\'un coup tous les éléments de la liste.</p>
+',
+			),
 			'student/list/groupedActions' => array(
 					'en_US' => '
 <h4>Grouped actions</h4>
 <p>The group action button operates along with the individual or global checkboxes on the left column.</p>
-<p>It opens a new panel proposing actions to apply to a sublist of students.</p>
-<p>For example you can just check students that are absent today and add an absence event applying on this list,</p>
-<p>or select the students from a class and easily input the notes of a control...</p>
+<p>It opens a new panel proposing actions to apply to each student who has previously been checked in the list.</p>
+<p>For example you can generate an absence statement by checking absent students and then point out the in a grouped way. The same is for lateness.</p>
+<p>Another use case: Make a test notation, or a quartery evaluation, in a unique data entry on each student of a class.</p>
+<p>The operating mode for makin a grouped action (absence, lateness, homework notebook, notation, quarterly evaluation...) is explained in the description of the <em>grouped action</em> panel.</p>
 					',
 					'fr_FR' => '
 <h4>Actions groupées</h4>
 <p>Le bouton d\'actions groupées agit conjointement avec les cases à cocher individuelles ou globales en colonne de gauche de la liste.</p>
-<p>Il ouvre un nouveau panneau proposant des actions à appliquer à une sous-liste d\'élèves.</p>
-<p>Par exemple vous pouvez simplement cocher les élèves absents aujourd\'hui et ajouter un évènement d\'absence pour cette liste,</p>
-<p>ou sélectionner les élèves d\'une classe et entrer facilement les notes d\'un contrôle...</p>
-',
+<p>Il ouvre un nouveau panneau proposant des actions à appliquer à chaque élève qui a préalablement été sélectionné dans la liste.</p>
+<p>Par exemple vous pouvez générer un relevé d\'absence en cochant dans la liste les élèves absents puis indiquer l\'absence de façon groupée. De même pour les retards.</p>
+<p>Autre cas d\'utilisation : Effectuer la notation d\'un contrôle, ou une évaluation trimestrielle, en une seule saisie sur tous les élèves d\'une classe.</p>
+<p>Le mode opératoire pour effectuer une action groupée (absence, retard, cahier de texte, notation, évaluation trimestrielle, etc) est précisé dans la description du panneau <em>Actions groupées</em>.
+					',
 			),
 			'student/list/detail' => array(
 					'en_US' => '

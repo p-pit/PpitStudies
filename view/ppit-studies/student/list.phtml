@@ -25,21 +25,28 @@
 	<tr>
 		<td style="text-align: center">
 			<input type="checkbox" class="account-checkbox" id="account-checkbox" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+<?php if ($context->isDemoModeActive()) : ?>
+			<br>
+			<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/list/checkAll'][$context->getLocale()] ?>">
+			    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+			</a>
+			<br>
+<?php endif;?>
 		</td>
 
 		<td style="text-align: center">
 			<button type="button" class="btn btn-default btn-xs index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor">
 				<span class="glyphicon glyphicon-list-alt" id="group-glyphicon"></span>
 			</button>
-		</td>
-		
-		<td colspan="6">
 <?php if ($context->isDemoModeActive()) : ?>
+				<br>
 				<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/list/groupedActions'][$context->getLocale()] ?>">
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
 				</a>
-				<br>
 <?php endif;?>
+		</td>
+		
+		<td colspan="6">
 		
 		</td>
 	</tr>
