@@ -19,9 +19,8 @@
 <?php $i = 0; foreach ($criteria as $criterionId => $criterionValue) : ?>
 	<?php
 	if ($criterionId == 'property_1') $property = $context->getConfig('student/property/discipline');
-	elseif ($criterionId == 'property_4') $property = $context->getConfig('student/property/level');
-	elseif ($criterionId == 'property_5') $property = $context->getConfig('student/property/specialty');
 	elseif ($criterionId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
+	elseif ($criterionId == 'property_7') $property = $context->getConfig('student/property/class');
 	elseif ($criterionId == 'place_id') $property = $context->getConfig('student/property/place');
 	else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$criterionId];
 	$label = $property['labels'][$context->getLocale()];
@@ -139,6 +138,9 @@
 		</div>
 
 		<div class="group-panel" id="schooling-panel">
+			<button type="button" class="btn btn-default action-btn btn-xs" id="note-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?>
+			</button>
 			<button type="button" class="btn btn-default action-btn btn-xs" id="evaluation-add-anchor">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Note', 'ppit-studies', $context->getLocale()) ?>
 			</button>
@@ -148,11 +150,6 @@
 <?php if (array_key_exists('schooling', $context->getConfig('absence')['types'])) : ?>
 			<button type="button" class="btn btn-default action-btn btn-xs" id="schooling-absence-add-anchor">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
-			</button>
-<?php endif;?>
-<?php if (array_key_exists('schooling', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
-			<button type="button" class="btn btn-default action-btn btn-xs" id="schooling-notification-add-anchor">
-				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?>
 			</button>
 <?php endif;?>
 <?php if (array_key_exists('schooling', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>

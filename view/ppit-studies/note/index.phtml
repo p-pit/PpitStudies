@@ -18,6 +18,9 @@ echo $this->partial('/partials/header');
 <?php foreach ($menu as $entryId => $entry) : ?>
 	<?php if ($context->isAllowed($entry['route'])) : ?>
 				<button type="button" class="btn btn-default menu-btn" id="<?php echo $entryId ?>-anchor">
+		<?php if (array_key_exists('glyphicon', $entry)) : ?>
+					<span class="glyphicon <?php echo $entry['glyphicon'] ?>"></span>
+		<?php endif;?>
 					<?php echo $entry['label'][$context->getLocale()] ?>
 				</button>
 	<?php endif ?>
@@ -52,6 +55,10 @@ echo $this->partial('/partials/ppit-controller')
 	$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entry['route'], $entry['params']) ?>'); });
 <?php endforeach;?>
 
-activateNote();
+<?php if ($category == 'evaluation') : ?>
+activateEvaluation();
+<?php elseif ($category == 'homework') : ?>
+activateHomework();
+<?php endif;?>
 
 </script>

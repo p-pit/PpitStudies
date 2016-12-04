@@ -208,7 +208,7 @@ return array(
         						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index',
+        										'route' => '/index[/:category]',
         										'defaults' => array(
         												'action' => 'index',
         										),
@@ -217,7 +217,7 @@ return array(
         						'search' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/search',
+        										'route' => '/search[/:category]',
         										'defaults' => array(
         												'action' => 'search',
         										),
@@ -226,7 +226,7 @@ return array(
         						'list' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/list',
+        										'route' => '/list[/:category]',
         										'defaults' => array(
         												'action' => 'list',
         										),
@@ -235,7 +235,7 @@ return array(
         						'export' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/export',
+        										'route' => '/export[/:category]',
         										'defaults' => array(
         												'action' => 'export',
         										),
@@ -256,7 +256,7 @@ return array(
 	       						'update' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/update[/:id]',
+		        								'route' => '/update[/:id][/:act]',
 		        								'constraints' => array(
 		        										'id'     => '[0-9]*',
 		        								),
@@ -265,18 +265,18 @@ return array(
 		        								),
 		        						),
 		        				),
-	       						'delete' => array(
-				                    'type' => 'segment',
-				                    'options' => array(
-				                        'route' => '/delete[/:id]',
-					                    'constraints' => array(
-					                    	'id' => '[0-9]*',
-					                    ),
-				                    	'defaults' => array(
-				                            'action' => 'delete',
-				                        ),
-				                    ),
-				                ),
+	       						'updateEvaluation' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update-evaluation[/:id][/:act]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'updateEvaluation',
+		        								),
+		        						),
+		        				),
 	       		),
             ),
         	'studentNotification' => array(
@@ -596,6 +596,15 @@ return array(
         										),
         								),
         						),
+	       						'addEvaluation' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-evaluation[/:type]',
+        										'defaults' => array(
+        												'action' => 'addEvaluation',
+        										),
+        								),
+        						),
 	       						'addNotification' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -728,7 +737,7 @@ return array(
 				array('route' => 'note/export', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
-				array('route' => 'note/delete', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
@@ -760,7 +769,8 @@ return array(
             	array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
             	array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'student/addNote', 'roles' => array('manager', 'teacher')),
-            	array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+				array('route' => 'student/addEvaluation', 'roles' => array('manager', 'teacher')),
+				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
 				array('route' => 'student/import', 'roles' => array('admin')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
@@ -822,6 +832,7 @@ return array(
 							'route' => 'student',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-list-alt',
 							'label' => array(
 									'en_US' => 'Students',
 									'fr_FR' => 'Elèves',
@@ -831,6 +842,7 @@ return array(
 							'route' => 'studentNotification',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-edit',
 							'label' => array(
 									'en_US' => 'Notifications',
 									'fr_FR' => 'Notifications',
@@ -840,15 +852,37 @@ return array(
 							'route' => 'progress/index',
 							'params' => array(),
 							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-edit',
 							'label' => array(
 									'en_US' => 'Sport progress',
 									'fr_FR' => 'Suivi sportif',
 							),
 					),
-					'note' => array(
-							'route' => 'note',
-							'params' => array('type' => 'note'),
+					'absence' => array(
+							'route' => 'absence',
+							'params' => array('type' => ''),
 							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-edit',
+							'label' => array(
+									'en_US' => 'Absences/Lateness',
+									'fr_FR' => 'Absences/Retards',
+							),
+					),
+					'homework' => array(
+							'route' => 'note/index',
+							'params' => array('category' => 'homework'),
+							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-edit',
+							'label' => array(
+									'en_US' => 'Homework notebook',
+									'fr_FR' => 'Cahier de texte',
+							),
+					),
+					'evaluation' => array(
+							'route' => 'note/index',
+							'params' => array('category' => 'evaluation'),
+							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-edit',
 							'label' => array(
 									'en_US' => 'Evaluations',
 									'fr_FR' => 'Evaluations',
@@ -858,18 +892,10 @@ return array(
 							'route' => 'studentEvent',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-edit',
 							'label' => array(
 									'en_US' => 'Appointments',
 									'fr_FR' => 'Rendez-vous',
-							),
-					),
-					'absence' => array(
-							'route' => 'absence',
-							'params' => array('type' => ''),
-							'urlParams' => array(),
-							'label' => array(
-									'en_US' => 'Absences',
-									'fr_FR' => 'Absences',
 							),
 					),
 					'account' => array(
@@ -895,6 +921,7 @@ return array(
 	),
 
 	'currentApplication' => 'p-pit-studies',
+	'currentPeriodStart' => '2016-09-01',
 
 	'ppitProduct/p-pit-studies' => array(
 			'properties' => array(),
@@ -1284,10 +1311,10 @@ return array(
 					),
 					'property_7' => array(
 							'type' => 'repository',
-							'definition' => 'student/property/school_year',
+							'definition' => 'student/property/class',
 							'labels' => array(
-									'en_US' => 'School year',
-									'fr_FR' => 'Année scolaire',
+									'en_US' => 'Class',
+									'fr_FR' => 'Classe',
 							),
 					),
 			),
@@ -1303,8 +1330,7 @@ return array(
 					'status' => 'select',
 					'place_id' => 'select',
 					'property_1' => 'select',
-					'property_4' => 'select',
-					'property_5' => 'select',
+					'property_7' => 'select',
 					'property_6' => 'select',
 					'customer_name' => 'contains',
 			),
@@ -1362,8 +1388,7 @@ return array(
 			'closing_date' => array('mandatory' => false),
 			'property_1' => array('mandatory' => true),
 			'property_2' => array('mandatory' => false),
-			'property_4' => array('mandatory' => true),
-			'property_5' => array('mandatory' => false),
+			'property_7' => array('mandatory' => true),
 			'property_6' => array('mandatory' => false),
 	),
 	'commitmentAccount/updateContact/p-pit-studies' => array(
@@ -1418,10 +1443,6 @@ return array(
 											'labels' => array('en_US' => 'Attestation', 'fr_FR' => 'Attestation'),
 									),
 							),
-					),
-					'bill' => array(
-							'type' => 'btn',
-							'labels' => array('en_US' => 'Bill', 'fr_FR' => 'Facture'),
 					),
 			),
 	),
@@ -1491,9 +1512,9 @@ return array(
 					'sport' => array(
 							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
 					),
-					'schooling' => array(
+/*					'schooling' => array(
 							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
-					),
+					),*/
 					'boarding_school' => array(
 							'labels' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
 					),
@@ -1570,7 +1591,7 @@ return array(
 					'3e' => array('fr_FR' => '3e'),
 					'2nde' => array('fr_FR' => '2nde'),
 					'1ère' => array('fr_FR' => '1ère'),
-					'Term' => array('fr_FR' => 'Term'),
+					'Term.' => array('fr_FR' => 'Term.'),
 			),
 			'labels' => array(
 					'en_US' => 'School level',
@@ -1591,6 +1612,27 @@ return array(
 			),
 	),
 
+	'student/property/class' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'6e' => array('fr_FR' => '6e', 'level' => '6e'),
+					'5e' => array('fr_FR' => '5e', 'level' => '5e'),
+					'4e' => array('fr_FR' => '4e', 'level' => '4e'),
+					'3e' => array('fr_FR' => '3e', 'level' => '3e'),
+					'2nde' => array('fr_FR' => '2nde', 'level' => '2nde'),
+					'1ère S' => array('fr_FR' => '1ère S', 'level' => '1ère', 'specialty' => 'S'),
+					'1ère ES' => array('fr_FR' => '1ère ES', 'level' => '1ère', 'specialty' => 'ES'),
+					'1ère STMG' => array('fr_FR' => '1ère STMG', 'level' => '1ère', 'specialty' => 'STMG'),
+					'Term. S' => array('fr_FR' => 'Term. S', 'level' => 'Term.', 'specialty' => 'S'),
+					'Term. ES' => array('fr_FR' => 'Term. ES', 'level' => 'Term.', 'specialty' => 'ES'),
+					'Term. STMG' => array('fr_FR' => 'Term. STMG', 'level' => 'Term.', 'specialty' => 'STMG'),
+			),
+			'labels' => array(
+					'en_US' => 'Class',
+					'fr_FR' => 'Classe',
+			),
+	),
+		
 	'student/property/boarding_school' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -1633,14 +1675,14 @@ return array(
 	'student/property/school_subject' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'Français' => array('en_US' => 'French', 'fr_FR' => 'Français'),
-					'Mathématiques' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
-					'Physique/chimie' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
-					'SVT' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
-					'LV1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
-					'LV2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
-					'Economie' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
-					'Histoire/géographie' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+					'french' => array('en_US' => 'French', 'fr_FR' => 'Français'),
+					'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
+					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
+					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+					'll1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
+					'll2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
+					'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
+					'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
 			),
 			'labels' => array(
 					'en_US' => 'Subject',
@@ -1700,8 +1742,7 @@ return array(
 			'main' => array(
 					'place_id' => 'select',
 					'property_1' => 'select',
-					'property_4' => 'select',
-					'property_5' => 'select',
+					'property_7' => 'select',
 					'property_6' => 'select',
 					'customer_name' => 'contains',
 			),
@@ -1897,6 +1938,7 @@ return array(
 					'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
 					'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
 					'transport' => array('en_US' => 'Transport', 'fr_FR' => 'Transport'),
+					'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
 					'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 			),
 			'labels' => array(
@@ -1906,11 +1948,11 @@ return array(
 	),
 		
 	'absence/search' => array(
-			'title' => array('en_US' => 'Absences', 'fr_FR' => 'Absences'),
-			'todoTitle' => array('en_US' => 'today', 'fr_FR' => 'ce jour'),
+			'title' => array('en_US' => 'Absences/Lateness', 'fr_FR' => 'Absences/Retards'),
+			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
 			'main' => array('type' => 'select', 'name' => 'contains', 'date' => 'range'),
-			'more' => array('school_year' => 'select', 'period' => 'select'),
+			'more' => array(),
 	),
 	
 	'absence/list' => array(
@@ -1923,45 +1965,64 @@ return array(
 
 	'note' => array(
 			'types' => array(
-					'note' => array(
-							'labels' => array('en_US' => 'Note', 'fr_FR' => 'Note'),
+					'evaluation' => array(
+						'note' => array(
+								'labels' => array('en_US' => 'Note', 'fr_FR' => 'Note'),
+						),
+						'report' => array(
+								'labels' => array('en_US' => 'Report', 'fr_FR' => 'Bulletin'),
+						),
 					),
-					'average' => array(
-							'labels' => array('en_US' => 'Average', 'fr_FR' => 'Moyenne'),
+					'homework' => array(
+						'done-work' => array(
+								'labels' => array('en_US' => 'Done work', 'fr_FR' => 'Réalisé'),
+						),
+						'todo-work' => array(
+								'labels' => array('en_US' => 'Work to do', 'fr_FR' => 'A faire'),
+						),
+						'event' => array(
+								'labels' => array('en_US' => 'Event', 'fr_FR' => 'Evènement'),
+						),
 					),
 			),
-			'criteria' => array(
-					'property_4' => 'select',
-					'property_5' => 'select',
-					'place_id' => 'select',
-			)
 	),
 
+	'note/colour' => array(
+			'done-work' => 'LightGreen',	
+			'todo-work' => 'LightSalmon',	
+			'event' => 'LightBlue',	
+	),
+		
 	'note/index' => array(
 			'title' => array('en_US' => 'P-PIT Studies', 'fr_FR' => 'P-PIT Studies'),
 	),
+
+	'note/search/evaluation' => array(
+			'title' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
+	),
+
+	'note/search/homework' => array(
+			'title' => array('en_US' => 'Homework notebook', 'fr_FR' => 'Cahier de texte'),
+	),
 		
 	'note/search' => array(
-			'title' => array('en_US' => 'Notes', 'fr_FR' => 'Notes'),
-			'todoTitle' => array('en_US' => 'to check', 'fr_FR' => 'à viser'),
-			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
+			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
+			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
 			'main' => array(
 					'type' => 'select',
-					'level' => 'select',
+					'class' => 'select',
 					'subject' => 'select',
-					'school_period' => 'select',
+					'date' => 'date',
 			),
 			'more' => array(
-					'specialty' => 'select',
-					'school_year' => 'select',
 			),
 	),
 	
 	'note/list' => array(
 			'type' => 'select',
-			'level' => 'select',
+			'class' => 'select',
 			'subject' => 'select',
-			'school_period' => 'select',
+			'date' => 'date',
 	),
 	
 	'note/update' => array(
@@ -1969,14 +2030,14 @@ return array(
 					'schooling' => array(
 							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
 							'subjects' => array(
-									'Français' => array('en_US' => 'French', 'fr_FR' => 'Français'),
-									'Mathématiques' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
-									'Physique/chimie' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
-									'SVT' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
-									'LV1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
-									'LV2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
-									'Economie' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
-									'Histoire/géographie' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+									'french' => array('en_US' => 'French', 'fr_FR' => 'Français'),
+									'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
+									'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
+									'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+									'll1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
+									'll2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
+									'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
+									'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
 							),
 					),
 			),
@@ -2358,6 +2419,66 @@ return array(
 <p>Les boutons de navigation sont gris par défaut et deviennent bleus une fois activés.</p>
 <p>Vous voyez actuellement en bleu le bouton <em>Elèves</em> du menu de haut de page et le bouton <em>Actions groupées</em> du panneau de liste. Si vous sélectionnez <em>+ Notification</em> dans ce menu local, il adoptera la même couleur bleue.</p>
 <p>Vous avez ainsi un <em>fil d\'ariane</em> visuel de votre navigation courante, bien pratique pour se repérer tandis que l\'écran s\'enrichit.</p>
+',
+			),
+			'student/addNote/note' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Ajout dans le cahier de texte</h4>
+<p>Vous disposez de trois types d\'entrées pour le cahier de texte : Travail effectué, travail à faire et évènement, chacun avec une couleur de fond différente, afin de permettre aux parents/élèves de bien les distinguer.</p>
+<p>Vous pouvez lier dans le cahier de texte tout document présent dans le répertoire Scolarité de votre espace Dropbox.</p>
+',
+			),
+			'student/addEvaluation/note' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Saisie d\'une évaluation</h4>
+<p>Le formulaire d\'ajout de notes permet d\'entrer en une fois une évaluation pour une classe.</p>
+<p>Le coefficient et la note de référence sont précisés. Ceci permet de calculer automatiquement les moyennes des bulletins.</p>
+',
+			),
+			'student/addEvaluation/report' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Saisie d\'un bulletin trimestriel</h4>
+<p>Le formulaire d\'ajout de bulletin permet d\'entrer en une fois le bulletin pour une classe.</p>
+<p>Un seul bulletin par matière peut être créé pour la période en cours. Une fois la période clôturée, la saisie n\'est plus possible.</p>
+<p>Si la moyenne d\'un élève n\'est pas saisie, elle est calculée automatiquement à partir de toutes les notes disponibles dans la période du bulletin.</p>
+',
+			),
+			'note/list/homework' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Cahier de texte</h4>
+<p>Cette liste permet de retrouver toutes les entrées qui ont été saisies dans le cahier de texte. Vous disposez de filtres sur la classe, la matière et la date.</p>
+',
+			),
+			'note/list/evaluation' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Liste des évaluations et bulletins</h4>
+<p>Cette liste permet de retrouver toutes les évaluations et bulletins qui ont été saisies. Vous disposez de filtres sur la classe, la matière et la date.</p>
+',
+			),
+			'note/updateEvaluation' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Détail d\'une évaluation</h4>
+<p>Depuis la liste des évaluations/bulletins, vous accédez au détail. Vous pouvez corriger ou supprimer une évaluation ou un bulletin.</p>
+',
+			),
+			'note/update' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Détail du cahier de texte</h4>
+<p>Depuis le cahier de texte, vous accédez au détail. Vous pouvez corriger ou supprimer une entrée du cahier de texte.</p>
 ',
 			),
 			'commitmentAccount/index/p-pit-studies/title' => array(

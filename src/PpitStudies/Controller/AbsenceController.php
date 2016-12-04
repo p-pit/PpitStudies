@@ -43,7 +43,7 @@ class AbsenceController extends AbstractActionController
     	$filters = array();
     
     	$name = ($params()->fromQuery('name', null));
-    	if ($name) $filters['name'] = $customer_name;
+    	if ($name) $filters['name'] = $name;
 
     	foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) {
     
@@ -181,7 +181,6 @@ class AbsenceController extends AbstractActionController
     			$data = array();
 				$data['update_time'] = $request->getPost('update_time');
     			$data['category'] = $request->getPost('category');
-    			$data['school_year'] = $request->getPost('school_year');
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
     			$data['date'] = $request->getPost('date');

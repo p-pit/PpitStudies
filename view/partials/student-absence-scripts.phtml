@@ -257,7 +257,6 @@ function connectAuditPanel()
 <?php 
 $properties = array();
 $properties['category'] = array('type' => 'select', 'mandatory' => true);
-$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['motive'] = array('type' => 'select', 'mandatory' => false);
 $properties['date'] = array('type' => 'date', 'mandatory' => false);
@@ -306,6 +305,12 @@ function connectAbsenceUpdateForm(id, action)
 					filterAbsenceList();
 					if ($('#category').val() == 'lateness') $('#input_duration_group').show();
 					else $('#input_duration_group').hide();
+
+					if (id) {
+						$('#update-anchor').click(function () { getAbsenceUpdate(id, 'update'); });
+						$('#delete-anchor').click(function () { getAbsenceUpdate(id, 'delete'); });
+					}
+					else $('#add-anchor').click(function () { getAbsenceUpdate(id, 'add'); });
 				}
 			};
 			xhttp.send(formData);

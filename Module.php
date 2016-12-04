@@ -4,6 +4,7 @@ namespace PpitStudies;
 use PpitCore\Model\GenericTable;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
+use PpitStudies\Model\NoteLink;
 use PpitStudies\Model\Progress;
 use PpitStudies\Model\Student;
 use PpitStudies\Model\StudentSport;
@@ -71,6 +72,17 @@ class Module
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Note());
                     return new TableGateway('student_note', $dbAdapter, null, $resultSetPrototype);
+                },
+                'PpitStudies\Model\NoteLinkTable' =>  function($sm) {
+                    $tableGateway = $sm->get('NoteLinkTableGateway');
+                    $table = new GenericTable($tableGateway);
+                    return $table;
+                },
+                'NoteLinkTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new NoteLink());
+                    return new TableGateway('student_note_link', $dbAdapter, null, $resultSetPrototype);
                 },
                 'PpitStudies\Model\ProgressTable' =>  function($sm) {
                     $tableGateway = $sm->get('ProgressTableGateway');
@@ -154,57 +166,7 @@ class Module
                     $table = new GenericTable($tableGateway);
                     return $table;
                 },
-/*                'BillRowImportTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new BillRowImport());
-                    return new TableGateway('eleve_bill_row', $dbAdapter, null, $resultSetPrototype);
-                },
-                'PpitStudies\Model\BillOptionImportTable' =>  function($sm) {
-                    $tableGateway = $sm->get('BillOptionImportTableGateway');
-                    $table = new GenericTable($tableGateway);
-                    return $table;
-                },
-                'BillOptionImportTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new BillOptionImport());
-                    return new TableGateway('eleve_bill_option', $dbAdapter, null, $resultSetPrototype);
-                },
-                'PpitStudies\Model\BillTermImportTable' =>  function($sm) {
-                    $tableGateway = $sm->get('BillTermImportTableGateway');
-                    $table = new GenericTable($tableGateway);
-                    return $table;
-                },
-                'BillTermImportTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new BillTermImport());
-                    return new TableGateway('eleve_bill_term', $dbAdapter, null, $resultSetPrototype);
-                },
-                'PpitStudies\Model\ProductImportTable' =>  function($sm) {
-                    $tableGateway = $sm->get('ProductImportTableGateway');
-                    $table = new GenericTable($tableGateway);
-                    return $table;
-                },
-                'ProductImportTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new ProductImport());
-                    return new TableGateway('eleve_product', $dbAdapter, null, $resultSetPrototype);
-                },
-                'PpitStudies\Model\ProductOptionImportTable' =>  function($sm) {
-                    $tableGateway = $sm->get('ProductOptionImportTableGateway');
-                    $table = new GenericTable($tableGateway);
-                    return $table;
-                },
-                'ProductOptionImportTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new ProductOptionImport());
-                    return new TableGateway('eleve_product_option', $dbAdapter, null, $resultSetPrototype);
-                },*/
-                ),
+            ),
         );
     }
 }

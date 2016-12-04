@@ -5,6 +5,7 @@ use PpitContact\Model\Community;
 use PpitCommitment\Model\Account;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
+use PpitStudies\Model\NoteLink;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
@@ -17,16 +18,19 @@ class Note implements InputFilterAwareInterface
     public $id;
     public $instance_id;
     public $status;
+    public $category;
     public $type;
     public $school_year;
     public $level;
+    public $class;
     public $school_period;
-    public $account_id;
     public $subject;
     public $date;
+    public $target_date;
     public $reference_value;
     public $weight;
     public $observations;
+    public $document;
     public $criteria;
     public $results;
     public $lower_note;
@@ -35,15 +39,11 @@ class Note implements InputFilterAwareInterface
     public $audit;
     public $update_time;
 
-    // Joined properties
-    public $name;
-    public $sport;
-    public $photo;
-    
     // Transient properties
+    public $links;
     public $comment;
     public $properties;
-
+    
     protected $inputFilter;
 
     // Static fields
@@ -59,16 +59,19 @@ class Note implements InputFilterAwareInterface
         $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->instance_id = (isset($data['instance_id'])) ? $data['instance_id'] : null;
         $this->status = (isset($data['status'])) ? $data['status'] : null;
+        $this->category = (isset($data['category'])) ? $data['category'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
+        $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
-        $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
+        $this->target_date = (isset($data['target_date'])) ? $data['target_date'] : null;
         $this->reference_value = (isset($data['reference_value'])) ? $data['reference_value'] : null;
         $this->weight = (isset($data['weight'])) ? $data['weight'] : null;
         $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
+        $this->document = (isset($data['document'])) ? $data['document'] : null;
         $this->criteria = (isset($data['criteria'])) ? json_decode($data['criteria'], true) : null;
         $this->results = (isset($data['results'])) ? json_decode($data['results'], true) : null;
         $this->average_note = (isset($data['average_note'])) ? $data['average_note'] : null;
@@ -76,11 +79,6 @@ class Note implements InputFilterAwareInterface
         $this->higher_note = (isset($data['higher_note'])) ? $data['higher_note'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
-
-        // Joined properties
-        $this->name = (isset($data['name'])) ? $data['name'] : null;
-        $this->sport = (isset($data['sport'])) ? $data['sport'] : null;
-        $this->photo = (isset($data['photo'])) ? $data['photo'] : null;
     }
     
     public function toArray()
@@ -89,39 +87,41 @@ class Note implements InputFilterAwareInterface
     	$data['id'] = (int) $this->id;
     	$data['instance_id'] = (int) $this->instance_id;
     	$data['status'] =  $this->status;
+    	$data['category'] =  $this->category;
     	$data['type'] = $this->type;
     	$data['school_year'] = $this->school_year;
     	$data['level'] = $this->level;
+    	$data['class'] = $this->class;
     	$data['school_period'] = $this->school_period;
-    	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
     	$data['date'] =  ($this->date) ? $this->date : null;
+    	$data['target_date'] =  ($this->target_date) ? $this->target_date : null;
     	$data['reference_value'] =  ($this->reference_value) ? $this->reference_value : null;
     	$data['weight'] =  ($this->weight) ? $this->weight : null;
     	$data['observations'] =  ($this->observations) ? $this->observations : null;
+    	$data['document'] =  ($this->document) ? $this->document : null;
     	$data['criteria'] =  ($this->criteria) ? json_encode($this->criteria) : null;
     	$data['results'] =  ($this->results) ? json_encode($this->results) : null;
     	$data['average_note'] = ($this->average_note) ? $this->average_note : null;
     	$data['lower_note'] = ($this->lower_note) ? $this->lower_note : null;
     	$data['higher_note'] = ($this->higher_note) ? $this->higher_note : null;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
-		return $data;
+
+    	return $data;
     }
     
-    public static function getList($type, $params, $major, $dir, $mode = 'todo')
+    public static function getList($category, $params, $major, $dir, $mode = 'todo')
     {
     	$context = Context::getCurrent();
     	$select = Note::getTable()->getSelect()
-    		->join('commitment_account', 'student_note.account_id = commitment_account.id', array('sport' => 'property_1'), 'left')
-    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
-    		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
+    		->order(array($major.' '.$dir, 'date DESC', 'subject'));
 		$where = new Where;
 		$where->notEqualTo('student_note.status', 'deleted');
-//		$where->equalTo('student_note.type', $type);
+		if ($category) $where->equalTo('student_note.category', $category);
 
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-//    		$where->equalTo('date', date('Y-m-d'));
+    		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
     	}
     	else {
 
@@ -135,10 +135,10 @@ class Note implements InputFilterAwareInterface
 		
     	$select->where($where);
 		$cursor = Note::getTable()->selectWith($select);
-    	$criteria = $context->getConfig('note')['criteria'];
+//    	$criteria = $context->getConfig('note')['criteria'];
 		$notes = array();
 		foreach ($cursor as $note) {
-			$keep = true;
+/*			$keep = true;
 			foreach ($params as $propertyId => $property) {
 				if (array_key_exists($propertyId, $criteria) && !array_key_exists($propertyId, $note->criteria)) $keep = false;
 				else {
@@ -147,10 +147,10 @@ class Note implements InputFilterAwareInterface
 	    			elseif ($params[$propertyId] != $note->criteria[$propertyId]) $keep = false;
 				}
 			}
-			if ($keep) {
+			if ($keep) {*/
 				$note->properties = $note->toArray();
 				$notes[] = $note;
-			}
+//			}
 		}
 		return $notes;
     }
@@ -170,24 +170,25 @@ class Note implements InputFilterAwareInterface
     	return $notes;
     }
 
-    public static function computePeriodAverages($school_year, $class, $period, $subject)
+    public static function computePeriodAverages(/*$school_year, */$class/*, $period*/, $subject)
     {
-    	$select = Note::getTable()->getSelect()
-	    	->order(array('date DESC', 'subject ASC'));
+    	$context = Context::getCurrent();
+    	$select = NoteLink::getTable()->getSelect()
+    		->join('student_note', 'student_note_link.note_id = student_note.id', array('status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
+    		->order(array('date DESC', 'subject ASC'));
     	$where = new Where;
     	$where->notEqualTo('status', 'deleted');
     	$where->equalTo('type', 'note');
-    	$where->equalTo('school_year', $school_year);
-    	$where->equalTo('level', $class);
-    	$where->equalTo('school_period', $period);
+//    	$where->equalTo('school_year', $school_year);
+    	$where->equalTo('class', $class);
+//    	$where->equalTo('school_period', $period);
     	$where->equalTo('subject', $subject);
-    	$select->where($where);
-    	$cursor = Note::getTable()->selectWith($select);
+		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
+		$select->where($where);
+    	$cursor = NoteLink::getTable()->selectWith($select);
     	$periodNotes = array();
-    	foreach ($cursor as $evaluation) {
-    		foreach ($evaluation->results as $account_id => $student) {
-	    		$periodNotes[$account_id][] = array('reference_value' => $evaluation->reference_value, 'weight' => $evaluation->weight, 'note' => $student['note']);
-    		}
+    	foreach ($cursor as $noteLink) {
+	    	$periodNotes[$noteLink->account_id][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
     	}
     	$averages = array();
     	foreach ($periodNotes as $account_id => $notes) {
@@ -208,13 +209,23 @@ class Note implements InputFilterAwareInterface
     public static function get($id, $column = 'id')
     {
     	$note = Note::getTable()->get($id, $column);
+    	$note->links = array();
+    	$select = NoteLink::getTable()->getSelect()
+    				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
+    				->join('contact_community', 'contact_community.id = commitment_account.customer_community_id', array('name'), 'left')
+    				->where(array('note_id' => $id));
+		$cursor = NoteLink::getTable()->selectWith($select);
+		foreach($cursor as $noteLink) $note->links[] = $noteLink;
     	return $note;
     }
     
     public static function instanciate($type = null)
     {
 		$note = new Note;
+    	$note->status = 'new';
 		$note->type = $type;
+		if ($type == 'note' || $type == 'report') $note->category = 'evaluation';
+		elseif ($type == 'done-work' || $type == 'todo-work' || $type == 'event') $note->category = 'homework';
 		$note->audit = array();
 		return $note;
     }
@@ -227,7 +238,11 @@ class Note implements InputFilterAwareInterface
 		    $this->status = trim(strip_tags($data['status']));
 		    if (strlen($this->status) > 255) return 'Integrity';
 		}
-    	if (array_key_exists('type', $data)) {
+        if (array_key_exists('category', $data)) {
+		    $this->category = trim(strip_tags($data['category']));
+		    if (!$this->category || strlen($this->category) > 255) return 'Integrity';
+		}
+		if (array_key_exists('type', $data)) {
 		    $this->type = trim(strip_tags($data['type']));
 		    if (!$this->type || strlen($this->type) > 255) return 'Integrity';
 		}
@@ -239,13 +254,13 @@ class Note implements InputFilterAwareInterface
 	    	$this->level = trim(strip_tags($data['level']));
 		    if (!$this->level || strlen($this->level) > 255) return 'Integrity';
 		}
-        if (array_key_exists('school_period', $data)) {
+       	if (array_key_exists('class', $data)) {
+	    	$this->class = trim(strip_tags($data['class']));
+		    if (!$this->class || strlen($this->class) > 255) return 'Integrity';
+		}
+		if (array_key_exists('school_period', $data)) {
 	    	$this->school_period = trim(strip_tags($data['school_period']));
 		    if (!$this->school_period || strlen($this->school_period) > 255) return 'Integrity';
-		}
-		if (array_key_exists('account_id', $data)) {
-		    $this->account_id = (int) $data['account_id'];
-		    if (!$this->account_id) return 'Integrity';
 		}
     	if (array_key_exists('subject', $data)) {
 		    $this->subject = trim(strip_tags($data['subject']));
@@ -255,7 +270,11 @@ class Note implements InputFilterAwareInterface
 	    	$this->date = trim(strip_tags($data['date']));
 	    	if (!$this->date || !checkdate(substr($this->date, 5, 2), substr($this->date, 8, 2), substr($this->date, 0, 4))) return 'Integrity';
 		}
-    	if (array_key_exists('value', $data)) {
+    	if (array_key_exists('target_date', $data)) {
+	    	$this->target_date = trim(strip_tags($data['target_date']));
+	    	if (!$this->target_date || !checkdate(substr($this->target_date, 5, 2), substr($this->target_date, 8, 2), substr($this->target_date, 0, 4))) return 'Integrity';
+		}
+		if (array_key_exists('value', $data)) {
 		    $this->value = (float) $data['value'];
 		    if ($this->value > 100) return 'Integrity';
 		}
@@ -275,28 +294,26 @@ class Note implements InputFilterAwareInterface
 				$this->criteria[$criterionId] = $criterion;
 			}
 		}
-		$noteSum = 0; $lowerNote = 100; $higherNote = 0;
-        if (array_key_exists('results', $data)) {
-			$this->results = array();
-			foreach ($data['results'] as $account_id => $result) {
-				$note = $result['note'];
-				$assessment = $result['assessment'];
-				$noteSum += $note;
-				if ($note < $lowerNote) $lowerNote = $note;
-				if ($note > $higherNote) $higherNote = $note;
-				$account_id = (int) $account_id;
-				if (!$account_id) return 'Integrity';
-				$this->results[$account_id] = array('note' => $note, 'assessment' => $assessment);
-				if (array_key_exists('notes', $result)) $this->results[$account_id]['notes'] = $result['notes'];
-			}
-			if (count($data['results']) > 0) $this->average_note = round($noteSum / count($data['results']), 2);
-			$this->lower_note = $lowerNote;
-			$this->higher_note = $higherNote;
-			if (array_key_exists('observations', $data)) {
-			    $this->observations = trim(strip_tags($data['observations']));
-			    if (strlen($this->observations) > 2047) return 'Integrity';
-			}
-        }
+    	if (array_key_exists('observations', $data)) {
+		    $this->observations = $data['observations'];
+		    if (strlen($this->observations) > 2047) return 'Integrity';
+		}
+        if (array_key_exists('document', $data)) {
+    		$this->document = trim(strip_tags($data['document']));
+			if (strlen($this->document) > 255) return 'Integrity';
+    	}
+		if (array_key_exists('average_note', $data)) {
+		    $this->average_note = (float) $data['average_note'];
+		    if ($this->average_note > 100) return 'Integrity';
+		}
+        if (array_key_exists('lower_note', $data)) {
+		    $this->lower_note = (float) $data['lower_note'];
+		    if ($this->lower_note > 100) return 'Integrity';
+		}
+        if (array_key_exists('higher_note', $data)) {
+		    $this->higher_note = (float) $data['higher_note'];
+		    if ($this->higher_note > 100) return 'Integrity';
+		}
 		if (array_key_exists('comment', $data)) {
 		    $this->comment = trim(strip_tags($data['comment']));
 		    if (strlen($this->comment) > 2047) return 'Integrity';
@@ -312,7 +329,7 @@ class Note implements InputFilterAwareInterface
     			'status' => $this->status,
     			'comment' => $this->comment,
     	);
-
+    	
     	return 'OK';
     }
 
@@ -321,7 +338,6 @@ class Note implements InputFilterAwareInterface
     	$context = Context::getCurrent();
 
     	$this->id = null;
-    	$this->status = 'new';
     	Note::getTable()->save($this);
     
     	return ('OK');

@@ -9,6 +9,7 @@
 	</div>
 	<div class="panel-body">
 
+<?php if ($message != 'OK') : ?>
 <!-- Menu -->
 		<div>
 			<button type="button" class="btn btn-default detail-menu-btn" id="update-anchor" title="<?php echo $this->translate('Update', 'ppit-core', $context->getLocale()) ?>">
@@ -19,6 +20,7 @@
 				<span class="glyphicon glyphicon-trash""></span>
 			</button>
 		</div>
+<?php endif;?>
 
 <!-- Display the audit -->
 		<div>&nbsp;</div>
@@ -52,7 +54,12 @@
 ));
 ?>
 
-<?php if (!$absence->id) : ?>
+<?php 
+if ($absence->id && $action != 'update' || $message == 'OK') $isDisabled = true; else $isDisabled = false;
+?>
+
+<?php if ($message != 'OK') : ?>
+	<?php if (!$absence->id) : ?>
 		    <div class="form-group">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
@@ -60,7 +67,7 @@
 				</div>
 			</div>
 
-<?php elseif ($action == 'update') : ?>
+	<?php elseif ($action == 'update') : ?>
 		    <div class="form-group">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
@@ -68,18 +75,15 @@
 				</div>
 			</div>
 
-<?php elseif ($action == 'delete') : ?>
+	<?php elseif ($action == 'delete') : ?>
 		    <div class="form-group">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
 					<input type="submit" id="up-submit-button" class="btn btn-danger" value="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>">
 				</div>
 			</div>
+	<?php endif;?>
 <?php endif;?>
-
-<?php 
-if ($absence->id && $action != 'update' || $message == 'OK') $isDisabled = true; else $isDisabled = false;
-?>
 
 <!-- Name -->
 
@@ -100,19 +104,6 @@ if ($absence->id && $action != 'update' || $message == 'OK') $isDisabled = true;
 				</select>
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="category_error"></p></div>
-		</div>
-
-<!-- School year -->
-		<div class="form-group" id="school_year_group">
-			<label class="col-sm-5 control-label">* <?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
-			<div class="col-sm-7">
-				<select class="form-control" id="school_year" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
-	<?php foreach ($context->getConfig('student/property/school_year')['modalities'] as $schoolYearId => $schoolYear) : ?>
-					<option value="<?php echo $schoolYearId ?>" <?php if ($absence->school_year == $schoolYearId) echo ' selected="selected"' ?>><?php echo $schoolYear[$context->getLocale()] ?></option>
-	<?php endforeach;?>
-				</select>
-			</div>
-			<div class="col-sm-12"><p class="help-block" id="school_year_error"></p></div>
 		</div>
 
 <!-- Subject -->
@@ -179,7 +170,7 @@ if ($absence->id && $action != 'update' || $message == 'OK') $isDisabled = true;
 
 <!-- Comment -->
 		<div class="form-group" id="comment_group">
-			<label class="col-sm-5 control-label"><?php echo $this->translate('Comment (non visible to the student)', 'ppit-studies', $context->getLocale()) ?></label>
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Internal comment (non visible to the parents)', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
 			</div>

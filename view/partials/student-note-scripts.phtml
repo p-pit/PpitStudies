@@ -13,7 +13,7 @@ function getParams() {
 
 <?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
 
-	<?php if ($rendering == 'range') : ?>
+	<?php if ($rendering == 'range' || $rendering == 'date') : ?>
 	
 	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
 	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
@@ -25,34 +25,8 @@ function getParams() {
 
 	<?php else : ?>
 
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
-	
-	<?php endif;?>
-
-<?php endforeach;?>
-
-<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
-
-	<?php if ($rendering == 'range') : ?>
-	
-	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
-	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
-	if (min_<?php echo $propertyId ?>.length >= 2) { params += 'min_<?php echo $propertyId ?>=' + min_<?php echo $propertyId ?> + '&'; todo = false; }
-
-	var max_<?php echo $propertyId ?> = document.getElementById('search_max_<?php echo $propertyId ?>').value;
-	if (max_<?php echo $propertyId ?>) max_<?php echo $propertyId ?> = encodeDate(max_<?php echo $propertyId ?>);
-	if (max_<?php echo $propertyId ?>.length >= 2) { params += 'max_<?php echo $propertyId ?>=' + max_<?php echo $propertyId ?> + '&'; todo = false; }
-
-	<?php elseif ($rendering == 'select') : ?>
-
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (<?php echo $propertyId ?>) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
-	
-	<?php else : ?>
-
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
+	var prop_<?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (prop_<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + prop_<?php echo $propertyId ?> + '&'; todo = false; }
 	
 	<?php endif;?>
 
@@ -68,21 +42,21 @@ function getParams() {
 }
 
 // Export the list
-function exportNoteList() {
+function exportNoteList(category) {
 
 	$('#form_action').hide();
 
 	var params = getParams();
-	document.location.href = '<?php echo $this->url('note/export') ?>' + params;
+	document.location.href = '<?php echo $this->url('note/export') ?>/' + category + params;
 }
 
-function eraseNoteSearch() {
+function eraseNoteSearch(category) {
 
 <?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
 
 	$('#form_action').hide();
 
-	<?php if ($rendering == 'range') : ?>
+	<?php if ($rendering == 'range' || $rendering == 'date') : ?>
 	$('#search_min_<?php echo $propertyId ?>').val('');
 	$('#search_max_<?php echo $propertyId ?>').val('');
 
@@ -93,34 +67,20 @@ function eraseNoteSearch() {
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
-
-	<?php if ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').val('');
-	$('#search_max_<?php echo $propertyId ?>').val('');
-
-	<?php else : ?>
-	$('#search_<?php echo $propertyId ?>').val('');
-	
-	<?php endif;?>
-
-<?php endforeach;?>
-
-	getNoteList(getParams(), 'school_period', 'ASC');
+	getNoteList(category, getParams(), 'date', 'DESC');
 }
 
-function sortNoteList(criterion) {
-
+function sortNoteList(category, criterion) {
 	$('#form_action').hide();
 
 	var dir;
 	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
 	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
 	if (criterion + '-anchor' == ascCriterion) dir = 'DESC'; else dir = 'ASC';
-	getNoteList(getParams(), criterion, dir);
+	getNoteList(category, getParams(), criterion, dir);
 }
 
-function filterNoteList() {
+function filterNoteList(category) {
 
 	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
 	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
@@ -130,17 +90,17 @@ function filterNoteList() {
 	}
 	else {
 		criterion = descCriterion.split('-')[0];
-		dir = 'ASC';
+		dir = 'DESC';
 	}
-	getNoteList(getParams(), criterion, dir);
+	getNoteList(category, getParams(), criterion, dir);
 }
 
-function connectNoteSearchInputs() {
+function connectNoteSearchInputs(category) {
 
-	$('#export-button').click(function () { exportNoteList(); });
+	$('#export-button').click(function () { exportNoteList(category); });
 	
 	$('#erase-button').unbind();
-	$('#erase-button').click(function () { eraseNoteSearch(); });
+	$('#erase-button').click(function () { eraseNoteSearch(category); });
 
 <?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
 	
@@ -151,95 +111,33 @@ function connectNoteSearchInputs() {
 		||	$propertyId == 'school_period'
 		||	$propertyId == 'school_year'
 		||	$propertyId == 'specialty') : ?>
-	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(category); });
 
 	<?php elseif ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(category); });
+	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(category); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+	<?php elseif ($rendering == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-		<?php endif;?>
+	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(category); });
+	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(category); });
 	
 	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
+		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(category); });
 	
 	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
+		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(category); });
 
-	<?php endif;?>
-
-<?php endforeach;?>
-
-<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
-	
-	<?php if (
-			$propertyId == 'category'
-		||	$propertyId == 'level'
-		||	$propertyId == 'school_subject'
-		||	$propertyId == 'school_period'
-		||	$propertyId == 'school_year'
-		||	$propertyId == 'specialty') : ?>
-	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-
-	<?php elseif ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_min_<?php echo $propertyId ?>").datepicker();
-	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-		<?php endif;?>
-	
-	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	
-	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-
-	<?php endif;?>
-
-<?php endforeach;?>
-
-<?php foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) : ?>
-
-	<?php if ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_min_<?php echo $propertyId ?>").datepicker();
-	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-		<?php endif;?>
-	
-	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-
-	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
-	$("#search_<?php echo $propertyId ?>").datepicker();
-	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-		<?php endif;?>
-		
 	<?php endif;?>
 
 <?php endforeach;?>
 }
 
 // Load the list
-function getNoteList(params, major, dir) {		
-
+function getNoteList(category, params, major, dir) {		
 	// Execute the ajax request
-	route = '<?php echo $this->url('note/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	route = '<?php echo $this->url('note/list') ?>/' + category + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
@@ -250,17 +148,26 @@ function getNoteList(params, major, dir) {
 	<?php endif;?>
 			document.getElementById('note-list-panel').innerHTML = xhttp.responseText;
 			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
+			
 			// Connect the sort anchors
 			$('.ppit-sort-anchor').each(function () {
 				$(this).click(function () {
-					sortNoteList($(this).attr('id').split('-')[0]);
+					sortNoteList(category, $(this).attr('id').split('-')[0]);
 				});
 			});
 			
 			// Connect the detail anchors
 			$('.note-detail-anchor').each(function () {
 				$(this).click(function () {
-					getNoteUpdate($(this).attr('id').split('_')[1]);
+					if (category == 'homework') getNoteUpdate($(this).attr('id').split('_')[1]);
+					else if (category == 'evaluation') getEvaluationUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
@@ -288,12 +195,15 @@ function connectAuditPanel()
 
 <?php 
 $properties = array();
-$properties['date'] = array('type' => 'date', 'mandatory' => false);
+$properties['class'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
-$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['date'] = array('type' => 'date', 'mandatory' => true);
+$properties['type'] = array('type' => 'select', 'mandatory' => true);
+$properties['target_date'] = array('type' => 'date', 'mandatory' => true);
+$properties['observations'] = array('type' => 'ckeditor', 'mandatory' => true, 'maxSize' => 2047);
+$properties['document'] = array('type' => 'dropbox', 'mandatory' => false);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['update_time'] = array('type' => 'hidden');
-
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
 ?>
 
@@ -315,7 +225,11 @@ function connectNoteUpdateForm(id)
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
+	<?php if ($property['type'] == 'ckeditor') : ?>
+				formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
+	<?php else : ?>	
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+	<?php endif;?>
 <?php endforeach ?>
 
 			var xhttp = new XMLHttpRequest();
@@ -329,7 +243,7 @@ function connectNoteUpdateForm(id)
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					connectRemoveIcon('remove-anchor', 'form_action');
 					connectAuditPanel();
-					filterNoteList();
+					filterNoteList('homework');
 				}
 			};
 			xhttp.send(formData);
@@ -338,10 +252,11 @@ function connectNoteUpdateForm(id)
 	}
 }
 
-function getNoteUpdate(id) {
+function getNoteUpdate(id, action) {
 
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('note/update') ?>/' + id;
+	if (action) route += '/' + action;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -353,14 +268,46 @@ function getNoteUpdate(id) {
 			$('#form_action').show();
 			$(location).attr('href', '#form_action');
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
+
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectAuditPanel();
-			connectNoteUpdateForm(id);
+			$('#subject').focus();
 			
-			// Connect the delete anchor
-			$('#delete-anchor').click(function () {
-				getNoteDelete(id);
-			});
+			$('#input_target_date_group').hide();
+			if (action == 'update') {
+				CKEDITOR.replace('observations');
+				$('#type').change(function () { 
+					if ($('#type').val() == 'done-work') {
+						$('#input_target_date_group').hide();
+						$('#observations_group').css('background-color', 'LightGreen');
+					}
+					else if ($('#type').val() == 'todo-work') {
+						$('#input_target_date_group').show();
+						$('#observations_group').css('background-color', 'LightSalmon');
+					}
+					else {
+						$('#input_target_date_group').show();
+						$('#observations_group').css('background-color', 'LightBlue');
+					}
+				});
+			}
+
+			connectNoteUpdateForm(id);
+
+			if (id) {
+				$('#update-anchor').click(function () { getNoteUpdate(id, 'update'); });
+				$('#delete-anchor').click(function () { getNoteUpdate(id, 'delete'); });
+			}
+			else $('#add-anchor').click(function () { getNoteUpdate(id, 'add'); });
+
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
 <?php endif;?>
@@ -373,41 +320,96 @@ function getNoteUpdate(id) {
 	$('#note-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
 }
 
-function connectNoteDeleteForm(id)
+<?php 
+$properties = array();
+$properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['date'] = array('type' => 'date', 'mandatory' => true);
+$properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
+$properties['weight'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
+$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Evaluation', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectEvaluationUpdateForm(id, action)
 {
+	$('#input_date').datepicker();
 	var form = document.getElementById('ppit-form');
 	form.onsubmit = function(event) {
 		
 		event.preventDefault();
 
-		// Create a new FormData object.
-		var formData = new FormData();
-			
-		// Get the properties values
-		formData.append('status', 'deleted');
-		formData.append('update_time', $('#update_time').val());
+		// Check validity
+		var validity = true;
+		if (action != 'delete') validity = checkEvaluationUpdateProperties();
 
-		var xhttp = new XMLHttpRequest();
-		var route, target;
-		route = '<?php echo $this->url('note/delete') ?>/' + id;
-		target = 'form_action';
-		xhttp.open('POST', route, true);
-		// Set up a handler for when the request finishes.
-		xhttp.onload = function () {
-			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-				document.getElementById(target).innerHTML = xhttp.responseText;
-				connectRemoveIcon('remove-anchor', 'form_action');
-				filterNoteList();
+		if (validity) {
+
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			if (action == 'delete') {
+				formData.append('update_time', $('#update_time').val());
 			}
-		};
-		xhttp.send(formData);
+			else {
+				var accountNumber = $('#group-nb-account').val();
+				for (var i = 0; i < accountNumber; i++) {
+					account_id = $('#group-account_' + i).val();
+					formData.append('account_' + i, account_id);
+	
+					value = $('#input_value_' + account_id).val();
+					if (value != '') {
+						error = checkNumber(value, 0, 100);
+						if (error) {
+							renderElement('input_value_' + account_id, error);
+							validity = false;
+						}
+					    else { 
+							renderElement('input_value_' + account_id, null);
+							value = getNumber(value, 2);
+							$('#value_' + account_id).val(value);
+						}
+					}
+					
+					formData.append('value_' + account_id, value);
+					formData.append('assessment_' + account_id, $('#assessment_' + account_id).val());
+				}
+				formData.append('nb-account', accountNumber);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+					formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+			}
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('note/updateEvaluation') ?>/' + id;
+			if (action) route += '/' + action;
+			target = 'form_action';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					connectRemoveIcon('remove-anchor', 'form_action');
+					connectAuditPanel();
+					filterNoteList('evaluation');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
 	}
 }
 
-function getNoteDelete(id) {
+function getEvaluationUpdate(id, action) {
 
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('note/delete') ?>/' + id;
+	var route = '<?php echo $this->url('note/updateEvaluation') ?>/' + id;
+	if (action) route += '/' + action;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -417,9 +419,29 @@ function getNoteDelete(id) {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			$('#form_action').show();
+			$(location).attr('href', '#form_action');
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
+
 			connectRemoveIcon('remove-anchor', 'form_action');
-			connectNoteDeleteForm(id);
+			connectAuditPanel();
+			$('#subject').focus();
+
+			connectEvaluationUpdateForm(id, action);
+
+			if (id) {
+				$('#update-anchor').click(function () { getEvaluationUpdate(id, 'update'); });
+				$('#delete-anchor').click(function () { getEvaluationUpdate(id, 'delete'); });
+			}
+			else $('#add-anchor').click(function () { getEvaluationUpdate(id, 'add'); });
+
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
 <?php endif;?>
@@ -428,18 +450,11 @@ function getNoteDelete(id) {
 	xhttp.send();
 
 	// Highlight the clicked button (and only it in its class)
-	$('.detail-menu-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#delete-anchor').removeClass("btn-default").addClass("btn-primary");
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#note-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
 }
 
-function activateNote() {
-
-	// Load the search panel and highlight the menu entry
-	loadPanel('index_action', '<?php echo $this->url('note/search') ?>');
-	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
-	var noteAnchor;
-	noteAnchor = '#note-anchor';
-	$(noteAnchor).removeClass("btn-default").addClass("btn-primary");
+function activateNote(category) {
 
 	<?php
 	$todoTitle = (isset ($context->getConfig('note/search')['todoTitle']) ? $context->getConfig('note/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
@@ -447,20 +462,31 @@ function activateNote() {
 	$('#mode-text').text('<?php echo $todoTitle ?>');
 		
 	// Connect the search inputs
-	connectNoteSearchInputs();
+	connectNoteSearchInputs(category);
 	
-	getNoteList('?', 'school_period', 'ASC');
-	
-	$('#add-criteria').click(function () {
-		mode = $('#add-criteria').text();
-		if (mode == '<?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale()) ?>') {
-			$('#add-criteria').text('<?php echo $this->translate('Less criteria', 'ppit-core', $context->getLocale()) ?>');
-			$('#search-area').show();
-		}
-		else {
-			$('#add-criteria').text('<?php echo $this->translate('More criteria', 'ppit-core', $context->getLocale()) ?>');
-			$('#search-area').hide();
-		}
-	});
-	$('#search-area').hide();
+	getNoteList(category, '?', 'date', 'DESC');
+}
+
+function activateEvaluation() {
+
+	// Load the search panel and highlight the menu entry
+	loadPanel('index_action', '<?php echo $this->url('note/search', array('category' => 'evaluation')) ?>');
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	var evaluationAnchor;
+	evaluationAnchor = '#evaluation-anchor';
+	$(evaluationAnchor).removeClass("btn-default").addClass("btn-primary");
+
+	activateNote('evaluation');
+}
+
+function activateHomework() {
+
+	// Load the search panel and highlight the menu entry
+	loadPanel('index_action', '<?php echo $this->url('note/search', array('category' => 'homework')) ?>');
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	var homeworkAnchor;
+	homeworkAnchor = '#homework-anchor';
+	$(homeworkAnchor).removeClass("btn-default").addClass("btn-primary");
+
+	activateNote('homework');
 }

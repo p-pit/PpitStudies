@@ -6,11 +6,9 @@
 		<th align="center">
 	<?php 
 	if ($propertyId == 'type') $label = $this->translate('Type', 'ppit-core', $context->getLocale());
-	elseif ($propertyId == 'level') $label = $context->getConfig('student/property/level')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
-	elseif ($propertyId == 'school_year') $label = $context->getConfig('student/property/school_year')['labels'][$context->getLocale()];
-	elseif ($propertyId == 'school_period') $label = $context->getConfig('student/property/school_period')['labels'][$context->getLocale()];
-	elseif ($propertyId == 'specialty') $label = $context->getConfig('student/property/specialty')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -26,11 +24,17 @@
 	</tr>
 
 <?php foreach ($notes as $note) : ?>
+	<?php 
+	if ($note->type == 'done-work') $backgroundColor = 'LightGreen';
+	elseif ($note->type == 'todo-work') $backgroundColor = 'LightSalmon';
+	elseif ($note->type == 'event') $backgroundColor = 'LightBlue';
+	else $backgroundColor = null;
+	?>
 	
 	<tr>
 
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default btn-xs index-btn note-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $note->id ?>">
+			<button type="button" class="btn btn-default index-btn note-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $note->id ?>">
 				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
 			</button>
 		</td>
@@ -38,22 +42,16 @@
 	<?php foreach ($context->getConfig('note/list') as $propertyId => $rendering) : ?>
 	
 		<?php if ($propertyId == 'type') : ?>
-		<td><?php echo $context->getConfig('note')['types'][$note->type]['labels'][$context->getLocale()] ?></td>
+		<td <?php if ($backgroundColor) echo 'style="background-color: '.$backgroundColor.'"' ?>><?php echo $context->getConfig('note')['types'][$category][$note->type]['labels'][$context->getLocale()] ?></td>
 
-		<?php elseif ($propertyId == 'level') : ?>
-		<td><?php echo $context->getConfig('student/property/level')['modalities'][$note->level][$context->getLocale()] ?></td>
+		<?php elseif ($propertyId == 'class') : ?>
+		<td><?php echo $context->getConfig('student/property/class')['modalities'][$note->class][$context->getLocale()] ?></td>
 
 		<?php elseif ($propertyId == 'subject') : ?>
 		<td><?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
 
-		<?php elseif ($propertyId == 'school_year') : ?>
-		<td><?php echo $context->getConfig('student/property/school_year')['modalities'][$note->school_year][$context->getLocale()] ?></td>
-
-		<?php elseif ($propertyId == 'school_period') : ?>
-		<td><?php echo $context->getConfig('student/property/school_period')['modalities'][$note->school_period][$context->getLocale()] ?></td>
-
-		<?php elseif ($propertyId == 'specialty') : ?>
-		<td><?php echo $context->getConfig('student/property/specialty')['modalities'][$note->specialty][$context->getLocale()] ?></td>
+		<?php elseif ($propertyId == 'date') : ?>
+		<td><?php echo $context->decodeDate($note->date) ?></td>
 		
 		<?php endif;?>
 	<?php endforeach;?>
@@ -61,5 +59,11 @@
 	</tr>
 	
 <?php endforeach; ?>
+
+<?php if ($context->isDemoModeActive()) : ?>
+				<a style="align: right" class="tip" href="#" title="<?php echo $context->getConfig('demo')['note/list/'.$category][$context->getLocale()] ?>">
+				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+				</a>
+<?php endif;?>
 
 </table>

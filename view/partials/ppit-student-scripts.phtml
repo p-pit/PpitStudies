@@ -31,8 +31,8 @@ function getParams() {
 
 	<?php else : ?>
 
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
+	var prop_<?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	if (prop_<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + prop_<?php echo $propertyId ?> + '&'; todo = false; }
 	
 	<?php endif;?>
 
@@ -260,6 +260,7 @@ function connectNewsFlashTab(route, id) {
 
 // Load the detail panel
 function connectStudentTab(route) {
+	var isAbsenceOpen = false, isLatenessOpen = false, isEventOpen = true, isHomeworkOpen = true, isEvaluationOpen = true;
 
 	// Execute the ajax request
 	xhttp = new XMLHttpRequest();
@@ -271,6 +272,87 @@ function connectStudentTab(route) {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
+			
+			$('#absence-panel').hide(); 
+			$('#absence-button').click(function() { 
+				if (isAbsenceOpen) {
+					$('#absence-panel').hide(); 
+					$('#absence-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isAbsenceOpen = false;
+				}
+				else {
+					$('#absence-panel').show(); 
+					$('#absence-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isAbsenceOpen = true;
+				}
+			});
+
+			$('#lateness-panel').hide(); 
+			$('#lateness-button').click(function() { 
+				if (isLatenessOpen) {
+					$('#lateness-panel').hide(); 
+					$('#lateness-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isLatenessOpen = false;
+				}
+				else {
+					$('#lateness-panel').show(); 
+					$('#lateness-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isLatenessOpen = true;
+				}
+			});
+
+			$('#event-button').click(function() { 
+				if (isEventOpen) {
+					$('#event-panel').hide(); 
+					$('#event-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isEventOpen = false;
+				}
+				else {
+					$('#event-panel').show(); 
+					$('#event-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isEventOpen = true;
+				}
+			});
+
+			$('#homework-button').click(function() { 
+				if (isHomeworkOpen) {
+					$('#homework-panel').hide(); 
+					$('#homework-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isHomeworkOpen = false;
+				}
+				else {
+					$('#homework-panel').show(); 
+					$('#homework-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isHomeworkOpen = true;
+				}
+			});
+
+			$('#evaluation-button').click(function() { 
+				if (isEvaluationOpen) {
+					$('#evaluation-panel').hide(); 
+					$('#evaluation-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isEvaluationOpen = false;
+				}
+				else {
+					$('#evaluation-panel').show(); 
+					$('#evaluation-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isEvaluationOpen = true;
+				}
+			});
+
+			$('.report-button').click(function() { 
+				id = $(this).attr('id').split('_')[1];
+				if ($('#is-report-open_' + id).val() == 1) {
+					$('#report-panel_' + id).hide(); 
+					$('#report-button_' + id).removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					$('#is-report-open_' + id).val(0);
+				}
+				else {
+					$('#report-panel_' + id).show(); 
+					$('#report-button_' + id).removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					$('#is-report-open_' + id).val(1);
+				}
+			});
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
 <?php endif;?>
@@ -374,11 +456,10 @@ function getStudentDetail(id) {
 <?php 
 $properties = array();
 $properties['category'] = array('type' => 'select', 'mandatory' => true);
-$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['motive'] = array('type' => 'select', 'mandatory' => false);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
-//$properties['duration'] = array('type' => 'number', 'mandatory' => false, 'minValue' => 0, 'maxValue' => 999);
+$properties['duration'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 999);
 $properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['update_time'] = array('type' => 'hidden');
@@ -461,6 +542,7 @@ function getAdd<?php echo $typeId?>Absence() {
 				if ($('#category').val() == 'lateness') $('#input_duration_group').show();
 				else $('#input_duration_group').hide();
 			});
+			$('#subject').focus();
 
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
@@ -601,9 +683,169 @@ function getAddEvent(category) {
 
 <?php 
 $properties = array();
-$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
-$properties['level'] = array('type' => 'select', 'mandatory' => true);
-$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
+$properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['date'] = array('type' => 'date', 'mandatory' => true);
+$properties['type'] = array('type' => 'select', 'mandatory' => true);
+$properties['target_date'] = array('type' => 'date', 'mandatory' => true);
+$properties['observations'] = array('type' => 'ckeditor', 'mandatory' => true, 'maxSize' => 2047);
+$properties['document'] = array('type' => 'dropbox', 'mandatory' => false);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function connectAddNoteForm()
+{
+	$('#input_date').datepicker();
+	$('#input_target_date').datepicker();
+
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+
+		// Check validity
+		var validity = checkNoteUpdateProperties();
+
+		if (validity) {
+
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+			}
+			formData.append('nb-account', accountNumber);
+
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+	<?php if ($property['type'] == 'ckeditor') : ?>
+			formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
+	<?php else : ?>	
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+	<?php endif;?>
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addNote') ?>';
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+
+					CKEDITOR.replace('observations');
+			
+					if ($('#type').val() == 'done-work') {
+						$('#input_target_date_group').hide();
+						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['done-work'] ?>');
+					}
+					else if ($('#type').val() == 'todo-work') {
+						$('#input_target_date_group').show();
+						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['todo-work'] ?>');
+					}
+					else {
+						$('#input_target_date_group').show();
+						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['event'] ?>');
+					}
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}
+
+function getAddNote() {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addNote') ?>';
+	var formData = new FormData();
+
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('POST', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
+
+			connectAddNoteForm();
+			$('#school_year').focus();
+			
+			$('#input_target_date_group').hide();
+			CKEDITOR.replace('observations');
+			$('#type').change(function () { 
+				if ($('#type').val() == 'done-work') {
+					$('#input_target_date_group').hide();
+					$('#observations_group').css('background-color', 'LightGreen');
+				}
+				else if ($('#type').val() == 'todo-work') {
+					$('#input_target_date_group').show();
+					$('#observations_group').css('background-color', 'LightSalmon');
+				}
+				else {
+					$('#input_target_date_group').show();
+					$('#observations_group').css('background-color', 'LightBlue');
+				}
+			});
+<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+<?php endif;?>
+		}
+	}
+	xhttp.send(formData);
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#note-add-anchor').removeClass("btn-default").addClass("btn-primary");
+}
+
+///////////////////////////
+// student/addEvaluation //
+///////////////////////////
+
+<?php 
+$properties = array();
+$properties['class'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
 $properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
@@ -611,10 +853,10 @@ $properties['weight'] = array('type' => 'number', 'mandatory' => true, 'minValue
 $properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['update_time'] = array('type' => 'hidden');
-echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Evaluation', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAddNoteForm(type)
+function connectAddEvaluationForm(type)
 {
 	$('#input_date').datepicker();
 
@@ -624,7 +866,7 @@ function connectAddNoteForm(type)
 		event.preventDefault();
 
 		// Check validity
-		var validity = checkNoteUpdateProperties();
+		var validity = checkEvaluationUpdateProperties();
 
 		if (validity) {
 		
@@ -669,7 +911,7 @@ function connectAddNoteForm(type)
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('student/addNote') ?>/' + type;
+			route = '<?php echo $this->url('student/addEvaluation') ?>/' + type;
 			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -685,10 +927,10 @@ function connectAddNoteForm(type)
 	}
 }
 
-function getAddNote(type) {
+function getAddEvaluation(type) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addNote') ?>/' + type;
+	var route = '<?php echo $this->url('student/addEvaluation') ?>/' + type;
 	var formData = new FormData();
 
 	var criteriaNumber = $('#group-nb-criteria').val();
@@ -715,8 +957,17 @@ function getAddNote(type) {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
-			connectAddNoteForm(type);
-			$('#school_year').focus();
+			
+			$(function () {
+			    $('.tip').tooltip({
+			        content: function () {
+			            return $(this).prop('title');
+			        }
+			    });
+			});
+
+			connectAddEvaluationForm(type);
+			$('#subject').focus();
 <?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			}
 <?php endif;?>
@@ -1151,14 +1402,19 @@ function getStudentGroup() {
 			});
 <?php endforeach;?>
 
+			$('#note-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddNote(); 
+			});
+
 			$('#evaluation-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddNote('note'); 
+				getAddEvaluation('note'); 
 			});
 
 			$('#report-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddNote('report'); 
+				getAddEvaluation('report'); 
 			});
 
 			$('#progress-add-anchor').click(function () { 

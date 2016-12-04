@@ -17,6 +17,7 @@ use PpitMasterData\Model\Place;
 use PpitMasterData\Model\Product;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
+use PpitStudies\Model\NoteLink;
 use PpitStudies\Model\Progress;
 use PpitStudies\Model\StudentSportImport;
 use PpitStudies\ViewHelper\DocumentTemplate;
@@ -265,13 +266,22 @@ class StudentController extends AbstractActionController
     
     	$absence = Absence::instanciate($type);
     
+    	$request = $this->getRequest();
+    	$nbCriteria = $request->getPost('nb-criteria');
+    	$criteria = array();
+    	for ($i = 0; $i < $nbCriteria; $i++) {
+    		$criterionId = $request->getPost('criterion-id_'.$i);
+    		$criterionValue = $request->getPost('criterion_'.$i);
+    		$criteria[$criterionId] = $criterionValue;
+//    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
+    	}
+
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
     	$error = null;
     	$message = null;
-    
-    	$request = $this->getRequest();
+
     	if ($request->isPost()) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
@@ -296,7 +306,6 @@ class StudentController extends AbstractActionController
     			// Load the input data
     			$data = array();
     			$data['category'] = $request->getPost('category');
-    			$data['school_year'] = $request->getPost('school_year');
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
     			$data['date'] = $request->getPost('date');
@@ -440,13 +449,25 @@ class StudentController extends AbstractActionController
     	$type = $this->params()->fromRoute('type', null);
     
     	$note = Note::instanciate($type);
-    
+
+    	$documentList = array();
+    	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
+    		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+    		$dropbox = $context->getConfig('ppitDocument')['dropbox'];
+    		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
+    		try {
+    			$properties = $dropboxClient->getMetadataWithChildren($dropbox['folders']['schooling']);
+    			foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
+    		}
+    		catch(\Exception $e) {}
+    	}
+    	else $dropbox = null;
+
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
     	$error = null;
     	$message = null;
-    
     	$request = $this->getRequest();
     	if (!$request->isPost()) return $this->redirect()->toRoute('home');
     	$nbAccount = $request->getPost('nb-account');
@@ -462,6 +483,7 @@ class StudentController extends AbstractActionController
     		$criterionId = $request->getPost('criterion-id_'.$i);
     		$criterionValue = $request->getPost('criterion_'.$i);
    			$criteria[$criterionId] = $criterionValue;
+    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
     	}
 
     	if ($request->getPost('date')) {
@@ -470,58 +492,24 @@ class StudentController extends AbstractActionController
     
     		if ($csrfForm->isValid()) { // CSRF check
 
-    			// Load the input data
+    			// Load the note data
     			$data = array();
-    			$data['school_year'] = $request->getPost('school_year');
-    			$data['level'] = $request->getPost('level');
-    			$data['school_period'] = $request->getPost('school_period');
+    			$data['class'] = $request->getPost('class');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
-    			$data['reference_value'] = $request->getPost('reference_value');
-    			$data['weight'] = $request->getPost('weight');
+    			$data['type'] = $request->getPost('type');
+    			$data['target_date'] = $request->getPost('target_date');
     			$data['observations'] = $request->getPost('observations');
+    			$data['document'] = $request->getPost('document');
     			$data['comment'] = $request->getPost('comment');
 
-    			$nbCriteria = $request->getPost('nb-criteria');
-    			$data['criteria'] = array();
-    			for ($i = 0; $i < $nbCriteria; $i++) {
-    				$criterionId = $request->getPost('criterion-id_'.$i);
-    				$criterionValue = $request->getPost('criterion_'.$i);
-    				$data['criteria'][$criterionId] = $criterionValue;
-    			}
+    			$rc = $note->loadData($data);
+				if ($rc != 'OK') throw new \Exception('View error');
 
     			// Atomically save
     			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
-//    				foreach ($accounts as $account) {
-//    					$data['account_id'] = $account->id;
-//    					$data['value'] = $request->getPost('value_'.$account->id);
-    			    			
-    				if ($type == 'report') {
-    					$computedAverages = Note::computePeriodAverages($data['school_year'], $data['level'], $data['school_period'], $data['subject']);
-    				}
-    				$nbAccount = $request->getPost('nb-account');
-	    			$data['results'] = array();
-	    			for ($i = 0; $i < $nbAccount; $i++) {
-	    				$account = $accounts[$request->getPost('account_'.$i)];
-	    				$value = $request->getPost('value_'.$account->id);
-	    				if ($value == '') {
-	    					if (array_key_exists($account->id, $computedAverages)) {
-	    						$data['results'][$account->id]['note'] = $computedAverages[$account->id]['note'];
-	    						$data['results'][$account->id]['notes'] = $computedAverages[$account->id]['notes'];
-	    					}
-	    				}
-	    				else {
-	    					$data['results'][$account->id]['note'] = $value;
-	    				}
-	    				$assessment = $request->getPost('assessment_'.$account->id);
-	    				$data['results'][$account->id]['assessment'] = $assessment;
-	    			}
-
-	    			$rc = $note->loadData($data);
-    				if ($rc != 'OK') throw new \Exception('View error');
-    				
     				$rc = $note->add();
     				if ($rc != 'OK') {
     					$connection->rollback();
@@ -530,26 +518,12 @@ class StudentController extends AbstractActionController
     				// Save the note at the student level
     				else for ($i = 0; $i < $nbAccount; $i++) {
     					$account = $accounts[$request->getPost('account_'.$i)];
-    					$value = $request->getPost('value_'.$account->id);
-    					$data2 = array(
-    							'school_year' => $note->school_year,
-    							'school_period' => $note->school_period,
-    							'class' => $note->level,
-    							'date' => $note->date,
-								'subject' => $note->subject,
-								'reference_value' => $note->reference_value,
-								'weight' => $note->weight,
-								'average_note' => $note->average_note,
-								'higher_note' => $note->higher_note,
-								'lower_note' => $note->lower_note,
-								'note' => $data['results'][$account->id]['note'],
-								'assessment' => $data['results'][$account->id]['assessment'],
-    							'observations' => $note->observations,
-						);
-    					if (array_key_exists('notes', $data['results'][$account->id])) $data2['notes'] = $data['results'][$account->id]['notes'];
-						if ($type == 'note') $account->json_property_1[$note->id] = $data2;
-						else $account->json_property_2[$note->id] = $data2;
-						$account->update($account->update_time);
+    					$noteLink = NoteLink::instanciate($account->id, $note->id);
+    				   	$rc = $noteLink->add();
+	    				if ($rc != 'OK') {
+	    					$connection->rollback();
+	    					$error = $rc;
+	    				}
     				}
     				if (!$error) {
     					$connection->commit();
@@ -569,6 +543,8 @@ class StudentController extends AbstractActionController
     			'type' => $type,
     			'accounts' => $accounts,
     			'note' => $note,
+	    		'dropbox' => $dropbox,
+	    		'documentList' => $documentList,
     			'csrfForm' => $csrfForm,
     			'error' => $error,
     			'message' => $message
@@ -577,6 +553,144 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
+    public function addEvaluationAction() {
+    
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	// Retrieve the type
+    	$type = $this->params()->fromRoute('type', null);
+    
+    	$note = Note::instanciate($type);
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
+    	$request = $this->getRequest();
+    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
+    	$nbAccount = $request->getPost('nb-account');
+    	$accounts = array();
+    	for ($i = 0; $i < $nbAccount; $i++) {
+    		$account = Account::get($request->getPost('account_'.$i));
+    		$accounts[$account->id] = $account;
+    	}
+    	 
+    	$nbCriteria = $request->getPost('nb-criteria');
+    	$criteria = array();
+    	for ($i = 0; $i < $nbCriteria; $i++) {
+    		$criterionId = $request->getPost('criterion-id_'.$i);
+    		$criterionValue = $request->getPost('criterion_'.$i);
+    		$criteria[$criterionId] = $criterionValue;
+    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
+    	}
+    
+    	if ($request->getPost('date')) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the input data
+    			$data = array();
+    			$data['status'] = 'current';
+    			$data['class'] = $request->getPost('class');
+    			$data['subject'] = $request->getPost('subject');
+    			$data['date'] = $request->getPost('date');
+    			$data['reference_value'] = $request->getPost('reference_value');
+    			$data['weight'] = $request->getPost('weight');
+    			$data['observations'] = $request->getPost('observations');
+    			$data['comment'] = $request->getPost('comment');
+
+    			$nbCriteria = $request->getPost('nb-criteria');
+    			$data['criteria'] = array();
+    			for ($i = 0; $i < $nbCriteria; $i++) {
+    				$criterionId = $request->getPost('criterion-id_'.$i);
+    				$criterionValue = $request->getPost('criterion_'.$i);
+    				$data['criteria'][$criterionId] = $criterionValue;
+    			}
+    			$noteLinks = array();
+    			if ($type == 'report') {
+    				$computedAverages = Note::computePeriodAverages(/*$data['school_year'], */$data['class'], /*$data['school_period'], */$data['subject']);
+    			}
+    			$nbAccount = $request->getPost('nb-account');
+    			$noteSum = 0; $lowerNote = 999; $higherNote = 0;
+    			for ($i = 0; $i < $nbAccount; $i++) {
+    				$account = $accounts[$request->getPost('account_'.$i)];
+    				$noteLink = NoteLink::instanciate($account->id, null);
+    				$value = $request->getPost('value_'.$account->id);
+    				if ($value == '') {
+    					if (array_key_exists($account->id, $computedAverages)) {
+    						$value = $computedAverages[$account->id]['note'];
+    						$noteLink->audit = $computedAverages[$account->id]['notes'];
+    					}
+    				}
+    				$noteLink->value = $value;
+    				$noteLink->assessment = $request->getPost('assessment_'.$account->id);
+    				$noteSum += $value;
+    				if ($value < $lowerNote) $lowerNote = $value;
+    				if ($value > $higherNote) $higherNote = $value;
+    				if ($noteLink->value != '') $noteLinks[] = $noteLink;
+    			}
+
+    			if ($nbAccount > 0) {
+    				$data['average_note'] = round($noteSum / $nbAccount, 2);
+	    			$data['lower_note'] = $lowerNote;
+	    			$data['higher_note'] = $higherNote;
+	    			$rc = $note->loadData($data);
+	    			if ($rc == 'Integrity') throw new \Exception('View error');
+	    			if ($rc == 'Duplicate') $error = $rc;
+	    			else {
+		
+		    			// Atomically save
+		    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+		    			$connection->beginTransaction();
+		    			try {
+		    				$rc = $note->add();
+		    				if ($rc != 'OK') {
+		    					$connection->rollback();
+		    					$error = $rc;
+		    				}
+		    				// Save the note at the student level
+		    				else foreach ($noteLinks as $noteLink) {
+		    					$noteLink->note_id = $note->id;
+		    					$rc = $noteLink->add();
+			    				if ($rc != 'OK') {
+			    					$connection->rollback();
+			    					$error = $rc;
+			    					break;
+			    				}
+		    				}
+		    				if (!$error) {
+		    					$connection->commit();
+		    					$message = 'OK';
+		    				}
+		    			}
+		    			catch (\Exception $e) {
+		    				$connection->rollback();
+		    				throw $e;
+		    			}
+	    			}
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+    			'type' => $type,
+    			'accounts' => $accounts,
+    			'note' => $note,
+    			'csrfForm' => $csrfForm,
+    			'error' => $error,
+    			'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
     public function addNotificationAction() {
     
     	// Retrieve the context
@@ -822,12 +936,30 @@ class StudentController extends AbstractActionController
 		$account_id = (int) $this->params()->fromRoute('account_id');
 		$account = Account::get($account_id);
 		$category = $this->params()->fromRoute('category');
-		$absences = Absence::retrieveAll($category, $account_id);
+		$absLates = Absence::getList($category, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$absences = array();
+		$latenesss = array();
+		$cumulativeLateness = 0;
+		$absenceCount = 0;
+		foreach ($absLates as $absLate) {
+			if ($absLate->category == 'absence') {
+				$absences[] = $absLate;
+				$absenceCount++;
+			}
+			elseif ($absLate->category =='lateness') {
+				$latenesss[] = $absLate;
+				$cumulativeLateness += $absLate->duration;
+			}
+		}
+
 		$periods = array();
-		foreach($account->json_property_2 as $reportId => $report) {
-			$key = $report['school_year'].'.'.$report['school_period'];
-			if (!array_key_exists($key, $periods)) $periods[$key] = array();
-			$periods[$key][] = $report;
+		$notes = NoteLink::GetList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			if ($note->type == 'report') {
+				$key = $note->school_year.'.'.$note->school_period;
+				if (!array_key_exists($key, $periods)) $periods[$key] = array();
+				$periods[$key][] = $note;
+			}
 		}
 		krsort($periods);
 
@@ -844,7 +976,11 @@ class StudentController extends AbstractActionController
 				'category' => $category,
 				'type' => $account->property_1,
 				'account' => $account,
+				'notes' => $notes,
 				'absences' => $absences,
+				'absenceCount' => $absenceCount,
+				'latenesss' => $latenesss,
+				'cumulativeLateness' => $cumulativeLateness,
 				'events' => $events,
 				'periods' => $periods,
 				'notifications' => $notifications,

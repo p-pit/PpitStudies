@@ -96,6 +96,8 @@ class Absence implements InputFilterAwareInterface
     
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
+    	$context = Context::getCurrent();
+    	
     	$select = Absence::getTable()->getSelect()
     		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'), 'left')
     		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
@@ -106,13 +108,14 @@ class Absence implements InputFilterAwareInterface
 
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-    		$where->equalTo('date', date('Y-m-d'));
+    		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
     	}
     	else {
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-				if (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
+				if ($propertyId == 'name') $where->like('contact_community.name', '%'.$params[$propertyId].'%');
+    			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			else $where->like((($propertyId == 'type') ? 'student_absence.' : '').$propertyId, '%'.$params[$propertyId].'%');
     		}
@@ -121,13 +124,20 @@ class Absence implements InputFilterAwareInterface
     	$select->where($where);
 		$cursor = Absence::getTable()->selectWith($select);
 		$absences = array();
+		$currentRoles = $context->getRoles();
 		foreach ($cursor as $absence) {
-			$absence->properties = $absence->toArray();
-			$absences[] = $absence;
+			if (array_key_exists('manager', $currentRoles)
+			||	$absence->type == 'schooling' && array_key_exists('teacher', $currentRoles)
+			||	$absence->type == 'sport' && array_key_exists('coach', $currentRoles)
+			||	$absence->type == 'boarding_school' && array_key_exists('boarding_school_headmaster', $currentRoles))
+			{
+				$absence->properties = $absence->toArray();
+				$absences[] = $absence;
+			}
 		}
 		return $absences;
     }
-
+/*
     public static function retrieveAll($type, $account_id)
     {
     	$select = Absence::getTable()->getSelect()
@@ -141,7 +151,7 @@ class Absence implements InputFilterAwareInterface
     	$absences = array();
     	foreach ($cursor as $absence) $absences[] = $absence;
     	return $absences;
-    }
+    }*/
     
     public static function get($id, $column = 'id')
     {

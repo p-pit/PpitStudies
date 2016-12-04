@@ -1,3 +1,4 @@
+
 <div class="panel panel-default">
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
@@ -48,6 +49,7 @@
 		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
 		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
 		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
+		elseif ($propertyId == 'property_7') $property = $context->getConfig('student/property/class');
 		else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
 
 		$label = $property['labels'][$context->getLocale()];

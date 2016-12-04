@@ -109,14 +109,15 @@
 	<?php if ($propertyId == 'type') : ?> 
 
 		<div class="form-group">
-		<label class="col-sm-5 control-label"><?php echo $this->translate('Type', 'ppit-studies', $context->getLocale()) ?></label>
-		<div class="col-sm-7">
-			<select id="search_type" class="form-control">
-				<option value=""></option>
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Type', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select id="search_type" class="form-control">
+					<option value=""></option>
 		<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
-	    		<option value="<?php echo $typeId ?>"><?php echo $type['labels'][$context->getLocale()] ?></option>
+		    		<option value="<?php echo $typeId ?>"><?php echo $type['labels'][$context->getLocale()] ?></option>
 		<?php endforeach;?>
-	    	</select>
+		    	</select>
+			</div>
 		</div>
 
 	<?php else : ?>
