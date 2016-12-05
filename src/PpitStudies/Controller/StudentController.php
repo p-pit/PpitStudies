@@ -448,7 +448,7 @@ class StudentController extends AbstractActionController
     	// Retrieve the type
     	$type = $this->params()->fromRoute('type', null);
     
-    	$note = Note::instanciate($type);
+    	$note = Note::instanciate('homework');
 
     	$documentList = array();
     	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
@@ -494,6 +494,7 @@ class StudentController extends AbstractActionController
 
     			// Load the note data
     			$data = array();
+    			$data['category'] = 'homework';
     			$data['class'] = $request->getPost('class');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
