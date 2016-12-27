@@ -1,10 +1,10 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitContact\Model\Vcard;
 use PpitCore\Controller\Functions;
 use PpitCore\Model\Context;
 use PpitCore\Model\Link;
+use PpitCore\Model\Vcard;
 use Zend\Authentication\Adapter\DbTable as AuthAdapter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;

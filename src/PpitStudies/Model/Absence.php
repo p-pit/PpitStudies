@@ -1,8 +1,8 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitContact\Model\Community;
 use PpitCommitment\Model\Account;
+use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
 use Zend\Db\Sql\Where;
@@ -100,7 +100,7 @@ class Absence implements InputFilterAwareInterface
     	
     	$select = Absence::getTable()->getSelect()
     		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'), 'left')
-    		->join('contact_community', 'commitment_account.customer_community_id = contact_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
+    		->join('core_community', 'commitment_account.customer_community_id = core_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');
@@ -114,7 +114,7 @@ class Absence implements InputFilterAwareInterface
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-				if ($propertyId == 'name') $where->like('contact_community.name', '%'.$params[$propertyId].'%');
+				if ($propertyId == 'name') $where->like('core_community.name', '%'.$params[$propertyId].'%');
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			else $where->like((($propertyId == 'type') ? 'student_absence.' : '').$propertyId, '%'.$params[$propertyId].'%');

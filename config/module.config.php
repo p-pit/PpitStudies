@@ -907,16 +907,6 @@ return array(
 									'fr_FR' => 'Inscriptions',
 							),
 					),
-					'ppitUser' => array(
-//							'action' => 'User',
-							'route' => 'ppitUser/index',
-							'params' => array('type' => 'p-pit-studies'),
-							'urlParams' => array(),
-							'label' => array(
-									'en_US' => 'Users',
-									'fr_FR' => 'Utilisateurs',
-							),
-					),
 			),
 	),
 
@@ -1154,11 +1144,6 @@ return array(
 			'header' => array(),
 			'description' => array(
 					array(
-							'left' => array('en_US' => 'Description', 'fr_FR' => 'Description'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('description'),
-					),
-					array(
 							'left' => array('en_US' => 'Caption', 'fr_FR' => 'Libellé'),
 							'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Année scolaire %s %s'),
 							'params' => array('product_brand', 'caption'),
@@ -1176,6 +1161,27 @@ return array(
 			),
 	),
 
+	'commitment/proforma/p-pit-studies' => array(
+			'header' => array(),
+			'description' => array(
+					array(
+							'left' => array('en_US' => 'Caption', 'fr_FR' => 'Libellé'),
+							'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Année scolaire %s %s'),
+							'params' => array('product_brand', 'caption'),
+					),
+					array(
+							'left' => array('en_US' => 'Invoice date', 'fr_FR' => 'Date de facture'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('date'),
+					),
+					array(
+							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('customer_name'),
+					),
+			),
+	),
+		
 	'commitmentAccount/p-pit-studies' => array(
 			'statuses' => array(),
 			'properties' => array(
@@ -1557,10 +1563,7 @@ return array(
 	),
 
 	'student/property/place' => array(
-			'type' => 'select',
-			'modalities' => array(
-					'1' => array('en_US' => 'Main place', 'fr_FR' => 'Centre principal', 'address' => 'P-Pit SAS au capital de 10 000 € - R.C.S PARIS 804 199 594 - 14, rue Charles V - 75004 PARIS'),
-			),
+			'type' => 'table',
 			'labels' => array(
 					'en_US' => 'Center',
 					'fr_FR' => 'Centre',
@@ -2342,11 +2345,11 @@ return array(
 			'student/search/export' => array(
 					'en_US' => '
 <h4>List export</h4>
-<p>The list is exported as it is presented: defaulting list or list resulting of a multi-criteria search.</p>
+<p>The list can be exported to Excel as it is presented: defaulting list or list resulting of a multi-criteria search.</p>
 ',
 					'fr_FR' => '
 <h4>Export de la liste</h4>
-<p>La liste est exportée telle que présentée : liste par défaut ou liste résultant d\'une recherche multi-critère.</p>
+<p>La liste peut être exportée sous Excel telle que présentée : liste par défaut ou liste résultant d\'une recherche multi-critère.</p>
 ',
 			),
 			'student/list/ordering' => array(
@@ -2481,7 +2484,7 @@ return array(
 <p>Depuis le cahier de texte, vous accédez au détail. Vous pouvez corriger ou supprimer une entrée du cahier de texte.</p>
 ',
 			),
-			'commitmentAccount/index/p-pit-studies/title' => array(
+			'commitmentAccount/search/p-pit-studies/title' => array(
 					'en_US' => '
 <h4>Back-office</h4>
 <p>The <em>Subscriptions</em> tab is the place where you can add students and manage personal and parental data.</p>

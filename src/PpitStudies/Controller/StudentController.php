@@ -7,13 +7,13 @@ use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Event;
 use PpitCommitment\Model\Notification;
 use PpitCommitment\ViewHelper\SsmlAccountViewHelper;
-use PpitContact\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Credit;
 use PpitCore\Model\Instance;
-use PpitMasterData\Model\Place;
+use PpitCore\Model\Place;
+use PpitCore\Model\Vcard;
 use PpitMasterData\Model\Product;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
@@ -132,7 +132,7 @@ class StudentController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
-				'places' => Place::getList(),
+				'places' => Place::getList(array()),
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -157,7 +157,7 @@ class StudentController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'accounts' => $accounts,
-				'places' => Place::getList(),
+				'places' => Place::getList(array()),
     			'mode' => $mode,
     			'params' => $params,
     			'major' => $major,
@@ -251,6 +251,7 @@ class StudentController extends AbstractActionController
     			'type' => $type,
     			'criteria' => $criteria,
     			'accounts' => $accounts,
+    			'places' => Place::getList(array()),
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -1001,11 +1002,11 @@ class StudentController extends AbstractActionController
 		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
 		$logo = "<w:pict>\n";
 		$logo .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
-		$content = file_get_contents('public/logos/'.$context->getConfig('headerParams')['logo']);
+		$content = file_get_contents('public/logos/'.$context->getinstance()->caption.'/'.$context->getConfig('headerParams')['logo']);
 		$logo .= base64_encode($content);
 		$logo .= "\n</w:binData>\n";
 		$logo .= '<v:shape id="_x0000_i' . $noImage
-			   . '" type="#_x0000_t75" style="width:'.$context->getConfig('headerParams')['logo-width'].'pt;height:'.$context->getConfig('headerParams')['logo-height'].'pt">'."\n";
+			   . '" type="#_x0000_t75" style="width:'.($context->getConfig('headerParams')['logo-width']*2/3).'pt;height:'.($context->getConfig('headerParams')['logo-height']*2/3).'pt">'."\n";
 		$logo .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['logo'].'"/>';
 		$logo .= "</v:shape>\n</w:pict>\n";
 
@@ -1348,7 +1349,7 @@ class StudentController extends AbstractActionController
     		'caption' => $commitment->caption,
     		'sport' => $commitment->account->property_1,
     		'class' => $commitment->property_1.' '.$commitment->property_2,
-    		'place' => $context->getConfig('student/property/place')['modalities'][$commitment->account->place_id][$context->getLocale()],
+    		'place' => $commitment->account->place_caption,
     	);
     	
     	return $this->letter($template, $data);
@@ -1389,9 +1390,8 @@ class StudentController extends AbstractActionController
     	$commitment = Commitment::get($id);
 
     	$template = $context->getConfig('student/acknowledgement');
-
     	if ($commitment->account->contact_2) $invoicing_contact = $commitment->account->contact_2;
-    	elseif ($commitment->account->contact_3) $invoicing_contact = $commitment->account->contact_2;
+    	elseif ($commitment->account->contact_3) $invoicing_contact = $commitment->account->contact_3;
     	else $invoicing_contact = Vcard::instanciate();
 
     	$data = array(
@@ -1402,7 +1402,7 @@ class StudentController extends AbstractActionController
     			'adr_zip' => $invoicing_contact->adr_zip,
     			'adr_city' => $invoicing_contact->adr_city,
     			'adr_country' => $invoicing_contact->adr_country,
-    			'place' => $context->getConfig('student/property/place')['modalities'][$commitment->account->place_id][$context->getLocale()],
+    			'place' => $commitment->account->place_caption,
     			'date' => date('d/m/Y'),
     			'n_first' => $commitment->account->contact_1->n_first,
     			'n_last' => $commitment->account->contact_1->n_last,

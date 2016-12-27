@@ -57,11 +57,15 @@
 		$modalities = array();
 		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
 			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
-				$modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
+				if ($propertyId == 'place_id') $modalities[$modalityId] = $places[$modalityId]->caption;
+				else $modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
 			} 
 		}
 		else {
-			foreach ($property['modalities'] as $modalityId => $modality) {
+			if ($propertyId == 'place_id') foreach ($places as $place) {
+				$modalities[$place->id] = $place->caption;
+			} 
+			else foreach ($property['modalities'] as $modalityId => $modality) {
 				$modalities[$modalityId] = $modality[$context->getLocale()];
 			} 
 		}

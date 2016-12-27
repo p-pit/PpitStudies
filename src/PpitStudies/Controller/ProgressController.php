@@ -4,9 +4,9 @@ namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Notification;
-use PpitContact\Model\Vcard;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
+use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Progress;
 use PpitStudies\ViewHelper\SsmlProgressViewHelper;

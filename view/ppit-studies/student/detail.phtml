@@ -27,7 +27,17 @@ title="
 <?php endif;?>
 
 <!-- Photo -->
-		<div style="text-align: center"><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->contact_1_id)) ?>"/></div>
+		<div style="text-align: center">
+<?php if ($account->place->logo_href) : ?>
+			<a href="<?php echo $account->place->logo_href ?>" rel="follow" target="_blank">
+<?php endif;?>
+				<img height="60" src="<?php echo $this->basePath($account->place->logo_src) ?>" alt="<?php echo $context->getInstance()->caption ?> logo" />
+<?php if ($account->place->logo_href) : ?>
+			</a>
+<?php endif;?>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->contact_1_id)) ?>"/>
+		</div>
 
 		<div>&nbsp;</div>
 				

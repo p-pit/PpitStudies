@@ -1,11 +1,11 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitContact\Model\Community;
 use PpitContact\Model\Contract;
-use PpitContact\Model\Vcard;
+use PpitCore\Model\Community;
 use PpitCore\Model\Context;
-use PpitMasterData\Model\Place;
+use PpitCore\Model\Place;
+use PpitCore\Model\Vcard;
 use PpitOrder\Model\Order;
 use Zend\db\sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
@@ -228,10 +228,10 @@ class Student implements InputFilterAwareInterface
     	// Prepare the SQL request
     	$select = Student::getTable()->getSelect()
 	    	->join('contact_contract', 'student.contract_id = contact_contract.id', array('customer_community_id'), 'left')
-//	    	->join('contact_community', 'contact_contract.customer_community_id = contact_community.id', array('customer_name' => 'name'), 'left')
+//	    	->join('core_community', 'contact_contract.customer_community_id = core_community.id', array('customer_name' => 'name'), 'left')
 //	    	->join('order', 'student.order_id = order.id', array('status'), 'left')
-	    	->join('md_place', 'student.place_id = md_place.id', array('center_name' => 'name'), 'left')
-	    	->join('contact_vcard', 'student.student_contact_id = contact_vcard.id', array('n_fn', 'n_first', 'n_last', 'email', 'tel_cell', 'photo_link_id', 'adr_city', 'adr_state', 'adr_country', 'sex', 'birth_date', 'place_of_birth', 'nationality'), 'left');
+	    	->join('core_place', 'student.place_id = core_place.id', array('center_name' => 'name'), 'left')
+	    	->join('core_vcard', 'student.student_contact_id = core_vcard.id', array('n_fn', 'n_first', 'n_last', 'email', 'tel_cell', 'photo_link_id', 'adr_city', 'adr_state', 'adr_country', 'sex', 'birth_date', 'place_of_birth', 'nationality'), 'left');
 
     	if ($config['ppitStudies']['sportOption']) {
     		$select->join('student_sport', 'student.sport_option_id = student_sport.id', array('sport', 'category'), 'left');
@@ -242,7 +242,7 @@ class Student implements InputFilterAwareInterface
     	if ($mode == 'todo') {
     		 
     		$where->equalTo('status', 'new');
-    		$where->equalTo('place_id', $context->getPlace()->id);
+    		$where->equalTo('place_id', $context->getPlaceId);
 //    		$where->equalTo('school_year', $context->getConfig()['ppitStudies']['currentSchoolYear']);
     	}
     	else {
@@ -250,7 +250,7 @@ class Student implements InputFilterAwareInterface
     		// Set the filters
     		if (isset($params['customer_name'])) $where->like('customer_name', '%'.$params['customer_name'].'%');
     		if (isset($params['status'])) $where->like('status', '%'.$params['status'].'%');
-    		if (isset($params['center_name'])) $where->like('md_place.name', '%'.$params['center_name'].'%');
+    		if (isset($params['center_name'])) $where->like('core_place.name', '%'.$params['center_name'].'%');
     		if (isset($params['emergency_phone_1'])) $where->like('emergency_phone_1', '%'.$params['emergency_phone_1'].'%');
     		if (isset($params['emergency_phone_2'])) $where->like('emergency_phone_2', '%'.$params['emergency_phone_2'].'%');
     		if (isset($params['emergency_email'])) $where->like('emergency_email', '%'.$params['emergency_email'].'%');
@@ -559,7 +559,7 @@ class Student implements InputFilterAwareInterface
     		if (Student::getTable()->get($object->id, 'place_of_business_id')) return true;
     	}
         // Allow or not deleting a contact
-    	if (get_class($object) == 'PpitContact\Model\Vcard') {
+    	if (get_class($object) == 'PpitCore\Model\Vcard') {
     		if (Student::getTable()->get($object->id, 'student_contact_id')) return true;
     	}
     	return false;

@@ -21,7 +21,7 @@
 
 	</tr>
 
-<?php $sum = 0;
+<?php $i = 0; $sum = 0;
 foreach ($absences as $absence) : ?>
 	<?php $sum += $absence->duration; ?> 
 	
@@ -66,7 +66,7 @@ foreach ($absences as $absence) : ?>
 	
 	</tr>
 	
-<?php endforeach; ?>
+<?php $i++; endforeach; ?>
 	
 	<tr>
 		<td colspan="<?php echo count($context->getConfig('absence/list')) ?>" style="font-weight: bold; text-align:right"><?php echo $this->translate('Total lateness time', 'ppit-studies', $context->getLocale()) ?> (mn)</td>

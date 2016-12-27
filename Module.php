@@ -148,7 +148,7 @@ class Module
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new VcardImport());
-                    return new TableGateway('eleve_contact_vcard', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('eleve_core_vcard', $dbAdapter, null, $resultSetPrototype);
                 },
                 'PpitStudies\Model\BillImportTable' =>  function($sm) {
                     $tableGateway = $sm->get('BillImportTableGateway');

@@ -1,9 +1,9 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitContact\Model\VcardProperty;
 use PpitCore\Model\Context;
 use PpitCore\Model\Link;
+use PpitCore\Model\VcardProperty;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;

@@ -24,7 +24,7 @@
 
 	</tr>
 
-<?php foreach ($notifications as $notification) : ?>
+<?php $i = 0; foreach ($notifications as $notification) : ?>
 	
 	<input type="hidden" id="notification_<?php echo $i ?>" value="<?php echo $notification->id ?>" />
 	
@@ -79,6 +79,6 @@
 	
 	</tr>
 	
-<?php endforeach; ?>
+<?php $i++; endforeach; ?>
 
 </table>

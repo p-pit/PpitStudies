@@ -1,8 +1,8 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitContact\Model\Community;
 use PpitCommitment\Model\Account;
+use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
 use PpitStudies\Model\NoteLink;
@@ -212,7 +212,7 @@ class Note implements InputFilterAwareInterface
     	$note->links = array();
     	$select = NoteLink::getTable()->getSelect()
     				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
-    				->join('contact_community', 'contact_community.id = commitment_account.customer_community_id', array('name'), 'left')
+    				->join('core_community', 'core_community.id = commitment_account.customer_community_id', array('name'), 'left')
     				->where(array('note_id' => $id));
 		$cursor = NoteLink::getTable()->selectWith($select);
 		foreach($cursor as $noteLink) $note->links[] = $noteLink;

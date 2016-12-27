@@ -4,13 +4,12 @@ namespace PpitStudies\Model;
 use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Term;
-use PpitContact\Model\Community;
 use PpitContact\Model\Contract;
-use PpitContact\Model\Contact;
-use PpitContact\Model\Vcard;
+use PpitCore\Model\Community;
 use PpitCore\Model\Context;
+use PpitCore\Model\Vcard;
+use PpitCore\Model\Place;
 use PpitDocument\Model\Document;
-use PpitMasterData\Model\Place;
 use PpitMasterData\Model\Product;
 use PpitMasterData\Model\ProductOption;
 use PpitOrder\Model\Order;
@@ -371,7 +370,6 @@ class StudentSportImport implements InputFilterAwareInterface
     	foreach ($cursor as $userImport) {
     		if ($userImport->contact_id) {
 	    		$community = new Community;
-	    		$community->activation_date = '2016-09-01';
 	    		$community->last_credit_consumption_date = '2016-10-01';
 	    		$community->next_credit_consumption_date = '2016-11-01';
 	    		$community->status = 'new';
