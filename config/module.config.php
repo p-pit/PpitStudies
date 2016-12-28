@@ -2496,7 +2496,10 @@ return array(
 		<li>Product and service catalog</li>
 		<li>Invoicing and payment tracking</li>
 	</ul>
-</p>',
+</p>
+<p>As a default, all the accounts with a <em>Active</em> status are presented in the list.</p>
+<p>As soon as a criterion below is specified, the list switch in search mode.</p>					
+',
 					'fr_FR' => '
 <h4>Back-office</h4>
 <p>L\'entrée <em>Inscriptions</em> est le lieu où vous pouvez ajouter de nouveau élèves et gérer données personnelles et parentales.</p>
@@ -2508,7 +2511,76 @@ return array(
 		<li>Catalogue de produits et prestations</li>
 		<li>Facturation et suivi des paiements</li>
 	</ul>
-</p>',
+</p>
+<p>Par défaut, tous les comptes dont le statut est <em>Actif</em> sont présentés dans la liste.</p>
+<p>Dès lors qu\'un des critères ci-dessous est spécifié, le mode de recherche est automatiquement activé.</p>
+',
+			),
+			'commitmentAccount/list/p-pit-studies/add' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Ajout d\'un élève</h4>
+<p>Le bouton + permet d\'accéder à l\'ajout d\un nouvel élève.</p>
+<p>Les dossiers d\'inscription par année scolaire, destinés à la facturation, seront créés dans un second temps.</p>
+<p>On peut ainsi gérer un compte élève regroupant ces inscriptions successives.</p>
+',
+			),
+			'commitmentAccount/add/p-pit-studies' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Ajout d\'un élève</h4>
+<p>Lors de la création de la fiche élève les données principales sont renseignées.</p>
+	<ul>
+		<li>Identification</li>
+		<li>Données de contact, téléphone d\'urgence mentionné dans la liste et photo</li>
+		<li>période de validité du compte (seule la date d\'ouverture est obligatoire)</li>
+		<li>Le statut</li>
+		<li>Les données de gestion : centre, sport, classe et option d\'internat</li>
+	</ul>
+<p>Le statut <em>Actif</em> conditionne :
+	<ul>
+		<li>L\'affichage de l\'élève dans la liste par défaut</li>
+		<li>L\'accès aux fonctions pédagogiques de P-Pit Studies pour cet élève</p>
+	</ul>
+<p>Le statut <em>Nouveau</em> permet de gérer des élèves <em>prospects</em>.</p>
+',
+			),
+			'commitmentAccount/list/p-pit-studies/detail' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Détail d\'un élève</h4>
+<p>Le bouton zoom permet d\'accéder au détail d\'un élève et aux inscriptions associées.</p>
+',
+			),
+			'commitmentAccount/update/p-pit-studies' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Gestion des données de l\'élève</h4>
+<p>L\'accès à la fiche élève permet de consulter et éventuellement en rectifier les données.</p>
+<p>Il donne également accès aux onglets complémentaires de gestion des coordonnées du père, de la mère et le cas échéant d\'un autre représentant légal, ainsi que l\'onglet de gestion du compte de connexion parent/élève au site intranet.</p>
+<p>Il donne enfin un accès centralisé, en ajout ou modification, aux inscriptions annuelles pour l\'élève sélectionné.</p>
+',
+			),
+			'commitment/accountList/p-pit-studies/add' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Ajout d\'une inscription annuelle</h4>
+<p>Le bouton + permet l\'ajout d\une nouvelle inscription annuelle pour cet élève.</p>
+',
+			),
+			'commitment/accountList/p-pit-studies/documents' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Documents</h4>
+<p>Quatre documents pré-formatés sont disponibles au niveau du dossier d\'inscription annuelle :</p>
+	<ul>
+		<li>L\'accusé de réception</li>
+		<li>La confirmation d\'inscription</li>
+		<li>L\'engagement de prise en charge</li>
+		<li>L\'attestation scolaire</li>
+	</ul>
+<p>Ces documents sont générés au format Word et peuvent être complétés manuellement après téléchargement, par exemple si besoin d\'ajouter une mention spécifique.</p>
+',
 			),
 	),
 );
