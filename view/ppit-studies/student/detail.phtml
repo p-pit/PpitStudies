@@ -26,6 +26,19 @@ title="
 		</div>
 <?php endif;?>
 
+<!-- Banner -->
+		<div style="text-align: center">
+<?php if ($account->place->banner_href) : ?>
+			<a href="<?php echo $account->place->banner_href ?>" rel="follow" target="_blank">
+<?php endif;?>
+				<img width="100%" src="<?php echo $this->basePath($account->place->banner_src) ?>" alt="<?php echo $context->getInstance()->caption ?> banner" />
+<?php if ($account->place->banner_href) : ?>
+			</a>
+<?php endif;?>
+		</div>
+
+		<div>&nbsp;</div>
+
 <!-- Photo -->
 		<div style="text-align: center">
 <?php if ($account->place->logo_href) : ?>

@@ -1406,6 +1406,7 @@ return array(
 			'email' => array('mandatory' => false),
 			'adr_street' => array('mandatory' => false),
 			'adr_extended' => array('mandatory' => false),
+			'adr_post_office_box' => array('mandatory' => false),
 			'adr_zip' => array('mandatory' => false),
 			'adr_city' => array('mandatory' => false),
 			'adr_state' => array('mandatory' => false),
