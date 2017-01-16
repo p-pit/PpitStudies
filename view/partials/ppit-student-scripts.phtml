@@ -131,7 +131,7 @@ function getStudentList(params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -200,7 +200,7 @@ function getEvents(id) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -243,7 +243,7 @@ function connectNewsFlashTab(route, id) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -266,7 +266,7 @@ function connectStudentTab(route) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -376,7 +376,7 @@ function getStudentDetail(id) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -529,7 +529,7 @@ function getAdd<?php echo $typeId?>Absence() {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -657,7 +657,7 @@ function getAddEvent(category) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -793,7 +793,7 @@ function getAddNote() {
 
 	xhttp.open('POST', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -951,7 +951,7 @@ function getAddEvaluation(type) {
 
 	xhttp.open('POST', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -1142,7 +1142,7 @@ function getAddNotification(category) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -1260,7 +1260,7 @@ function getAddProgress(sport) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -1314,7 +1314,7 @@ function getStudentGroup() {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("POST", route, true);
 	xhttp.onreadystatechange = function() {
-			if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+			if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
