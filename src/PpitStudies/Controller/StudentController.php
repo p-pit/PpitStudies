@@ -992,21 +992,21 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 
-	public function letter($template, $data)
+	public function letter($template, $data, $logo_src, $logo_width, $logo_height)
 	{
 		// Retrieve the context
 		$context = Context::getCurrent();
-
+		
 		$noImage = 1; //on incrémentera pour chaque image différente
-		$extImage = explode(".",$context->getConfig('headerParams')['logo']);
+		$extImage = explode(".",$logo_src);
 		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
 		$logo = "<w:pict>\n";
 		$logo .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
-		$content = file_get_contents('public/logos/'.$context->getinstance()->caption.'/'.$context->getConfig('headerParams')['logo']);
+		$content = file_get_contents('public/'.$logo_src);
 		$logo .= base64_encode($content);
 		$logo .= "\n</w:binData>\n";
 		$logo .= '<v:shape id="_x0000_i' . $noImage
-			   . '" type="#_x0000_t75" style="width:'.($context->getConfig('headerParams')['logo-width']*2/3).'pt;height:'.($context->getConfig('headerParams')['logo-height']*2/3).'pt">'."\n";
+			   . '" type="#_x0000_t75" style="width:'.$logo_width.'pt;height:'.$logo_height.'pt">'."\n";
 		$logo .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['logo'].'"/>';
 		$logo .= "</v:shape>\n</w:pict>\n";
 
@@ -1352,7 +1352,18 @@ class StudentController extends AbstractActionController
     		'place' => $commitment->account->place_caption,
     	);
     	
-    	return $this->letter($template, $data);
+		$place = Place::get($commitment->account->place_id);
+		if ($place && $place->logo_src) {
+			$logo_src = $place->logo_src;
+			$logo_width = $place->logo_width*2/3;
+			$logo_height = $place->logo_height*2/3;
+		}
+    	else {
+    		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
+			$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
+			$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+    	}
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
     }
 
     public function certificateAction()
@@ -1409,7 +1420,18 @@ class StudentController extends AbstractActionController
     			'school_year' => $commitment->caption,
     	);
 
-    	return $this->letter($template, $data);
+    	$place = Place::get($commitment->account->place_id);
+    	if ($place && $place->logo_src) {
+    		$logo_src = $place->logo_src;
+    		$logo_width = $place->logo_width*2/3;
+    		$logo_height = $place->logo_height*2/3;
+    	}
+    	else {
+    		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
+    		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
+    		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+    	}
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
     }
 
     public function attestationAction()
@@ -1429,8 +1451,19 @@ class StudentController extends AbstractActionController
     			'school_level' => $commitment->property_1,
     			'date' => date('d/m/Y'),
     	);
-    
-    	return $this->letter($template, $data);
+
+    	$place = Place::get($commitment->account->place_id);
+    	if ($place && $place->logo_src) {
+    		$logo_src = $place->logo_src;
+    		$logo_width = $place->logo_width*2/3;
+    		$logo_height = $place->logo_height*2/3;
+    	}
+    	else {
+    		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
+    		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
+    		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+    	}
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
     }
     
     public function commitmentAction()
@@ -1453,7 +1486,18 @@ class StudentController extends AbstractActionController
     			'school_year' => $commitment->caption,
     			'school_level' => $commitment->property_1,
     	);
-    	
-    	return $this->letter($template, $data);
+
+    	$place = Place::get($commitment->account->place_id);
+    	if ($place && $place->logo_src) {
+    		$logo_src = $place->logo_src;
+    		$logo_width = $place->logo_width*2/3;
+    		$logo_height = $place->logo_height*2/3;
+    	}
+    	else {
+    		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
+    		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
+    		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+    	}
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
     }
 }
