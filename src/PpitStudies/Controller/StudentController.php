@@ -29,13 +29,14 @@ class StudentController extends AbstractActionController
     public function indexAction()
     {
     	$context = Context::getCurrent();
+    	$config = $context->getConfig();
 
     	if ($context->hasRole('student')) return $this->redirect()->toRoute('student/studentHome');
 
     	$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry');
 
-		if ($context->getInstanceId() == 0) $outOfStockCredits = false;
+		if ($config['isDemoAccountUpdatable'] || $context->getInstanceId() == 0) $outOfStockCredits = false;
 		elseif ($context->getConfig('credit')['unlimitedCredits']) $outOfStockCredits = false;
 		else {
 			$credit = Credit::get('p-pit-communities', 'type');
