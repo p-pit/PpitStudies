@@ -93,8 +93,10 @@
 <!-- Document -->
 		<div class="form-group" id="document_group">
 			<label class="col-sm-5 control-label"><?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>
+<?php if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) : ?>
 				<?php $dropbox = $context->getConfig('ppitDocument')['dropbox'] ?>
-				<a class="glyphicon glyphicon-paperclip" href="<?php echo $dropbox['root'].$dropbox['folders']['schooling'].'/'.$term->document ?>" title="<?php echo $this->translate('Attachment', 'ppit-document', $context->getLocale()) ?>" target=".blank"></a>
+				<a class="glyphicon glyphicon-paperclip" href="<?php echo $dropbox['root'].$dropbox['folders']['schooling'].'/'.$note->document ?>" title="<?php echo $this->translate('Attachment', 'ppit-document', $context->getLocale()) ?>" target=".blank"></a>
+<?php endif;?>
 			</label>
 			<div class="col-sm-7">
 				<select class="form-control" id="document" <?php if ($isDisabled) echo 'disabled="disabled"'?>>

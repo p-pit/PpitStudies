@@ -76,18 +76,20 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
 
-		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
+		$type = $this->params()->fromRoute('type', 'p-pit-studies');
+		
+		$menu = $context->getConfig('menus')[$type];
 		$currentEntry = $this->params()->fromQuery('entry');
 
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
     			'active' => 'application',
-    			'applicationId' => 'p-pit-studies',
-    			'applicationName' => 'P-Pit Studies',
+    			'applicationId' => $type,
+    			'applicationName' => $context->getConfig('ppitApplications')[$type]['labels'][$context->getLocale()],
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
-    			'type' => 'p-pit-studies',
+    			'type' => $type,
     	));
     }
 

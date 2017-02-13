@@ -515,7 +515,7 @@ return array(
 	       						'registrationIndex' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/registration-index',
+        										'route' => '/registration-index[/:type]',
         										'defaults' => array(
         												'action' => 'registrationIndex',
         										),
@@ -1416,17 +1416,6 @@ return array(
 	'commitmentAccount/register/p-pit-studies' => array(),
 	'commitment/accountList/p-pit-studies' => array(
 			'title' => array('en_US' => 'Registrations', 'fr_FR' => 'INSCRIPTIONS'),
-			'addRoute' => 'eleve/add',
-			'glyphicons' => array(
-					'eleve/eleve' => array(
-							'labels' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
-							'glyphicon' => 'glyphicon-edit',
-					),
-					'eleve/delete' => array(
-							'labels' => array('en_US' => 'Delete', 'fr_FR' => 'Supprimer'),
-							'glyphicon' => 'glyphicon-trash',
-					),
-			),
 			'properties' => array(
 					'caption' => 'text',
 					'property_1' => 'text',
