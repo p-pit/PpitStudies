@@ -84,8 +84,8 @@
 		<?php elseif ($rendering == 'photo') : ?>
 		<td>
 			<span class="info">
-				<img height="40" src="<?php echo $this->url('vcard/photo', array('id' => $account->contact_1_id)) ?>"/>
-				<span><img height="150" src="<?php echo $this->url('vcard/photo', array('id' => $account->contact_1_id)) ?>"/></span>
+				<img height="40" src="<?php echo $this->basePath('photos/'.(($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/>
+				<span><img height="150" src="<?php echo $this->basePath('photos/'.(($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/></span>
 			</span>
 		</td>
 

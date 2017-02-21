@@ -933,26 +933,6 @@ return array(
 	'ppitProduct/update/p-pit-studies' => array(),
 		
 	'commitment/p-pit-studies' => array(
-/*			'statuses' => array(
-					'new' => array(
-							'labels' => array(
-									'en_US' => 'To be approved',
-									'fr_FR' => 'A valider',
-							)
-					),
-					'confirmed' => array(
-							'labels' => array(
-									'en_US' => 'Confirmed',
-									'fr_FR' => 'Confirmé',
-							)
-					),
-					'settled' => array(
-							'labels' => array(
-									'en_US' => 'Settled',
-									'fr_FR' => 'Réglé',
-							)
-					),
-			),*/
 			'tax' => 'including',
 			'currencySymbol' => '€',
 			'properties' => array(
@@ -1258,8 +1238,8 @@ return array(
 					'opening_date' => array(
 							'type' => 'date',
 							'labels' => array(
-									'en_US' => 'Account opening date',
-									'fr_FR' => 'Date ouverture compte',
+									'en_US' => 'Subscription date',
+									'fr_FR' => 'Date d\'inscription',
 							),
 					),
 					'closing_date' => array(
@@ -1284,7 +1264,7 @@ return array(
 									'fr_FR' => 'Tél. urgence',
 							),
 					),
-					'property_3' => array(
+					'photo_link_id' => array(
 							'type' => 'photo',
 							'labels' => array(
 									'en_US' => '',
@@ -1323,6 +1303,20 @@ return array(
 									'fr_FR' => 'Classe',
 							),
 					),
+					'property_8' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Detection day date',
+									'fr_FR' => 'Date de journée de détection',
+							),
+					),
+					'contact_history' => array(
+							'type' => 'log',
+							'labels' => array(
+									'en_US' => 'Comment',
+									'fr_FR' => 'Commentaire',
+							),
+					),
 			),
 			'order' => 'n_fn',
 	),
@@ -1347,7 +1341,7 @@ return array(
 	),
 	'commitmentAccount/list/p-pit-studies' => array(
 			'property_1' => 'image',
-			'property_3' => 'photo',
+			'photo_link_id' => 'photo',
 			'n_fn' => 'text',
 			'property_2' => 'phone',
 	),
@@ -1386,16 +1380,17 @@ return array(
 			'status' => array('mandatory' => true),
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
-			'property_3' => array('mandatory' => false),
-			'email' => array('mandatory' => false),
-			'birth_date' => array('mandatory' => false),
+			'property_8' => array('mandatory' => false),
+			'property_1' => array('mandatory' => true),
 			'place_id' => array('mandatory' => true),
 			'opening_date' => array('mandatory' => true),
-			'closing_date' => array('mandatory' => false),
-			'property_1' => array('mandatory' => true),
+			'photo_link_id' => array('mandatory' => false),
+			'email' => array('mandatory' => false),
+			'birth_date' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
 			'property_7' => array('mandatory' => true),
 			'property_6' => array('mandatory' => false),
+			'contact_history' => array('mandatory' => false),
 	),
 	'commitmentAccount/updateContact/p-pit-studies' => array(
 			'n_title' => array('mandatory' => false),
