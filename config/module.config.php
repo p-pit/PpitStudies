@@ -936,6 +936,10 @@ return array(
 			'tax' => 'including',
 			'currencySymbol' => '€',
 			'properties' => array(
+					'type' => array(
+							'type' => 'repository',
+							'definition' => 'commitment/types',
+					),
 					'status' => array(
 							'type' => 'select',
 							'modalities' => array(
@@ -1098,6 +1102,7 @@ return array(
 			'title' => array('en_US' => 'Subscriptions', 'fr_FR' => 'Inscriptions'),
 			'todoTitle' => array('en_US' => 'active', 'fr_FR' => 'actifs'),
 			'main' => array(
+					'type' => 'select',
 					'status' => 'select',
 					'including_options_amount' => 'range',
 					'customer_name' => 'contains',
