@@ -419,14 +419,14 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
 	    		$user = new User;
 	    		$user->instance_id = $context->getInstanceId();
 	    		$user->username = $userImport->username;
-	    		$user->contact_id = $vcard->id;
+	    		$user->vcard_id = $vcard->id;
 	    		$user->state = 1;
 	    		$user->requires_notifications = 0;
 	    		$user->locale = 'fr_FR';
 	    		$user->add();
 	    		$userContact = UserContact::instanciate();
 	    		$userContact->user_id = $user->user_id;
-	    		$userContact->contact_id = $vcard->id;
+	    		$userContact->vcard_id = $vcard->id;
 	    		$userContact->add();
 
 	    		// Père

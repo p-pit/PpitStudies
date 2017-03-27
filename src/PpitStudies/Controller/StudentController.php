@@ -995,7 +995,7 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 
-	public function letter($template, $data, $logo_src, $logo_width, $logo_height)
+	public function letter($template, $data, $logo_src, $logo_width, $logo_height, $footer)
 	{
 		// Retrieve the context
 		$context = Context::getCurrent();
@@ -1016,7 +1016,8 @@ class StudentController extends AbstractActionController
 		$noImage = 2; //on incrémentera pour chaque image différente
 		$extImage = explode(".",$context->getConfig('headerParams')['footer-img']);
 		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
-		$footer = "<w:pict>\n";
+//		$footer = $context->getConfig('headerParams')['footer']['value'];
+/*		$footer = "<w:pict>\n";
 		$footer .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
 		$content = file_get_contents('public/logos/'.$context->getConfig('headerParams')['footer-img']);
 		$footer .= base64_encode($content);
@@ -1024,7 +1025,7 @@ class StudentController extends AbstractActionController
 		$footer .= '<v:shape id="_x0000_i' . $noImage
 		. '" type="#_x0000_t75" style="width:'.$context->getConfig('headerParams')['footer-width'].'pt;height:'.$context->getConfig('headerParams')['footer-height'].'pt">'."\n";
 		$footer .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['footer-img'].'"/>';
-		$footer .= "</v:shape>\n</w:pict>\n";
+		$footer .= "</v:shape>\n</w:pict>\n";*/
 		
 		DocumentTemplate::$letterTemplate = str_replace("@LOGO@", $logo, DocumentTemplate::$letterTemplate);
 		DocumentTemplate::$letterTemplate = str_replace("@FOOTER@", $footer, DocumentTemplate::$letterTemplate);
@@ -1366,7 +1367,8 @@ class StudentController extends AbstractActionController
 			$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
 			$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
     	}
-    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
+		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
     }
 
     public function certificateAction()
@@ -1434,7 +1436,8 @@ class StudentController extends AbstractActionController
     		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
     		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
     	}
-    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
+		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
     }
 
     public function attestationAction()
@@ -1466,7 +1469,8 @@ class StudentController extends AbstractActionController
     		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
     		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
     	}
-    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
+		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
     }
     
     public function commitmentAction()
@@ -1501,6 +1505,7 @@ class StudentController extends AbstractActionController
     		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
     		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
     	}
-    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height);
+		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
+    	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
     }
 }
