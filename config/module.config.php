@@ -2228,56 +2228,61 @@ return array(
 			'period' => 'select',
 	),
 
-	'ppitRoles' => array(
-			'PpitStudies' => array(
-					'manager' => array(
-							'show' => true,
-							'default' => true,
-							'labels' => array(
-									'en_US' => 'School life',
-									'fr_FR' => 'Vie scolaire',
+	'ppitApplications' => array(
+			'p-pit-studies' => array(
+    				'labels' => array('fr_FR' => 'P-Pit Studies', 'en_US' => 'Studies by 2Pit'),
+    				'route' => 'student',
+    				'params' => array(),
+					'roles' => array(
+							'manager' => array(
+									'show' => true,
+									'default' => true,
+									'labels' => array(
+											'en_US' => 'School life',
+											'fr_FR' => 'Vie scolaire',
+									),
 							),
-					),
-					'coach' => array(
-							'show' => true,
-							'labels' => array(
-									'en_US' => 'Coach',
-									'fr_FR' => 'Coach',
+							'coach' => array(
+									'show' => true,
+									'labels' => array(
+											'en_US' => 'Coach',
+											'fr_FR' => 'Coach',
+									),
 							),
-					),
-					'teacher' => array(
-							'show' => true,
-							'labels' => array(
-									'en_US' => 'Teacher',
-									'fr_FR' => 'Enseignant',
+							'teacher' => array(
+									'show' => true,
+									'labels' => array(
+											'en_US' => 'Teacher',
+											'fr_FR' => 'Enseignant',
+									),
 							),
-					),
-					'boarding_school_headmaster' => array(
-							'labels' => array(
-							'show' => true,
-									'en_US' => 'Boarding school headmaster',
-									'fr_FR' => 'Maître d\'internat',
+							'boarding_school_headmaster' => array(
+									'labels' => array(
+									'show' => true,
+											'en_US' => 'Boarding school headmaster',
+											'fr_FR' => 'Maître d\'internat',
+									),
 							),
-					),
-					'medical' => array(
-							'labels' => array(
-							'show' => true,
-									'en_US' => 'Medical',
-									'fr_FR' => 'Médical',
+							'medical' => array(
+									'labels' => array(
+									'show' => true,
+											'en_US' => 'Medical',
+											'fr_FR' => 'Médical',
+									),
 							),
-					),
-					'student' => array(
-							'labels' => array(
-							'show' => true,
-									'en_US' => 'Student',
-									'fr_FR' => 'Elève',
+							'student' => array(
+									'labels' => array(
+									'show' => true,
+											'en_US' => 'Student',
+											'fr_FR' => 'Elève',
+									),
 							),
-					),
-					'representative' => array(
-							'labels' => array(
-							'show' => true,
-									'en_US' => 'Legal representative',
-									'fr_FR' => 'Représentant légal',
+							'representative' => array(
+									'labels' => array(
+									'show' => true,
+											'en_US' => 'Legal representative',
+											'fr_FR' => 'Représentant légal',
+									),
 							),
 					),
 			),
