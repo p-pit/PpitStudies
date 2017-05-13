@@ -8,7 +8,7 @@ function getEvents() {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 		    $('#calendar').fullCalendar({
@@ -34,7 +34,7 @@ function getEvents() {
 				};
 				$('#calendar').fullCalendar('renderEvent', event, true);
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -50,12 +50,12 @@ function connectNewsFlashTab(route) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
 			getEvents();
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -71,11 +71,11 @@ function connectStudentTab(route) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -96,7 +96,7 @@ function getStudentDetail() {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('main-panel').innerHTML = xhttp.responseText;
@@ -132,7 +132,7 @@ function getStudentDetail() {
 				$('#medical-tab').addClass('active');
 				connectStudentTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'medical')) ?>');
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}

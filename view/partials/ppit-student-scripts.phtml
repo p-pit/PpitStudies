@@ -133,7 +133,7 @@ function getStudentList(params, major, dir) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('account-list-panel').innerHTML = xhttp.responseText;
@@ -184,7 +184,7 @@ function getStudentList(params, major, dir) {
 					getStudentDetail($(this).attr('id').split('_')[1]);
 				});
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -202,7 +202,7 @@ function getEvents(id) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 		    $('#calendar').fullCalendar({
@@ -228,7 +228,7 @@ function getEvents(id) {
 				};
 				$('#calendar').fullCalendar('renderEvent', event, true);
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -245,12 +245,12 @@ function connectNewsFlashTab(route, id) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
 			getEvents(id);
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -268,7 +268,7 @@ function connectStudentTab(route) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
@@ -353,7 +353,7 @@ function connectStudentTab(route) {
 					$('#is-report-open_' + id).val(1);
 				}
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -378,7 +378,7 @@ function getStudentDetail(id) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('form_action').innerHTML = xhttp.responseText;
@@ -437,7 +437,7 @@ function getStudentDetail(id) {
 				$('#medical-tab').addClass('active');
 				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/medical');
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -511,7 +511,7 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
 				}
@@ -531,7 +531,7 @@ function getAdd<?php echo $typeId?>Absence() {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
@@ -544,7 +544,7 @@ function getAdd<?php echo $typeId?>Absence() {
 			});
 			$('#subject').focus();
 
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -622,7 +622,7 @@ function connectAddEventForm(category)
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
 				}
@@ -659,13 +659,13 @@ function getAddEvent(category) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
 			connectAddEventForm(category);
 			$('#subject').focus();
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -743,7 +743,7 @@ function connectAddNoteForm()
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
 
@@ -795,7 +795,7 @@ function getAddNote() {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
@@ -827,7 +827,7 @@ function getAddNote() {
 					$('#observations_group').css('background-color', 'LightBlue');
 				}
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -916,7 +916,7 @@ function connectAddEvaluationForm(type)
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
 				}
@@ -953,7 +953,7 @@ function getAddEvaluation(type) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
@@ -968,7 +968,7 @@ function getAddEvaluation(type) {
 
 			connectAddEvaluationForm(type);
 			$('#subject').focus();
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -1021,7 +1021,7 @@ function uploadImage()
 	xhttp.open('POST', route, true);
 	// Set up a handler for when the request finishes.
 	xhttp.onload = function () {
-		if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 			document.getElementById('image-preview').innerHTML = xhttp.responseText;
 			$('.image-select').each(function () {
 				$(this).click(function () {
@@ -1105,7 +1105,7 @@ function connectAddNotificationForm(category)
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
 					CKEDITOR.replace('content');
@@ -1144,7 +1144,7 @@ function getAddNotification(category) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
@@ -1174,7 +1174,7 @@ function getAddNotification(category) {
 				$('.image-select').css('border-style', 'none');
 				$('#image_src').val('');
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -1241,7 +1241,7 @@ function connectAddProgressForm(sport)
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 //					filterProgressList();
 					$('.index-btn').removeClass('btn-primary').addClass('btn-default');
@@ -1262,12 +1262,12 @@ function getAddProgress(sport) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
 			connectAddProgressForm(sport);
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -1316,7 +1316,7 @@ function getStudentGroup() {
 	xhttp.onreadystatechange = function() {
 			if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 
@@ -1421,7 +1421,7 @@ function getStudentGroup() {
 				$('#grouped-action-panel').show();
 				getAddProgress(sport); 
 			});
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			}
 	<?php endif;?>
 		}

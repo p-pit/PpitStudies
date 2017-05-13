@@ -143,7 +143,7 @@ function getNoteList(category, params, major, dir) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('note-list-panel').innerHTML = xhttp.responseText;
@@ -170,7 +170,7 @@ function getNoteList(category, params, major, dir) {
 					else if (category == 'evaluation') getEvaluationUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -239,7 +239,7 @@ function connectNoteUpdateForm(id)
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					connectRemoveIcon('remove-anchor', 'form_action');
 					connectAuditPanel();
@@ -262,7 +262,7 @@ function getNoteUpdate(id, action) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			$('#form_action').show();
@@ -308,7 +308,7 @@ function getNoteUpdate(id, action) {
 			}
 			else $('#add-anchor').click(function () { getNoteUpdate(id, 'add'); });
 
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -392,7 +392,7 @@ function connectEvaluationUpdateForm(id, action)
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					connectRemoveIcon('remove-anchor', 'form_action');
 					connectAuditPanel();
@@ -415,7 +415,7 @@ function getEvaluationUpdate(id, action) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			$('#form_action').show();
@@ -442,7 +442,7 @@ function getEvaluationUpdate(id, action) {
 			}
 			else $('#add-anchor').click(function () { getEvaluationUpdate(id, 'add'); });
 
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}

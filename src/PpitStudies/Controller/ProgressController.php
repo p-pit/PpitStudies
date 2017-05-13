@@ -6,6 +6,7 @@ use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
+use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Progress;
@@ -19,6 +20,7 @@ class ProgressController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
+    	$place = Place::getTable()->transGet($context->getPlaceId());
 
 		$type = $this->params()->fromRoute('type');
 		if (!$type) {
@@ -43,6 +45,7 @@ class ProgressController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'place' => $place,
     			'type' => $type,
     			'applicationId' => 'p-pit-studies',
     			'applicationName' => 'P-Pit Studies',

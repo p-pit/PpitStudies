@@ -218,7 +218,7 @@ function getNotificationList(params, major, dir) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('notification-list-panel').innerHTML = xhttp.responseText;
@@ -236,7 +236,7 @@ function getNotificationList(params, major, dir) {
 					getNotificationUpdate($(this).attr('id').split('_')[1]);
 				});
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -280,7 +280,7 @@ function uploadImage()
 	xhttp.open('POST', route, true);
 	// Set up a handler for when the request finishes.
 	xhttp.onload = function () {
-		if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 			document.getElementById('image-preview').innerHTML = xhttp.responseText;
 			$('.image-select').each(function () {
 				$(this).click(function () {
@@ -384,7 +384,7 @@ function connectNotificationUpdateForm(id)
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					connectRemoveIcon('remove-anchor', 'form_action');
 					connectAuditPanel();
@@ -408,7 +408,7 @@ function getNotificationUpdate(id) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			$('#form_action').show();
@@ -437,7 +437,7 @@ function getNotificationUpdate(id) {
 			$('#delete-anchor').click(function () {
 				getNotificationDelete(id);
 			});
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
@@ -470,7 +470,7 @@ function connectNotificationDeleteForm(id)
 		xhttp.open('POST', route, true);
 		// Set up a handler for when the request finishes.
 		xhttp.onload = function () {
-			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 				document.getElementById(target).innerHTML = xhttp.responseText;
 				connectRemoveIcon('remove-anchor', 'form_action');
 				filterNotificationList();
@@ -489,14 +489,14 @@ function getNotificationDelete(id) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
-	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			$('#form_action').show();
 			document.getElementById('form_action').innerHTML = xhttp.responseText;			
 			connectRemoveIcon('remove-anchor', 'form_action');
 			connectNotificationDeleteForm(id);
-<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+<?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}

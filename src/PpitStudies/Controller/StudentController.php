@@ -30,6 +30,7 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
+    	$place = Place::getTable()->transGet($context->getPlaceId());
 
     	if ($context->hasRole('student')) return $this->redirect()->toRoute('student/studentHome');
 
@@ -47,6 +48,7 @@ class StudentController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'place' => $place,
     			'applicationId' => 'p-pit-studies',
     			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
@@ -59,11 +61,13 @@ class StudentController extends AbstractActionController
 	public function studentHomeAction()
     {
     	$context = Context::getCurrent();
+		$place = Place::get($context->getPlaceId());
     	$account_id = Account::get($context->getCommunityId(), 'customer_community_id')->id;
 
      	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+     			'place' => $place,
     			'applicationId' => 'p-pit-studies',
     			'applicationName' => 'P-Pit Studies',
      			'active' => 'application',
@@ -75,7 +79,8 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-
+		$place = Place::get($context->getPlaceId());
+		
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
 		
 		$menu = $context->getConfig('menus')[$type];
@@ -84,6 +89,7 @@ class StudentController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'place' => $place,
     			'active' => 'application',
     			'applicationId' => $type,
     			'applicationName' => $context->getConfig('ppitApplications')[$type]['labels'][$context->getLocale()],

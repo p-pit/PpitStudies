@@ -6,6 +6,7 @@ use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Event;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
+use PpitCore\Model\Place;
 use PpitCore\Form\CsrfForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -17,6 +18,7 @@ class EventController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
+    	$place = Place::getTable()->transGet($context->getPlaceId());
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry', 'event');
@@ -24,6 +26,7 @@ class EventController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'place' => $place,
     			'applicationId' => 'p-pit-studies',
     			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',

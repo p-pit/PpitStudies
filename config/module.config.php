@@ -16,17 +16,6 @@ return array(
  
     'router' => array(
         'routes' => array(
-            'index' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'PpitStudies\Controller',
-                        'controller' => 'Student',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
         	'absence' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -1225,11 +1214,186 @@ return array(
 									'fr_FR' => 'Email',
 							),
 					),
+					'address' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Address',
+									'fr_FR' => 'Adresse',
+							),
+					),
 					'birth_date' => array(
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Birth date',
 									'fr_FR' => 'Date de naissance',
+							),
+					),
+					'n_title_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father title',
+									'fr_FR' => 'Titre père',
+							),
+					),
+					'n_first_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father first name',
+									'fr_FR' => 'Prénom père',
+							),
+					),
+					'n_last_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father last name',
+									'fr_FR' => 'Nom famille père',
+							),
+					),
+					'n_fn_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father name',
+									'fr_FR' => 'Nom père',
+							),
+					),
+					'email_2' => array(
+							'type' => 'email',
+							'labels' => array(
+									'en_US' => 'Father email',
+									'fr_FR' => 'Email père',
+							),
+					),
+					'tel_work_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father phone',
+									'fr_FR' => 'Téléphone père',
+							),
+					),
+					'tel_cell_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father cell',
+									'fr_FR' => 'Portable père',
+							),
+					),
+					'address_2' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father address',
+									'fr_FR' => 'Adresse père',
+							),
+					),
+					'n_title_3' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Mother title',
+									'fr_FR' => 'Titre mère',
+							),
+					),
+					'n_first_3' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Mother first name',
+									'fr_FR' => 'Prénom mère',
+							),
+					),
+					'n_last_3' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Mother last name',
+									'fr_FR' => 'Nom famille mère',
+							),
+					),
+					'n_fn_3' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Mother name',
+									'fr_FR' => 'Nom mère',
+							),
+					),
+					'email_3' => array(
+							'type' => 'email',
+							'labels' => array(
+									'en_US' => 'Mother email',
+									'fr_FR' => 'Email mère',
+							),
+					),
+					'tel_work_3' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Mother phone',
+									'fr_FR' => 'Téléphone mère',
+							),
+					),
+					'tel_cell_3' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Mother cell',
+									'fr_FR' => 'Portable mère',
+							),
+					),
+					'address_3' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Mother address',
+									'fr_FR' => 'Adresse mère',
+							),
+					),
+					'n_title_4' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Legal repr. title',
+									'fr_FR' => 'Titre repr. légal',
+							),
+					),
+					'n_first_4' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Legal repr. first name',
+									'fr_FR' => 'Prénom repr. légal',
+							),
+					),
+					'n_last_4' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Legal repr. last name',
+									'fr_FR' => 'Nom famille repr. légal',
+							),
+					),
+					'n_fn_4' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Legal repr. name',
+									'fr_FR' => 'Nom repr. légal',
+							),
+					),
+					'email_4' => array(
+							'type' => 'email',
+							'labels' => array(
+									'en_US' => 'Legal repr. email',
+									'fr_FR' => 'Email repr. légal',
+							),
+					),
+					'tel_work_4' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Legal repr. phone',
+									'fr_FR' => 'Téléphone repr. légal',
+							),
+					),
+					'tel_cell_4' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Legal repr. cell',
+									'fr_FR' => 'Portable repr. légal',
+							),
+					),
+					'address_4' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Legal repr. address',
+									'fr_FR' => 'Adresse repr. légal',
 							),
 					),
 					'place_id' => array(
@@ -1412,6 +1576,47 @@ return array(
 			'adr_state' => array('mandatory' => false),
 			'adr_country' => array('mandatory' => false),
 			'locale' => array('mandatory' => true),
+	),
+	'commitmentAccount/export/p-pit-studies' => array(
+			'status' => array('mandatory' => true),
+			'n_first' => array('mandatory' => true),
+			'n_last' => array('mandatory' => true),
+			'property_8' => array('mandatory' => false),
+			'property_1' => array('mandatory' => true),
+			'place_id' => array('mandatory' => true),
+			'opening_date' => array('mandatory' => true),
+			'email' => array('mandatory' => false),
+			'address' => array('mandatory' => false),
+			'birth_date' => array('mandatory' => false),
+			'property_2' => array('mandatory' => false),
+			'property_7' => array('mandatory' => true),
+			'property_6' => array('mandatory' => false),
+
+			'n_title_2' => array('mandatory' => false),
+			'n_first_2' => array('mandatory' => true),
+			'n_last_2' => array('mandatory' => true),
+			'tel_work_2' => array('mandatory' => false),
+			'tel_cell_2' => array('mandatory' => false),
+			'email_2' => array('mandatory' => false),
+			'address_2' => array('mandatory' => false),
+				
+			'n_title_3' => array('mandatory' => false),
+			'n_first_3' => array('mandatory' => true),
+			'n_last_3' => array('mandatory' => true),
+			'tel_work_3' => array('mandatory' => false),
+			'tel_cell_3' => array('mandatory' => false),
+			'email_3' => array('mandatory' => false),
+			'address_3' => array('mandatory' => false),
+
+			'n_title_4' => array('mandatory' => false),
+			'n_first_4' => array('mandatory' => true),
+			'n_last_4' => array('mandatory' => true),
+			'tel_work_4' => array('mandatory' => false),
+			'tel_cell_4' => array('mandatory' => false),
+			'email_4' => array('mandatory' => false),
+			'address_4' => array('mandatory' => false),
+				
+//			'contact_history' => array('mandatory' => false),
 	),
 	'commitmentAccount/register/p-pit-studies' => array(),
 	'commitment/accountList/p-pit-studies' => array(
@@ -2288,11 +2493,11 @@ return array(
 			),
 	),
 
-	'contact/perimeters' => array(
+	'perimeters' => array(
 			'p-pit-studies' => array(
-					'student/property/place' => null,
-					'student/property/discipline' => null,
-					'student/property/level' => null,
+//					'studies_place' => 'student/property/place',
+					'studies_discipline' => 'student/property/discipline',
+					'studies_level' => 'student/property/level',
 			),
 	),
 		

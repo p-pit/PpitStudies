@@ -6,6 +6,7 @@ use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
+use PpitCore\Model\Place;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
@@ -18,6 +19,7 @@ class NoteController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
+    	$place = Place::getTable()->transGet($context->getPlaceId());
 		$community_id = (int) $context->getCommunityId();
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
@@ -28,6 +30,7 @@ class NoteController extends AbstractActionController
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
+    			'place' => $place,
     			'applicationId' => 'p-pit-studies',
     			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
