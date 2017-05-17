@@ -9,7 +9,7 @@ use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Vcard;
 use PpitCore\Model\Place;
-use PpitDocument\Model\Document;
+use PpitCore\Model\Document;
 use PpitMasterData\Model\Product;
 use PpitMasterData\Model\ProductOption;
 use PpitOrder\Model\Order;
