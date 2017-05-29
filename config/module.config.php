@@ -2496,8 +2496,8 @@ return array(
 	'perimeters' => array(
 			'p-pit-studies' => array(
 //					'studies_place' => 'student/property/place',
-					'studies_discipline' => 'student/property/discipline',
-					'studies_level' => 'student/property/level',
+/*					'studies_discipline' => 'student/property/discipline',
+					'studies_level' => 'student/property/level',*/
 			),
 	),
 		
