@@ -79,7 +79,7 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-		$place = Place::get($context->getPlaceId());
+		$place = Place::getTable()->transGet($context->getPlaceId());
 
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
 		
@@ -95,6 +95,7 @@ class StudentController extends AbstractActionController
     			'applicationName' => $context->getConfig('ppitApplications')[$type]['labels'][$context->getLocale()],
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
+    			'entry' => 'account',
     			'type' => $type,
     	));
     }

@@ -1162,7 +1162,9 @@ return array(
 					'status' => array(
 							'type' => 'select',
 							'modalities' => array(
-									'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+									'new' => array('en_US' => 'Hot', 'fr_FR' => 'Chaud'),
+									'warm' => array('en_US' => 'Warm', 'fr_FR' => 'Tiède'),
+									'cold' => array('en_US' => 'Cold', 'fr_FR' => 'Froid'),
 									'active' => array('en_US' => 'Active', 'fr_FR' => 'Actif'),
 									'inactive' => array('en_US' => 'Inactive', 'fr_FR' => 'Inactif'),
 									'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
@@ -1418,6 +1420,17 @@ return array(
 									'fr_FR' => 'Date fermeture compte',
 							),
 					),
+					'callback_date' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Callback date',
+									'fr_FR' => 'Date de rappel',
+							),
+					),
+					'origine' => array(
+							'type' => 'repository',
+							'definition' => 'commitmentAccount/property/origine',
+					),
 					'property_1' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/discipline',
@@ -1429,8 +1442,8 @@ return array(
 					'property_2' => array(
 							'type' => 'input',
 							'labels' => array(
-									'en_US' => 'Emergency phone',
-									'fr_FR' => 'Tél. urgence',
+									'en_US' => 'Phone',
+									'fr_FR' => 'Téléphone',
 							),
 					),
 					'photo_link_id' => array(
@@ -1489,23 +1502,23 @@ return array(
 			),
 			'order' => 'n_fn',
 	),
+		
 	'commitmentAccount/index/p-pit-studies' => array(
 			'title' => array('en_US' => 'P-PIT Commitments', 'fr_FR' => 'P-PIT Engagements'),
 	),
 	'commitmentAccount/search/p-pit-studies' => array(
 			'title' => array('en_US' => 'Students', 'fr_FR' => 'Eleves'),
-			'todoTitle' => array('en_US' => 'registered', 'fr_FR' => 'inscrits'),
+			'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
 			'main' => array(
-					'status' => 'select',
 					'place_id' => 'select',
+					'callback_date' => 'range',
+					'origine' => 'contains',
 					'property_1' => 'select',
 					'property_7' => 'select',
 					'property_6' => 'select',
 					'customer_name' => 'contains',
 			),
 			'more' => array(
-					'opening_date' => 'range',
-					'closing_date' => 'range',
 			),
 	),
 	'commitmentAccount/list/p-pit-studies' => array(
@@ -1547,17 +1560,19 @@ return array(
 	),
 	'commitmentAccount/update/p-pit-studies' => array(
 			'status' => array('mandatory' => true),
+			'callback_date' => array('mandatory' => false),
+			'origine' => array('mandatory' => false),
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
-			'property_8' => array('mandatory' => false),
-			'property_1' => array('mandatory' => true),
-			'place_id' => array('mandatory' => true),
-			'opening_date' => array('mandatory' => true),
-			'photo_link_id' => array('mandatory' => false),
 			'email' => array('mandatory' => false),
-			'birth_date' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
-			'property_7' => array('mandatory' => true),
+			'property_8' => array('mandatory' => false),
+			'property_1' => array('mandatory' => false),
+			'place_id' => array('mandatory' => false),
+//			'opening_date' => array('mandatory' => false),
+			'photo_link_id' => array('mandatory' => false),
+			'birth_date' => array('mandatory' => false),
+			'property_7' => array('mandatory' => false),
 			'property_6' => array('mandatory' => false),
 			'contact_history' => array('mandatory' => false),
 	),
@@ -1579,6 +1594,8 @@ return array(
 	),
 	'commitmentAccount/export/p-pit-studies' => array(
 			'status' => array('mandatory' => true),
+			'callback_date' => array('mandatory' => false),
+			'origine' => array('mandatory' => false),
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
 			'property_8' => array('mandatory' => false),
@@ -1618,7 +1635,24 @@ return array(
 				
 //			'contact_history' => array('mandatory' => false),
 	),
-	'commitmentAccount/register/p-pit-studies' => array(),
+	'commitmentAccount/register/p-pit-studies' => array(
+			'title' => array(
+					'en_US' => 'Subscribe:',
+					'fr_FR' => 'S\'enregistrer :'),
+			'text' => array(
+					'en_US' => 'With these few informations, will answer better to your request',
+					'fr_FR' => 'Avec ces quelques informations, nous pourrons mieux vous répondre'),
+			'properties' => array(
+					'n_first' => array('mandatory' => true),
+					'n_last' => array('mandatory' => true),
+					'email' => array('mandatory' => true),
+					'property_2' => array('mandatory' => true),
+					'property_8' => array('mandatory' => false),
+					'property_1' => array('mandatory' => true),
+					'place_id' => array('mandatory' => true),
+					'birth_date' => array('mandatory' => false),
+			),
+	),
 	'commitment/accountList/p-pit-studies' => array(
 			'title' => array('en_US' => 'Registrations', 'fr_FR' => 'INSCRIPTIONS'),
 			'properties' => array(
