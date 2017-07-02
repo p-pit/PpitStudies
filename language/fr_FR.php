@@ -119,6 +119,7 @@
 		'Sport-studies' => 'Sport-études',
 		'Sport-studies records' => 'Dossiers sport-études',
 		'Student' => 'Elève',
+		'Student file' => 'Dossier étudiant',
 		'Student home page' => "Page d'accueil de l'élève",
 		'Student note' => 'Note de l\'élève',
 		'Stretching checkup' => 'Bilan étirements',

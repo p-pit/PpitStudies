@@ -187,10 +187,12 @@ class Note implements InputFilterAwareInterface
 		$select->where($where);
     	$cursor = NoteLink::getTable()->selectWith($select);
     	$periodNotes = array();
+    	$periodCategoryNotes = array();
     	foreach ($cursor as $noteLink) {
 	    	$periodNotes[$noteLink->account_id][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+	    	$periodCategoryNotes[$noteLink->account_id][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
     	}
-    	$averages = array();
+        $categoryAverages = array();
     	foreach ($periodNotes as $account_id => $notes) {
     		$average = 0;
     		$globalWeight = 0;
@@ -200,10 +202,24 @@ class Note implements InputFilterAwareInterface
     		}
     		if ($globalWeight != 0) {
     			$average /= $globalWeight;
-	    		$averages[$account_id] = array('note' => $average, 'notes' => $notes);
+	    		$categoryAverages[$account_id]['global'] = array('note' => $average, 'notes' => $notes);
     		}
     	}
-    	return $averages;
+    	foreach ($periodCategoryNotes as $account_id => $categories) {
+    		foreach ($categories as $categoryId => $notes) {
+	    		$average = 0;
+	    		$globalWeight = 0;
+	    		foreach ($notes as $note) {
+	    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
+	    			$globalWeight += $note['weight'];
+	    		}
+	    		if ($globalWeight != 0) {
+	    			$average /= $globalWeight;
+		    		$categoryAverages[$account_id][$categoryId] = array('note' => $average, 'notes' => $notes);
+	    		}
+    		}
+    	}
+    	return $categoryAverages;
     }
 
     public static function get($id, $column = 'id')
@@ -252,7 +268,7 @@ class Note implements InputFilterAwareInterface
 		}
         if (array_key_exists('level', $data)) {
 	    	$this->level = trim(strip_tags($data['level']));
-		    if (!$this->level || strlen($this->level) > 255) return 'Integrity';
+		    if (strlen($this->level) > 255) return 'Integrity';
 		}
        	if (array_key_exists('class', $data)) {
 	    	$this->class = trim(strip_tags($data['class']));

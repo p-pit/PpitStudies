@@ -634,7 +634,19 @@ return array(
         										),
         								),
         						),
-	       						'letter' => array(
+		        				'downloadReport' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/download-report[/:account_id]',
+		        								'constraints' => array(
+		        										'account_id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'downloadReport',
+		        								),
+		        						),
+		        				),
+			       				'letter' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/letter[/:template][/:id]',
@@ -763,6 +775,7 @@ return array(
 				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
 				array('route' => 'student/import', 'roles' => array('admin')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
+				array('route' => 'student/downloadReport', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/update', 'roles' => array('business_owner')),
 				array('route' => 'student/letter', 'roles' => array('manager')),
 				array('route' => 'student/confirmation', 'roles' => array('manager')),
@@ -1454,19 +1467,17 @@ return array(
 							),
 					),
 					'property_4' => array(
-							'type' => 'repository',
-							'definition' => 'student/property/level',
+							'type' => 'input',
 							'labels' => array(
-									'en_US' => 'Class',
-									'fr_FR' => 'Classe',
+									'en_US' => 'Languages',
+									'fr_FR' => 'Langues',
 							),
 					),
 					'property_5' => array(
-							'type' => 'repository',
-							'definition' => 'student/property/specialty',
+							'type' => 'input',
 							'labels' => array(
-									'en_US' => 'Specialty',
-									'fr_FR' => 'Spécialité',
+									'en_US' => 'Options',
+									'fr_FR' => 'Options',
 							),
 					),
 					'property_6' => array(
@@ -1490,6 +1501,13 @@ return array(
 							'labels' => array(
 									'en_US' => 'Detection day date',
 									'fr_FR' => 'Date de journée de détection',
+							),
+					),
+					'property_9' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Sport referent',
+									'fr_FR' => 'Référent sportif',
 							),
 					),
 					'contact_history' => array(
@@ -1568,11 +1586,14 @@ return array(
 			'property_2' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
 			'property_1' => array('mandatory' => false),
+			'property_9' => array('mandatory' => false),
 			'place_id' => array('mandatory' => false),
 //			'opening_date' => array('mandatory' => false),
 			'photo_link_id' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
 			'property_7' => array('mandatory' => false),
+			'property_4' => array('mandatory' => false),
+			'property_5' => array('mandatory' => false),
 			'property_6' => array('mandatory' => false),
 			'contact_history' => array('mandatory' => false),
 	),
@@ -1852,12 +1873,12 @@ return array(
 					'4e' => array('fr_FR' => '4e', 'level' => '4e'),
 					'3e' => array('fr_FR' => '3e', 'level' => '3e'),
 					'2nde' => array('fr_FR' => '2nde', 'level' => '2nde'),
-					'1ère S' => array('fr_FR' => '1ère S', 'level' => '1ère', 'specialty' => 'S'),
-					'1ère ES' => array('fr_FR' => '1ère ES', 'level' => '1ère', 'specialty' => 'ES'),
-					'1ère STMG' => array('fr_FR' => '1ère STMG', 'level' => '1ère', 'specialty' => 'STMG'),
-					'Term. S' => array('fr_FR' => 'Term. S', 'level' => 'Term.', 'specialty' => 'S'),
-					'Term. ES' => array('fr_FR' => 'Term. ES', 'level' => 'Term.', 'specialty' => 'ES'),
-					'Term. STMG' => array('fr_FR' => 'Term. STMG', 'level' => 'Term.', 'specialty' => 'STMG'),
+					'1ereS' => array('fr_FR' => '1ère S', 'level' => '1ère', 'specialty' => 'S'),
+					'1ereES' => array('fr_FR' => '1ère ES', 'level' => '1ère', 'specialty' => 'ES'),
+					'1ereSTMG' => array('fr_FR' => '1ère STMG', 'level' => '1ère', 'specialty' => 'STMG'),
+					'termS' => array('fr_FR' => 'Term. S', 'level' => 'Term.', 'specialty' => 'S'),
+					'termES' => array('fr_FR' => 'Term. ES', 'level' => 'Term.', 'specialty' => 'ES'),
+					'termSTMG' => array('fr_FR' => 'Term. STMG', 'level' => 'Term.', 'specialty' => 'STMG'),
 			),
 			'labels' => array(
 					'en_US' => 'Class',
@@ -1904,16 +1925,35 @@ return array(
 			),
 	),
 
+	'student/property/evaluationCategory' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'cned' => array( 'en_US' => 'CNED', 'fr_FR' => 'CNED'),
+					'assessment' => array( 'en_US' => 'Assessment', 'fr_FR' => 'Contrôle'),
+					'homework' => array('en_US' => 'Homework', 'fr_FR' => 'Devoirs maison'),
+					'oral-test' => array('en_US' => 'Oral test', 'fr_FR' => 'Interrogation orale'),
+					'written-test' => array('en_US' => 'Written test', 'fr_FR' => 'Interrogation écrite'),
+					'participation' => array('en_US' => 'Participation', 'fr_FR' => 'Participation'),
+			),
+			'labels' => array(
+					'en_US' => 'Evaluation category',
+					'fr_FR' => 'Catégorie d\'évaluation',
+			),
+	),
+		
 	'student/property/school_subject' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'french' => array('en_US' => 'French', 'fr_FR' => 'Français'),
+					'french' => array( 'en_US' => 'French', 'fr_FR' => 'Français'),
+					'philosophy' => array( 'en_US' => 'Philosophy', 'fr_FR' => 'Philosophie'),
 					'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
 					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
 					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
-					'll1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
-					'll2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
-					'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
+					'english' => array('en_US' => 'English', 'fr_FR' => 'Anglais'),
+					'spanish' => array('en_US' => 'Spanish', 'fr_FR' => 'Espagnol'),
+					'marketing' => array('en_US' => 'Marketing', 'fr_FR' => 'Marketing'),
+					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
+					'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie / Droit'),
 					'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
 			),
 			'labels' => array(
@@ -2054,7 +2094,125 @@ return array(
 			'signature1' => array('text' => 'Thierry DERKX', 'params' => array()),
 			'signature3' => array('text' => 'Directeur', 'params' => array()),
 	),
-		
+
+	'student/report' => array(
+			
+			'header' => array(
+					array(
+							'format' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('customer_name'),
+					),
+			),
+			
+			'description' => array(
+					array(
+							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('customer_name'),
+					),
+					array(
+							'left' => array('en_US' => 'Class', 'fr_FR' => 'Classe'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('property_7'),
+					),
+					array(
+							'left' => array('en_US' => 'Languages', 'fr_FR' => 'Langues'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('property_4'),
+					),
+					array(
+							'left' => array('en_US' => 'Options', 'fr_FR' => 'Options'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('property_5'),
+					),
+					array(
+							'left' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('property_1'),
+					),
+					array(
+							'left' => array('en_US' => 'Référent sportif', 'fr_FR' => 'Sport referent'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('property_9'),
+					),
+			),
+
+			'detailHeader' => array(
+					'html' => '
+<table class="table note-report">
+	<tr>
+		<th rowspan="2" style="width: 15%%">%s</th>
+		<th rowspan="2" style="width: 10%%">%s</th>
+		<th rowspan="2" style="width: 10%%">%s</th>
+		<th colspan="3" style="width: 24%%">%s</th>
+	   	<th rowspan="2" colspan="2" style="width: 41%%">%s</th>
+	</tr>
+    <tr>
+    	<th style="width: 8%%">%s</th>
+	   	<th style="width: 8%%">%s</th>
+		<th style="width: 8%%">%s</th>
+    </tr>
+%s
+</table>',
+					'params' => array(
+							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
+							array('en_US' => 'Weight', 'fr_FR' => 'Coef.'),
+							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
+							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
+							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
+							array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
+							array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
+							array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
+							'rows' => null,
+					),
+			),
+
+			'detailRow' => array(
+					'html' => '
+<tr %s>
+	<td style="width: 15%%">%s<br><span style="font-weight: normal">%s</span></td>
+	<td style="width: 10%%" align="right">%s</td>
+	<td style="width: 10%%; font-size: 1.2em; font-weight: bold" align="right">%s</td>
+	<td style="width: 8%%" align="right">%s</td>
+	<td style="width: 8%%" align="right">%s</td>
+	<td style="width: 8%%" align="right">%s</td>
+	<td style="width: 16%%; font-size: 0.8em" align="right">%s</td>
+	<td style="width: 25%%">%s</td>
+</tr>',
+					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
+			),
+				
+			'pdfDetailStyle' => '
+<style>
+table.note-report {
+	font-size: 1em;
+	border: 1px solid gray;
+}
+table.note-report th {
+	color: #FFF;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: center;
+	border: 1px solid gray;
+	background-color: #006169;
+}
+
+table.note-report td {
+	color: #666;
+	border: 1px solid gray;
+}
+
+table.note-report td.subject {
+	font-weight: bold;
+}
+
+table.note-report tr.period {
+	background-color:#DDD;
+}
+</style>
+',
+	),
+
 	'absence' => array(
 			'types' => array(
 					'sport' => array(
@@ -2256,7 +2414,7 @@ return array(
 			'subject' => 'select',
 			'date' => 'date',
 	),
-	
+/*	
 	'note/update' => array(
 			'types' => array(
 					'schooling' => array(
@@ -2273,7 +2431,7 @@ return array(
 							),
 					),
 			),
-	),
+	),*/
 
 	'progress/Basketball' => array(
 			'criteria' => array(

@@ -14,6 +14,7 @@ use PpitCore\Model\Credit;
 use PpitCore\Model\Instance;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
+use PpitCommitment\ViewHelper\PpitPDF;
 use PpitMasterData\Model\Product;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
@@ -21,6 +22,7 @@ use PpitStudies\Model\NoteLink;
 use PpitStudies\Model\Progress;
 use PpitStudies\Model\StudentSportImport;
 use PpitStudies\ViewHelper\DocumentTemplate;
+use PpitStudies\ViewHelper\PdfReportViewHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -609,13 +611,13 @@ class StudentController extends AbstractActionController
     			$data = array();
     			$data['status'] = 'current';
     			$data['class'] = $request->getPost('class');
+    			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
     			$data['reference_value'] = $request->getPost('reference_value');
     			$data['weight'] = $request->getPost('weight');
     			$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
-
     			$nbCriteria = $request->getPost('nb-criteria');
     			$data['criteria'] = array();
     			for ($i = 0; $i < $nbCriteria; $i++) {
@@ -635,11 +637,15 @@ class StudentController extends AbstractActionController
     				$value = $request->getPost('value_'.$account->id);
     				if ($value == '') {
     					if (array_key_exists($account->id, $computedAverages)) {
-    						$value = $computedAverages[$account->id]['note'];
-    						$noteLink->audit = $computedAverages[$account->id]['notes'];
+    						$value = $computedAverages[$account->id]['global']['note'];
+    						$noteLink->audit = $computedAverages[$account->id]['global']['notes'];
     					}
     				}
     				$noteLink->value = $value;
+    				$noteLink->distribution = array();
+    				foreach ($computedAverages[$account->id] as $categoryId => $category) {
+    					$noteLink->distribution[$categoryId] = $category['note'];
+    				}
     				$noteLink->assessment = $request->getPost('assessment_'.$account->id);
     				$noteSum += $value;
     				if ($value < $lowerNote) $lowerNote = $value;
@@ -974,7 +980,7 @@ class StudentController extends AbstractActionController
 			}
 		}
 		krsort($periods);
-
+		
 		$events = Event::retrieveComing('p-pit-studies', $category, $account_id);
 		$notifications = Notification::retrieveCurrents('p-pit-studies', $category, $account_id);
 		
@@ -1000,6 +1006,61 @@ class StudentController extends AbstractActionController
 		));
 		$view->setTerminal(true);
 		return $view;
+	}
+
+	public function downloadReportAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+		$account->properties = $account->getProperties();
+		if ($account->contact_1_status == 'main') $addressee = $account->contact_1;
+		elseif ($account->contact_2_status == 'main') $addressee = $account->contact_2;
+		elseif ($account->contact_3_status == 'main') $addressee = $account->contact_3;
+		elseif ($account->contact_4_status == 'main') $addressee = $account->contact_4;
+		elseif ($account->contact_5_status == 'main') $addressee = $account->contact_5;
+		
+		$place = Place::get($account->place_id);
+		
+		$category = $this->params()->fromRoute('category');
+		$absLates = Absence::getList($category, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$absences = array();
+		$latenesss = array();
+		$cumulativeLateness = 0;
+		$absenceCount = 0;
+		foreach ($absLates as $absLate) {
+			if ($absLate->category == 'absence') {
+				$absences[] = $absLate;
+				$absenceCount++;
+			}
+			elseif ($absLate->category =='lateness') {
+				$latenesss[] = $absLate;
+				$cumulativeLateness += $absLate->duration;
+			}
+		}
+	
+		$periods = array();
+		$notes = NoteLink::GetList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			if ($note->type == 'report') {
+				$key = $note->school_year.'.'.$note->school_period;
+				if (!array_key_exists($key, $periods)) $periods[$key] = array();
+				$periods[$key][] = $note;
+			}
+		}
+		krsort($periods);
+
+    	// create new PDF document
+    	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, current($periods));
+    	
+    	// Close and output PDF document
+    	// This method has several options, check the source code documentation for more information.
+    	$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->customer_name.'.pdf', 'I');
+    	return $this->response;
 	}
 
 	public function letter($template, $data, $logo_src, $logo_width, $logo_height, $footer)

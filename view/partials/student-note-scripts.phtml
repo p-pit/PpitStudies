@@ -196,6 +196,7 @@ function connectAuditPanel()
 <?php 
 $properties = array();
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['level'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
 $properties['type'] = array('type' => 'select', 'mandatory' => true);
@@ -323,6 +324,7 @@ function getNoteUpdate(id, action) {
 <?php 
 $properties = array();
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['level'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
 $properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);

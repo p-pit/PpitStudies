@@ -183,6 +183,7 @@ class NoteController extends AbstractActionController
     			// Load the input data
     			$data = array();
     			$data['class'] = $request->getPost('class');
+    			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
     			$data['type'] = $request->getPost('type');
@@ -261,6 +262,7 @@ class NoteController extends AbstractActionController
     			$data = array();
     			$data['status'] = 'current';
     			$data['class'] = $request->getPost('class');
+    			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
     			$data['reference_value'] = $request->getPost('reference_value');
@@ -277,8 +279,8 @@ class NoteController extends AbstractActionController
     				$value = $request->getPost('value_'.$noteLink->account_id);
     				if ($note->type == 'report' && $value == '') {
     					if (array_key_exists($noteLink->account_id, $computedAverages)) {
-    						$value = $computedAverages[$noteLink->account_id]['note'];
-    						$noteLink->audit = $computedAverages[$noteLink->account_id]['notes'];
+    						$value = $computedAverages[$noteLink->account_id]['global']['note'];
+    						$noteLink->audit = $computedAverages[$noteLink->account_id]['global']['notes'];
     					}
     				}
     				$noteLink->value = $value;

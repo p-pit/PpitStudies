@@ -391,27 +391,19 @@ function getStudentDetail(id) {
 			    });
 			});
 
-<?php if ($context->hasRole('manager')) : ?>
 			connectNewsFlashTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/news_flash', id);
 			$('#news_flash-tab').addClass('active');
-<?php elseif ($context->hasRole('manager') || $context->hasRole('coach')) : ?>
-			connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/sport');
-			$('#sport-tab').addClass('active');
-<?php elseif ($context->hasRole('manager') || $context->hasRole('teacher')) : ?>
-			$('#schooling-tab').addClass('active');
-			connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/schooling');
-<?php elseif ($context->hasRole('manager') || $context->hasRole('boarding_school_master')) : ?>
-			connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/boarding_school');
-			$('#boarding-school-tab').addClass('active');
-<?php elseif ($context->hasRole('manager') || $context->hasRole('medical')) : ?>
-			connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/medical');
-			$('#medical-tab').addClass('active');
-<?php endif;?>
 			
 			$('#news_flash-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#news_flash-tab').addClass('active');
 				connectNewsFlashTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/news_flash', id);
+			});
+			
+			$('#file-tab').click(function () {
+				$('.student-tab').removeClass('active');
+				$('#file-tab').addClass('active');
+				connectStudentTab('<?php echo $this->url('document/list') ?>/' + '1849', id);
 			});
 
 			$('#sport-tab').click(function () {
@@ -846,6 +838,7 @@ function getAddNote() {
 <?php 
 $properties = array();
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['level'] = array('type' => 'select', 'mandatory' => false);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
 $properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);

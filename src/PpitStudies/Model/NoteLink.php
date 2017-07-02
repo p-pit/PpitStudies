@@ -17,6 +17,7 @@ class NoteLink implements InputFilterAwareInterface
     public $account_id;
     public $note_id;
     public $value;
+    public $distribution;
     public $assessment;
     public $audit;
     public $update_time;
@@ -58,6 +59,7 @@ class NoteLink implements InputFilterAwareInterface
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->note_id = (isset($data['note_id'])) ? $data['note_id'] : null;
         $this->value = (isset($data['value'])) ? $data['value'] : null;
+        $this->distribution = (isset($data['distribution'])) ? json_decode($data['distribution'], true) : array();
         $this->assessment = (isset($data['assessment'])) ? $data['assessment'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         
@@ -90,6 +92,7 @@ class NoteLink implements InputFilterAwareInterface
     	$data['account_id'] = (int) $this->account_id;
     	$data['note_id'] = (int) $this->note_id;
     	$data['value'] =  $this->value;
+    	$data['distribution'] =  json_encode($this->distribution);
     	$data['assessment'] = $this->assessment;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
 		return $data;
@@ -147,6 +150,7 @@ class NoteLink implements InputFilterAwareInterface
 		$noteLink = new NoteLink;
 		$noteLink->account_id = $account_id;
 		$noteLink->note_id = $note_id;
+		$noteLink->distribution = array();
 		$noteLink->audit = array();
 		return $noteLink;
     }

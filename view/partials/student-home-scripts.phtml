@@ -108,6 +108,12 @@ function getStudentDetail() {
 				$('#news_flash-tab').addClass('active');
 				connectNewsFlashTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'news_flash')) ?>');
 			});
+			
+			$('#file-tab').click(function () {
+				$('.student-tab').removeClass('active');
+				$('#file-tab').addClass('active');
+				connectNewsFlashTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'schooling')) ?>');
+			});
 
 			$('#sport-tab').click(function () {
 				$('.student-tab').removeClass('active');
@@ -120,7 +126,7 @@ function getStudentDetail() {
 				$('#schooling-tab').addClass('active');
 				connectStudentTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'schooling')) ?>');
 			});
-
+/*
 			$('#boarding-school-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#boarding-school-tab').addClass('active');
@@ -131,7 +137,7 @@ function getStudentDetail() {
 				$('.student-tab').removeClass('active');
 				$('#medical-tab').addClass('active');
 				connectStudentTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'medical')) ?>');
-			});
+			});*/
 <?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
