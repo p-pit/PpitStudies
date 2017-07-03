@@ -2876,6 +2876,47 @@ table.note-report tr.period {
 <p>Depuis le cahier de texte, vous accédez au détail. Vous pouvez corriger ou supprimer une entrée du cahier de texte.</p>
 ',
 			),
+			
+/*
+ * Contacts
+ */
+			'commitmentAccount/search/contact/title' => array(
+					'en_US' => '
+<h4>CRM</h4>
+<p>The <em>Contacts</em> tab is the place where you can add manage contacts.</p>
+<p><em>2Pit Contacts</em> is integrated with the back-office solution <em>2Pit Commitments</em> in option.</p>
+<p>As a default, all the contacts that should be called today are presented in the list.</p>
+<p>As soon as a criterion below is specified, the list switch in search mode.</p>
+',
+					'fr_FR' => '
+<h4>CRM</h4>
+<p>L\'entrée <em>Contacts</em> est le lieu où vous pouvez ajouter gérer les contacts.</p>
+<p><em>P-Pit Contacts</em> est intégrée avec la solution back-office <em>P-Pit Engagements</em> en option.</p>
+<p>Par défaut, tous les contacts qui doivent être appelés aujourd\'hui sont présentés dans la liste.</p>
+<p>Dès lors qu\'un des critères ci-dessous est spécifié, le mode de recherche est automatiquement activé.</p>
+',
+			),
+			'commitmentAccount/list/contact/add' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Ajout d\'un contact</h4>
+<p>Le bouton + permet d\'accéder à l\'ajout d\un nouveau contact.</p>
+<p>Les dossiers d\'inscription par année scolaire, destinés à la facturation, seront créés dans un second temps.</p>
+<p>On peut ainsi lors de la vente transformer un contact en compte élève regroupant ces inscriptions successives.</p>
+',
+			),
+			'commitmentAccount/list/contact/detail' => array(
+					'en_US' => '',
+					'fr_FR' => '
+<h4>Détail d\'un élève</h4>
+<p>Un code couleur vert, orange ou rouge est associé à chaque contact en fonction de son statut chaud tiède ou froid.</p>
+<p>Le bouton zoom permet d\'accéder au détail d\'un contact et le modifier.</p>
+',
+			),
+				
+/*
+ *  Inscriptions
+ */
 			'commitmentAccount/search/p-pit-studies/title' => array(
 					'en_US' => '
 <h4>Back-office</h4>
@@ -2920,21 +2961,24 @@ table.note-report tr.period {
 			'commitmentAccount/add/p-pit-studies' => array(
 					'en_US' => '',
 					'fr_FR' => '
-<h4>Ajout d\'un élève</h4>
+<h4>Ajout d\'un élève (contact ou client)</h4>
 <p>Lors de la création de la fiche élève les données principales sont renseignées.</p>
+<p>Pour un contact :</p>
 	<ul>
+		<li>Statut <em>Chaud</em>, <em>Tiède</em> ou <em>Froid</em> du contact. Au moment de la vente ce statut doit être mis <em>Actif</em> pour basculer le contact comme client vers la gestion commerciale ;</li>
+		<li>Date de rappel qui pilote l\'affichage du contact en <em>todo-list</em> des contacts à rappeler ;</li>
+		<li>Origine du contact : site, salon, appel... ;</li>
 		<li>Identification</li>
+		<li>Sport</li>
+		<li>Date de la journée de détection</li>
+		<li>Centre d\'affectation</li>
+	</ul>
+<p>En complément pour un élève inscrit</p>
+	<ul>
 		<li>Données de contact, téléphone d\'urgence mentionné dans la liste et photo</li>
 		<li>période de validité du compte (seule la date d\'ouverture est obligatoire)</li>
-		<li>Le statut</li>
-		<li>Les données de gestion : centre, sport, classe et option d\'internat</li>
+		<li>Données de vie scolaire : classe, langues, options et internat</li>
 	</ul>
-<p>Le statut <em>Actif</em> conditionne :
-	<ul>
-		<li>L\'affichage de l\'élève dans la liste par défaut</li>
-		<li>L\'accès aux fonctions pédagogiques de P-Pit Studies pour cet élève</p>
-	</ul>
-<p>Le statut <em>Nouveau</em> permet de gérer des élèves <em>prospects</em>.</p>
 ',
 			),
 			'commitmentAccount/list/p-pit-studies/detail' => array(

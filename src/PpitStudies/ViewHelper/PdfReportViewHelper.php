@@ -138,7 +138,7 @@ class PdfReportViewHelper
 					if ($propertyId == 'customer_name') $arguments[] = $account->customer_name;
 	    			elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
-//	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $property['modalities'][$account->properties[$propertyId]][$context->getLocale()];
+	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $property['modalities'][$account->properties[$propertyId]][$context->getLocale()];
 	    			else $arguments[] = $account->properties[$propertyId];
     			}
     		}

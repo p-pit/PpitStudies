@@ -643,9 +643,11 @@ class StudentController extends AbstractActionController
     				}
     				$noteLink->value = $value;
     				$noteLink->distribution = array();
-    				foreach ($computedAverages[$account->id] as $categoryId => $category) {
-    					$noteLink->distribution[$categoryId] = $category['note'];
-    				}
+	    			if ($type == 'report') {
+	    				foreach ($computedAverages[$account->id] as $categoryId => $category) {
+	    					$noteLink->distribution[$categoryId] = $category['note'];
+	    				}
+	    			}
     				$noteLink->assessment = $request->getPost('assessment_'.$account->id);
     				$noteSum += $value;
     				if ($value < $lowerNote) $lowerNote = $value;
