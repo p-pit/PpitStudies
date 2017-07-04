@@ -91,7 +91,7 @@ class NoteLink implements InputFilterAwareInterface
     	$data['instance_id'] = (int) $this->instance_id;
     	$data['account_id'] = (int) $this->account_id;
     	$data['note_id'] = (int) $this->note_id;
-    	$data['value'] =  $this->value;
+    	$data['value'] =  (float) $this->value;
     	$data['distribution'] =  json_encode($this->distribution);
     	$data['assessment'] = $this->assessment;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;

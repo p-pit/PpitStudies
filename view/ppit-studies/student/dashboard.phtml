@@ -242,6 +242,8 @@ table.note-report tr.period {
 <input type="hidden" id="is-report-open_<?php echo $key ?>" value="1" />
 <div id="report-panel_<?php echo $key ?>">
 
+		<div><a href="<?php echo $this->url('student/downloadReport', array('account_id' => $account->id))?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+		<div>&nbsp;</div>
 		<table class="table note-report">
 			<tr>
 				<th rowspan="2"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>
@@ -257,11 +259,13 @@ table.note-report tr.period {
 				<th title="<?php echo $this->translate('Lower average', 'ppit-studies', $context->getLocale()) ?>">-</th>
 			</tr>
 		<?php $first=true; foreach ($report as $evaluation) : ?>
-			<?php 
-			$notes = array(); 
-			if (array_key_exists('notes', $evaluation)) foreach($evaluation->audit as $note) $notes[] = $context->formatFloat($note['note'], 2).'/'.$context->formatFloat($note['reference_value'], 0).(($note['weight'] != 1) ? ' ('.$context->formatFloat($note['weight'], 1).')' : '');
-			$notes = implode(', ', $notes);
-			?>
+			<?php if ($evaluation->subject == 'global') : $globalEvaluation = $evaluation ?>
+			<?php else : ?>
+				<?php 
+				$notes = array(); 
+				if (array_key_exists('notes', $evaluation)) foreach($evaluation->audit as $note) $notes[] = $context->formatFloat($note['note'], 2).'/'.$context->formatFloat($note['reference_value'], 0).(($note['weight'] != 1) ? ' ('.$context->formatFloat($note['weight'], 1).')' : '');
+				$notes = implode(', ', $notes);
+				?>
 			<tr>
 				<td class="subject">
 					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()] ?>
@@ -275,22 +279,22 @@ table.note-report tr.period {
 				<td align="right"><?php echo $context->formatFloat($evaluation->higher_note, 2) ?></td>
 				<td align="right"><?php echo $context->formatFloat($evaluation->lower_note, 2) ?></td>
 				<td align="right">
-		<?php $first = true; foreach ($evaluation->distribution as $category => $value) : ?>
-			<?php if ($category != 'global') : ?>
-					<?php if (!$first) : ?><br><?php endif;?>
-					<?php $first = false; ?>
-					<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()] ?>:
-					<?php echo $context->formatFloat($value, 2) ?>
-			<?php endif;?>
-		<?php endforeach;?>
+				<?php $first = true; foreach ($evaluation->distribution as $category => $value) : ?>
+					<?php if ($category != 'global') : ?>
+							<?php if (!$first) : ?><br><?php endif;?>
+							<?php $first = false; ?>
+							<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()] ?>:
+							<?php echo $context->formatFloat($value, 2) ?>
+					<?php endif;?>
+				<?php endforeach;?>
 				</td>
 			</tr>
 			
-			<?php if ($evaluation->assessment || $evaluation->observations) : ?>
+				<?php if ($evaluation->assessment || $evaluation->observations) : ?>
 			<tr>
 				<td colspan="8">
 					<?php if ($evaluation->assessment) : ?>
-					<strong><?php echo $this->translate('Student', 'ppit-studies', $context->getLocale()) ?></strong>: <?php echo $evaluation->assessment ?>
+					<?php echo $evaluation->assessment ?>
 					<?php endif;?>
 					<?php if ($evaluation->assessment && $evaluation->observations) : ?>
 					<br>
@@ -300,8 +304,22 @@ table.note-report tr.period {
 					<?php endif;?>
 				</td>
 			</tr>
+				<?php endif;?>
 			<?php endif;?>
 		<?php endforeach;?>
+			<tr>
+				<td colspan="8">
+					<?php if ($globalEvaluation->assessment) : ?>
+					<strong><?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?></strong>: <?php echo $globalEvaluation->assessment ?>
+					<?php endif;?>
+					<?php if ($globalEvaluation->assessment && $globalEvaluation->observations) : ?>
+					<br>
+					<?php endif;?>
+					<?php if ($globalEvaluation->observations) : ?>
+					<strong><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale())?></strong>: <?php echo $globalEvaluation->observations ?>
+					<?php endif;?>
+				</td>
+			</tr>
 		</table>
 	<hr/>
 </div>

@@ -2211,6 +2211,15 @@ table.note-report tr.period {
 }
 </style>
 ',
+
+			'signatureFrame' => array(
+					'html' => '
+<table class="table note-report">
+    <tr>
+    	<td style="width: 100%%">%s</td>
+    </tr>
+</table>',
+					),
 	),
 
 	'absence' => array(

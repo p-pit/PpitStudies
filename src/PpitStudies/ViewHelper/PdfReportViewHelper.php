@@ -23,7 +23,7 @@ class PdfReportViewHelper
 		return call_user_func_array('sprintf', $arguments);
 	}
 
-    public static function render($pdf, $place, $account, $addressee, $period)
+    public static function render($pdf, $place, $account, $addressee, $period, $absences, $cumulativeLateness)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -96,7 +96,7 @@ class PdfReportViewHelper
     	// add a page
     	$pdf->AddPage();
     	 
-    	// Invoice header
+    	// Report header
     	$pdf->MultiCell(100, 5, '', 0, 'L', 0, 0, '', '', true);
     	$pdf->SetTextColor(0);
     	$pdf->SetFont('', '', 12);
@@ -159,28 +159,30 @@ class PdfReportViewHelper
 			$rows = '';
 	    	$color = 0;
 	    	foreach ($period as $evaluation) {
-
-	    		$distribution = array();
-	    		foreach ($evaluation->distribution as $category => $value) {
-	    			if ($category != 'global') {
-	    				$distribution[] = $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()].':&nbsp;'.$context->formatFloat($value, 2);
-	    			}
+	    		if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
+	    		else {
+		    		$distribution = array();
+		    		foreach ($evaluation->distribution as $category => $value) {
+		    			if ($category != 'global') {
+		    				$distribution[] = $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()].':&nbsp;'.$context->formatFloat($value, 2);
+		    			}
+		    		}
+		    		$distribution = implode('<br>', $distribution);
+		    		$rows.= sprintf(
+		    				$context->getConfig('student/report')['detailRow']['html'], 
+		    				(($color) ? 'style="background-color: #EEE"' : ''),
+		    				$context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()],
+							$context->getFormatedName(),
+		    				$context->formatFloat($evaluation->weight, 1),
+		    				$context->formatFloat($evaluation->value, 2),
+							$context->formatFloat($evaluation->lower_note, 2),
+		    				$context->formatFloat($evaluation->average_note, 2),
+							$context->formatFloat($evaluation->higher_note, 2),
+							$distribution,
+							$evaluation->assessment
+		    		);
+		    		$color = ($color+1)%2;
 	    		}
-	    		$distribution = implode('<br>', $distribution);
-	    		$rows.= sprintf(
-	    				$context->getConfig('student/report')['detailRow']['html'], 
-	    				(($color) ? 'style="background-color: #EEE"' : ''),
-	    				$context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()],
-						$context->getFormatedName(),
-	    				$context->formatFloat($evaluation->weight, 1),
-	    				$context->formatFloat($evaluation->value, 2),
-						$context->formatFloat($evaluation->lower_note, 2),
-	    				$context->formatFloat($evaluation->average_note, 2),
-						$context->formatFloat($evaluation->higher_note, 2),
-						$distribution,
-						$evaluation->assessment
-	    		);
-	    		$color = ($color+1)%2;
 	    	}
 
 	    	$headerDef = $context->getConfig('student/report')['detailHeader'];
@@ -191,7 +193,32 @@ class PdfReportViewHelper
 	    	$text .= $header;
 
 		$pdf->writeHTML($text, true, 0, true, 0);
-		    								
+
+		$pdf->SetDrawColor(255, 255, 255);
+		
+		// Absences
+		$pdf->MultiCell(40, 5, '<strong>'.'Nombre d\'absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+		$pdf->MultiCell(40, 5, count($absences), 1, 'L', 1, 0, '' ,'', true);
+
+		// Lateness
+		$pdf->MultiCell(40, 5, '<strong>'.'Durée cumulée des retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+		$pdf->MultiCell(50, 5, $cumulativeLateness.' mn', 1, 'L', 0, 1, '' ,'', true);
+
+		$text = $context->getConfig('student/report')['pdfDetailStyle'];
+		$text .= sprintf(
+					$context->getConfig('student/report')['signatureFrame']['html'],
+					'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.$globalEvaluation->assessment.
+					'<br><br>'.
+					'<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$context->getFormatedName()
+				);
+		$pdf->writeHTML($text, true, 0, true, 0);
+		$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
+						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+						'Une réalisation P-Pit Studies (www.ppit.fr)'
+						, true, 0, true, 0);
+		
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.
     	return $pdf;

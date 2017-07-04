@@ -644,17 +644,18 @@ class StudentController extends AbstractActionController
     				$noteLink->value = $value;
     				$noteLink->distribution = array();
 	    			if ($type == 'report') {
-	    				foreach ($computedAverages[$account->id] as $categoryId => $category) {
-	    					$noteLink->distribution[$categoryId] = $category['note'];
-	    				}
+    					if (array_key_exists($account->id, $computedAverages)) {
+		    				foreach ($computedAverages[$account->id] as $categoryId => $category) {
+		    					$noteLink->distribution[$categoryId] = $category['note'];
+		    				}
+    					}
 	    			}
     				$noteLink->assessment = $request->getPost('assessment_'.$account->id);
     				$noteSum += $value;
     				if ($value < $lowerNote) $lowerNote = $value;
     				if ($value > $higherNote) $higherNote = $value;
-    				if ($noteLink->value != '') $noteLinks[] = $noteLink;
+    				/*if ($noteLink->value != '')*/ $noteLinks[] = $noteLink;
     			}
-
     			if ($nbAccount > 0) {
     				$data['average_note'] = round($noteSum / $nbAccount, 2);
 	    			$data['lower_note'] = $lowerNote;
@@ -1042,7 +1043,6 @@ class StudentController extends AbstractActionController
 				$cumulativeLateness += $absLate->duration;
 			}
 		}
-	
 		$periods = array();
 		$notes = NoteLink::GetList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
 		foreach($notes as $note) {
@@ -1057,7 +1057,7 @@ class StudentController extends AbstractActionController
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, current($periods));
+    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, current($periods), $absences, $cumulativeLateness);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.
