@@ -122,6 +122,7 @@
 		'Sport progress' => 'Suivi sportif',
 		'Sport-studies' => 'Sport-études',
 		'Sport-studies records' => 'Dossiers sport-études',
+		'Staff meeting opinion' => 'Avis du conseil de classe',
 		'Student' => 'Elève',
 		'Student file' => 'Dossier étudiant',
 		'Student home page' => "Page d'accueil de l'élève",

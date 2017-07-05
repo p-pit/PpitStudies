@@ -158,6 +158,7 @@ class PdfReportViewHelper
 	    	
 			$rows = '';
 	    	$color = 0;
+	    	$globalEvaluation = '';
 	    	foreach ($period as $evaluation) {
 	    		if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
 	    		else {
@@ -209,14 +210,15 @@ class PdfReportViewHelper
 		$text = $context->getConfig('student/report')['pdfDetailStyle'];
 		$text .= sprintf(
 					$context->getConfig('student/report')['signatureFrame']['html'],
-					'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.$globalEvaluation->assessment.
+					'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
+					(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
 					'<br><br>'.
 					'<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$context->getFormatedName()
 				);
 		$pdf->writeHTML($text, true, 0, true, 0);
 		$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'Une réalisation P-Pit Studies (www.ppit.fr)'
+						'<em>P-Pit Studies</em> (www.ppit.fr)'
 						, true, 0, true, 0);
 		
     	// Close and output PDF document

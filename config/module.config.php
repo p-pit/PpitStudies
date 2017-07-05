@@ -1528,6 +1528,7 @@ return array(
 			'title' => array('en_US' => 'Students', 'fr_FR' => 'Eleves'),
 			'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
 			'main' => array(
+					'status' => 'select',
 					'place_id' => 'select',
 					'callback_date' => 'range',
 					'origine' => 'contains',
