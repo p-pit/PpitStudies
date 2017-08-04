@@ -109,7 +109,7 @@
 <!-- Value -->
 		<input type="hidden" id="value_<?php echo $account->id ?>" />
 		<div class="form-group" id="input_value_<?php echo $account->id ?>_group">
-			<label class="col-sm-5 control-label"><?php echo $account->customer_name ?></label>
+			<label class="col-sm-5 control-label"><?php echo $account->name ?></label>
 			<div class="col-sm-7">
 				<input class="form-control" id="input_value_<?php echo $account->id ?>" placeholder="<?php echo $this->translate(($type == 'report') ? 'Average (computed if not input)' : 'Note', 'ppit-studies', $context->getLocale()) ?>" <?php if ($message == 'OK') echo 'value="'.$context->formatFloat($note->results[$account->id]['note'], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
 			</div>

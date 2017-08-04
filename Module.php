@@ -6,7 +6,7 @@ use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
 use PpitStudies\Model\Progress;
-use PpitStudies\Model\Student;
+/*use PpitStudies\Model\Student;
 use PpitStudies\Model\StudentSport;
 use PpitStudies\Model\StudentSportImport;
 use PpitStudies\Model\UserImport;
@@ -16,7 +16,7 @@ use CitAccounting\Model\BillRow;
 use CitAccounting\Model\BillOption;
 use CitAccounting\Model\BillTerm;
 use CitAccounting\Model\Product;
-use CitAccounting\Model\ProductOption;
+use CitAccounting\Model\ProductOption;*/
 use PpitStudies\Model\MyAuthStorage;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
@@ -95,7 +95,7 @@ class Module
                     $resultSetPrototype->setArrayObjectPrototype(new Progress());
                     return new TableGateway('student_progress', $dbAdapter, null, $resultSetPrototype);
                 },
-                'PpitStudies\Model\StudentTable' =>  function($sm) {
+/*                'PpitStudies\Model\StudentTable' =>  function($sm) {
                     $tableGateway = $sm->get('StudentTableGateway');
                     $table = new GenericTable($tableGateway);
                     return $table;
@@ -165,7 +165,7 @@ class Module
                     $tableGateway = $sm->get('BillRowImportTableGateway');
                     $table = new GenericTable($tableGateway);
                     return $table;
-                },
+                },*/
             ),
         );
     }

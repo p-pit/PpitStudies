@@ -274,7 +274,7 @@
 		<input type="hidden" id="matching-account_<?php echo $i ?>" value="<?php echo $account->id ?>"/>
 		<input type="hidden" id="target_<?php echo $account->id ?>"></input>
 		<div class="form-group" id="target_<?php echo $account->id ?>_checkbox_group">
-			<label class="col-sm-5 control-label"><?php echo $account->customer_name ?></label>
+			<label class="col-sm-5 control-label"><?php echo $account->name ?></label>
 			<div class="col-sm-7">
 				<input type="checkbox" id="target_<?php echo $account->id ?>_checkbox" value="<?php echo (array_key_exists($account->id, $notification->target)) ? 1 : 0 ?>" <?php if (array_key_exists($account->id, $notification->target)) echo 'checked="checked"' ?>></input>
 			</div>

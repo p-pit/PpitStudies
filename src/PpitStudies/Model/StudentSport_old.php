@@ -14,7 +14,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class StudentSport implements InputFilterAwareInterface
+class StudentSport_old implements InputFilterAwareInterface
 {
     public $id;
     public $student_id;
@@ -254,7 +254,7 @@ class StudentSport implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     
     	// Prepare the SQL request
-    	$select = StudentSport::getTable()->getSelect()
+    	$select = StudentSport_old::getTable()->getSelect()
     		->join('student', 'student_sport.student_id = student.id', array('school_year', 'student_contact_id', 'emergency_phone_1', 'emergency_phone_2', 'emergency_email', 'class', 'specialty', 'boarding_school'), 'left')
     		->join('contact_contract', 'student.contract_id = contact_contract.id', array('customer_community_id'), 'left')
     		->join('core_community', 'contact_contract.customer_community_id = core_community.id', array('customer_name' => 'name'), 'left')
@@ -300,7 +300,7 @@ class StudentSport implements InputFilterAwareInterface
     	}
 
     	$select->where($where)->order(array($major.' '.$dir, 'n_fn'));
-    	$cursor = StudentSport::getTable()->selectWith($select);
+    	$cursor = StudentSport_old::getTable()->selectWith($select);
     
     	// Execute the request
     	$studentSports = array();
@@ -312,14 +312,14 @@ class StudentSport implements InputFilterAwareInterface
     public static function get($id)
     {
     	$context = Context::getCurrent();
-    	$studentSport = StudentSport::getTable()->get($id);
+    	$studentSport = StudentSport_old::getTable()->get($id);
 
     	return $studentSport;
     }
     
     public static function instanciate()
     {
-    	$studentSport = new StudentSport;
+    	$studentSport = new StudentSport_old;
     	$studentSport->student = Student::instanciate();
     	return $studentSport;
     }
@@ -432,7 +432,7 @@ class StudentSport implements InputFilterAwareInterface
     	$rc = $this->student->add();
     	if ($rc != 'OK') return $rc;
     	$this->student_id = $this->student->id;
-    	StudentSport::getTable()->save($this);
+    	StudentSport_old::getTable()->save($this);
 
     	return 'OK';
     }
@@ -441,7 +441,7 @@ class StudentSport implements InputFilterAwareInterface
     {
     	$context = Context::getCurrent();
     
-    	$studentSport = StudentSport::get($this->id);
+    	$studentSport = StudentSport_old::get($this->id);
     
     	// Isolation check
     	if ($studentSport->update_time > $update_time) return 'Isolation';
@@ -449,7 +449,7 @@ class StudentSport implements InputFilterAwareInterface
     	// Save the order form and the order
     	$rc = $this->student->update($update_time);
     	if ($rc != 'OK') return $rc;
-    	StudentSport::getTable()->save($this);
+    	StudentSport_old::getTable()->save($this);
     
     	return 'OK';
     }
@@ -466,17 +466,17 @@ class StudentSport implements InputFilterAwareInterface
     public function delete($update_time)
     {
     	$context = Context::getCurrent();
-    	$studentSport = StudentSport::get($this->id);
+    	$studentSport = StudentSport_old::get($this->id);
     
     	// Isolation check
     	if ($studentSport->update_time > $update_time) return 'Isolation';
     
     	// Delete the sport informations
-    	$studentSport = StudentSport::getTable()->get($this->id, 'student_id');
+    	$studentSport = StudentSport_old::getTable()->get($this->id, 'student_id');
     	if ($studentSport) $return = $studentSport->delete($updateTime);
     	if ($return != 'OK') return $return;
     
-    	StudentSport::getTable()->delete($this->id);
+    	StudentSport_old::getTable()->delete($this->id);
     
     	return 'OK';
     }
@@ -493,10 +493,10 @@ class StudentSport implements InputFilterAwareInterface
 
     public static function getTable()
     {
-    	if (!StudentSport::$table) {
+    	if (!StudentSport_old::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		StudentSport::$table = $sm->get('PpitStudies\Model\StudentSportTable');
+    		StudentSport_old::$table = $sm->get('PpitStudies\Model\StudentSportTable');
     	}
-    	return StudentSport::$table;
+    	return StudentSport_old::$table;
     }
 }

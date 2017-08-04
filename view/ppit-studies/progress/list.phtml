@@ -7,7 +7,7 @@
 	<?php 
 	if ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
 	elseif ($propertyId == 'period') $property = $context->getConfig('student/property/discipline_period');
-	elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['customer_name'];
+	elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['name'];
 	else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
 	$label = $property['labels'][$context->getLocale()];
 	?>

@@ -49,7 +49,7 @@ class NoteController extends AbstractActionController
     	$filters = array();
     
     	$name = ($params()->fromQuery('name', null));
-    	if ($name) $filters['name'] = $customer_name;
+    	if ($name) $filters['name'] = $name;
 
     	foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) {
     

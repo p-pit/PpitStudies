@@ -99,8 +99,7 @@ class Absence implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	
     	$select = Absence::getTable()->getSelect()
-    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'), 'left')
-    		->join('core_community', 'commitment_account.customer_community_id = core_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
+    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('name', 'photo' => 'contact_1_id', 'sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'), 'left')
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');

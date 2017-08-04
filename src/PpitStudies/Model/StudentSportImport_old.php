@@ -31,7 +31,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class StudentSportImport implements InputFilterAwareInterface
+class StudentSportImport_old implements InputFilterAwareInterface
 {
     public $id;
 //    public $commitment_id;
@@ -391,7 +391,7 @@ class StudentSportImport implements InputFilterAwareInterface
     			$vcard->is_notified = false;
     			$vcard->community_id = $community->id;
 	    		
-    		    $eleveImport = StudentSportImport::getTable()->transGet($userImport->perimetre);
+    		    $eleveImport = StudentSportImport_old::getTable()->transGet($userImport->perimetre);
     		    if (!$eleveImport) continue;
 echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
 	    		if ($userImport->contact_id == 1) {
@@ -486,8 +486,8 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
     	Account::getTable()->multipleDelete(array());
     	Commitment::getTable()->multipleDelete(array('type' => 'p-pit-studies'));
     	 
-    	$select = StudentSportImport::getTable()->getSelect();
-    	$cursor = StudentSportImport::getTable()->transSelectWith($select);
+    	$select = StudentSportImport_old::getTable()->getSelect();
+    	$cursor = StudentSportImport_old::getTable()->transSelectWith($select);
     	foreach ($cursor as $studentSportImport) {
     		$community = Community::get($studentSportImport->nom_famille.', '.$studentSportImport->prenoms, 'name');
     		if ($community) $account = Account::get($community->id, 'customer_community_id');
@@ -912,10 +912,10 @@ echo $eleveImport->nom_famille.' '.$eleveImport->prenoms.'<br>';
 
     public static function getTable()
     {
-    	if (!StudentSportImport::$table) {
+    	if (!StudentSportImport_old::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		StudentSportImport::$table = $sm->get('PpitStudies\Model\StudentSportImportTable');
+    		StudentSportImport_old::$table = $sm->get('PpitStudies\Model\StudentSportImportTable');
     	}
-    	return StudentSportImport::$table;
+    	return StudentSportImport_old::$table;
     }
 }

@@ -91,8 +91,7 @@ class Progress implements InputFilterAwareInterface
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
     	$select = Progress::getTable()->getSelect()
-    		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array('sport' => 'property_1'), 'left')
-    		->join('core_community', 'commitment_account.customer_community_id = core_community.id', array('name', 'photo' => 'contact_1_id'), 'left')
+    		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array('name', 'photo' => 'contact_1_id', 'sport' => 'property_1'), 'left')
     		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_progress.status', 'deleted');

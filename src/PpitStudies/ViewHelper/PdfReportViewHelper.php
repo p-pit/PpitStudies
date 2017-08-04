@@ -135,7 +135,7 @@ class PdfReportViewHelper
     			else {
 					$property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
 					if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
-					if ($propertyId == 'customer_name') $arguments[] = $account->customer_name;
+					if ($propertyId == 'name') $arguments[] = $account->name;
 	    			elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
 	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $property['modalities'][$account->properties[$propertyId]][$context->getLocale()];

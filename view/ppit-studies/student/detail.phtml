@@ -1,6 +1,6 @@
 <div class="panel panel-default">
 	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
-		<strong><?php echo $account->customer_name ?></strong>
+		<strong><?php echo $account->name ?></strong>
 		
 <?php if ($context->isDemoModeActive()) : ?>
 		<a class="tip" href="#"
@@ -15,52 +15,6 @@ title="
 		
 	</div>
 	<div class="panel-body">
-
-<?php if ($context->isAllowed('commitment/suspend')) : ?>
-
-<!-- Blocked community -->
-	<?php if ($account->customer_status == 'blocked') : ?>
-		<div class="form-group">
-			<div class="alert alert-danger" style="text-align: center">
-				<?php echo $this->translate('The access is temporarily blocked due to a lack of <em>p-pit-community credits</em>.', 'ppit-core', $context->getLocale()) ?><br>
-			</div>
-		</div>
-
-	<?php elseif ($account->customer_status == 'suspended') : ?>
-		<div class="form-group">
-			<div class="alert alert-warning" style="text-align: center">
-				<?php echo $this->translate('This record is suspended', 'ppit-core', $context->getLocale()) ?>
-			</div>
-		</div>
-		<div style="text-align: center">
-			<button type="button" class="btn btn-warning action-btn btn-xs" id="credit_status-action">
-				<?php echo $this->translate('Activate', 'ppit-core', $context->getLocale())?>
-			</button>
-		</div>
-		<div>&nbsp;</div>
-
-	<?php elseif ($account->customer_status == 'closed') : ?>
-		<div class="form-group">
-			<div class="alert alert-danger" style="text-align: center">
-				<?php echo $this->translate('This record is closed', 'ppit-core', $context->getLocale()) ?>
-			</div>
-		</div>
-
-	<?php else : ?>
-		<div class="form-group">
-			<div class="alert alert-success" style="text-align: center">
-				<?php echo $this->translate('This record is active', 'ppit-core', $context->getLocale()) ?>
-			</div>
-		</div>
-		<div style="text-align: center">
-			<button type="button" class="btn btn-warning action-btn btn-xs" id="credit_status-action">
-				<?php echo $this->translate('Suspend', 'ppit-core', $context->getLocale())?>
-			</button>
-		</div>
-		<div>&nbsp;</div>
-
-	<?php endif;?>
-<?php endif;?>
 
 <!-- Banner -->
 		<div style="text-align: center">

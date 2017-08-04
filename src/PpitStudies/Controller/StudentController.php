@@ -108,9 +108,6 @@ class StudentController extends AbstractActionController
     	
     	// Retrieve the query parameters
     	$filters = array();
-    
-    	$customer_name = ($params()->fromQuery('customer_name', null));
-    	if ($customer_name) $filters['customer_name'] = $customer_name;
 
     	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) {
     
@@ -155,8 +152,8 @@ class StudentController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     	$params = $this->getFilters($this->params());
-    	$major = ($this->params()->fromQuery('major', 'customer_name'));
-    	$dir = ($this->params()->fromQuery('dir', 'ASC'));
+    	$major = ($this->params()->fromQuery('major'));
+    	$dir = ($this->params()->fromQuery('dir'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     	$params['status'] = 'active';
@@ -1061,7 +1058,7 @@ class StudentController extends AbstractActionController
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.
-    	$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->customer_name.'.pdf', 'I');
+    	$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->name.'.pdf', 'I');
     	return $this->response;
 	}
 

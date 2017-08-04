@@ -13,7 +13,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class Student implements InputFilterAwareInterface
+class Student_old implements InputFilterAwareInterface
 {
     public $id;
     public $contract_id;
@@ -226,7 +226,7 @@ class Student implements InputFilterAwareInterface
     	$config = $context->getConfig();
 
     	// Prepare the SQL request
-    	$select = Student::getTable()->getSelect()
+    	$select = Student_old::getTable()->getSelect()
 	    	->join('contact_contract', 'student.contract_id = contact_contract.id', array('customer_community_id'), 'left')
 //	    	->join('core_community', 'contact_contract.customer_community_id = core_community.id', array('customer_name' => 'name'), 'left')
 //	    	->join('order', 'student.order_id = order.id', array('status'), 'left')
@@ -279,7 +279,7 @@ class Student implements InputFilterAwareInterface
     	}
     
     	$select->where($where)->order(array($major.' '.$dir, 'n_fn'));
-    	$cursor = Student::getTable()->selectWith($select);
+    	$cursor = Student_old::getTable()->selectWith($select);
     
     	// Execute the request
     	$students = array();
@@ -293,7 +293,7 @@ class Student implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
 
-    	$student = Student::getTable()->get($id);
+    	$student = Student_old::getTable()->get($id);
 
     	// Retrieve the customer name via the contract
     	$student->contract = Contract::getTable()->get($student->contract_id);
@@ -355,7 +355,7 @@ class Student implements InputFilterAwareInterface
     
     public static function instanciate()
     {
-    	$student = new Student;
+    	$student = new Student_old;
     	$student->status = 'new';
     	$student->contract = Contract::instanciate();
     	$student->customerCommunity = Community::instanciate();
@@ -514,7 +514,7 @@ class Student implements InputFilterAwareInterface
     	$this->contract_id = $this->contract->id;
     	$this->studentContact->add();
 		$this->student_contact_id = $this->studentContact->id;
-    	$this->id = Student::getTable()->save($this);
+    	$this->id = Student_old::getTable()->save($this);
     	return 'OK';
     }
 
@@ -522,14 +522,14 @@ class Student implements InputFilterAwareInterface
     {
     	$context = Context::getCurrent();
     	 
-    	$student = Student::get($this->id);
+    	$student = Student_old::get($this->id);
     
     	// Isolation check
     	if ($student->update_time > $update_time) return 'Isolation';
     	$rc = $this->studentContact->update($update_time);
     	if ($rc != 'OK') return $rc;
     	
-    	Student::getTable()->save($this);
+    	Student_old::getTable()->save($this);
     
     	return 'OK';
     }
@@ -544,7 +544,7 @@ class Student implements InputFilterAwareInterface
     		StudentSport::getTable()->save($this->sportOption);
     		$this->sport_option_id = $this->sportOption->id;
     	}
-    	$this->id = Student::getTable()->save($this);
+    	$this->id = Student_old::getTable()->save($this);
     	return $this->id;
     }
 
@@ -552,15 +552,15 @@ class Student implements InputFilterAwareInterface
     {
     	// Allow or not deleting a contract
     	if (get_class($object) == 'PpitContact\Model\Contract') {
-    		if (Student::getTable()->get($object->id, 'contract_id')) return true;
+    		if (Student_old::getTable()->get($object->id, 'contract_id')) return true;
     	}
         // Allow or not deleting a place of business
     	if (get_class($object) == 'PpitMasterData\Model\PlaceOfBusiness') {
-    		if (Student::getTable()->get($object->id, 'place_of_business_id')) return true;
+    		if (Student_old::getTable()->get($object->id, 'place_of_business_id')) return true;
     	}
         // Allow or not deleting a contact
     	if (get_class($object) == 'PpitCore\Model\Vcard') {
-    		if (Student::getTable()->get($object->id, 'student_contact_id')) return true;
+    		if (Student_old::getTable()->get($object->id, 'student_contact_id')) return true;
     	}
     	return false;
     }
@@ -579,7 +579,7 @@ class Student implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
     	
-    	$student = Student::get($this->id);
+    	$student = Student_old::get($this->id);
     
     	// Isolation check
     	if ($student->update_time > $update_time) return 'Isolation';
@@ -591,7 +591,7 @@ class Student implements InputFilterAwareInterface
 	    	if ($rc != 'OK') return $rc;
     	}
  
-    	Student::getTable()->delete($this->id);
+    	Student_old::getTable()->delete($this->id);
     
     	return 'OK';
     }
@@ -608,10 +608,10 @@ class Student implements InputFilterAwareInterface
 
     public static function getTable()
     {
-    	if (!Student::$table) {
+    	if (!Student_old::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		Student::$table = $sm->get('PpitStudies\Model\StudentTable');
+    		Student_old::$table = $sm->get('PpitStudies\Model\StudentTable');
     	}
-    	return Student::$table;
+    	return Student_old::$table;
     }
 }

@@ -955,7 +955,7 @@ return array(
 									'fr_FR' => 'Statut',
 							),
 					),
-					'customer_name' => array(
+					'account_name' => array(
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Name',
@@ -1107,7 +1107,7 @@ return array(
 					'type' => 'select',
 					'status' => 'select',
 					'including_options_amount' => 'range',
-					'customer_name' => 'contains',
+					'account_name' => 'contains',
 			),
 	),
 
@@ -1143,7 +1143,7 @@ return array(
 					array(
 							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('customer_name'),
+							'params' => array('account_name'),
 					),
 			),
 	),
@@ -1164,7 +1164,7 @@ return array(
 					array(
 							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('customer_name'),
+							'params' => array('account_name'),
 					),
 			),
 	),
@@ -1187,7 +1187,7 @@ return array(
 									'fr_FR' => 'Statut',
 							),
 					),
-					'customer_name' => array(
+					'name' => array(
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Name',
@@ -1535,7 +1535,7 @@ return array(
 					'property_1' => 'select',
 					'property_7' => 'select',
 					'property_6' => 'select',
-					'customer_name' => 'contains',
+					'name' => 'contains',
 			),
 			'more' => array(
 			),
@@ -1703,7 +1703,7 @@ return array(
 					),
 			),
 	),
-
+		
 	'commitmentEvent/p-pit-studies' => array(
 			'category' => array(
 					'news_flash' => array(
@@ -1829,6 +1829,8 @@ return array(
 					'Equitation' => array('fr_FR' => 'Equitation'),
 					'Golf' => array('fr_FR' => 'Golf'),
 					'Tennis' => array('fr_FR' => 'Tennis'),
+					'Danse' => array('fr_FR' => 'Danse'),
+					'Multisport' => array('fr_FR' => 'Multisport'),
 			),
 			'labels' => array(
 					'en_US' => 'Sport',
@@ -2017,7 +2019,7 @@ return array(
 					'property_1' => 'select',
 					'property_7' => 'select',
 					'property_6' => 'select',
-					'customer_name' => 'contains',
+					'name' => 'contains',
 			),
 	),
 
@@ -2101,7 +2103,7 @@ return array(
 			'header' => array(
 					array(
 							'format' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('customer_name'),
+							'params' => array('name'),
 					),
 			),
 			
@@ -2109,7 +2111,7 @@ return array(
 					array(
 							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('customer_name'),
+							'params' => array('name'),
 					),
 					array(
 							'left' => array('en_US' => 'Class', 'fr_FR' => 'Classe'),
