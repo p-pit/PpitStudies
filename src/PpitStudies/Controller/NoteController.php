@@ -19,7 +19,7 @@ class NoteController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-    	$place = Place::getTable()->transGet($context->getPlaceId());
+    	$place = Place::get($context->getPlaceId());
 		$community_id = (int) $context->getCommunityId();
 
 		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];

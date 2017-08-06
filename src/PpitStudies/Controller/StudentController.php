@@ -32,8 +32,8 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
-    	$place = Place::getTable()->transGet($context->getPlaceId());
-
+    	$place = Place::get($context->getPlaceId());
+    	
     	if ($context->hasRole('student')) return $this->redirect()->toRoute('student/studentHome');
 
     	$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
@@ -81,8 +81,8 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-		$place = Place::getTable()->transGet($context->getPlaceId());
-
+    	$place = Place::get($context->getPlaceId());
+		
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
 		
 		$menu = $context->getConfig('menus')[$type];
