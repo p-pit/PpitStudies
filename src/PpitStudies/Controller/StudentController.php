@@ -99,6 +99,7 @@ class StudentController extends AbstractActionController
     			'currentEntry' => $currentEntry,
     			'entry' => 'account',
     			'type' => $type,
+    			'status' => 'active',
     	));
     }
 
@@ -1080,11 +1081,11 @@ class StudentController extends AbstractActionController
 		$logo .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['logo'].'"/>';
 		$logo .= "</v:shape>\n</w:pict>\n";
 
-		$noImage = 2; //on incrémentera pour chaque image différente
+/*		$noImage = 2; //on incrémentera pour chaque image différente
 		$extImage = explode(".",$context->getConfig('headerParams')['footer-img']);
 		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
 //		$footer = $context->getConfig('headerParams')['footer']['value'];
-/*		$footer = "<w:pict>\n";
+		$footer = "<w:pict>\n";
 		$footer .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
 		$content = file_get_contents('public/logos/'.$context->getConfig('headerParams')['footer-img']);
 		$footer .= base64_encode($content);

@@ -4,10 +4,11 @@ namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Event;
+use PpitCore\Form\CsrfForm;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
-use PpitCore\Form\CsrfForm;
+use PpitCore\ViewHelper\EventPlanningViewHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
@@ -112,6 +113,15 @@ class EventController extends AbstractActionController
     	return $this->getList();
     }
 
+    public function planningAction()
+    {
+    	$result = array(
+	    	'planning' => EventPlanningViewHelper::format(\PpitCore\Model\Event::getList('calendar', array())),
+    		'events' => $this->getList()->events,
+    	);
+    	return new JsonModel($result);
+    }
+    
     public function getAction()
     {
     	return new JsonModel($this->getList()->events);

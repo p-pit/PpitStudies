@@ -139,12 +139,12 @@ return array(
         										),
         								),
         						),
-        						'get' => array(
+        						'planning' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/get',
+        										'route' => '/planning',
         										'defaults' => array(
-        												'action' => 'get',
+        												'action' => 'planning',
         										),
         								),
         						),
@@ -727,7 +727,7 @@ return array(
 				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
             	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-            	array('route' => 'studentEvent/get', 'roles' => array('student', 'manager', 'coach', 'teacher', 'medical')),
+            	array('route' => 'studentEvent/planning', 'roles' => array('student', 'manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
@@ -838,6 +838,14 @@ return array(
 							'label' => array(
 									'en_US' => 'Students',
 									'fr_FR' => 'Elèves',
+							),
+					),
+					'planning' => array(
+							'route' => 'event/index',
+							'params' => array('type' => 'calendar', 'app' => 'p-pit-studies'),
+							'label' => array(
+									'en_US' => 'Planning',
+									'fr_FR' => 'Planning',
 							),
 					),
 					'notification' => array(
@@ -1122,7 +1130,7 @@ return array(
 	'commitment/update/p-pit-studies' => array(
 			'caption' => array('mandatory' => true),
 			'description' => array('mandatory' => false),
-			'property_1' => array('mandatory' => true),
+			'property_1' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
 	),
@@ -1172,14 +1180,36 @@ return array(
 	'commitmentAccount/p-pit-studies' => array(
 			'statuses' => array(),
 			'properties' => array(
+					'title_1' => array(
+							'type' => 'title',
+							'labels' => array(
+									'en_US' => 'PERSONAL DATA',
+									'fr_FR' => 'DONNEES PERSONNELLES',
+							),
+					),
+					'title_2' => array(
+							'type' => 'title',
+							'labels' => array(
+									'en_US' => 'REGISTRATION DATA',
+									'fr_FR' => 'DONNEES D\'INSCRIPTION',
+							),
+					),
+					'title_3' => array(
+							'type' => 'title',
+							'labels' => array(
+									'en_US' => 'COMMENTS',
+									'fr_FR' => 'COMMENTAIRES',
+							),
+					),
 					'status' => array(
 							'type' => 'select',
 							'modalities' => array(
-									'new' => array('en_US' => 'Hot', 'fr_FR' => 'Chaud'),
-									'warm' => array('en_US' => 'Warm', 'fr_FR' => 'Tiède'),
-									'cold' => array('en_US' => 'Cold', 'fr_FR' => 'Froid'),
-									'active' => array('en_US' => 'Active', 'fr_FR' => 'Actif'),
-									'inactive' => array('en_US' => 'Inactive', 'fr_FR' => 'Inactif'),
+									'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+									'interested' => array('en_US' => 'Interested', 'fr_FR' => 'Intéressé'),
+									'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
+									'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
+									'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
+									'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
 									'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 							),
 							'labels' => array(
@@ -1241,6 +1271,13 @@ return array(
 							'labels' => array(
 									'en_US' => 'Birth date',
 									'fr_FR' => 'Date de naissance',
+							),
+					),
+					'photo_link_id' => array(
+							'type' => 'photo',
+							'labels' => array(
+									'en_US' => '',
+									'fr_FR' => '',
 							),
 					),
 					'n_title_2' => array(
@@ -1459,11 +1496,11 @@ return array(
 									'fr_FR' => 'Téléphone',
 							),
 					),
-					'photo_link_id' => array(
-							'type' => 'photo',
+					'property_3' => array(
+							'type' => 'input',
 							'labels' => array(
-									'en_US' => '',
-									'fr_FR' => '',
+									'en_US' => 'Current situation',
+									'fr_FR' => 'Situation actuelle',
 							),
 					),
 					'property_4' => array(
@@ -1508,6 +1545,41 @@ return array(
 							'labels' => array(
 									'en_US' => 'Sport referent',
 									'fr_FR' => 'Référent sportif',
+							),
+					),
+					'property_10' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Integration level',
+									'fr_FR' => 'Niveau d\'intégration',
+							),
+					),
+					'comment_1' => array(
+							'type' => 'textarea',
+							'labels' => array(
+									'en_US' => 'Trainings',
+									'fr_FR' => 'Formations',
+							),
+					),
+					'comment_2' => array(
+							'type' => 'textarea',
+							'labels' => array(
+									'en_US' => 'Competencies',
+									'fr_FR' => 'Compétences',
+							),
+					),
+					'comment_3' => array(
+							'type' => 'textarea',
+							'labels' => array(
+									'en_US' => 'Professional experience',
+									'fr_FR' => 'Expérience professionnelle',
+							),
+					),
+					'comment_4' => array(
+							'type' => 'textarea',
+							'labels' => array(
+									'en_US' => 'Motivations',
+									'fr_FR' => 'Motivations',
 							),
 					),
 					'contact_history' => array(
@@ -1578,24 +1650,33 @@ return array(
 			),
 	),
 	'commitmentAccount/update/p-pit-studies' => array(
+			'place_id' => array('mandatory' => true),
 			'status' => array('mandatory' => true),
 			'callback_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
+			'title_1' => null,
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
 			'email' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
+			'birth_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
+			'property_3' => array('mandatory' => false),
+			'title_2' => null,
+			'photo_link_id' => array('mandatory' => false),
+			'property_10' => array('mandatory' => false),
 			'property_1' => array('mandatory' => false),
 			'property_9' => array('mandatory' => false),
-			'place_id' => array('mandatory' => false),
 //			'opening_date' => array('mandatory' => false),
-			'photo_link_id' => array('mandatory' => false),
-			'birth_date' => array('mandatory' => false),
 			'property_7' => array('mandatory' => false),
 			'property_4' => array('mandatory' => false),
 			'property_5' => array('mandatory' => false),
 			'property_6' => array('mandatory' => false),
+			'title_3' => null,
+			'comment_1' => array('mandatory' => false),
+			'comment_2' => array('mandatory' => false),
+			'comment_3' => array('mandatory' => false),
+			'comment_4' => array('mandatory' => false),
 			'contact_history' => array('mandatory' => false),
 	),
 	'commitmentAccount/updateContact/p-pit-studies' => array(
@@ -1630,7 +1711,7 @@ return array(
 			'property_2' => array('mandatory' => false),
 			'property_7' => array('mandatory' => true),
 			'property_6' => array('mandatory' => false),
-
+				
 			'n_title_2' => array('mandatory' => false),
 			'n_first_2' => array('mandatory' => true),
 			'n_last_2' => array('mandatory' => true),
@@ -1654,7 +1735,12 @@ return array(
 			'tel_cell_4' => array('mandatory' => false),
 			'email_4' => array('mandatory' => false),
 			'address_4' => array('mandatory' => false),
-				
+
+			'comment_1' => array('mandatory' => false),
+			'comment_2' => array('mandatory' => false),
+			'comment_3' => array('mandatory' => false),
+			'comment_4' => array('mandatory' => false),
+
 //			'contact_history' => array('mandatory' => false),
 	),
 	'commitmentAccount/register/p-pit-studies' => array(
@@ -2225,6 +2311,113 @@ table.note-report tr.period {
 					),
 	),
 
+	'event/type' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'calendar' => array('en_US' => 'Planning', 'fr_FR' => 'Planning'),
+			),
+			'labels' => array(
+					'en_US' => 'Type',
+					'fr_FR' => 'Type',
+			),
+			'column' => 'type',
+	),
+	
+	'event/calendar' => array(
+			'dimensions' => array(),
+			'properties' => array(
+					'status' => array('type' => 'specific', 'definition' => 'event/status'),
+					'type' => array('type' => 'specific', 'definition' => 'event/type'),
+					'identifier' => array('type' => 'specific', 'definition' => 'event/identifier/personal_data'),
+					'place_id' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
+					'place_identifier' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
+					'place_caption' => array('type' => 'specific', 'definition' => 'event/place_caption'),
+					'caption' => array('type' => 'specific', 'definition' => 'event/caption'),
+					'description' => array('type' => 'specific', 'definition' => 'event/description'),
+					'property_1' => array('type' => 'specific', 'definition' => 'student/property/school_year'),
+					'property_2' => array('type' => 'specific', 'definition' => 'student/property/class'),
+					'property_3' => array('type' => 'specific', 'definition' => 'student/property/school_subject'),
+					'day_of_week' => array('type' => 'specific', 'definition' => 'event/day_of_week'),
+					'begin_time' => array('type' => 'specific', 'definition' => 'event/begin_time'),
+					'end_time' => array('type' => 'specific', 'definition' => 'event/end_time'),
+					'location' => array('type' => 'specific', 'definition' => 'event/location'),
+					'update_time' => array('type' => 'specific', 'definition' => 'event/update_time'),
+			),
+			'indicators' => array(),
+	),
+	'event/index/calendar'=> array(
+			'title'=> array(
+					'en_US' => 'Planning',
+					'fr_FR' => 'Planning'
+			)
+	),
+	'event/search/calendar'=> array(
+			'title'=> array(
+					'en_US' => 'Planning',
+					'fr_FR' => 'Planning'
+			),
+			'todoTitle'=> array(
+					'en_US' => 'active',
+					'fr_FR' => 'actif'
+			),
+			'searchTitle'=> array(
+					'en_US' => 'search',
+					'fr_FR' => 'recherche'
+			),
+			'main'=> array(
+					'place_id' => 'select',
+					'property_1' => 'select',
+					'property_2' => 'select',
+					'property_3' => 'select',
+					'caption' => 'contains',
+					'day_of_week' => 'select',
+					'begin_time' => 'range',
+					'location' => 'contains',
+			)
+	),
+	'event/list/calendar'=> array(
+			'place_caption' => array('rendering' => 'text'),
+			'property_1' => array('rendering' => 'select'),
+			'property_2' => array('rendering' => 'select'),
+			'property_3' => array('rendering' => 'select'),
+			'caption' => array('rendering' => 'text'),
+			'day_of_week' => array('rendering' => 'select'),
+			'begin_time' => array('rendering' => 'text'),
+			'end_time' => array('rendering' => 'text'),
+			'location' => array('rendering' => 'text'),
+	),
+	'event/masked/calendar'=> array(
+	),
+	'event/detail/calendar'=> array(
+			'title'=> array(
+					'en_US' => 'Zoom',
+					'fr_FR' => 'Zoom'
+			),
+			'displayAudit' => true
+	),
+	'event/update/calendar'=> array(
+			'place_id'=> array('mandatory' => true),
+			'property_1'=> array('mandatory' => true),
+			'property_2'=> array('mandatory' => false),
+			'property_3'=> array('mandatory' => false),
+			'caption'=> array('mandatory' => false),
+			'day_of_week'=> array('mandatory' => false),
+			'begin_time'=> array('mandatory' => false),
+			'end_time'=> array('mandatory' => false),
+			'location'=> array('mandatory' => false),
+	),
+	
+	'event/export/personal_data'=> array(
+			'place_id'=> 'A',
+			'property_1'=> 'B',
+			'property_2'=> 'C',
+			'property_3'=> 'D',
+			'caption'=> 'E',
+			'day_of_week'=> 'F',
+			'begin_time'=> 'G',
+			'location'=> 'H',
+	),
+		
 	'absence' => array(
 			'types' => array(
 					'sport' => array(
