@@ -1,8 +1,8 @@
 
-function getEvents() {
+function getEvents(print = false) {
 
 	// Execute the ajax request
-	route = '<?php echo $this->url('studentEvent/get').'?account_id='.$account_id ?>';
+	route = '<?php echo $this->url('studentEvent/planning').'?account_id='.$account_id ?>';
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
@@ -11,24 +11,76 @@ function getEvents() {
 	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
+			var minTime = (print) ? '08:00:00' : '00:00:00';
 		    $('#calendar').fullCalendar({
 		    	lang: '<?php echo substr($context->getLocale(), 0, 2) ?>',
-		        defaultView: 'agendaWeek'
-		    });
+		    	height: 650,
+		        defaultView: 'agendaWeek',
+		        scrollTime: '08:00:00',
+		        minTime: minTime,
+		        businessHours: {
+				   	dow: [ 1, 2, 3, 4, 5, 6], // Monday - Thursday
+				    start: '08:00',
+				    end: '18:00'
+			    },
+				customButtons: {
+			        myCustomButton: {
+			            text: '<?php echo $this->translate('Printable', 'ppit-document', $context->getLocale()) ?>',
+			            click: function() {
+			                window.open('<?php echo $this->url('public/communityHomePrint') ?>');
+			            }
+			        }
+			    },
+    			header: {
+				    left: 'prev,next today myCustomButton',
+				    center: 'title',
+				    right: 'month,agendaWeek,agendaDay'
+				}
+    		});
 			obj = jQuery.parseJSON(xhttp.responseText);
 
-			jQuery.each(obj, function (name, value) {
-				var color;			
+			jQuery.each(obj.planning, function (name, value) {
+				var color = 'lightBlue', textColor = 'black';			
 <?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
 	<?php foreach ($category['color'] as $color => $unused) : ?>
-				if (value.category == '<?php echo $categoryId ?>') color = '<?php echo $color ?>';
+				if (value.properties['category'] == '<?php echo $categoryId ?>') {
+					color = '<?php echo $color ?>';
+					textColor = 'white';
+				}
+	<?php endforeach;?>
+<?php endforeach;?>
+
+				var title = value.properties['property_3'];
+				if (value.properties['caption']) title += ' - ' + value.properties['caption'];
+				if (value.properties['location']) title += ' (' + value.properties['location'] + ')';
+				var event={
+					id:value.id,
+					title: title,
+					color: color,
+					textColor: textColor,
+					start:  $.fullCalendar.moment(value.properties['begin_date'] + ' ' + value.properties['begin_time']), 
+					end:  $.fullCalendar.moment(value.properties['begin_date'] + ' ' + value.properties['end_time'])
+				};
+				$('#calendar').fullCalendar('renderEvent', event, true);
+			});
+
+			jQuery.each(obj.events, function (name, value) {
+				var color = 'lightBlue', textColor = 'black';			
+<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+	<?php foreach ($category['color'] as $color => $unused) : ?>
+				if (value.category == '<?php echo $categoryId ?>') {
+					color = '<?php echo $color ?>';
+					textColor = 'white';
+				}
 	<?php endforeach;?>
 <?php endforeach;?>
 
 				var event={
 					id:value.id,
+					allDay: true,
 					title: value.title + ' (' + value.location + ')',
 					color: color,
+					textColor: textColor,
 					start:  $.fullCalendar.moment(value.begin_time), 
 					end:  $.fullCalendar.moment(value.end_time)
 				};
@@ -112,7 +164,7 @@ function getStudentDetail() {
 			$('#file-tab').click(function () {
 				$('.student-tab').removeClass('active');
 				$('#file-tab').addClass('active');
-				connectNewsFlashTab('<?php echo $this->url('student/dashboard', array('account_id' => $account_id, 'category' => 'schooling')) ?>');
+				connectStudentTab('<?php echo $this->url('document/list', array('account_id' => $account_id)) ?>/' + '1849');
 			});
 
 			$('#sport-tab').click(function () {

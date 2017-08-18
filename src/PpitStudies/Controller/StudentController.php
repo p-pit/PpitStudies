@@ -33,8 +33,6 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
     	$place = Place::get($context->getPlaceId());
-    	
-    	if ($context->hasRole('student')) return $this->redirect()->toRoute('student/studentHome');
 
     	$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
 		$currentEntry = $this->params()->fromQuery('entry');
@@ -63,19 +61,16 @@ class StudentController extends AbstractActionController
 	public function studentHomeAction()
     {
     	$context = Context::getCurrent();
-		$place = Place::get($context->getPlaceId());
-    	$account_id = Account::get($context->getCommunityId(), 'customer_community_id')->id;
+    	$account_id = (int) $this->params()->fromRoute('account_id', 0);
 
-     	return new ViewModel(array(
+     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-     			'place' => $place,
-    			'applicationId' => 'p-pit-studies',
-    			'applicationName' => 'P-Pit Studies',
-     			'active' => 'application',
      			'account_id' => $account_id,
     	));
-    }
+    	$view->setTerminal(true);
+    	return $view;
+	}
 
     public function registrationIndexAction()
     {

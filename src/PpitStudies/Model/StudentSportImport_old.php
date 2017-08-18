@@ -385,7 +385,7 @@ class StudentSportImport_old implements InputFilterAwareInterface
 	    		$community->root_document_id = $document->id;
 
 	    		$vcard = new Vcard;
-    			$vcard->roles = array('student' => true);
+    			$vcard->roles = array();
     			$vcard->perimeters = array();
     			$vcard->credits = array('p-pit-studies' => true);
     			$vcard->is_notified = false;

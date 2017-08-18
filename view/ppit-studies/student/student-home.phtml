@@ -1,57 +1,13 @@
-
-<!-- Load the common form javascript functions -->
-<?php echo $this->partial('/partials/common-form-js.phtml'); ?>
-
-<?php
-$title = $context->getConfig('student/index')['title'][$context->getLocale()];
-$this->headTitle($title);
-echo $this->partial('/partials/header');
-?>
-	
-	<div>&nbsp;</div>
-	
-	<div id="main_menu" >
-	    <div class="col-md-10 col-md-offset-1">
-			<div align="center">
-
-<?php foreach ($context->getConfig('menus')['p-pit-hr-portal'] as $entryId => $entryDef) : ?>
-	<?php if ($context->isAllowed($entryDef['route'])) : ?>
-				<button type="button" class="btn menu-btn <?php echo ($entryId == 'employeeFile') ? 'btn-primary' : 'btn-default' ?>" id="<?php echo $entryId ?>-anchor">
-		<?php if (array_key_exists('glyphicon', $entryDef)) : ?>
-					<span class="glyphicon <?php echo $entryDef['glyphicon'] ?>"></span>
-		<?php endif;?>
-					<?php echo $entryDef['label'][$context->getLocale()] ?>
-				</button>
-	<?php endif ?>
-<?php endforeach;?>
-
-			</div>
-			<div>&nbsp;</div>
-		</div>
+<div class="panel panel-default">
+	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
+		<strong><?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale()) ?></strong>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor_<?php echo $account_id ?>">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		 </div>
 	</div>
-
-	<!-- Main panel -->
-	<div class="row">
-		<div class="col-md-12 ppit-panel" id="main-panel"></div>
+	<div class="panel-body">
+		<div><iframe src="<?php echo $this->url('public/communityHome') ?>" height="1000"; style="width: 100%; border: none"></iframe></div>
 	</div>
-	
-	<!-- Login -->
-	<div class="row">
-	    <div class="col-md-6 col-md-offset-3 ppit-panel" id="login-panel">
-		</div>
-	</div>
-
-<script>
-
-<?php
-echo $this->partial('/partials/student-home-scripts');
-echo $this->partial('/partials/ppit-controller') 
-?>
-
-<?php foreach ($context->getConfig('menus')['p-pit-hr-portal'] as $entryId => $entryDef) : ?>
-$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entryDef['route']) ?>'); });
-<?php endforeach;?>
-
-activateStudentHome();
-
-</script>
+</div>

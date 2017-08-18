@@ -495,7 +495,10 @@ return array(
         						'studentHome' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/student-home',
+        										'route' => '/student-home[/:account_id]',
+		        								'constraints' => array(
+		        										'account_id'     => '[0-9]*',
+		        								),
         										'defaults' => array(
         												'action' => 'studentHome',
         										),
@@ -727,7 +730,7 @@ return array(
 				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
             	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-            	array('route' => 'studentEvent/planning', 'roles' => array('student', 'manager', 'coach', 'teacher', 'medical')),
+            	array('route' => 'studentEvent/planning', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
@@ -758,14 +761,14 @@ return array(
 				array('route' => 'sms/index', 'roles' => array('manager')),
 				array('route' => 'sms/simulate', 'roles' => array('manager')),
 				array('route' => 'sms/update', 'roles' => array('manager')),
-				array('route' => 'student', 'roles' => array('student', 'manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
+				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/registrationIndex', 'roles' => array('sales_manager')),
 				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/studentHome', 'roles' => array('user')),
 				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
             	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/detail', 'roles' => array('student', 'manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
+				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
             	array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
             	array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
@@ -776,7 +779,6 @@ return array(
 				array('route' => 'student/import', 'roles' => array('admin')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
 				array('route' => 'student/downloadReport', 'roles' => array('manager', 'teacher')),
-				array('route' => 'student/update', 'roles' => array('business_owner')),
 				array('route' => 'student/letter', 'roles' => array('manager')),
 				array('route' => 'student/confirmation', 'roles' => array('manager')),
 				array('route' => 'student/attestation', 'roles' => array('manager')),
@@ -928,7 +930,6 @@ return array(
 			'criteria' => array(),
 			'todo' => array(
 					'sales_manager' => array(),
-					'business_owner' => array(),
 			),
 	),
 		
@@ -1537,7 +1538,7 @@ return array(
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Detection day date',
-									'fr_FR' => 'Date de journée de détection',
+									'fr_FR' => 'Date concours / journée de détection',
 							),
 					),
 					'property_9' => array(
@@ -1665,12 +1666,12 @@ return array(
 			'title_2' => null,
 			'photo_link_id' => array('mandatory' => false),
 			'property_10' => array('mandatory' => false),
-			'property_1' => array('mandatory' => false),
-			'property_9' => array('mandatory' => false),
 //			'opening_date' => array('mandatory' => false),
 			'property_7' => array('mandatory' => false),
 			'property_4' => array('mandatory' => false),
 			'property_5' => array('mandatory' => false),
+			'property_1' => array('mandatory' => false),
+			'property_9' => array('mandatory' => false),
 			'property_6' => array('mandatory' => false),
 			'title_3' => null,
 			'comment_1' => array('mandatory' => false),
@@ -2872,29 +2873,56 @@ table.note-report tr.period {
 											'fr_FR' => 'Médical',
 									),
 							),
-							'student' => array(
-									'labels' => array(
-									'show' => true,
-											'en_US' => 'Student',
-											'fr_FR' => 'Elève',
+					),
+			),
+	),
+
+	// News
+	'public/news/student' => array(
+			'p-pit-studies' => array(
+					'title' => 'Rentrée 2017-2018',
+					'description' => '',
+					'date' => '2017-09-01',
+					'parts' => array(
+							array(
+									'text' => array(
+											'en_US' => 'To be translated',
+											'fr_FR' => '<h2>Rentrée 2017-2018</h2><hr><p>En forme après les vacances ? L\'année sera bien remplie, promis !</p><p>D\'ailleurs, voici ton planning.',
 									),
-							),
-							'representative' => array(
-									'labels' => array(
-									'show' => true,
-											'en_US' => 'Legal representative',
-											'fr_FR' => 'Représentant légal',
+									'image' => array(
+											'src' => 'banner.jpg',
 									),
 							),
 					),
 			),
 	),
-
+		
+	// Home page
+	'public/community-home/student' => array(
+			'title' => array(
+					'en_US' => 'Studies by 2pit',
+					'fr_FR' => 'P-Pit Studies',
+			),
+			'description' => array(
+					'en_US' => '',
+					'fr_FR' => '',
+			),
+			'rows' => array(
+					'jumbotron' => array(
+							'type' => 'jumbotron',
+							'directory' => 'public/news/student',
+							'entry' => 'p-pit-studies',
+					),
+					'dashboard' => array(
+							'route' => 'student/dashboard',
+					),
+			),
+	),
+		
 	'perimeters' => array(
 			'p-pit-studies' => array(
-//					'studies_place' => 'student/property/place',
-/*					'studies_discipline' => 'student/property/discipline',
-					'studies_level' => 'student/property/level',*/
+					'property_1' => 'student/property/discipline',
+					'property_7' => 'student/property/class',
 			),
 	),
 		

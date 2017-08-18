@@ -137,6 +137,9 @@ function getStudentList(params, major, dir) {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('account-list-panel').innerHTML = xhttp.responseText;
+
+			$('.detail-row').hide();
+			$('.invisible').hide();
 			
 			$(function () {
 			    $('.tip').tooltip({
@@ -181,7 +184,7 @@ function getStudentList(params, major, dir) {
 			// Connect the detail anchors
 			$('.account-detail-anchor').each(function () {
 				$(this).click(function () {
-					getStudentDetail($(this).attr('id').split('_')[1]);
+					getStudentHome($(this).attr('id').split('_')[1]);
 				});
 			});
 <?php if (!$config['isTraceActive']) : ?>
@@ -207,7 +210,8 @@ function getEvents(id) {
 	<?php endif;?>
 		    $('#calendar').fullCalendar({
 		    	lang: '<?php echo substr($context->getLocale(), 0, 2) ?>',
-		        defaultView: 'agendaWeek'
+		        defaultView: 'agendaWeek',
+		        minTime: '08:00:00'
 		    });
 			obj = jQuery.parseJSON(xhttp.responseText);
 
@@ -391,15 +395,12 @@ function connectStudentTab(route) {
 }
 
 // Load the detail panel
-function getStudentDetail(id) {
+function getStudentHome(id) {
 
 	// Ensure the target is displayed
 	$('#form_action').show();
 
-	// Anchor to the new panel
-	$(location).attr('hash', 'form_action');
-
-	var route = '<?php echo $this->url('student/detail') ?>' + '/' + id;
+	var route = '<?php echo $this->url('student/studentHome') ?>/' + id;
 
 	// Execute the ajax request
 	xhttp = new XMLHttpRequest();
@@ -410,57 +411,15 @@ function getStudentDetail(id) {
 	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
-			document.getElementById('form_action').innerHTML = xhttp.responseText;
-			
-			$(function () {
-			    $('.tip').tooltip({
-			        content: function () {
-			            return $(this).prop('title');
-			        }
-			    });
-			});
+			document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;
+			connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
 
-			connectNewsFlashTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/news_flash', id);
-			$('#news_flash-tab').addClass('active');
-			
-			$('#news_flash-tab').click(function () {
-				$('.student-tab').removeClass('active');
-				$('#news_flash-tab').addClass('active');
-				connectNewsFlashTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/news_flash', id);
-			});
-			
-			$('#file-tab').click(function () {
-				$('.student-tab').removeClass('active');
-				$('#file-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('document/list') ?>/' + '1849', id);
-			});
-
-			$('#sport-tab').click(function () {
-				$('.student-tab').removeClass('active');
-				$('#sport-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/sport');
-			});
-
-			$('#schooling-tab').click(function () {
-				$('.student-tab').removeClass('active');
-				$('#schooling-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/schooling');
-			});
-
-			$('#boarding-school-tab').click(function () {
-				$('.student-tab').removeClass('active');
-				$('#boarding-school-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/boarding_school');
-			});
-
-			$('#medical-tab').click(function () {
-				$('.student-tab').removeClass('active');
-				$('#medical-tab').addClass('active');
-				connectStudentTab('<?php echo $this->url('student/dashboard') ?>/' + id + '/medical');
-			});
+			// Ensure the target is displayed
+			$('.detail-row').hide();
+			$('#detail-row_' + id).show();
 <?php if (!$config['isTraceActive']) : ?>
 			}
-<?php endif;?>
+<?php endif;?> 
 		}
 	}
 	xhttp.send();
@@ -1342,7 +1301,12 @@ function getStudentGroup() {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 
-			document.getElementById('form_action').innerHTML = xhttp.responseText;
+			document.getElementById('detail-div_0').innerHTML = xhttp.responseText;
+			connectRemoveIcon('remove-anchor_0', 'detail-row_0');
+
+			// Ensure the target is displayed
+			$('.detail-row').hide();
+			$('#detail-row_0').show();
 			
 			$(function () {
 			    $('.tip').tooltip({
@@ -1351,8 +1315,6 @@ function getStudentGroup() {
 			        }
 			    });
 			});
-			
-			connectRemoveIcon('remove-anchor', 'form_action');
 	
 			$('.group-panel').hide();
 			$('#schooling-tab').addClass('active');

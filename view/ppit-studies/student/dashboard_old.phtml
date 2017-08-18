@@ -1,0 +1,460 @@
+<style>
+table.note-report {
+	font-size: 0.83em;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+}
+table.note-report caption { 
+	font-size:1.5em; 
+	padding:1em 0 0.5em 1em;
+}
+table.note-report th {
+	color: #666;
+//    font-size:0.83em;
+	text-align: center;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+	background-color:#DDD;
+}
+
+table.note-report td {
+	color: #666;
+//	font-size: 0.83em;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+}
+
+table.note-report td.subject {
+	font-weight: bold;
+}
+
+table.note-report tr.period {
+	background-color:#DDD;
+}
+</style>
+
+<?php if (count($notifications) > 0) : ?>
+
+<div>&nbsp;</div>
+
+<!-- Notifications -->
+<div id="notification-panel">
+<?php foreach ($notifications as $notification) : ?>
+
+		<div>
+		
+<?php if ($notification->image) : ?>
+				<div align="center">
+	<?php if (array_key_exists('href', $notification->image)) : ?>
+					<a href="<?php echo $notification->image['href'] ?>" target="<?php echo (array_key_exists('target', $notification->image)) ? $notification->image['target'] : '_blank' ?>">
+	<?php endif;?>
+						<img 
+	<?php foreach ($notification->image as $attr => $value) : ?>
+		<?php if ($attr == 'src') : ?>
+							src="<?php echo $this->basePath($value) ?>"
+		<?php elseif ($attr != 'href' && $attr != 'target') : ?>
+							<?php echo $attr ?>="<?php echo $value ?>"
+		<?php endif;?>
+	<?php endforeach;?>
+						/>
+	<?php if (array_key_exists('href', $notification->image)) : ?>
+					</a>
+	<?php endif;?>
+				</div>
+<?php endif;?>
+			
+				<div><?php echo $notification->content ?></div>
+
+<?php if ($notification->attachment_type) : ?>
+				<div><a href="<?php echo $notification->link ?>" target="_blank"><?php echo ($notification->attachment_label) ? $notification->attachment_label : $notification->link ?></a></div>
+<?php endif;?>
+		</div>
+		<hr/>
+
+<?php endforeach;?>
+</div>
+<?php endif;?>
+
+<?php if (count($absences) > 0) : ?>
+
+<!-- Absences -->
+<h4><button class="glyphicon glyphicon-triangle-right btn btn-default btn-xs" id="absence-button" ></button>&nbsp;&nbsp;<?php echo $this->translate('Last absences', 'ppit-studies', $context->getLocale()).' <span style="font-weight: normal; font-style: italic">('.$absenceCount.' '.$this->translate('on period', 'ppit-studies', $context->getLocale()).')</span>' ?></h4>
+<div id="absence-panel">
+
+	<?php $first=true; foreach ($absences as $absence) : ?>
+
+		<div>
+			<strong><?php echo $context->decodeDate($absence->date) ?></strong>
+			<?php echo $context->getConfig('student/property/school_subject')['modalities'][$absence->subject][$context->getLocale()] ?>
+		<?php if ($absence->observations) : ?>
+			<br><?php echo $absence->observations ?>
+		<?php endif;?>
+		</div>
+
+	<?php $first=false; endforeach;?>
+<hr/>
+</div>
+<?php endif;?>
+
+<?php if (count($latenesss) > 0) : ?>
+
+<!-- Lateness -->
+<h4><button class="glyphicon glyphicon-triangle-right btn btn-default btn-xs" id="lateness-button" ></button>&nbsp;&nbsp;<?php echo $this->translate('Last lateness', 'ppit-studies', $context->getLocale()).' <span style="font-weight: normal; font-style: italic">('.$cumulativeLateness.'mn '.$this->translate('cumulative on period', 'ppit-studies', $context->getLocale()).')</span>' ?></h4>
+<div id="lateness-panel">
+
+	<?php $first=true; foreach ($latenesss as $lateness) : ?>
+
+		<div>
+			<strong><?php echo $context->decodeDate($lateness->date) ?></strong>
+			<?php echo $context->getConfig('student/property/school_subject')['modalities'][$lateness->subject][$context->getLocale()] ?> -
+			<?php echo '<strong>'.$this->translate('Duration', 'ppit-studies', $context->getLocale()).': </strong>'.$lateness->duration.'mn' ?> - 
+		<?php if ($lateness->motive) : ?>
+			<?php echo '<strong>'.$this->translate('Motive', 'ppit-studies', $context->getLocale()).': </strong>'.$context->getConfig('absence/property/motive')['modalities'][$lateness->motive][$context->getLocale()]?>
+		<?php endif;?>
+		<?php if ($lateness->observations) : ?>
+			<br><?php echo $lateness->observations ?>
+		<?php endif;?>
+		</div>
+
+	<?php $first=false; endforeach;?>
+<hr/>
+</div>
+<?php endif;?>
+
+<?php if (count($events) > 0) : ?>
+
+<!-- Events -->
+<h4><a class="glyphicon glyphicon-triangle-bottom" id="event-button"></a>&nbsp;&nbsp;<?php echo $this->translate('Coming events', 'ppit-commitment', $context->getLocale()) ?></h4>
+<div id="event-panel">
+
+	<?php $first=true; foreach ($events as $event) : ?>
+
+		<?php if (!$first) : ?><div>&nbsp;</div><?php endif;?>
+		<div>
+			<strong><?php echo $this->translate('Begin', 'ppit-commitment', $context->getLocale()) ?></strong>: <?php echo $context->decodeDate(substr($event->begin_time, 0, 10)).' '.substr($event->begin_time, 11, 8) ?>
+		<?php if ($event->end_time) : ?>
+			<br><strong><?php echo $this->translate('End', 'ppit-commitment', $context->getLocale()) ?></strong>: <?php echo $context->decodeDate(substr($event->end_time, 0, 10)).' '.substr($event->end_time, 11, 8) ?>
+		<?php endif;?>
+			<br><strong><?php echo $this->translate('Location', 'ppit-commitment', $context->getLocale()) ?></strong>: <?php echo $event->location ?>
+			<br><strong><?php echo $event->title ?></strong>
+		<?php if ($event->content) : ?>
+			<br><?php echo $event->content ?>
+		<?php endif;?>
+		</div>
+
+	<?php $first=false; endforeach;?>
+<hr/>
+</div>
+<?php endif;?>
+
+<?php if ($category == 'schooling') : ?>
+
+<!-- Homework notebook -->
+<h4><button class="glyphicon glyphicon-triangle-bottom btn btn-default btn-xs" id="homework-button"></button>&nbsp;&nbsp;<?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?></h4>
+<div id="homework-panel">
+
+<?php $currentDate = null; $currentSubject = null; foreach ($notes as $note) : ?>
+	<?php if ($note->type == 'done-work' || $note->type == 'todo-work' || $note->type == 'event') : ?>
+		<?php if ($note->date != $currentDate) : ?>
+				<div><strong><?php echo $context->decodeDate($note->date) ?></strong></div>
+		<?php $currentDate = $note->date; $currentSubject = null; endif;?>
+		<?php if ($note->subject != $currentSubject) : ?>
+				<div><strong><em><?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></em></strong></div>
+		<?php $currentSubject = $note->subject; endif;?>
+				<div style="background-color: <?php echo $context->getConfig('note/colour')[$note->type] ?>">
+					<div style="text-align: center; font-weight: bold">
+		<?php if ($note->type == 'todo-work') : ?>
+						<?php echo $this->translate('For the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($note->target_date) ?>
+		<?php elseif ($note->type == 'done-work') : ?>
+						<?php echo $this->translate('Summary', 'ppit-studies', $context->getLocale()) ?>
+		<?php elseif ($note->type == 'event') : ?>
+						<?php echo $this->translate('To remember:', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($note->target_date) ?>
+		<?php endif;?>
+		<?php if ($note->document) : ?>
+			<?php $dropbox = $context->getConfig('ppitDocument')['dropbox'] ?>
+						&nbsp;&nbsp;<a class="glyphicon glyphicon-paperclip" href="<?php echo $dropbox['root'].$dropbox['folders']['schooling'].'/'.$note->document ?>" title="<?php echo $this->translate('Attachment', 'ppit-document', $context->getLocale()) ?>" target=".blank"></a>
+		<?php endif;?>
+					</div>
+					<div><?php echo $note->observations ?></div>
+				</div>
+	<?php endif;?>
+<?php endforeach;?>
+	<hr/>
+</div>
+
+<!-- Evaluations -->
+<h4><button class="glyphicon glyphicon-triangle-bottom btn btn-default btn-xs" id="evaluation-button"></button>&nbsp;&nbsp;<?php echo $this->translate('Last notes', 'ppit-studies', $context->getLocale()) ?></h4>
+<div id="evaluation-panel">
+		<table class="table note-report">
+			<tr>
+				<th rowspan="2"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Note', 'ppit-studies', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Weight', 'ppit-studies', $context->getLocale()) ?></th>
+				<th colspan="3"><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale()) ?></th>
+			</tr>
+			<tr>
+				<th><?php echo $this->translate('Avg.', 'ppit-studies', $context->getLocale()) ?></th>
+				<th title="<?php echo $this->translate('Higher note', 'ppit-studies', $context->getLocale()) ?>">+</th>
+				<th title="<?php echo $this->translate('Lower note', 'ppit-studies', $context->getLocale()) ?>">-</th>
+			</tr>
+	<?php $first=true; foreach ($notes as $note) : ?>
+		<?php if ($note->type == 'note') : ?>
+			<tr>
+				<td class="subject">
+					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+					<span style="font-weight: normal">(<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$note->level][$context->getLocale()] ?>)</span>
+				</td>
+				<td><?php echo $context->decodeDate($note->date) ?></td>
+				<td align="right"><h5><?php echo $context->formatFloat($note->value, 2).'&nbsp;/&nbsp;'.$context->formatFloat($note->reference_value, 0) ?></h5></td>
+				<td align="right"><?php echo $context->formatFloat($note->weight, 1) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->average_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->higher_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->lower_note, 2) ?></td>
+			</tr>
+			
+			<?php if ($note->assessment || $note->observations) : ?>
+			<tr>
+				<td colspan="7">
+					<?php if ($note->assessment) echo $this->translate('Student', 'ppit-studies', $context->getLocale()).': '.$note->assessment ?>
+					<?php if ($note->assessment && $note->observations) echo '<br>' ?>
+					<?php if ($note->observations) echo $this->translate('Class', 'ppit-studies', $context->getLocale()).': '.$note->observations ?>
+				</td>
+			</tr>
+			<?php endif;?>
+		<?php endif;?>
+	<?php endforeach;?>
+		</table>
+	<hr/>
+</div>
+
+<!-- Reports -->
+	<?php foreach ($periods as $reportId => $report) : ?>
+		<?php
+		$period = explode('.', $reportId);
+		$key = $period[0].$period[1];
+		?>
+
+<h4><button class="glyphicon glyphicon-triangle-bottom btn btn-default btn-xs report-button" id="report-button_<?php echo $key ?>"></button>&nbsp;&nbsp;<?php echo $this->translate('Note report', 'ppit-studies', $context->getLocale()) ?></h4>
+<input type="hidden" id="is-report-open_<?php echo $key ?>" value="1" />
+<div id="report-panel_<?php echo $key ?>">
+
+		<div><a href="<?php echo $this->url('student/downloadReport', array('account_id' => $account->id))?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+		<div>&nbsp;</div>
+		<table class="table note-report">
+			<tr>
+				<th rowspan="2"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Average', 'ppit-studies', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Weight', 'ppit-studies', $context->getLocale()) ?></th>
+				<th colspan="3"><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Categories', 'ppit-studies', $context->getLocale()) ?></th>
+			</tr>
+			<tr>
+				<th><?php echo $this->translate('Avg.', 'ppit-studies', $context->getLocale()) ?></th>
+				<th title="<?php echo $this->translate('Higher average', 'ppit-studies', $context->getLocale()) ?>">+</th>
+				<th title="<?php echo $this->translate('Lower average', 'ppit-studies', $context->getLocale()) ?>">-</th>
+			</tr>
+		<?php $first=true; foreach ($report as $evaluation) : ?>
+			<?php if ($evaluation->subject == 'global') : $globalEvaluation = $evaluation ?>
+			<?php else : ?>
+				<?php 
+				$notes = array(); 
+				if (array_key_exists('notes', $evaluation)) foreach($evaluation->audit as $note) $notes[] = $context->formatFloat($note['note'], 2).'/'.$context->formatFloat($note['reference_value'], 0).(($note['weight'] != 1) ? ' ('.$context->formatFloat($note['weight'], 1).')' : '');
+				$notes = implode(', ', $notes);
+				?>
+			<tr>
+				<td class="subject">
+					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()] ?>
+					<br>
+					<span style="font-weight: normal"><?php echo $context->getFormatedName() ?></span>
+				</td>
+				<td><?php echo $context->decodeDate($evaluation->date) ?></td>
+				<td align="right"><?php echo $context->formatFloat($evaluation->value, 2).'&nbsp;/&nbsp;'.$context->formatFloat($evaluation->reference_value, 0) ?><?php if ($notes) echo '&nbsp;<span class="glyphicon glyphicon-zoom-in" title="'.$notes.'" />' ?></td>
+				<td align="right"><?php echo $context->formatFloat($evaluation->weight, 1) ?></td>
+				<td align="right"><?php echo $context->formatFloat($evaluation->average_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($evaluation->higher_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($evaluation->lower_note, 2) ?></td>
+				<td align="right">
+				<?php $first = true; foreach ($evaluation->distribution as $category => $value) : ?>
+					<?php if ($category != 'global') : ?>
+							<?php if (!$first) : ?><br><?php endif;?>
+							<?php $first = false; ?>
+							<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()] ?>:
+							<?php echo $context->formatFloat($value, 2) ?>
+					<?php endif;?>
+				<?php endforeach;?>
+				</td>
+			</tr>
+			
+				<?php if ($evaluation->assessment || $evaluation->observations) : ?>
+			<tr>
+				<td colspan="8">
+					<?php if ($evaluation->assessment) : ?>
+					<?php echo $evaluation->assessment ?>
+					<?php endif;?>
+					<?php if ($evaluation->assessment && $evaluation->observations) : ?>
+					<br>
+					<?php endif;?>
+					<?php if ($evaluation->observations) : ?>
+					<strong><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale())?></strong>: <?php echo $evaluation->observations ?>
+					<?php endif;?>
+				</td>
+			</tr>
+				<?php endif;?>
+			<?php endif;?>
+		<?php endforeach;?>
+			<tr>
+				<td colspan="8">
+					<?php if ($globalEvaluation->assessment) : ?>
+					<strong><?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?></strong>: <?php echo $globalEvaluation->assessment ?>
+					<?php endif;?>
+					<?php if ($globalEvaluation->assessment && $globalEvaluation->observations) : ?>
+					<br>
+					<?php endif;?>
+					<?php if ($globalEvaluation->observations) : ?>
+					<strong><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale())?></strong>: <?php echo $globalEvaluation->observations ?>
+					<?php endif;?>
+				</td>
+			</tr>
+		</table>
+	<hr/>
+</div>
+	<?php endforeach;?>
+<?php endif;?>
+
+<?php 
+reset($progresses);
+$progress = current($progresses);
+?>
+
+<?php if ($progress) : ?>
+
+<!-- Progress -->
+<div id="progress-panel">
+<!-- School year -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $progress->school_year ?>" />
+			</div>
+		</div>
+
+<!-- Period -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Period', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $context->getConfig('student/property/discipline_period')['modalities'][$progress->period][$context->getLocale()] ?>" />
+			</div>
+		</div>
+
+<!-- Progress date -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $context->decodeDate($progress->date) ?>" />
+			</div>
+		</div>
+
+<div>&nbsp;</div>
+<hr>
+<h4 style="text-align: center"><?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale())?></h4>
+<br />
+	<?php 
+	$subject = $context->getConfig('progress/'.$progress->type)['criteria'];
+	$columnNumber = count($progresses) + 1;
+	?>
+
+	<?php if (array_key_exists('qualitative_criteria', $subject)) : ?>
+	
+		<?php foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) : ?>
+	
+			<?php $criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null ?>
+	
+			<?php if ($criterion['type'] == 'subtitle') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-12 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+		</div>
+
+			<?php else : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" disabled="disabled"><?php echo $criterionValue ?></textarea>
+			</div>
+		</div>
+			
+			<?php endif;?>
+		<?php endforeach;?>
+	<?php endif;?>
+
+	<?php if (array_key_exists('quantitative_criteria', $subject)) : ?>
+
+		<div>&nbsp;</div>
+
+<table class="table table-striped ppit_index">
+			
+		<tr>
+			<th>&nbsp;</th>
+
+			<?php $first = true; foreach ($progresses as $progress) : ?>
+			<th style="text-align: center; <?php if (!$first) echo 'font-weight: normal; font-style: italic;' ?>"><?php echo $progress->period //$context->getConfig('student/property/discipline_period')['modalities'][$progress->period][$context->getLocale()] ?></th>
+			<?php if ($first) echo '<th>&nbsp;</th>' ?>
+			<?php $first = false; endforeach;?>
+		
+		</tr>
+
+		<?php foreach ($subject['quantitative_criteria'] as $criterionId => $criterion) : ?>
+	
+			<?php if ($criterion['type'] == 'subtitle') : ?>
+
+		<tr><td colspan="<?php echo $columnNumber ?>"><strong><?php echo $criterion['labels'][$context->getLocale()]?></strong></td></tr>
+
+			<?php else : ?>
+			
+		<tr>
+			<td style="text-align: right; font-size: 85%"><?php echo $criterion['labels'][$context->getlocale()] ?></td>
+
+			<?php $first = true; foreach ($progresses as $progress) : ?>
+	
+				<?php
+				$criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null;
+				if ($criterionValue == "NA") $colorCoding = 'red';
+				elseif ($criterionValue == "EC") $colorCoding = 'orange';
+				elseif ($criterionValue == "AC") $colorCoding = 'green';
+				else $colorCoding = null;
+				?>
+				
+			<td title="<?php echo $subject['modalities'][$criterionValue][$context->getLocale()] ?>" style="text-align: center; color: white; <?php if ($colorCoding) echo 'background-color: '.$colorCoding.';' ?> <?php echo (!$first)  ? 'font-weight: normal; font-style: italic;' : 'font-weight: bold;' ?>">
+			</td>
+			
+			<?php if ($first) echo '<td>&nbsp;</td>' ?>
+
+			<?php $first = false; endforeach;?>
+		
+		</tr>
+		
+			<?php endif;?>
+		<?php endforeach;?>
+
+</table>
+	<?php endif;?>
+
+<!-- Observations -->
+		<div class="form-group" id="observations_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="observations" disabled="disabled"><?php echo $progress->observations ?></textarea>
+			</div>
+		</div>
+<?php endif;?>
+
+<?php if ($category == 'news_flash') : ?>
+<div>&nbsp;</div>
+<div id='calendar'></div>
+<?php endif;?>
