@@ -57,7 +57,7 @@ class Student_old implements InputFilterAwareInterface
     public $email;
     public $tel_cell;
     public $photo_link_id;
-    public $sex;
+    public $gender;
     public $birth_date;
     public $place_of_birth;
     public $nationality;
@@ -231,7 +231,7 @@ class Student_old implements InputFilterAwareInterface
 //	    	->join('core_community', 'contact_contract.customer_community_id = core_community.id', array('customer_name' => 'name'), 'left')
 //	    	->join('order', 'student.order_id = order.id', array('status'), 'left')
 	    	->join('core_place', 'student.place_id = core_place.id', array('center_name' => 'name'), 'left')
-	    	->join('core_vcard', 'student.student_contact_id = core_vcard.id', array('n_fn', 'n_first', 'n_last', 'email', 'tel_cell', 'photo_link_id', 'adr_city', 'adr_state', 'adr_country', 'sex', 'birth_date', 'place_of_birth', 'nationality'), 'left');
+	    	->join('core_vcard', 'student.student_contact_id = core_vcard.id', array('n_fn', 'n_first', 'n_last', 'email', 'tel_cell', 'photo_link_id', 'adr_city', 'adr_state', 'adr_country', 'gender', 'birth_date', 'place_of_birth', 'nationality'), 'left');
 
     	if ($config['ppitStudies']['sportOption']) {
     		$select->join('student_sport', 'student.sport_option_id = student_sport.id', array('sport', 'category'), 'left');
@@ -260,7 +260,7 @@ class Student_old implements InputFilterAwareInterface
     		if (isset($params['adr_city'])) $where->like('adr_city', '%'.$params['adr_city'].'%');
     		if (isset($params['adr_state'])) $where->like('adr_state', '%'.$params['adr_state'].'%');
     		if (isset($params['adr_country'])) $where->like('adr_country', '%'.$params['adr_country'].'%');
-    		if (isset($params['sex'])) $where->equalTo('sex', $params['sex']);
+    		if (isset($params['gender'])) $where->equalTo('gender', $params['gender']);
     		if (isset($params['min_birth_date'])) $where->greaterThanOrEqualTo('birth_date', $params['min_birth_date']);
     		if (isset($params['max_birth_date'])) $where->lessThanOrEqualTo('birth_date', $params['max_birth_date']);
     		if (isset($params['place_of_birth'])) $where->like('place_of_birth', '%'.$params['place_of_birth'].'%');
@@ -317,7 +317,7 @@ class Student_old implements InputFilterAwareInterface
     	$student->email = $contact->email;
     	$student->tel_cell = $contact->tel_cell;
     	$student->photo_link_id = $contact->photo_link_id;
-    	$student->sex = $contact->sex;
+    	$student->gender = $contact->gender;
     	$student->birth_date = $contact->birth_date;
     	$student->place_of_birth = $contact->place_of_birth;
     	$student->nationality = $contact->nationality;
