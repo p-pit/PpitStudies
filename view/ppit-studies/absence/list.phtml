@@ -5,8 +5,9 @@
 <?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
 		<th align="center">
 	<?php 
-	if ($propertyId == 'subject') $label = $this->translate('Subject', 'ppit-studies', $context->getLocale());
-	else $label = $context->getConfig('absence')['properties'][$propertyId]['labels'][$context->getLocale()];
+	$property = $context->getConfig('absence')['properties'][$propertyId];
+	if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
+	$label = $property['labels'][$context->getLocale()];
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -44,8 +45,11 @@ foreach ($absences as $absence) : ?>
 			<?php $property = $context->getConfig('absence')['properties'][$propertyId] ?>
 			<?php if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']) ?>
 	
-			<?php if ($propertyId == 'name') : ?>
-		<td><?php echo $absence->name ?></td>
+			<?php if ($propertyId == 'n_fn') : ?>
+		<td><?php echo $absence->n_fn ?></td>
+	
+			<?php elseif ($propertyId == 'duration') : ?>
+		<td style="text-align: right"><?php if ((int)($absence->duration/60)) echo ((int)($absence->duration/60)).'h' ?><?php if ($absence->duration%60) echo ($absence->duration%60).'mn' ?></td>
 
 			<?php elseif ($rendering == 'date') : ?>
 		<td><?php echo $context->decodeDate($absence->properties[$propertyId]) ?></td>
@@ -66,11 +70,14 @@ foreach ($absences as $absence) : ?>
 	
 	</tr>
 	
+	<tr class="detail-row" id="detail-row_<?php echo $absence->id ?>" rowspan="2"><td colspan="99"><div class="col-md-6 col-md-offset-3 ppit-panel" id="detail-div_<?php echo $absence->id ?>"></div></td></tr>
+	<tr class="invisible"><td colspan="99"></td></tr>
+	
 <?php $i++; endforeach; ?>
 	
 	<tr>
-		<td colspan="<?php echo count($context->getConfig('absence/list')) ?>" style="font-weight: bold; text-align:right"><?php echo $this->translate('Total lateness time', 'ppit-studies', $context->getLocale()) ?> (mn)</td>
-		<td style="font-weight: bold; text-align:right"><?php echo $sum ?></td>
+		<td colspan="<?php echo count($context->getConfig('absence/list')) ?>" style="font-weight: bold; text-align:right"><?php echo $this->translate('Total duration', 'ppit-studies', $context->getLocale()) ?></td>
+		<td style="font-weight: bold; text-align:right"><?php if ((int)($sum/60)) echo ((int)($sum/60)).'h' ?><?php if ($sum%60) echo sprintf("%02u", $sum%60).'mn' ?></td>
 	</tr>
 
 </table>

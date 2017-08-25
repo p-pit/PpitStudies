@@ -1,0 +1,127 @@
+<?php 
+reset($progresses);
+$progress = current($progresses);
+?>
+
+<?php if ($progress) : ?>
+
+<!-- Progress -->
+<div id="progress-panel">
+<!-- School year -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $progress->school_year ?>" />
+			</div>
+		</div>
+
+<!-- Period -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Period', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $context->getConfig('student/property/discipline_period')['modalities'][$progress->period][$context->getLocale()] ?>" />
+			</div>
+		</div>
+
+<!-- Progress date -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $context->decodeDate($progress->date) ?>" />
+			</div>
+		</div>
+
+<div>&nbsp;</div>
+<hr>
+<h4 style="text-align: center"><?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale())?></h4>
+<br />
+	<?php 
+	$subject = $context->getConfig('progress/'.$progress->type)['criteria'];
+	$columnNumber = count($progresses) + 1;
+	?>
+
+	<?php if (array_key_exists('qualitative_criteria', $subject)) : ?>
+	
+		<?php foreach ($subject['qualitative_criteria'] as $criterionId => $criterion) : ?>
+	
+			<?php $criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null ?>
+	
+			<?php if ($criterion['type'] == 'subtitle') : ?>
+
+		<div class="form-group">
+			<label class="col-sm-12 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+		</div>
+
+			<?php else : ?>
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" disabled="disabled"><?php echo $criterionValue ?></textarea>
+			</div>
+		</div>
+			
+			<?php endif;?>
+		<?php endforeach;?>
+	<?php endif;?>
+
+	<?php if (array_key_exists('quantitative_criteria', $subject)) : ?>
+
+		<div>&nbsp;</div>
+
+<table class="table table-striped ppit_index">
+			
+		<tr>
+			<th>&nbsp;</th>
+
+			<?php $first = true; foreach ($progresses as $progress) : ?>
+			<th style="text-align: center; <?php if (!$first) echo 'font-weight: normal; font-style: italic;' ?>"><?php echo $progress->period //$context->getConfig('student/property/discipline_period')['modalities'][$progress->period][$context->getLocale()] ?></th>
+			<?php if ($first) echo '<th>&nbsp;</th>' ?>
+			<?php $first = false; endforeach;?>
+		
+		</tr>
+
+		<?php foreach ($subject['quantitative_criteria'] as $criterionId => $criterion) : ?>
+	
+			<?php if ($criterion['type'] == 'subtitle') : ?>
+
+		<tr><td colspan="<?php echo $columnNumber ?>"><strong><?php echo $criterion['labels'][$context->getLocale()]?></strong></td></tr>
+
+			<?php else : ?>
+			
+		<tr>
+			<td style="text-align: right; font-size: 85%"><?php echo $criterion['labels'][$context->getlocale()] ?></td>
+
+			<?php $first = true; foreach ($progresses as $progress) : ?>
+	
+				<?php
+				$criterionValue = (array_key_exists($criterionId, $progress->criteria)) ? $progress->criteria[$criterionId] : null;
+				if ($criterionValue == "NA") $colorCoding = 'red';
+				elseif ($criterionValue == "EC") $colorCoding = 'orange';
+				elseif ($criterionValue == "AC") $colorCoding = 'green';
+				else $colorCoding = null;
+				?>
+				
+			<td title="<?php echo $subject['modalities'][$criterionValue][$context->getLocale()] ?>" style="text-align: center; color: white; <?php if ($colorCoding) echo 'background-color: '.$colorCoding.';' ?> <?php echo (!$first)  ? 'font-weight: normal; font-style: italic;' : 'font-weight: bold;' ?>">
+			</td>
+			
+			<?php if ($first) echo '<td>&nbsp;</td>' ?>
+
+			<?php $first = false; endforeach;?>
+		
+		</tr>
+		
+			<?php endif;?>
+		<?php endforeach;?>
+
+</table>
+	<?php endif;?>
+
+<!-- Observations -->
+		<div class="form-group" id="observations_group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea class="form-control" id="observations" disabled="disabled"><?php echo $progress->observations ?></textarea>
+			</div>
+		</div>
+<?php endif;?>

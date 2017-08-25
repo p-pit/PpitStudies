@@ -11,14 +11,29 @@
 
 <?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
 
-<!-- Class -->
+<!-- Class filtered on the user's accessibility perimeter -->
+	<?php 
+	$classes = array();
+	if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('property_7', $context->getPerimeters()['p-pit-studies'])) {
+		foreach ($context->getPerimeters()['p-pit-studies']['property_7'] as $classId) {
+			$classes[$classId] = $context->getConfig('student/property/class')['modalities'][$classId];
+		}
+	}
+	else {
+		foreach ($context->getConfig('student/property/class')['modalities'] as $classId => $class) {
+			$classes[$classId] = $class;
+		}
+	}
+	if (count($classes) == 1) foreach ($classes as $classId => $class) $selected = $classId;
+	else $selected = null;
+	?>
 		<div class="form-group" id="class_group">
 			<label class="col-sm-5 control-label">* <?php echo $context->getConfig('student/property/class')['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 				<select class="form-control" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
 					<option />
-	<?php foreach ($context->getConfig('student/property/class')['modalities'] as $classId => $class) : ?>
-					<option value="<?php echo $classId ?>" <?php if ($note->class == $classId) echo 'selected="selected"' ?>><?php echo $class[$context->getLocale()] ?></option>
+	<?php foreach ($classes as $classId => $class) : ?>
+					<option value="<?php echo $classId ?>" <?php if ($selected) echo 'selected="'.$selected.'"' ?>><?php echo $class[$context->getLocale()] ?></option>
 	<?php endforeach;?>
 				</select>
 			</div>
@@ -31,7 +46,7 @@
 			<div class="col-sm-7">
 	    		<select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
-<?php foreach ($config['note/update']['types']['schooling']['subjects'] as $subjectId => $subject) : ?>
+<?php foreach ($context->getConfig('student/property/school_subject')['modalities'] as $subjectId => $subject) : ?>
 	<?php $caption = $subject[$context->getLocale()]; ?>
 	    			<option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
 <?php endforeach;?>

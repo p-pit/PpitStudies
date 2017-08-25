@@ -26,7 +26,8 @@ class NoteController extends AbstractActionController
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
 		$category = $this->params()->fromRoute('category');
-
+		$type = $this->params()->fromRoute('type');
+		
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
@@ -38,10 +39,11 @@ class NoteController extends AbstractActionController
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
     			'category' => $category,
+    			'type' => $type,
     	));
     }
 
-    public function getFilters($params)
+    public function getFilters($category, $params)
     {
 		$context = Context::getCurrent();
     	
@@ -51,7 +53,7 @@ class NoteController extends AbstractActionController
     	$name = ($params()->fromQuery('name', null));
     	if ($name) $filters['name'] = $name;
 
-    	foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -61,8 +63,8 @@ class NoteController extends AbstractActionController
     		if ($max_property) $filters['max_'.$propertyId] = $max_property;
     	}
 
-    	foreach ($context->getConfig('note/search')['more'] as $propertyId => $rendering) {
-    	
+    	foreach ($context->getConfig('note/search'.'/'.$category)['more'] as $propertyId => $rendering) {
+
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
     		$min_property = ($params()->fromQuery('min_'.$propertyId, null));
@@ -80,12 +82,14 @@ class NoteController extends AbstractActionController
     	$context = Context::getCurrent();
 
     	$category = $this->params()->fromRoute('category');
+    	$type = $this->params()->fromRoute('type');
     	 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'category' => $category,
+    			'type' => $type,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -97,21 +101,23 @@ class NoteController extends AbstractActionController
     	$context = Context::getCurrent();
     
 		$category = $this->params()->fromRoute('category');
-    	$params = $this->getFilters($this->params());
+		$type = $this->params()->fromRoute('type');
+		$params = $this->getFilters($category, $this->params());
     
-    	$major = ($this->params()->fromQuery('major', 'name'));
-    	$dir = ($this->params()->fromQuery('dir', 'ASC'));
+    	$major = ($this->params()->fromQuery('major', 'date'));
+    	$dir = ($this->params()->fromQuery('dir', 'DESC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
     	// Retrieve the list
-    	$notes = Note::getList($category, $params, $major, $dir, $mode);
+    	$notes = Note::getList($category, $type, $params, $major, $dir, $mode);
 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'category' => $category,
+    			'type' => $type,
     			'notes' => $notes,
     			'mode' => $mode,
     			'params' => $params,

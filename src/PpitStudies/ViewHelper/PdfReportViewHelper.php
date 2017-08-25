@@ -15,14 +15,6 @@ require_once('vendor/TCPDF-master/tcpdf.php');
 
 class PdfReportViewHelper
 {	
-	public static function mapArgs($headerDef, $params, $locale)
-	{
-		$arguments = array($headerDef['html']);
-		foreach ($params as $param) if (is_array($param)) $arguments[] = $param[$locale];
-		else $arguments[] = $param;
-		return call_user_func_array('sprintf', $arguments);
-	}
-
     public static function render($pdf, $place, $account, $addressee, $period, $absences, $cumulativeLateness)
     {
     	// Retrieve the context
@@ -150,48 +142,11 @@ class PdfReportViewHelper
     		}
     	}
 
-	    	$pdf->SetFont('', '', 8);
-	    	$pdf->Ln();
-	    	$pdf->SetDrawColor(0, 0, 0);
+	    $pdf->SetFont('', '', 8);
+	    $pdf->Ln();
+	    $pdf->SetDrawColor(0, 0, 0);
 
-	    	$text = $context->getConfig('student/report')['pdfDetailStyle'];
-	    	
-			$rows = '';
-	    	$color = 0;
-	    	$globalEvaluation = '';
-	    	foreach ($period as $evaluation) {
-	    		if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
-	    		else {
-		    		$distribution = array();
-		    		foreach ($evaluation->distribution as $category => $value) {
-		    			if ($category != 'global') {
-		    				$distribution[] = $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()].':&nbsp;'.$context->formatFloat($value, 2);
-		    			}
-		    		}
-		    		$distribution = implode('<br>', $distribution);
-		    		$rows.= sprintf(
-		    				$context->getConfig('student/report')['detailRow']['html'], 
-		    				(($color) ? 'style="background-color: #EEE"' : ''),
-		    				$context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()],
-							$context->getFormatedName(),
-		    				$context->formatFloat($evaluation->weight, 1),
-		    				$context->formatFloat($evaluation->value, 2),
-							$context->formatFloat($evaluation->lower_note, 2),
-		    				$context->formatFloat($evaluation->average_note, 2),
-							$context->formatFloat($evaluation->higher_note, 2),
-							$distribution,
-							$evaluation->assessment
-		    		);
-		    		$color = ($color+1)%2;
-	    		}
-	    	}
-
-	    	$headerDef = $context->getConfig('student/report')['detailHeader'];
-	    	$params = $headerDef['params'];
-			$params['rows'] = $rows;
-			$header = PdfReportViewHelper::mapArgs($headerDef, $params, $context->getLocale());
-	    	
-	    	$text .= $header;
+	    $text = PdfReportTableViewHelper::render($period);
 
 		$pdf->writeHTML($text, true, 0, true, 0);
 
@@ -206,7 +161,10 @@ class PdfReportViewHelper
 		$pdf->MultiCell(40, 5, '<strong>'.'Durée cumulée des retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
 		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
 		$pdf->MultiCell(50, 5, $cumulativeLateness.' mn', 1, 'L', 0, 1, '' ,'', true);
-
+		
+		$globalEvaluation = '';
+		foreach ($period as $evaluation) if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
+		
 		$text = $context->getConfig('student/report')['pdfDetailStyle'];
 		$text .= sprintf(
 					$context->getConfig('student/report')['signatureFrame']['html'],

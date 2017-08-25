@@ -14,6 +14,7 @@ class NoteLink implements InputFilterAwareInterface
 {
     public $id;
     public $instance_id;
+    public $status;
     public $account_id;
     public $note_id;
     public $value;
@@ -23,8 +24,9 @@ class NoteLink implements InputFilterAwareInterface
     public $update_time;
 
     // Joined properties
-	public $name;
-    public $status;
+    public $n_fn;
+	public $name; // Deprecated
+    public $note_status;
     public $type;
     public $school_year;
     public $level;
@@ -56,6 +58,7 @@ class NoteLink implements InputFilterAwareInterface
     {
         $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->instance_id = (isset($data['instance_id'])) ? $data['instance_id'] : null;
+        $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->note_id = (isset($data['note_id'])) ? $data['note_id'] : null;
         $this->value = (isset($data['value'])) ? $data['value'] : null;
@@ -64,8 +67,9 @@ class NoteLink implements InputFilterAwareInterface
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         
         // Joined properties
-        $this->name = (isset($data['name'])) ? $data['name'] : null;
-        $this->status = (isset($data['status'])) ? $data['status'] : null;
+        $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null; // Deprecated
+        $this->name = (isset($data['name'])) ? $data['name'] : null; // Deprecated
+        $this->note_status = (isset($data['note_status'])) ? $data['note_status'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
@@ -89,6 +93,7 @@ class NoteLink implements InputFilterAwareInterface
     	$data = array();
     	$data['id'] = (int) $this->id;
     	$data['instance_id'] = (int) $this->instance_id;
+    	$data['status'] = $this->status;
     	$data['account_id'] = (int) $this->account_id;
     	$data['note_id'] = (int) $this->note_id;
     	$data['value'] =  (float) $this->value;
@@ -103,7 +108,7 @@ class NoteLink implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
     		->order(array($major.' '.$dir, 'date DESC', 'type ASC'))
-    		->join('student_note', 'student_note_link.note_id = student_note.id', array('status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left');
+    		->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left');
 		$where = new Where;
 		if ($type) $where->equalTo('type', $type);
 
@@ -111,8 +116,12 @@ class NoteLink implements InputFilterAwareInterface
     	if ($mode == 'todo') {
     	}
     	else {
-    		if (array_key_exists('account_id', $params)) $where->equalTo('account_id', $params['account_id']);
-    		if (array_key_exists('min_date', $params)) $where->greaterThanOrEqualTo('date', $params['min_date']);
+    		// Set the filters
+    		foreach ($params as $propertyId => $property) {
+				if (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
+    			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
+    			else $where->like($propertyId, '%'.$params[$propertyId].'%');
+    		}
     	}
 		
     	$select->where($where);
@@ -148,6 +157,7 @@ class NoteLink implements InputFilterAwareInterface
     public static function instanciate($account_id = null, $note_id)
     {
 		$noteLink = new NoteLink;
+		$noteLink->status = 'new';
 		$noteLink->account_id = $account_id;
 		$noteLink->note_id = $note_id;
 		$noteLink->distribution = array();

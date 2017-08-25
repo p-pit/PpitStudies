@@ -10,6 +10,8 @@
 	</div>
 	<div class="panel-body">
 
+		<div class="col-md-6">
+
 <!-- Filters -->
 
 		<div class="form-group">
@@ -39,10 +41,8 @@
 	<?php else : ?>
 	
 		<?php
-		if ($propertyId == 'school_year') $property = $context->getConfig('student/property/school_year');
-		elseif ($propertyId == 'period') $property = $context->getConfig('student/property/school_period');
-		elseif ($propertyId == 'name') $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties']['name'];
-		else $property = $property = $context->getConfig('absence')['properties'][$propertyId];
+		$property = $context->getConfig('absence')['properties'][$propertyId];
+		if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
 		$label = $property['labels'][$context->getLocale()];
 		?>
 
@@ -196,8 +196,7 @@
 					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
 				</button>
 	    </div>
-	    
-		<div>&nbsp;</div>
+	    </div>
 
 <!-- Add or update section -->
 		<div id="absence-list-panel"></div>

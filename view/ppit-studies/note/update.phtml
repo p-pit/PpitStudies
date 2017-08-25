@@ -2,7 +2,7 @@
 	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong><?php echo $this->translate('Detail', 'ppit-core', $context->getLocale()) ?></strong>
  		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor_<?php echo $note->id ?>">
 				<span class="glyphicon glyphicon-remove"></span>
 			</button>
  		 </div>
@@ -30,8 +30,8 @@
 
 <!-- Display the audit -->
 		<div>&nbsp;</div>
-		<?php echo $this->translate('History', 'ppit-core', $context->getLocale()) ?> (<a id="audit-label"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)
-		<div id="audit-panel" class="panel panel-default">
+		<?php echo $this->translate('History', 'ppit-core', $context->getLocale()) ?> (<a id="audit-label_<?php echo $note->id ?>"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)
+		<div id="audit-panel_<?php echo $note->id ?>" class="panel panel-default">
 			<div class="panel-body">
 	<?php foreach ($note->audit as $comment) : ?>
 				<div class="row">
@@ -99,7 +99,7 @@
 	<div class="form-group" id="product_group">
 		<label class="col-sm-5 control-label">&nbsp;</label>
 		<div class="col-sm-7">
-			<input class="form-control" disabled="disabled" value="<?php echo $noteLink->name ?>" />
+			<input class="form-control" disabled="disabled" value="<?php echo $noteLink->n_fn ?>" />
 		</div>
 	</div>
 <?php endforeach;?>

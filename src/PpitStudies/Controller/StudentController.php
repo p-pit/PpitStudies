@@ -8,9 +8,10 @@ use PpitCommitment\Model\Event;
 use PpitCommitment\Model\Notification;
 use PpitCommitment\ViewHelper\SsmlAccountViewHelper;
 use PpitCore\Form\CsrfForm;
-use PpitCore\Model\Csrf;
+use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Credit;
+use PpitCore\Model\Csrf;
 use PpitCore\Model\Instance;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
@@ -22,6 +23,7 @@ use PpitStudies\Model\NoteLink;
 use PpitStudies\Model\Progress;
 use PpitStudies\Model\StudentSportImport;
 use PpitStudies\ViewHelper\DocumentTemplate;
+use PpitStudies\ViewHelper\PdfReportTableViewHelper;
 use PpitStudies\ViewHelper\PdfReportViewHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -62,11 +64,15 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$account_id = (int) $this->params()->fromRoute('account_id', 0);
+    	$account = Account::get($account_id);
+    	$place = Place::get($account->place_id);
+    	$community = Community::get('p-pit-studies_'.$place->identifier, 'identifier');
 
      	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-     			'account_id' => $account_id,
+     			'account' => $account,
+     			'community' => $community,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -312,6 +318,8 @@ class StudentController extends AbstractActionController
     			// Load the input data
     			$data = array();
     			$data['category'] = $request->getPost('category');
+    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+    			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
     			$data['date'] = $request->getPost('date');
@@ -453,7 +461,6 @@ class StudentController extends AbstractActionController
     
     	// Retrieve the type
     	$type = $this->params()->fromRoute('type', null);
-    
     	$note = Note::instanciate('homework');
 
     	$documentList = array();
@@ -501,6 +508,8 @@ class StudentController extends AbstractActionController
     			// Load the note data
     			$data = array();
     			$data['category'] = 'homework';
+    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+    			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['class'] = $request->getPost('class');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
@@ -603,6 +612,8 @@ class StudentController extends AbstractActionController
     			// Load the input data
     			$data = array();
     			$data['status'] = 'current';
+    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+    			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['class'] = $request->getPost('class');
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
@@ -1004,12 +1015,189 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 
-	public function downloadReportAction()
+	public function planningAction()
 	{
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+		$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => $account_id), array('force_canonical' => true));
+		
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'eventsRoute' => $eventsRoute,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+
+	public function fileAction()
+	{
+		$context = Context::getCurrent();
+
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+		
+		$documentList = array();
+    	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
+    		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+    		$dropbox = $context->getConfig('ppitDocument')['dropbox'];
+    		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
+    		try {
+    			$properties = $dropboxClient->getMetadataWithChildren($dropbox['folders']['students']);
+    			foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
+    		}
+    		catch(\Exception $e) {}
+    	}
+    	else $dropbox = null;
+
+    	$view = new ViewModel(array(
+    			'context' => $context,
+	    		'dropbox' => $dropbox,
+	    		'documentList' => $documentList,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+	}
+
+	public function linkAction()
+	{
+		$context = Context::getCurrent();
+		$document = $this->params()->fromRoute('document', 0);
+		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+		$dropbox = $context->getConfig('ppitDocument')['dropbox'];
+		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
+		$link = $dropboxClient->createTemporaryDirectLink($dropbox['folders']['students'].'/'.$document);
+		if ($link[0]) return $this->redirect()->toUrl($link[0]);
+		else return $this->response;
+	}
+
+	public function absenceAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+		$absLates = Absence::getList('schooling', array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$absences = array();
+		$absenceCount = 0;
+		$cumulativeAbsence = 0;
+		$latenesss = array();
+		$latenessCount = 0;
+		$cumulativeLateness = 0;
+		foreach ($absLates as $absLate) {
+			if ($absLate->category == 'absence') {
+				$absences[] = $absLate;
+				$absenceCount++;
+				$cumulativeAbsence += $absLate->duration;
+			}
+			elseif ($absLate->category =='lateness') {
+				$latenesss[] = $absLate;
+				$latenessCount++;
+				$cumulativeLateness += $absLate->duration;
+			}
+		}
+	
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'account' => $account,
+				'absences' => $absences,
+				'absenceCount' => $absenceCount,
+				'cumulativeAbsence' => $cumulativeAbsence,
+				'latenesss' => $latenesss,
+				'latenessCount' => $latenessCount,
+				'cumulativeLateness' => $cumulativeLateness,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+
+	public function homeworkAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+	
+		$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+	
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'account' => $account,
+				'notes' => $notes,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+
+	public function evaluationAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+		$progresses = Progress::retrieveAll($account->property_1, $account_id);
+	
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'type' => $account->property_1,
+				'account' => $account,
+				'progresses' => $progresses,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+
+	public function reportAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+	
+		$periods = array();
+		$notes = NoteLink::GetList('report', array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			$key = $note->school_year.'.'.$note->school_period;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $note;
+		}
+		krsort($periods);
+		$renderedPeriods = array();
+		foreach($periods as $periodId => $period) {
+			$renderedPeriods[$periodId] = PdfReportTableViewHelper::render($period);
+		}
+
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'account' => $account,
+				'renderedPeriods' => $renderedPeriods,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+	
+	public function downloadReportAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
 		$account_id = (int) $this->params()->fromRoute('account_id');
+		$school_year = $this->params()->fromRoute('school_year');
+		$school_period = $this->params()->fromRoute('school_period');
+		
 		$account = Account::get($account_id);
 		$account->properties = $account->getProperties();
 		if ($account->contact_1_status == 'main') $addressee = $account->contact_1;
@@ -1036,21 +1224,14 @@ class StudentController extends AbstractActionController
 				$cumulativeLateness += $absLate->duration;
 			}
 		}
-		$periods = array();
-		$notes = NoteLink::GetList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
-		foreach($notes as $note) {
-			if ($note->type == 'report') {
-				$key = $note->school_year.'.'.$note->school_period;
-				if (!array_key_exists($key, $periods)) $periods[$key] = array();
-				$periods[$key][] = $note;
-			}
-		}
-		krsort($periods);
+		$notes = NoteLink::GetList('report', array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
+		$period = array();
+		foreach($notes as $note) $period[] = $note;
 
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, current($periods), $absences, $cumulativeLateness);
+    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, $period, $absences, $cumulativeLateness);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.
@@ -1058,6 +1239,18 @@ class StudentController extends AbstractActionController
     	return $this->response;
 	}
 
+	public function dropboxLinkAction()
+	{
+		$context = Context::getCurrent();
+		$document = $this->params()->fromRoute('document', 0);
+		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+		$dropbox = $context->getConfig('ppitDocument')['dropbox'];
+		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
+		$link = $dropboxClient->createTemporaryDirectLink($dropbox['folders']['schooling'].'/'.$document);
+		if ($link[0]) return $this->redirect()->toUrl($link[0]);
+		else return $this->response;
+	}
+	
 	public function letter($template, $data, $logo_src, $logo_width, $logo_height, $footer)
 	{
 		// Retrieve the context

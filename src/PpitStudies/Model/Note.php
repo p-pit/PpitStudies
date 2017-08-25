@@ -110,7 +110,7 @@ class Note implements InputFilterAwareInterface
     	return $data;
     }
     
-    public static function getList($category, $params, $major, $dir, $mode = 'todo')
+    public static function getList($category, $type, $params, $major, $dir, $mode = 'todo')
     {
     	$context = Context::getCurrent();
     	$select = Note::getTable()->getSelect()
@@ -118,7 +118,8 @@ class Note implements InputFilterAwareInterface
 		$where = new Where;
 		$where->notEqualTo('student_note.status', 'deleted');
 		if ($category) $where->equalTo('student_note.category', $category);
-
+		if ($type) $where->equalTo('student_note.type', $type);
+		
     	// Todo list vs search modes
     	if ($mode == 'todo') {
     		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
@@ -174,16 +175,18 @@ class Note implements InputFilterAwareInterface
     {
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
-    		->join('student_note', 'student_note_link.note_id = student_note.id', array('status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
+    		->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->order(array('date DESC', 'subject ASC'));
     	$where = new Where;
-    	$where->notEqualTo('status', 'deleted');
+    	$where->notEqualTo('student_note.status', 'deleted');
     	$where->equalTo('type', 'note');
 //    	$where->equalTo('school_year', $school_year);
     	$where->equalTo('class', $class);
 //    	$where->equalTo('school_period', $period);
     	$where->equalTo('subject', $subject);
-		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
+//		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
+		$where->equalTo('school_year', $context->getConfig('student/property/school_year/default'));
+		$where->equalTo('school_period', $context->getConfig('student/property/school_period/default'));
 		$select->where($where);
     	$cursor = NoteLink::getTable()->selectWith($select);
     	$periodNotes = array();
@@ -228,7 +231,8 @@ class Note implements InputFilterAwareInterface
     	$note->links = array();
     	$select = NoteLink::getTable()->getSelect()
     				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
-    				->join('core_community', 'core_community.id = commitment_account.customer_community_id', array('name'), 'left')
+    				->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
+//    				->join('core_community', 'core_community.id = commitment_account.customer_community_id', array('name'), 'left')
     				->where(array('note_id' => $id));
 		$cursor = NoteLink::getTable()->selectWith($select);
 		foreach($cursor as $noteLink) $note->links[] = $noteLink;

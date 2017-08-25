@@ -1,32 +1,42 @@
+<!-- 
+/**
+ * PpitCore V1.0 (https://github.com/p-pit/PpitCore)
+ *
+ * @link      https://github.com/p-pit/PpitCore
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitCore/blob/master/license.txt GNU-GPL license
+ */
+-->
+
 <!-- Load the common form javascript functions -->
 <?php echo $this->partial('/partials/common-form-js.phtml'); ?>
 
-<div class="container">
-
 <?php
-$title = $context->getConfig('note/index')['title'][$context->getLocale()];
+$title = $context->getConfig('event/index/planning')['title'][$context->getLocale()];
 $this->headTitle($title);
 echo $this->partial('/partials/header');
 ?>
 	
 	<div>&nbsp;</div>
 	
-	<div class="row" id="main_menu">
+	<div class="row" id="main_menu" >
 
-<?php foreach ($menu as $entryId => $entry) : ?>
+<?php foreach ($context->getConfig('menus')['p-pit-studies'] as $entryId => $entry) : ?>
 	<?php if ($context->isAllowed($entry['route'])) : ?>
+		<?php if ($entryId == 'planning') $color = 'btn-primary'; else $color = 'btn-default' ?>
 		<div class="col-md-2">
-				<button type="button" class="btn <?php echo ($entryId == 'evaluation' && $type == 'note' || $entryId == 'report' && $type == 'report' || $entryId == 'homework' && $category == 'homework') ? 'btn-primary' : 'btn-default' ?> menu-btn" style="width:100%; text-align: left" id="<?php echo $entryId ?>-anchor">
+				<button type="button" class="btn <?php echo $color ?> menu-btn" style="width:100%; text-align: left" id="<?php echo $entryId ?>-anchor">
 		<?php if (array_key_exists('glyphicon', $entry)) : ?>
 					<span class="glyphicon <?php echo $entry['glyphicon'] ?>"></span>
 		<?php endif;?>
 					<?php echo $entry['label'][$context->getLocale()] ?>
 				</button>
-			</div>
+		</div>
 	<?php endif ?>
 <?php endforeach ?>
 
 	</div>
+
 	<div>&nbsp;</div>
 
 	<!-- Main panel -->
@@ -39,12 +49,14 @@ echo $this->partial('/partials/header');
 	    <div class="col-md-6 col-md-offset-3 ppit-panel" id="login-panel">
 		</div>
 	</div>
-</div>
+
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="<?php echo $this->basePath('mdb-free/js/mdb.min.js') ?>"></script>
 
 <script>
 
 <?php
-echo $this->partial('/partials/student-note-scripts');
+echo $this->partial('/partials/event-scripts');
 echo $this->partial('/partials/ppit-controller') 
 ?>
 
@@ -52,6 +64,6 @@ echo $this->partial('/partials/ppit-controller')
 	$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entry['route'], $entry['params']) ?>'); });
 <?php endforeach;?>
 
-activateNote();
+activateEvent();
 
 </script>

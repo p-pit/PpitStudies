@@ -2,12 +2,12 @@
 	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong><?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale()) ?></strong>
  		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor_<?php echo $account_id ?>">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor_<?php echo $account->id ?>">
 				<span class="glyphicon glyphicon-remove"></span>
 			</button>
  		 </div>
 	</div>
 	<div class="panel-body">
-		<div><iframe src="<?php echo $this->url('public/communityHome') ?>" height="1000"; style="width: 100%; border: none"></iframe></div>
+		<div><iframe src="<?php echo $this->url('public/communityHome', array('id' => $community->id, 'subject_id' => $account->id)) ?>" height="1000"; style="width: 100%; border: none"></iframe></div>
 	</div>
 </div>

@@ -1,14 +1,16 @@
 <div class="panel panel-default">
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
-			<?php 
-			$title = $context->getConfig('note/search'.(($category) ? '/'.$category : ''))['title'][$context->getLocale()];
+			<?php
+			$title = ($category == 'evaluation') ? $context->getConfig('note/search'.'/'.$category.'/'.$type)['title'][$context->getLocale()] : $context->getConfig('note/search'.'/'.$category)['title'][$context->getLocale()];
 			echo $title;
 			?>
 			(<span id="mode-text"></span>)
 		</strong>
 	</div>
 	<div class="panel-body">
+
+		<div class="col-md-6">
 
 <!-- Filters -->
 
@@ -21,7 +23,7 @@
 			</div>
 		</div>
 		
-<?php foreach ($context->getConfig('note/search')['main'] as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) : ?>
 	
 	<?php if ($propertyId == 'type') : ?>
 		<div class="form-group">
@@ -54,10 +56,9 @@
 
 	<?php else : ?>
 		<?php 
-		if ($propertyId == 'level') $property = $context->getConfig('student/property/level');
+		if ($propertyId == 'school_period') $property = $context->getConfig('student/property/school_period');
 		elseif ($propertyId == 'subject') $property = $context->getConfig('student/property/school_subject');
 		elseif ($propertyId == 'class') $property = $context->getConfig('student/property/class');
-		elseif ($propertyId == 'specialty') $property = $context->getConfig('student/property/specialty');
 		$label = $property['labels'][$context->getLocale()];
 		?>
 		
@@ -110,6 +111,7 @@
 					<span class="glyphicon glyphicon-cloud-download"></span>
 					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
 				</button>
+	    </div>
 	    </div>
 	    
 		<div>&nbsp;</div>

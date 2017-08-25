@@ -517,7 +517,7 @@ function getAdd<?php echo $typeId?>Absence() {
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
 			connectAdd<?php echo $typeId ?>AbsenceForm();
 
-			$('#input_duration_group').hide();
+//			$('#input_duration_group').hide();
 			$('#category').change(function () {
 				if ($('#category').val() == 'lateness') $('#input_duration_group').show();
 				else $('#input_duration_group').hide();

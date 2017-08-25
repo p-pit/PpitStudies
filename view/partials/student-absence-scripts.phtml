@@ -4,6 +4,7 @@ function connectRemoveIcon(id, target)
 	$('#' + id).click(function () {
 		$('#' + target).hide();
 		$('.progress-detail-anchor').removeClass('btn-primary').addClass('btn-default');
+		filterAbsenceList();
 	});
 }
 
@@ -70,7 +71,7 @@ function getParams() {
 // Export the list
 function exportAbsenceList() {
 
-	$('#form_action').hide();
+	$('.detail-row').hide();
 
 	var params = getParams();
 	document.location.href = '<?php echo $this->url('absence/export') ?>' + params;
@@ -80,7 +81,7 @@ function eraseAbsenceSearch() {
 
 <?php foreach ($context->getConfig('absence/search')['main'] as $propertyId => $rendering) : ?>
 
-	$('#form_action').hide();
+	$('.detail-row').hide();
 
 	<?php if ($rendering == 'range') : ?>
 	$('#search_min_<?php echo $propertyId ?>').val('');
@@ -111,7 +112,7 @@ function eraseAbsenceSearch() {
 
 function sortAbsenceList(criterion) {
 
-	$('#form_action').hide();
+	$('.detail-row').hide();
 
 	var dir;
 	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
@@ -122,15 +123,19 @@ function sortAbsenceList(criterion) {
 
 function filterAbsenceList() {
 
-	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
-	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	var ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	var descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
 	if (ascCriterion) {
 		criterion = ascCriterion.split('-')[0];
 		dir = 'ASC';
 	}
-	else {
+	else if (descCriterion) {
 		criterion = descCriterion.split('-')[0];
 		dir = 'ASC';
+	}
+	else {
+		criterion = 'date';
+		dir = 'DESC';
 	}
 	getAbsenceList(getParams(), criterion, dir);
 }
@@ -217,6 +222,9 @@ function getAbsenceList(params, major, dir) {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('absence-list-panel').innerHTML = xhttp.responseText;
+
+			$('.detail-row').hide();
+			$('.invisible').hide();
 			
 			// Connect the sort anchors
 			$('.ppit-sort-anchor').each(function () {
@@ -239,17 +247,17 @@ function getAbsenceList(params, major, dir) {
 	xhttp.send();
 }
 
-function connectAuditPanel()
+function connectAuditPanel(id)
 {
-	$('#audit-panel').hide();
-	$('#audit-label').click(function () {
-		if ($('#audit-label').text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
-			$('#audit-panel').show();
-			$('#audit-label').text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+	$('#audit-panel_' + id).hide();
+	$('#audit-label_' + id).click(function () {
+		if ($('#audit-label_' + id).text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#audit-panel_' + id).show();
+			$('#audit-label_' + id).text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
 		}
 		else {
-			$('#audit-panel').hide();
-			$('#audit-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+			$('#audit-panel_' + id).hide();
+			$('#audit-label_' + id).text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
 		}
 	});
 }
@@ -291,20 +299,16 @@ function connectAbsenceUpdateForm(id, action)
 //			formData.append('duration', $('#duration').val());
 
 			var xhttp = new XMLHttpRequest();
-			var route, target;
+			var route;
 			route = '<?php echo $this->url('absence/update') ?>/' + id;
 			if (action) route += '/' + action;
-			target = 'form_action';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
 				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-					document.getElementById(target).innerHTML = xhttp.responseText;
-					connectRemoveIcon('remove-anchor', 'form_action');
-					connectAuditPanel();
-					filterAbsenceList();
-					if ($('#category').val() == 'lateness') $('#input_duration_group').show();
-					else $('#input_duration_group').hide();
+					document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;
+					connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
+					connectAuditPanel(id);
 
 					if (id) {
 						$('#update-anchor').click(function () { getAbsenceUpdate(id, 'update'); });
@@ -321,6 +325,15 @@ function connectAbsenceUpdateForm(id, action)
 
 function getAbsenceUpdate(id, action) {
 
+	// Ensure the target is displayed
+	$('.detail-row').hide();
+	$('#detail-row_' + id).show();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('.index-btn').attr('disabled', 'disabled');
+	$('#absence-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
+
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('absence/update') ?>/' + id;
 	if (action) route += '/' + action;
@@ -332,11 +345,9 @@ function getAbsenceUpdate(id, action) {
 	<?php if (!$config['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
 	<?php endif;?>
-			$('#form_action').show();
-			$(location).attr('href', '#form_action');
-			document.getElementById('form_action').innerHTML = xhttp.responseText;			
-			connectRemoveIcon('remove-anchor', 'form_action');
-			connectAuditPanel();
+			document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;			
+			connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
+			connectAuditPanel(id);
 			connectAbsenceUpdateForm(id, action);
 
 			if (id) {
@@ -345,23 +356,12 @@ function getAbsenceUpdate(id, action) {
 			}
 			else $('#add-anchor').click(function () { getAbsenceUpdate(id, 'add'); });
 
-			if ($('#category').val() == 'lateness') $('#input_duration_group').show();
-			else $('#input_duration_group').hide();
-			$('#category').change(function () {
-				if ($('#category').val() == 'lateness') $('#input_duration_group').show();
-				else $('#input_duration_group').hide();
-			});
-
 <?php if (!$config['isTraceActive']) : ?>
 			}
 <?php endif;?>
 		}
 	}
 	xhttp.send();
-
-	// Highlight the clicked button (and only it in its class)
-	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#absence-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
 }
 
 function activateAbsence() {

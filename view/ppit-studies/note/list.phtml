@@ -2,10 +2,11 @@
 	<tr>
 		<th>&nbsp;</th>
 
-<?php foreach ($context->getConfig('note/list') as $propertyId => $rendering) : ?>
+<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 		<th align="center">
 	<?php 
 	if ($propertyId == 'type') $label = $this->translate('Type', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'school_period') $label = $context->getConfig('student/property/school_period')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
@@ -39,16 +40,19 @@
 			</button>
 		</td>
 
-	<?php foreach ($context->getConfig('note/list') as $propertyId => $rendering) : ?>
+	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 	
 		<?php if ($propertyId == 'type') : ?>
 		<td <?php if ($backgroundColor) echo 'style="background-color: '.$backgroundColor.'"' ?>><?php echo $context->getConfig('note')['types'][$category][$note->type]['labels'][$context->getLocale()] ?></td>
+
+		<?php elseif ($propertyId == 'school_period') : ?>
+		<td><?php echo $context->getConfig('student/property/school_period')['modalities'][$note->school_period][$context->getLocale()] ?></td>
 
 		<?php elseif ($propertyId == 'class') : ?>
 		<td><?php echo $context->getConfig('student/property/class')['modalities'][$note->class][$context->getLocale()] ?></td>
 
 		<?php elseif ($propertyId == 'subject') : ?>
-		<td><?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
+		<td><?php echo ($note->subject == 'global') ? $this->translate('Staff meeting', 'ppit-studies', $context->getLocale()) : $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
 
 		<?php elseif ($propertyId == 'date') : ?>
 		<td><?php echo $context->decodeDate($note->date) ?></td>
@@ -57,6 +61,9 @@
 	<?php endforeach;?>
 	
 	</tr>
+	
+	<tr class="detail-row" id="detail-row_<?php echo $note->id ?>" rowspan="2"><td colspan="99"><div class="col-md-6 col-md-offset-3 ppit-panel" id="detail-div_<?php echo $note->id ?>"></div></td></tr>
+	<tr class="invisible"><td colspan="99"></td></tr>
 	
 <?php endforeach; ?>
 

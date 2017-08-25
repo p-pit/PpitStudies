@@ -8,6 +8,7 @@ return array(
         	'PpitStudies\Controller\Event' => 'PpitStudies\Controller\EventController',
         	'PpitStudies\Controller\Note' => 'PpitStudies\Controller\NoteController',
         	'PpitStudies\Controller\Notification' => 'PpitStudies\Controller\NotificationController',
+        	'PpitStudies\Controller\Planning' => 'PpitStudies\Controller\PlanningController',
         	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
         	'PpitStudies\Controller\Sms' => 'PpitStudies\Controller\SmsController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
@@ -101,6 +102,28 @@ return array(
 				                ),*/
 	       		),
             ),
+        	'planning' => array(
+                'type'    => 'literal',
+                'options' => array(
+                    'route'    => '/planning',
+                    'defaults' => array(
+                        'controller' => 'PpitStudies\Controller\Planning',
+                        'action'     => 'index',
+                    ),
+                ),
+            	'may_terminate' => true,
+            		'child_routes' => array(
+            				'index' => array(
+            						'type' => 'segment',
+            						'options' => array(
+            								'route' => '/index[/:type]',
+            								'defaults' => array(
+            										'action' => 'index',
+            								),
+            						),
+            				),
+            		),
+        	),
         	'studentEvent' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -142,7 +165,10 @@ return array(
         						'planning' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/planning',
+        										'route' => '/planning[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
         										'defaults' => array(
         												'action' => 'planning',
         										),
@@ -197,7 +223,7 @@ return array(
         						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index[/:category]',
+        										'route' => '/index[/:category][/:type]',
         										'defaults' => array(
         												'action' => 'index',
         										),
@@ -206,7 +232,7 @@ return array(
         						'search' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/search[/:category]',
+        										'route' => '/search[/:category][/:type]',
         										'defaults' => array(
         												'action' => 'search',
         										),
@@ -215,7 +241,7 @@ return array(
         						'list' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/list[/:category]',
+        										'route' => '/list[/:category][/:type]',
         										'defaults' => array(
         												'action' => 'list',
         										),
@@ -224,7 +250,7 @@ return array(
         						'export' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/export[/:category]',
+        										'route' => '/export[/:category][/:type]',
         										'defaults' => array(
         												'action' => 'export',
         										),
@@ -341,6 +367,28 @@ return array(
 				                ),
 	       		),
             ),
+        	'planning' => array(
+                'type'    => 'literal',
+                'options' => array(
+                    'route'    => '/planning',
+                    'defaults' => array(
+                        'controller' => 'PpitStudies\Controller\Planning',
+                        'action'     => 'index',
+                    ),
+                ),
+            	'may_terminate' => true,
+            		'child_routes' => array(
+            				'index' => array(
+            						'type' => 'segment',
+            						'options' => array(
+            								'route' => '/index[/:type]',
+            								'defaults' => array(
+            										'action' => 'index',
+            								),
+            						),
+            				),
+            		),
+        	),
         	'progress' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -637,10 +685,82 @@ return array(
         										),
         								),
         						),
-		        				'downloadReport' => array(
+	       						'planning' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/planning[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'planning',
+        										),
+        								),
+        						),
+	       						'file' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/file[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'file',
+        										),
+        								),
+        						),
+	       						'absence' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/absence[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'absence',
+        										),
+        								),
+        						),
+	       						'homework' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/homework[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'homework',
+        										),
+        								),
+        						),
+	       						'evaluation' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/evaluation[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'evaluation',
+        										),
+        								),
+        						),
+	       						'report' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/report[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'report',
+        										),
+        								),
+        						),
+	       						'downloadReport' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/download-report[/:account_id]',
+		        								'route' => '/download-report[/:account_id][/:school_year][/:school_period]',
 		        								'constraints' => array(
 		        										'account_id'     => '[0-9]*',
 		        								),
@@ -649,7 +769,16 @@ return array(
 		        								),
 		        						),
 		        				),
-			       				'letter' => array(
+        						'dropboxLink' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/dropbox-link[/:document]',
+        										'defaults' => array(
+        												'action' => 'dropboxLink',
+        										),
+        								),
+        						),
+	       						'letter' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/letter[/:template][/:id]',
@@ -749,6 +878,8 @@ return array(
 				array('route' => 'studentNotification/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+				array('route' => 'planning', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+				array('route' => 'planning/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'progress', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/index', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/search', 'roles' => array('manager', 'coach')),
@@ -778,7 +909,14 @@ return array(
 				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
 				array('route' => 'student/import', 'roles' => array('admin')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
+				array('route' => 'student/planning', 'roles' => array('user')),
+				array('route' => 'student/file', 'roles' => array('user')),
+				array('route' => 'student/absence', 'roles' => array('user')),
+				array('route' => 'student/homework', 'roles' => array('user')),
+				array('route' => 'student/evaluation', 'roles' => array('user')),
+				array('route' => 'student/report', 'roles' => array('user')),
 				array('route' => 'student/downloadReport', 'roles' => array('manager', 'teacher')),
+            	array('route' => 'student/dropboxLink', 'roles' => array('user')),
 				array('route' => 'student/letter', 'roles' => array('manager')),
 				array('route' => 'student/confirmation', 'roles' => array('manager')),
 				array('route' => 'student/attestation', 'roles' => array('manager')),
@@ -838,19 +976,20 @@ return array(
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-list-alt',
 							'label' => array(
-									'en_US' => 'Students',
-									'fr_FR' => 'Elèves',
+									'en_US' => 'Students/Classes',
+									'fr_FR' => 'Elèves/Classes',
 							),
 					),
 					'planning' => array(
-							'route' => 'event/index',
+							'route' => 'planning/index',
 							'params' => array('type' => 'calendar', 'app' => 'p-pit-studies'),
+							'glyphicon' => 'glyphicon-time',
 							'label' => array(
 									'en_US' => 'Planning',
 									'fr_FR' => 'Planning',
 							),
 					),
-					'notification' => array(
+/*					'notification' => array(
 							'route' => 'studentNotification',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
@@ -869,12 +1008,12 @@ return array(
 									'en_US' => 'Sport progress',
 									'fr_FR' => 'Suivi sportif',
 							),
-					),
+					),*/
 					'absence' => array(
 							'route' => 'absence',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-edit',
+							'glyphicon' => 'glyphicon-hourglass',
 							'label' => array(
 									'en_US' => 'Absences/Lateness',
 									'fr_FR' => 'Absences/Retards',
@@ -884,7 +1023,7 @@ return array(
 							'route' => 'note/index',
 							'params' => array('category' => 'homework'),
 							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-edit',
+							'glyphicon' => 'glyphicon-calendar',
 							'label' => array(
 									'en_US' => 'Homework notebook',
 									'fr_FR' => 'Cahier de texte',
@@ -892,15 +1031,25 @@ return array(
 					),
 					'evaluation' => array(
 							'route' => 'note/index',
-							'params' => array('category' => 'evaluation'),
+							'params' => array('category' => 'evaluation', 'type' => 'note'),
 							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-edit',
+							'glyphicon' => 'glyphicon-dashboard',
 							'label' => array(
 									'en_US' => 'Evaluations',
 									'fr_FR' => 'Evaluations',
 							),
 					),
-					'event' => array(
+					'report' => array(
+							'route' => 'note/index',
+							'params' => array('category' => 'evaluation', 'type' => 'report'),
+							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-education',
+							'label' => array(
+									'en_US' => 'School reports',
+									'fr_FR' => 'Bulletins',
+							),
+					),
+/*					'event' => array(
 							'route' => 'studentEvent',
 							'params' => array('type' => ''),
 							'urlParams' => array(),
@@ -909,11 +1058,12 @@ return array(
 									'en_US' => 'Appointments',
 									'fr_FR' => 'Rendez-vous',
 							),
-					),
+					),*/
 					'account' => array(
 							'route' => 'student/registrationIndex',
 							'params' => array('type' => 'p-pit-studies'),
 							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-folder-open',
 							'label' => array(
 									'en_US' => 'Registrations',
 									'fr_FR' => 'Inscriptions',
@@ -957,7 +1107,7 @@ return array(
 								'new' => array('en_US' => 'To be confirmed', 'fr_FR' => 'A confirmer'),
 								'confirmed' => array('en_US' => 'Confirmed', 'fr_FR' => 'Confirmé'),
 								'settled' => array('en_US' => 'Settled', 'fr_FR' => 'Réglé'),
-								'closed' => array('en_US' => 'Closed', 'fr_FR' => 'Clôturé'),
+								'invoiced' => array('en_US' => 'Invoiced', 'fr_FR' => 'Facturé'),
 							),
 							'labels' => array(
 									'en_US' => 'Status',
@@ -2032,7 +2182,8 @@ return array(
 					'fr_FR' => 'Année scolaire',
 			),
 	),
-	
+	'student/property/school_year/default' => '2017-2018',
+		
 	'student/property/school_period' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -2045,6 +2196,7 @@ return array(
 					'fr_FR' => 'Période',
 			),
 	),
+	'student/property/school_period/default' => 'Q1',
 
 	'student/property/evaluationCategory' => array(
 			'type' => 'select',
@@ -2503,13 +2655,17 @@ table.note-report tr.period {
 									'lateness' => array('en_US' => 'Lateness', 'fr_FR' => 'Retard'),
 							),
 							'labels' => array(
-									'en_US' => 'Category',
-									'fr_FR' => 'Catégorie',
+									'en_US' => 'Type',
+									'fr_FR' => 'Type',
 							),
 					),
 					'school_year' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/school_year',
+					),
+					'school_period' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/school_period',
 					),
 					'type' => array(
 							'type' => 'select',
@@ -2519,16 +2675,27 @@ table.note-report tr.period {
 									'boarding_school' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
 							),
 							'labels' => array(
-									'en_US' => 'Type',
-									'fr_FR' => 'Type',
+									'en_US' => 'Domain',
+									'fr_FR' => 'Domaine',
 							),
 					),
-					'name' => array(
+					'n_fn' => array(
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Name',
 									'fr_FR' => 'Nom',
 							),
+					),
+/*					'name' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Name',
+									'fr_FR' => 'Nom',
+							),
+					),*/
+					'subject' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/school_subject',
 					),
 					'motive' => array(
 							'type' => 'repository',
@@ -2544,8 +2711,8 @@ table.note-report tr.period {
 					'duration' => array(
 							'type' => 'input',
 							'labels' => array(
-									'en_US' => 'Lateness (mn)',
-									'fr_FR' => 'Retard (mn)',
+									'en_US' => 'Duration',
+									'fr_FR' => 'Durée',
 							),
 					),
 					'observations' => array(
@@ -2578,12 +2745,13 @@ table.note-report tr.period {
 			'title' => array('en_US' => 'Absences/Lateness', 'fr_FR' => 'Absences/Retards'),
 			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
-			'main' => array('type' => 'select', 'name' => 'contains', 'date' => 'range'),
+			'main' => array('n_fn' => 'contains', 'school_period' => 'select', 'category' => 'select', 'subject' => 'select', 'date' => 'range'),
 			'more' => array(),
 	),
 	
 	'absence/list' => array(
-			'name' => 'text',
+			'n_fn' => 'text',
+			'school_period' => 'text',
 			'category' => 'select',
 			'subject' => 'text',
 			'date' => 'date',
@@ -2625,18 +2793,10 @@ table.note-report tr.period {
 	),
 
 	'note/search/evaluation' => array(
-			'title' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
-	),
-
-	'note/search/homework' => array(
-			'title' => array('en_US' => 'Homework notebook', 'fr_FR' => 'Cahier de texte'),
-	),
-		
-	'note/search' => array(
 			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
 			'main' => array(
-					'type' => 'select',
+					'school_period' => 'select',
 					'class' => 'select',
 					'subject' => 'select',
 					'date' => 'date',
@@ -2644,9 +2804,40 @@ table.note-report tr.period {
 			'more' => array(
 			),
 	),
-	
-	'note/list' => array(
+
+	'note/search/evaluation/note' => array(
+			'title' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
+	),
+
+	'note/search/evaluation/report' => array(
+			'title' => array('en_US' => 'School reports', 'fr_FR' => 'Bulletins'),
+	),
+		
+	'note/search/homework' => array(
+			'title' => array('en_US' => 'Homework notebook', 'fr_FR' => 'Cahier de texte'),
+			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
+			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
+			'main' => array(
+					'type' => 'select',
+					'school_period' => 'select',
+					'class' => 'select',
+					'subject' => 'select',
+					'date' => 'date',
+			),
+			'more' => array(
+			),
+	),
+
+	'note/list/homework' => array(
+			'school_period' => 'select',
 			'type' => 'select',
+			'class' => 'select',
+			'subject' => 'select',
+			'date' => 'date',
+	),
+		
+	'note/list/evaluation' => array(
+			'school_period' => 'select',
 			'class' => 'select',
 			'subject' => 'select',
 			'date' => 'date',
@@ -2655,7 +2846,7 @@ table.note-report tr.period {
 	'note/update' => array(
 			'types' => array(
 					'schooling' => array(
-							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+							'definition' => 'student/property/school_subject',
 							'subjects' => array(
 									'french' => array('en_US' => 'French', 'fr_FR' => 'Français'),
 									'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
@@ -2944,8 +3135,41 @@ table.note-report tr.period {
 							'directory' => 'public/news/student',
 							'entry' => 'p-pit-studies',
 					),
-					'dashboard' => array(
-							'route' => 'student/dashboard',
+					'tabs' => array(
+							'type' => 'tabs',
+							'content' => array(
+									'planning' => array(
+											'type' => 'calendar',
+											'route' => 'student/planning',
+											'label' => array('en_US' => 'Planning', 'fr_FR' => 'Planning'),
+									),
+									'file' => array(
+											'type' => 'static',
+											'route' => 'student/file',
+											'label' => array('en_US' => 'Student file', 'fr_FR' => 'Dossier élève'),
+									),
+									'absence' => array(
+											'type' => 'static',
+											'route' => 'student/absence',
+											'label' => array('en_US' => 'Absences/lateness', 'fr_FR' => 'Absences/retards'),
+									),
+									'homework' => array(
+											'type' => 'static',
+											'route' => 'student/homework',
+											'label' => array('en_US' => 'Homework', 'fr_FR' => 'Cahier de texte'),
+									),
+									'evaluation' => array(
+											'type' => 'static',
+											'route' => 'student/evaluation',
+											'label' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
+									),
+									'schooling' => array(
+											'type' => 'static',
+											'route' => 'student/report',
+											'label' => array('en_US' => 'School reports', 'fr_FR' => 'Bulletins scolaires'),
+									),
+									
+							),
 					),
 			),
 	),

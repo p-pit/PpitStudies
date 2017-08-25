@@ -5,6 +5,7 @@ use PpitCommitment\Model\Account;
 use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
+use PpitCore\Model\Vcard;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
@@ -18,6 +19,7 @@ class Absence implements InputFilterAwareInterface
     public $instance_id;
     public $category;
     public $school_year;
+    public $school_period;
     public $type;
     public $account_id;
     public $subject;
@@ -30,7 +32,8 @@ class Absence implements InputFilterAwareInterface
     public $update_time;
 
     // Joined properties
-    public $name;
+    public $n_fn;
+    public $name; // Deprecated
     public $sport;
     public $class;
     public $specialty;
@@ -56,6 +59,7 @@ class Absence implements InputFilterAwareInterface
         $this->instance_id = (isset($data['instance_id'])) ? $data['instance_id'] : null;
         $this->category = (isset($data['category'])) ? $data['category'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
+        $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
@@ -68,7 +72,8 @@ class Absence implements InputFilterAwareInterface
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
         
         // Joined properties
-        $this->name = (isset($data['name'])) ? $data['name'] : null;
+        $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
+//        $this->name = (isset($data['name'])) ? $data['name'] : null;
         $this->sport = (isset($data['sport'])) ? $data['sport'] : null;
         $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->specialty = (isset($data['specialty'])) ? $data['specialty'] : null;
@@ -82,6 +87,7 @@ class Absence implements InputFilterAwareInterface
     	$data['instance_id'] = (int) $this->instance_id;
     	$data['category'] = $this->category;
     	$data['school_year'] = $this->school_year;
+    	$data['school_period'] = $this->school_period;
     	$data['type'] = $this->type;
     	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
@@ -99,7 +105,8 @@ class Absence implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	
     	$select = Absence::getTable()->getSelect()
-    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('name', 'photo' => 'contact_1_id', 'sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'), 'left')
+    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array(/*'name', 'photo' => 'contact_1_id', 'sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'*/), 'left')
+    		->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');
@@ -113,8 +120,9 @@ class Absence implements InputFilterAwareInterface
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-				if ($propertyId == 'name') $where->like('core_community.name', '%'.$params[$propertyId].'%');
-    			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
+//				if ($propertyId == 'name') $where->like('commitment_account.name', '%'.$params[$propertyId].'%');
+				if ($propertyId == 'n_fn') $where->like('core_vcard.n_fn', '%'.$params[$propertyId].'%');
+				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			else $where->like((($propertyId == 'type') ? 'student_absence.' : '').$propertyId, '%'.$params[$propertyId].'%');
     		}
@@ -156,8 +164,9 @@ class Absence implements InputFilterAwareInterface
     {
     	$absence = Absence::getTable()->get($id, $column);
     	$account = Account::get($absence->account_id);
-    	$community = Community::get($account->customer_community_id);
-    	$absence->name = $community->name;
+    	$contact = Vcard::get($account->contact_1_id);
+//    	$absence->name = $account->name;
+    	$absence->n_fn = $contact->n_fn;
     	return $absence;
     }
     
@@ -181,7 +190,11 @@ class Absence implements InputFilterAwareInterface
 	    	$this->school_year = trim(strip_tags($data['school_year']));
 		    if (!$this->school_year || strlen($this->school_year) > 255) return 'Integrity';
 		}
-    	if (array_key_exists('type', $data)) {
+        if (array_key_exists('school_period', $data)) {
+	    	$this->school_period = trim(strip_tags($data['school_period']));
+		    if (!$this->school_period || strlen($this->school_period) > 255) return 'Integrity';
+		}
+		if (array_key_exists('type', $data)) {
 		    $this->type = trim(strip_tags($data['type']));
 		    if (!$this->type || strlen($this->type) > 255) return 'Integrity';
 		}
@@ -195,7 +208,7 @@ class Absence implements InputFilterAwareInterface
 		}
         if (array_key_exists('motive', $data)) {
 		    $this->motive = trim(strip_tags($data['motive']));
-		    if (!$this->motive || strlen($this->motive) > 255) return 'Integrity';
+		    if (strlen($this->motive) > 255) return 'Integrity';
 		}
 		if (array_key_exists('date', $data)) {
 	    	$this->date = trim(strip_tags($data['date']));

@@ -1,0 +1,39 @@
+<div class="card-block" style="color: #686868">
+	<!--Title-->
+	<h4 class="card-title" style="text-align: center">
+		<?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?>
+	</h4>
+
+	<!--Text-->
+
+<?php $currentDate = null; $currentSubject = null; foreach ($notes as $note) : ?>
+	<?php if ($note->date != $currentDate) : ?>
+			<h5><strong><?php echo $context->decodeDate($note->date) ?></strong></h5>
+	<?php $currentDate = $note->date; $currentSubject = null; endif;?>
+	<?php if ($note->subject != $currentSubject) : ?>
+			<div><strong><em><?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></em></strong></div>
+	<?php $currentSubject = $note->subject; endif;?>
+	<?php if ($note->document) : ?>
+		<?php $dropbox = $context->getConfig('ppitDocument')['dropbox'] ?>
+			<div>
+				<?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>:
+				<a href="<?php echo $this->url('student/dropboxLink', array('document' => $note->document)) ?>">
+					<?php echo $note->document ?>
+				</a>
+			</div>
+	<?php endif;?>
+			<div style="background-color: <?php echo $context->getConfig('note/colour')[$note->type] ?>">
+				<div style="text-align: center; font-weight: bold">
+	<?php if ($note->type == 'todo-work') : ?>
+					<?php echo $this->translate('For the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($note->target_date) ?>
+	<?php elseif ($note->type == 'done-work') : ?>
+					<?php echo $this->translate('Summary', 'ppit-studies', $context->getLocale()) ?>
+	<?php elseif ($note->type == 'event') : ?>
+					<?php echo $this->translate('To remember:', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($note->target_date) ?>
+	<?php endif;?>
+				</div>
+				<div><?php echo $note->observations ?></div>
+			</div>
+<?php endforeach;?>
+	<hr/>
+</div>

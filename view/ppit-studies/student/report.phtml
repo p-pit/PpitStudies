@@ -1,0 +1,63 @@
+<style>
+table.note-report {
+	font-size: 0.83em;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+}
+table.note-report caption { 
+	font-size:1.5em; 
+	padding:1em 0 0.5em 1em;
+}
+table.note-report th {
+	color: #666;
+//    font-size:0.83em;
+	text-align: center;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+	background-color:#DDD;
+}
+
+table.note-report td {
+	color: #666;
+//	font-size: 0.83em;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+}
+
+table.note-report td.subject {
+	font-weight: bold;
+}
+
+table.note-report tr.period {
+	background-color:#DDD;
+}
+</style>
+
+<!-- Reports -->
+
+<?php foreach ($renderedPeriods as $reportId => $report) : ?>
+	<?php 
+	$params = explode('.', $reportId); 
+	$school_year = $params[0];
+	$school_period = $params[1];
+	?>
+	
+	            <!--Card content-->
+	            <div class="card-block" style="color: #686868">
+	                <!--Title-->
+	                <h4 class="card-title" style="text-align: center">
+	                	<?php echo $context->getConfig('student/property/school_year')['labels'][$context->getLocale()] ?>:
+	                	<?php echo $context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()] ?> &mdash;
+	                	<?php echo $context->getConfig('student/property/school_period')['labels'][$context->getLocale()] ?>:
+	                	<?php echo $context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()] ?>
+	                </h4>
+	                <!--Text-->
+					<div><a href="<?php echo $this->url('student/downloadReport', array('account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+					<?php echo $report ?>
+	            </div>
+	            <!--/.Card content-->
+		<div>&nbsp;</div>
+<?php endforeach;?>
