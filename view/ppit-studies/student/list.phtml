@@ -3,7 +3,7 @@
 		<th>&nbsp;</th>
 		<th>&nbsp;</th>
 
-<?php $first=true; foreach ($context->getConfig('commitmentAccount/list/p-pit-studies') as $propertyId => $rendering) : ?>
+<?php $first=true; foreach ($context->getConfig('student/list') as $propertyId => $rendering) : ?>
 	<?php 
 	$property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
 	if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
@@ -41,7 +41,7 @@
 		</td>
 
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default btn-xs index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor">
+			<button type="button" class="btn btn-default index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor">
 				<span class="glyphicon glyphicon-list-alt" id="group-glyphicon"></span>
 			</button>
 <?php if ($context->isDemoModeActive()) : ?>
@@ -66,13 +66,13 @@
 	
 	<input type="hidden"  id="account_<?php echo $i ?>" value="<?php echo $account->id ?>" />
 	
-	<tr class="account" style="text-align: center">
+	<tr class="account">
 		<td>
 			<input type="checkbox" class="account-checkbox" id="account-checkbox_<?php echo $i ?>"></input>
 		</td>
 
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default btn-xs index-btn account-detail-anchor" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account-detail-anchor_<?php echo $account->id ?>">
+			<button type="button" class="btn btn-default index-btn account-detail-anchor" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account-detail-anchor_<?php echo $account->id ?>">
 				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
 			</button>
 		<?php if ($i == 0 && $context->isDemoModeActive()) : ?>
@@ -82,7 +82,7 @@
 		<?php $first=false; endif;?>
 		</td>
 
-	<?php foreach ($context->getConfig('commitmentAccount/list/p-pit-studies') as $propertyId => $rendering) : ?>
+	<?php foreach ($context->getConfig('student/list') as $propertyId => $rendering) : ?>
 		<?php 
 		$property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
 		if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
@@ -112,6 +112,11 @@
 		<td>
 			<a href="tel:<?php echo $account->properties[$propertyId] ?>"><?php echo $account->properties[$propertyId] ?></a>
 		</td>
+
+		<?php elseif ($rendering == 'email') : ?>
+		<td>
+			<a href="mailto:<?php echo $account->properties[$propertyId] ?>"><?php echo $account->properties[$propertyId] ?></a>
+		</td>
 	
 		<?php else : ?>
 		<td><?php echo $account->properties[$propertyId] ?></td>
@@ -132,7 +137,7 @@
 		</td>
 
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default btn-xs index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-down-group-anchor">
+			<button type="button" class="btn btn-default index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-down-group-anchor">
 				<span class="glyphicon glyphicon-list-alt" id="down-group-glyphicon"></span>
 			</button>
 		</td>

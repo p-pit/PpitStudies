@@ -15,7 +15,7 @@ require_once('vendor/TCPDF-master/tcpdf.php');
 
 class PdfReportViewHelper
 {	
-    public static function render($pdf, $place, $account, $addressee, $period, $absences, $cumulativeLateness)
+    public static function render($pdf, $place, $account, $addressee, $period, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -153,15 +153,23 @@ class PdfReportViewHelper
 		$pdf->SetDrawColor(255, 255, 255);
 		
 		// Absences
-		$pdf->MultiCell(40, 5, '<strong>'.'Nombre d\'absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+		$pdf->MultiCell(15, 5, '<strong>'.'Absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
 		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-		$pdf->MultiCell(40, 5, count($absences), 1, 'L', 1, 0, '' ,'', true);
+		$pdf->MultiCell(10, 5, $absenceCount, 1, 'L', 1, 0, '' ,'', true);
 
-		// Lateness
-		$pdf->MultiCell(40, 5, '<strong>'.'Durée cumulée des retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+		$pdf->MultiCell(25, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
 		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-		$pdf->MultiCell(50, 5, $cumulativeLateness.' mn', 1, 'L', 0, 1, '' ,'', true);
+		$pdf->MultiCell(30, 5, (((int)($cumulativeAbsence/60)) ? ((int)($cumulativeAbsence/60)).'h' : '').(($cumulativeAbsence%60) ? sprintf('%02u', $cumulativeAbsence%60).'mn' : ''), 1, 'L', 1, 0, '' ,'', true);
 		
+		// Lateness
+		$pdf->MultiCell(15, 5, '<strong>'.'Retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+		$pdf->MultiCell(10, 5, $latenessCount, 1, 'L', 1, 0, '' ,'', true);
+		
+		$pdf->MultiCell(25, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+		$pdf->MultiCell(30, 5, (((int)($cumulativeLateness/60)) ? ((int)($cumulativeLateness/60)).'h' : '').(($cumulativeLateness%60) ? sprintf('%02u', $cumulativeLateness%60).'mn' : ''), 1, 'L', 0, 1, '' ,'', true);
+
 		$globalEvaluation = '';
 		foreach ($period as $evaluation) if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
 		
@@ -175,8 +183,12 @@ class PdfReportViewHelper
 				);
 		$pdf->writeHTML($text, true, 0, true, 0);
 		$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
-						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'<em>P-Pit Studies</em> (www.ppit.fr)'
+						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+						'<em>P-Pit Studies</em> (www.p-pit.fr)'
 						, true, 0, true, 0);
 		
     	// Close and output PDF document

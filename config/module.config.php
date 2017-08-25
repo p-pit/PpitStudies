@@ -893,7 +893,7 @@ return array(
 				array('route' => 'sms/simulate', 'roles' => array('manager')),
 				array('route' => 'sms/update', 'roles' => array('manager')),
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/registrationIndex', 'roles' => array('sales_manager')),
+				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
 				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/studentHome', 'roles' => array('user')),
 				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
@@ -1982,10 +1982,10 @@ return array(
 							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
 							'color' => array('blue' => null),
 					),
-					'schooling' => array(
+/*					'schooling' => array(
 							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
 							'color' => array('orange' => null),
-					),
+					),*/
 					'medical' => array(
 							'labels' => array('en_US' => 'Medical', 'fr_FR' => 'Médical'),
 							'color' => array('red' => null),
@@ -2293,6 +2293,15 @@ return array(
 			),
 	),
 
+	'student/list' => array(
+			'property_1' => 'image',
+			'photo_link_id' => 'photo',
+			'n_fn' => 'text',
+			'property_7' => 'select',
+			'property_2' => 'phone',
+			'email' => 'email',
+	),
+		
 	'student/acknowledgement' => array(
 			'address1' => array('text' => '%s %s %s', 'params' => array('invoicing_n_title', 'invoicing_n_last', 'invoicing_n_first')),
 			'address2' => array('text' => '%s', 'params' => array('adr_street')),
@@ -3340,22 +3349,6 @@ table.note-report tr.period {
 <p>Cette liste permet de retrouver toutes les entrées qui ont été saisies dans le cahier de texte. Vous disposez de filtres sur la classe, la matière et la date.</p>
 ',
 			),
-			'note/list/evaluation' => array(
-					'en_US' => '
-					',
-					'fr_FR' => '
-<h4>Liste des évaluations et bulletins</h4>
-<p>Cette liste permet de retrouver toutes les évaluations et bulletins qui ont été saisies. Vous disposez de filtres sur la classe, la matière et la date.</p>
-',
-			),
-			'note/updateEvaluation' => array(
-					'en_US' => '
-					',
-					'fr_FR' => '
-<h4>Détail d\'une évaluation</h4>
-<p>Depuis la liste des évaluations/bulletins, vous accédez au détail. Vous pouvez corriger ou supprimer une évaluation ou un bulletin.</p>
-',
-			),
 			'note/update' => array(
 					'en_US' => '
 					',
@@ -3364,7 +3357,39 @@ table.note-report tr.period {
 <p>Depuis le cahier de texte, vous accédez au détail. Vous pouvez corriger ou supprimer une entrée du cahier de texte.</p>
 ',
 			),
-			
+			'note/list/note' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Liste des évaluations</h4>
+<p>Cette liste permet de retrouver toutes les évaluations qui ont été saisies. Vous disposez de filtres sur la classe, la matière et la date.</p>
+',
+			),
+			'note/updateEvaluation/note' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Détail d\'une évaluation</h4>
+<p>Depuis la liste des évaluations, vous accédez au détail. Vous pouvez corriger ou supprimer une évaluation.</p>
+',
+			),
+			'note/list/report' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Liste des moyennes</h4>
+<p>Cette liste permet de retrouver toutes les contributions par matière ayant été ajoutées au bulletin trimestriel. Vous disposez de filtres sur la période, la classe, la matière et la date.</p>
+',
+			),
+			'note/updateEvaluation/report' => array(
+					'en_US' => '
+					',
+					'fr_FR' => '
+<h4>Détail d\'une contribution par matière</h4>
+<p>Depuis la liste des contributions par matière, vous accédez à la liste des moyennes par élève sur cette matière et pour une période donnée. Vous pouvez corriger ou supprimer cette contribution au bulletin.</p>
+',
+			),
+
 /*
  * Contacts
  */

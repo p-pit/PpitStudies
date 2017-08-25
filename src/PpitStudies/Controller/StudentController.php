@@ -1212,16 +1212,20 @@ class StudentController extends AbstractActionController
 		$absLates = Absence::getList($category, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
 		$absences = array();
 		$latenesss = array();
+		$cumulativeAbsence = 0;
 		$cumulativeLateness = 0;
 		$absenceCount = 0;
+		$latenessCount = 0;
 		foreach ($absLates as $absLate) {
 			if ($absLate->category == 'absence') {
 				$absences[] = $absLate;
+				$cumulativeAbsence += $absLate->duration;
 				$absenceCount++;
 			}
 			elseif ($absLate->category =='lateness') {
 				$latenesss[] = $absLate;
 				$cumulativeLateness += $absLate->duration;
+				$latenessCount++;
 			}
 		}
 		$notes = NoteLink::GetList('report', array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
@@ -1231,7 +1235,7 @@ class StudentController extends AbstractActionController
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, $period, $absences, $cumulativeLateness);
+    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, $period, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

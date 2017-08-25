@@ -68,7 +68,8 @@
 <?php endforeach; ?>
 
 <?php if ($context->isDemoModeActive()) : ?>
-				<a style="align: right" class="tip" href="#" title="<?php echo $context->getConfig('demo')['note/list/'.$category][$context->getLocale()] ?>">
+	<?php $qualifier = ($category == 'homework') ? $category : (($type == 'note') ? 'note' : 'report') ?>
+				<a style="align: right" class="tip" href="#" title="<?php echo $context->getConfig('demo')['note/list/'.$qualifier][$context->getLocale()] ?>">
 				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
 				</a>
 <?php endif;?>
