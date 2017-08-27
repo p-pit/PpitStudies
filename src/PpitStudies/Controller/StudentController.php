@@ -66,13 +66,12 @@ class StudentController extends AbstractActionController
     	$account_id = (int) $this->params()->fromRoute('account_id', 0);
     	$account = Account::get($account_id);
     	$place = Place::get($account->place_id);
-    	$community = Community::get('p-pit-studies_'.$place->identifier, 'identifier');
 
      	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
      			'account' => $account,
-     			'community' => $community,
+     			'place' => $place,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -326,7 +325,7 @@ class StudentController extends AbstractActionController
     			$data['duration'] = $request->getPost('duration');
 				$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
-    
+    			 
     			// Atomically save
     			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
@@ -926,94 +925,6 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
-	public function importAction()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-
-		// First Ids to delete
-/*		$firstCommunityId = $this->params()->fromQuery('firstCommunityId');
-		$firstVcardId = $this->params()->fromQuery('firstVcardId');
-		$firstUserId = $this->params()->fromQuery('firstUserId');
-		$firstDocumentId = $this->params()->fromQuery('firstDocumentId');
-		if (!$firstCommunityId || !$firstVcardId || !$firstUserId || !$firstDocumentId) throw new \Exception('Bad request');*/
-		
-//			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
-//			StudentSportImport::import();
-//			StudentSportImport::importProduct();
-//			StudentSportImport::importOption();
-//			StudentSportImport::importBill();
-//			StudentSportImport::importBillRow();
-//			StudentSportImport::importBillOption();
-//			StudentSportImport::importBillTerm();
-			StudentSportImport::importSejour();
-		
-		return $this->getResponse();
-//		return $this->redirect()->toRoute('home');
-	}
-
-	public function dashboardAction()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = (int) $this->params()->fromRoute('account_id');
-		$account = Account::get($account_id);
-		$category = $this->params()->fromRoute('category');
-		$absLates = Absence::getList($category, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
-		$absences = array();
-		$latenesss = array();
-		$cumulativeLateness = 0;
-		$absenceCount = 0;
-		foreach ($absLates as $absLate) {
-			if ($absLate->category == 'absence') {
-				$absences[] = $absLate;
-				$absenceCount++;
-			}
-			elseif ($absLate->category =='lateness') {
-				$latenesss[] = $absLate;
-				$cumulativeLateness += $absLate->duration;
-			}
-		}
-
-		$periods = array();
-		$notes = NoteLink::GetList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
-		foreach($notes as $note) {
-			if ($note->type == 'report') {
-				$key = $note->school_year.'.'.$note->school_period;
-				if (!array_key_exists($key, $periods)) $periods[$key] = array();
-				$periods[$key][] = $note;
-			}
-		}
-		krsort($periods);
-		
-		$events = Event::retrieveComing('p-pit-studies', $category, $account_id);
-		$notifications = Notification::retrieveCurrents('p-pit-studies', $category, $account_id);
-		
-		if ($category == 'sport') $progresses = Progress::retrieveAll($account->property_1, $account_id);
-		else $progresses = array();
-		
-		// Return the link list
-		$view = new ViewModel(array(
-				'context' => $context,
-				'config' => $context->getconfig(),
-				'category' => $category,
-				'type' => $account->property_1,
-				'account' => $account,
-				'notes' => $notes,
-				'absences' => $absences,
-				'absenceCount' => $absenceCount,
-				'latenesss' => $latenesss,
-				'cumulativeLateness' => $cumulativeLateness,
-				'events' => $events,
-				'periods' => $periods,
-				'notifications' => $notifications,
-				'progresses' => $progresses,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
 
 	public function planningAction()
 	{

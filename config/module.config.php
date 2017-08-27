@@ -10,7 +10,6 @@ return array(
         	'PpitStudies\Controller\Notification' => 'PpitStudies\Controller\NotificationController',
         	'PpitStudies\Controller\Planning' => 'PpitStudies\Controller\PlanningController',
         	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
-        	'PpitStudies\Controller\Sms' => 'PpitStudies\Controller\SmsController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
         ),
     ),
@@ -88,18 +87,6 @@ return array(
 		        								),
 		        						),
 		        				),
-/*	       						'delete' => array(
-				                    'type' => 'segment',
-				                    'options' => array(
-				                        'route' => '/delete[/:id]',
-					                    'constraints' => array(
-					                    	'id' => '[0-9]*',
-					                    ),
-				                    	'defaults' => array(
-				                            'action' => 'delete',
-				                        ),
-				                    ),
-				                ),*/
 	       		),
             ),
         	'planning' => array(
@@ -462,64 +449,6 @@ return array(
 				                ),
 	       		),
             ),
-    		'sms' => array(
-                'type'    => 'segment',
-                'options' => array(
-                    'route'    => '/sms',
-                    'defaults' => array(
-                        'controller' => 'PpitStudies\Controller\Sms',
-                        'action'     => 'index',
-                    ),
-                ),
-           		'may_terminate' => true,
-	       		'child_routes' => array(
-	                'index' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/index',
-	                    	'defaults' => array(
-	                    		'action' => 'index',
-	                        ),
-	                    ),
-	                ),
-	       			'delete' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/delete[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'delete',
-	                        ),
-	                    ),
-	                ),
-	       			'simulate' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/simulate[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'simulate',
-	                        ),
-	                    ),
-	                ),
-	       			'update' => array(
-	                    'type' => 'segment',
-	                    'options' => array(
-	                        'route' => '/update[/:id]',
-		                    'constraints' => array(
-		                    	'id' => '[0-9]*',
-		                    ),
-	                    	'defaults' => array(
-	                            'action' => 'update',
-	                        ),
-	                    ),
-	                ),
-	       		),
-        	),
         	'student' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -662,16 +591,6 @@ return array(
         												'action' => 'addProgress',
         										),
         								),
-        						),
-	       						'import' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/import',
-        										'defaults' => array(
-        												'action' => 'import',
-        										),
-        								),
-        						
         						),
 	       						'dashboard' => array(
         								'type' => 'segment',
@@ -854,7 +773,7 @@ return array(
 				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-//				array('route' => 'absence/delete', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+
 				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
@@ -863,6 +782,7 @@ return array(
 				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
+
 				array('route' => 'note', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
@@ -871,6 +791,7 @@ return array(
 				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
+
 				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
@@ -878,8 +799,10 @@ return array(
 				array('route' => 'studentNotification/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+
 				array('route' => 'planning', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'planning/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+
 				array('route' => 'progress', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/index', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/search', 'roles' => array('manager', 'coach')),
@@ -887,11 +810,8 @@ return array(
 				array('route' => 'progress/export', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/update', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/delete', 'roles' => array('manager', 'coach')),
-				array('route' => 'sms', 'roles' => array('manager')),
-				array('route' => 'sms/delete', 'roles' => array('manager')),
-				array('route' => 'sms/index', 'roles' => array('manager')),
-				array('route' => 'sms/simulate', 'roles' => array('manager')),
-				array('route' => 'sms/update', 'roles' => array('manager')),
+
+
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
 				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
@@ -907,16 +827,15 @@ return array(
 				array('route' => 'student/addEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
-				array('route' => 'student/import', 'roles' => array('admin')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
-				array('route' => 'student/planning', 'roles' => array('user')),
-				array('route' => 'student/file', 'roles' => array('user')),
-				array('route' => 'student/absence', 'roles' => array('user')),
-				array('route' => 'student/homework', 'roles' => array('user')),
-				array('route' => 'student/evaluation', 'roles' => array('user')),
-				array('route' => 'student/report', 'roles' => array('user')),
-				array('route' => 'student/downloadReport', 'roles' => array('manager', 'teacher')),
-            	array('route' => 'student/dropboxLink', 'roles' => array('user')),
+				array('route' => 'student/planning', 'roles' => array('guest')),
+				array('route' => 'student/file', 'roles' => array('guest')),
+				array('route' => 'student/absence', 'roles' => array('guest')),
+				array('route' => 'student/homework', 'roles' => array('guest')),
+				array('route' => 'student/evaluation', 'roles' => array('guest')),
+				array('route' => 'student/report', 'roles' => array('guest')),
+				array('route' => 'student/downloadReport', 'roles' => array('guest')),
+            	array('route' => 'student/dropboxLink', 'roles' => array('guest')),
 				array('route' => 'student/letter', 'roles' => array('manager')),
 				array('route' => 'student/confirmation', 'roles' => array('manager')),
 				array('route' => 'student/attestation', 'roles' => array('manager')),
@@ -924,16 +843,6 @@ return array(
 				array('route' => 'student/commitment', 'roles' => array('manager')),
 			)
 		)
-	),
-	__NAMESPACE__ => array(
-			'options' => array(
-					'routes' => array(
-							'eleve' => 'eleve',
-//							'eleve-login' => 'zfcuser/login',
-							'home' => 'home',
-//							'home-login' => 'zfcuser/login'
-					)
-			)
 	),
 		
     'view_manager' => array(
@@ -3129,7 +3038,7 @@ table.note-report tr.period {
 	),
 		
 	// Home page
-	'public/community-home/student' => array(
+	'public/community/student' => array(
 			'title' => array(
 					'en_US' => 'Studies by 2pit',
 					'fr_FR' => 'P-Pit Studies',
@@ -3149,31 +3058,37 @@ table.note-report tr.period {
 							'content' => array(
 									'planning' => array(
 											'type' => 'calendar',
+											'level' => 'community',
 											'route' => 'student/planning',
 											'label' => array('en_US' => 'Planning', 'fr_FR' => 'Planning'),
 									),
 									'file' => array(
 											'type' => 'static',
+											'level' => 'subject',
 											'route' => 'student/file',
 											'label' => array('en_US' => 'Student file', 'fr_FR' => 'Dossier élève'),
 									),
 									'absence' => array(
 											'type' => 'static',
+											'level' => 'subject',
 											'route' => 'student/absence',
 											'label' => array('en_US' => 'Absences/lateness', 'fr_FR' => 'Absences/retards'),
 									),
 									'homework' => array(
 											'type' => 'static',
+											'level' => 'subject',
 											'route' => 'student/homework',
 											'label' => array('en_US' => 'Homework', 'fr_FR' => 'Cahier de texte'),
 									),
 									'evaluation' => array(
 											'type' => 'static',
+											'level' => 'subject',
 											'route' => 'student/evaluation',
 											'label' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
 									),
 									'schooling' => array(
 											'type' => 'static',
+											'level' => 'subject',
 											'route' => 'student/report',
 											'label' => array('en_US' => 'School reports', 'fr_FR' => 'Bulletins scolaires'),
 									),

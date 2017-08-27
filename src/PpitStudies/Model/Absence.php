@@ -32,6 +32,7 @@ class Absence implements InputFilterAwareInterface
     public $update_time;
 
     // Joined properties
+    public $place_id;
     public $n_fn;
     public $name; // Deprecated
     public $sport;
@@ -72,6 +73,7 @@ class Absence implements InputFilterAwareInterface
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
         
         // Joined properties
+        $this->place_id = (isset($data['place_id'])) ? $data['place_id'] : null;
         $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
 //        $this->name = (isset($data['name'])) ? $data['name'] : null;
         $this->sport = (isset($data['sport'])) ? $data['sport'] : null;
@@ -105,7 +107,7 @@ class Absence implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	
     	$select = Absence::getTable()->getSelect()
-    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array(/*'name', 'photo' => 'contact_1_id', 'sport' => 'property_1', 'class' => 'property_4', 'specialty' => 'property_5'*/), 'left')
+    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('place_id', 'sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
     		->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
     		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
 		$where = new Where;
@@ -133,13 +135,40 @@ class Absence implements InputFilterAwareInterface
 		$absences = array();
 		$currentRoles = $context->getRoles();
 		foreach ($cursor as $absence) {
-			if (array_key_exists('manager', $currentRoles)
-			||	$absence->type == 'schooling' && array_key_exists('teacher', $currentRoles)
-			||	$absence->type == 'sport' && array_key_exists('coach', $currentRoles)
-			||	$absence->type == 'boarding_school' && array_key_exists('boarding_school_headmaster', $currentRoles))
-			{
-				$absence->properties = $absence->toArray();
-				$absences[] = $absence;
+			$absence->properties['place_id'] = $absence->place_id;
+			$absence->properties['property_1'] = $absence->sport;
+			$absence->properties['property_7'] = $absence->class;
+
+			// Filter on authorized perimeter
+			$keep = true;
+			if (array_key_exists('p-pit-admin', $context->getPerimeters())) {
+				foreach ($context->getPerimeters()['p-pit-admin'] as $key => $values) {
+					$keep2 = false;
+					foreach ($values as $value) {
+						if ($absence->properties[$key] == $value) $keep2 = true;
+					}
+					if (!$keep2) $keep = false;
+				}
+			}
+			if (array_key_exists('p-pit-studies', $context->getPerimeters())) {
+				foreach ($context->getPerimeters()['p-pit-studies'] as $key => $values) {
+					$keep2 = false;
+					foreach ($values as $value) {
+						if ($absence->properties[$key] == $value) $keep2 = true;
+					}
+					if (!$keep2) $keep = false;
+				}
+			}
+
+			if ($keep) {
+				if (array_key_exists('manager', $currentRoles)
+				||	$absence->type == 'schooling' && array_key_exists('teacher', $currentRoles)
+				||	$absence->type == 'sport' && array_key_exists('coach', $currentRoles)
+				||	$absence->type == 'boarding_school' && array_key_exists('boarding_school_headmaster', $currentRoles))
+				{
+					$absence->properties = $absence->toArray();
+					$absences[] = $absence;
+				}
 			}
 		}
 		return $absences;

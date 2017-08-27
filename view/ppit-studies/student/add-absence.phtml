@@ -13,9 +13,10 @@
 		<div class="form-group" id="category_group">
 			<label class="col-sm-5 control-label">* <?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
+					<option />
 				<select class="form-control" id="category" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
-					<option value="absence"><?php echo $this->translate('Absence', 'ppit-studies', $context->getLocale()) ?></option>
-					<option value="lateness"><?php echo $this->translate('Lateness', 'ppit-studies', $context->getLocale()) ?></option>
+					<option value="absence" <?php if ($absence->category == 'absence') echo 'selected="selected"' ?>><?php echo $this->translate('Absence', 'ppit-studies', $context->getLocale()) ?></option>
+					<option value="lateness" <?php if ($absence->category == 'lateness') echo 'selected="selected"' ?>><?php echo $this->translate('Lateness', 'ppit-studies', $context->getLocale()) ?></option>
 				</select>
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="category_error"></p></div>
@@ -78,7 +79,7 @@
 		<div class="form-group" id="observations_group">
 			<label class="col-sm-5 control-label"><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+				<textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $absence->observations ?></textarea>
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="observations_error"></p></div>
 		</div>
