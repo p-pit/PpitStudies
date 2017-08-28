@@ -2757,6 +2757,7 @@ table.note-report tr.period {
 	'note/list/evaluation' => array(
 			'school_period' => 'select',
 			'class' => 'select',
+			'level' => 'select',
 			'subject' => 'select',
 			'date' => 'date',
 			'weight' => 'number',

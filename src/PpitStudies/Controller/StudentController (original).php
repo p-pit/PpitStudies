@@ -66,12 +66,13 @@ class StudentController extends AbstractActionController
     	$account_id = (int) $this->params()->fromRoute('account_id', 0);
     	$account = Account::get($account_id);
     	$place = Place::get($account->place_id);
+    	$community = Community::get('p-pit-studies_'.$place->identifier, 'identifier');
 
      	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
      			'account' => $account,
-     			'place' => $place,
+     			'community' => $community,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -628,7 +629,7 @@ class StudentController extends AbstractActionController
     				$criterionValue = $request->getPost('criterion_'.$i);
     				$data['criteria'][$criterionId] = $criterionValue;
     			}
-    			$note->links = array();
+    			$noteLinks = array();
     			if ($type == 'report') {
     				$computedAverages = Note::computePeriodAverages(/*$data['school_year'], */$data['class'], /*$data['school_period'], */$data['subject']);
     			}
@@ -657,7 +658,7 @@ class StudentController extends AbstractActionController
     				$noteSum += $value;
     				if ($value < $lowerNote) $lowerNote = $value;
     				if ($value > $higherNote) $higherNote = $value;
-    				/*if ($noteLink->value != '')*/ $note->links[] = $noteLink;
+    				/*if ($noteLink->value != '')*/ $noteLinks[] = $noteLink;
     			}
     			if ($nbAccount > 0) {
     				$data['average_note'] = round($noteSum / $nbAccount, 2);
@@ -678,7 +679,7 @@ class StudentController extends AbstractActionController
 		    					$error = $rc;
 		    				}
 		    				// Save the note at the student level
-		    				else foreach ($note->links as $noteLink) {
+		    				else foreach ($noteLinks as $noteLink) {
 		    					$noteLink->note_id = $note->id;
 		    					$rc = $noteLink->add();
 			    				if ($rc != 'OK') {
@@ -925,6 +926,94 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+    
+	public function importAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+
+		// First Ids to delete
+/*		$firstCommunityId = $this->params()->fromQuery('firstCommunityId');
+		$firstVcardId = $this->params()->fromQuery('firstVcardId');
+		$firstUserId = $this->params()->fromQuery('firstUserId');
+		$firstDocumentId = $this->params()->fromQuery('firstDocumentId');
+		if (!$firstCommunityId || !$firstVcardId || !$firstUserId || !$firstDocumentId) throw new \Exception('Bad request');*/
+		
+//			StudentSportImport::importUser($firstCommunityId, $firstVcardId, $firstUserId, $firstDocumentId);
+//			StudentSportImport::import();
+//			StudentSportImport::importProduct();
+//			StudentSportImport::importOption();
+//			StudentSportImport::importBill();
+//			StudentSportImport::importBillRow();
+//			StudentSportImport::importBillOption();
+//			StudentSportImport::importBillTerm();
+			StudentSportImport::importSejour();
+		
+		return $this->getResponse();
+//		return $this->redirect()->toRoute('home');
+	}
+
+	public function dashboardAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+		$category = $this->params()->fromRoute('category');
+		$absLates = Absence::getList($category, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$absences = array();
+		$latenesss = array();
+		$cumulativeLateness = 0;
+		$absenceCount = 0;
+		foreach ($absLates as $absLate) {
+			if ($absLate->category == 'absence') {
+				$absences[] = $absLate;
+				$absenceCount++;
+			}
+			elseif ($absLate->category =='lateness') {
+				$latenesss[] = $absLate;
+				$cumulativeLateness += $absLate->duration;
+			}
+		}
+
+		$periods = array();
+		$notes = NoteLink::GetList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			if ($note->type == 'report') {
+				$key = $note->school_year.'.'.$note->school_period;
+				if (!array_key_exists($key, $periods)) $periods[$key] = array();
+				$periods[$key][] = $note;
+			}
+		}
+		krsort($periods);
+		
+		$events = Event::retrieveComing('p-pit-studies', $category, $account_id);
+		$notifications = Notification::retrieveCurrents('p-pit-studies', $category, $account_id);
+		
+		if ($category == 'sport') $progresses = Progress::retrieveAll($account->property_1, $account_id);
+		else $progresses = array();
+		
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'category' => $category,
+				'type' => $account->property_1,
+				'account' => $account,
+				'notes' => $notes,
+				'absences' => $absences,
+				'absenceCount' => $absenceCount,
+				'latenesss' => $latenesss,
+				'cumulativeLateness' => $cumulativeLateness,
+				'events' => $events,
+				'periods' => $periods,
+				'notifications' => $notifications,
+				'progresses' => $progresses,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
 
 	public function planningAction()
 	{
@@ -1049,7 +1138,7 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 
-	public function progressAction()
+	public function evaluationAction()
 	{
 		// Retrieve the context
 		$context = Context::getCurrent();
@@ -1069,27 +1158,6 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 
-	public function evaluationAction()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
-	
-		$notes = NoteLink::GetList('note', array('account_id' => $account_id), 'date', 'DESC', 'search');
-	
-		// Return the link list
-		$view = new ViewModel(array(
-				'context' => $context,
-				'config' => $context->getconfig(),
-				'account' => $account,
-				'notes' => $notes,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-	
 	public function reportAction()
 	{
 		// Retrieve the context
@@ -1099,7 +1167,7 @@ class StudentController extends AbstractActionController
 		$account = Account::get($account_id);
 	
 		$periods = array();
-		$notes = NoteLink::GetList('report', array('account_id' => $account_id), 'date', 'DESC', 'search');
+		$notes = NoteLink::GetList('report', array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
 		foreach($notes as $note) {
 			$key = $note->school_year.'.'.$note->school_period;
 			if (!array_key_exists($key, $periods)) $periods[$key] = array();
