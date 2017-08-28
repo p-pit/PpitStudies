@@ -628,7 +628,7 @@ class StudentController extends AbstractActionController
     				$criterionValue = $request->getPost('criterion_'.$i);
     				$data['criteria'][$criterionId] = $criterionValue;
     			}
-    			$noteLinks = array();
+    			$note->links = array();
     			if ($type == 'report') {
     				$computedAverages = Note::computePeriodAverages(/*$data['school_year'], */$data['class'], /*$data['school_period'], */$data['subject']);
     			}
@@ -657,7 +657,7 @@ class StudentController extends AbstractActionController
     				$noteSum += $value;
     				if ($value < $lowerNote) $lowerNote = $value;
     				if ($value > $higherNote) $higherNote = $value;
-    				/*if ($noteLink->value != '')*/ $noteLinks[] = $noteLink;
+    				/*if ($noteLink->value != '')*/ $note->links[] = $noteLink;
     			}
     			if ($nbAccount > 0) {
     				$data['average_note'] = round($noteSum / $nbAccount, 2);
@@ -678,7 +678,7 @@ class StudentController extends AbstractActionController
 		    					$error = $rc;
 		    				}
 		    				// Save the note at the student level
-		    				else foreach ($noteLinks as $noteLink) {
+		    				else foreach ($note->links as $noteLink) {
 		    					$noteLink->note_id = $note->id;
 		    					$rc = $noteLink->add();
 			    				if ($rc != 'OK') {

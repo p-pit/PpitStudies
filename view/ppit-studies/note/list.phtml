@@ -10,6 +10,10 @@
 	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'weight') $label = $this->translate('Weight', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'lower_note') $label = $this->translate('Lower note', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'average_note') $label = $this->translate('Average note', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'higher_note') $label = $this->translate('Higher note', 'ppit-studies', $context->getLocale());
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
@@ -56,6 +60,18 @@
 
 		<?php elseif ($propertyId == 'date') : ?>
 		<td><?php echo $context->decodeDate($note->date) ?></td>
+
+		<?php elseif ($propertyId == 'weight') : ?>
+		<td><?php echo $context->formatFloat($note->weight, 1) ?></td>
+
+		<?php elseif ($propertyId == 'lower_note') : ?>
+		<td><?php echo $context->formatFloat($note->lower_note, 2) ?></td>
+
+		<?php elseif ($propertyId == 'average_note') : ?>
+		<td><?php echo $context->formatFloat($note->average_note, 2) ?></td>
+
+		<?php elseif ($propertyId == 'higher_note') : ?>
+		<td><?php echo $context->formatFloat($note->higher_note, 2) ?></td>
 		
 		<?php endif;?>
 	<?php endforeach;?>
@@ -66,6 +82,17 @@
 	<tr class="invisible"><td colspan="99"></td></tr>
 	
 <?php endforeach; ?>
+	
+	<tr>
+		<th>&nbsp;</th>
+	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
+		<?php if ($propertyId == 'average_note') : ?>
+		<th><?php echo $context->formatFloat($average*20, 2) ?></th>
+		<?php else : ?>
+		<th>&nbsp;</th>
+		<?php endif;?>
+	<?php endforeach;?>
+	</tr>
 
 <?php if ($context->isDemoModeActive()) : ?>
 	<?php $qualifier = ($category == 'homework') ? $category : (($type == 'note') ? 'note' : 'report') ?>

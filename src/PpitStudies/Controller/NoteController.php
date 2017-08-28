@@ -111,7 +111,18 @@ class NoteController extends AbstractActionController
     
     	// Retrieve the list
     	$notes = Note::getList($category, $type, $params, $major, $dir, $mode);
-
+		$average = 0;
+    	if ($category == 'evaluation') {
+			$totalWeight = 0;
+    		$maxAverage = 0;
+			foreach ($notes as $note) {
+				$maxAverage += $note->reference_value;
+				$totalWeight += $note->weight;
+				$average += $note->average_note / $note->reference_value * $note->weight;
+			}
+			$average /= $totalWeight;
+    	}
+    	
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
@@ -119,6 +130,7 @@ class NoteController extends AbstractActionController
     			'category' => $category,
     			'type' => $type,
     			'notes' => $notes,
+				'average' => $average,
     			'mode' => $mode,
     			'params' => $params,
     			'major' => $major,

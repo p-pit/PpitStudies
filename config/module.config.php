@@ -2759,6 +2759,10 @@ table.note-report tr.period {
 			'class' => 'select',
 			'subject' => 'select',
 			'date' => 'date',
+			'weight' => 'number',
+			'lower_note' => 'number',
+			'average_note' => 'number',
+			'higher_note' => 'number',
 	),
 /*	
 	'note/update' => array(
