@@ -3,12 +3,12 @@
 		<th>&nbsp;</th>
 
 <?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
-		<th align="center">
 	<?php 
+	$label = null;
 	if ($propertyId == 'type') $label = $this->translate('Type', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'school_period') $label = $context->getConfig('student/property/school_period')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
-	elseif ($propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
+	elseif ($type == 'note' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'weight') $label = $this->translate('Weight	', 'ppit-studies', $context->getLocale());
@@ -17,14 +17,15 @@
 	elseif ($propertyId == 'higher_note') $label = $this->translate('Higher note', 'ppit-studies', $context->getLocale());
 	?>
 	<?php if ($label) : ?>
+		<th align="center">
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
 				<span><?php echo $label ?></span>
 		<?php if ($major == $propertyId) : ?>
 				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
 		<?php endif ?>
 			</button>
-	<?php endif;?>
 		</th>
+	<?php endif;?>
 <?php endforeach;?>
 
 	</tr>
@@ -56,7 +57,7 @@
 		<?php elseif ($propertyId == 'class') : ?>
 		<td><?php echo $context->getConfig('student/property/class')['modalities'][$note->class][$context->getLocale()] ?></td>
 
-		<?php elseif ($propertyId == 'level') : ?>
+		<?php elseif ($type == 'note' && $propertyId == 'level') : ?>
 		<td><?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$note->level][$context->getLocale()] ?></td>
 
 		<?php elseif ($propertyId == 'subject') : ?>
@@ -92,7 +93,7 @@
 	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 		<?php if ($propertyId == 'average_note') : ?>
 		<th><?php echo $context->formatFloat($average*20, 2) ?></th>
-		<?php else : ?>
+		<?php elseif ($type == 'note' || $propertyId != 'level') : ?>
 		<th>&nbsp;</th>
 		<?php endif;?>
 	<?php endforeach;?>
