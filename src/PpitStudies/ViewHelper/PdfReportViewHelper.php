@@ -109,7 +109,7 @@ class PdfReportViewHelper
     	$pdf->Ln(10);
 
     	// Title
-    	$text = '<div style="text-align: center"><strong>Bulletin scolaire'.'</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate(date('Y-m-d')).'</strong></div>';
+    	$text = '<div style="text-align: center"><strong>Bulletin scolaire'.'</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
     	$pdf->writeHTML($text, true, 0, true, 0);
     	$pdf->Ln(10);
 

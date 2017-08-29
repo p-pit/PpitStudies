@@ -53,8 +53,8 @@ table.note-report tr.period {
 			</tr>
 			<tr>
 				<th><?php echo $this->translate('Avg.', 'ppit-studies', $context->getLocale()) ?></th>
-				<th title="<?php echo $this->translate('Higher note', 'ppit-studies', $context->getLocale()) ?>">+</th>
-				<th title="<?php echo $this->translate('Lower note', 'ppit-studies', $context->getLocale()) ?>">-</th>
+				<th title="<?php echo $this->translate('Highest note', 'ppit-studies', $context->getLocale()) ?>">+</th>
+				<th title="<?php echo $this->translate('Lowest note', 'ppit-studies', $context->getLocale()) ?>">-</th>
 			</tr>
 	<?php $first=true; foreach ($notes as $note) : ?>
 		<?php if ($note->type == 'note') : ?>

@@ -982,8 +982,9 @@ return array(
 	),
 
 	'currentApplication' => 'p-pit-studies',
-	'currentPeriodStart' => '2016-09-01',
-
+	'currentPeriodStart' => '2017-08-01',
+	'currentPeriodEnd' => '2017-11-30',
+		
 	'ppitProduct/p-pit-studies' => array(
 			'properties' => array(),
 			'criteria' => array(),
@@ -2509,7 +2510,7 @@ table.note-report tr.period {
 			'location'=> array('mandatory' => false),
 	),
 	
-	'event/export/personal_data'=> array(
+	'event/export/calendar'=> array(
 			'place_id'=> 'A',
 			'property_1'=> 'B',
 			'property_2'=> 'C',

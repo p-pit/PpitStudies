@@ -11,10 +11,10 @@
 	elseif ($type == 'note' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
-	elseif ($propertyId == 'weight') $label = $this->translate('Weight	', 'ppit-studies', $context->getLocale());
-	elseif ($propertyId == 'lower_note') $label = $this->translate('Lower note', 'ppit-studies', $context->getLocale());
-	elseif ($propertyId == 'average_note') $label = $this->translate('Average note', 'ppit-studies', $context->getLocale());
-	elseif ($propertyId == 'higher_note') $label = $this->translate('Higher note', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'weight') $label = $this->translate('Weight', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'lower_note') $label = $this->translate(($type == 'note') ? 'Lowest note' : 'Lowest average', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'average_note') $label = $this->translate(($type == 'note') ? 'Average note' : 'Class average', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'higher_note') $label = $this->translate(($type == 'note') ? 'Highest note' : 'Highest average', 'ppit-studies', $context->getLocale());
 	?>
 	<?php if ($label) : ?>
 		<th align="center">

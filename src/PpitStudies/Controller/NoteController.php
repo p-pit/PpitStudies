@@ -120,7 +120,7 @@ class NoteController extends AbstractActionController
 				$totalWeight += $note->weight;
 				$average += $note->average_note / $note->reference_value * $note->weight;
 			}
-			$average /= $totalWeight;
+			$average /= ($totalWeight) ? $totalWeight : 1;
     	}
     	
     	// Return the link list
