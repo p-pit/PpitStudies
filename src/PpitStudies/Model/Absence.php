@@ -24,7 +24,8 @@ class Absence implements InputFilterAwareInterface
     public $account_id;
     public $subject;
     public $motive;
-    public $date;
+    public $begin_date;
+    public $end_date;
     public $duration;
     public $observations;
     public $status;
@@ -65,7 +66,8 @@ class Absence implements InputFilterAwareInterface
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->motive = (isset($data['motive'])) ? $data['motive'] : null;
-        $this->date = (isset($data['date'])) ? $data['date'] : null;
+        $this->begin_date = (isset($data['begin_date'])) ? $data['begin_date'] : null;
+        $this->end_date = (isset($data['end_date'])) ? $data['end_date'] : null;
         $this->duration = (isset($data['duration'])) ? $data['duration'] : null;
         $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
         $this->status = (isset($data['status'])) ? $data['status'] : null;
@@ -94,7 +96,8 @@ class Absence implements InputFilterAwareInterface
     	$data['account_id'] = (int) $this->account_id;
     	$data['subject'] = $this->subject;
     	$data['motive'] = $this->motive;
-    	$data['date'] =  ($this->date) ? $this->date : null;
+    	$data['begin_date'] =  ($this->begin_date) ? $this->begin_date : null;
+    	$data['end_date'] =  ($this->end_date) ? $this->end_date : null;
     	$data['duration'] = (int) $this->duration;
     	$data['observations'] =  ($this->observations) ? $this->observations : null;
     	$data['status'] =  ($this->status) ? $this->status : null;
@@ -109,14 +112,14 @@ class Absence implements InputFilterAwareInterface
     	$select = Absence::getTable()->getSelect()
     		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('place_id', 'sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
     		->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
-    		->order(array($major.' '.$dir, 'date', 'subject', 'name'));
+    		->order(array($major.' '.$dir, 'begin_date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');
 		if ($type) $where->equalTo('student_absence.type', $type);
 
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-    		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
+    		$where->greaterThanOrEqualTo('begin_date', $context->getConfig('currentPeriodStart'));
     	}
     	else {
 
@@ -177,7 +180,7 @@ class Absence implements InputFilterAwareInterface
     public static function retrieveAll($type, $account_id)
     {
     	$select = Absence::getTable()->getSelect()
-    		->order(array('date DESC', 'subject ASC'));
+    		->order(array('begin_date DESC', 'subject ASC'));
     	$where = new Where;
     	$where->notEqualTo('status', 'deleted');
     	$where->equalTo('account_id', $account_id);
@@ -233,17 +236,21 @@ class Absence implements InputFilterAwareInterface
 		}
     	if (array_key_exists('subject', $data)) {
 		    $this->subject = trim(strip_tags($data['subject']));
-		    if (!$this->subject || strlen($this->subject) > 255) return 'Integrity';
+		    if (strlen($this->subject) > 255) return 'Integrity';
 		}
         if (array_key_exists('motive', $data)) {
 		    $this->motive = trim(strip_tags($data['motive']));
 		    if (strlen($this->motive) > 255) return 'Integrity';
 		}
-		if (array_key_exists('date', $data)) {
-	    	$this->date = trim(strip_tags($data['date']));
-	    	if (!$this->date || !checkdate(substr($this->date, 5, 2), substr($this->date, 8, 2), substr($this->date, 0, 4))) return 'Integrity';
+		if (array_key_exists('begin_date', $data)) {
+	    	$this->begin_date = trim(strip_tags($data['begin_date']));
+	    	if (!$this->begin_date || !checkdate(substr($this->begin_date, 5, 2), substr($this->begin_date, 8, 2), substr($this->begin_date, 0, 4))) return 'Integrity';
 		}
-        if (array_key_exists('duration', $data)) $this->duration = (int) $data['duration'];
+    	if (array_key_exists('end_date', $data)) {
+	    	$this->end_date = trim(strip_tags($data['end_date']));
+	    	if ($this->end_date && !checkdate(substr($this->end_date, 5, 2), substr($this->end_date, 8, 2), substr($this->end_date, 0, 4))) return 'Integrity';
+		}
+		if (array_key_exists('duration', $data)) $this->duration = (int) $data['duration'];
 		if (array_key_exists('observations', $data)) {
 		    $this->observations = trim(strip_tags($data['observations']));
 		    if (strlen($this->observations) > 2047) return 'Integrity';

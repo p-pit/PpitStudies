@@ -559,7 +559,7 @@ return array(
 	       						'addNote' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/add-note[/:type]',
+        										'route' => '/add-note[/:type][/:class]',
         										'defaults' => array(
         												'action' => 'addNote',
         										),
@@ -568,7 +568,7 @@ return array(
 	       						'addEvaluation' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/add-evaluation[/:type]',
+        										'route' => '/add-evaluation[/:type][/:class]',
         										'defaults' => array(
         												'action' => 'addEvaluation',
         										),
@@ -800,8 +800,8 @@ return array(
 				array('route' => 'studentNotification/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 
-				array('route' => 'planning', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'planning/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+				array('route' => 'planning', 'roles' => array('manager')),
+				array('route' => 'planning/index', 'roles' => array('manager')),
 
 				array('route' => 'progress', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/index', 'roles' => array('manager', 'coach')),
@@ -2620,11 +2620,18 @@ table.note-report tr.period {
 							'type' => 'repository',
 							'definition' => 'absence/property/motive',
 					),
-					'date' => array(
+					'begin_date' => array(
 							'type' => 'date',
 							'labels' => array(
-									'en_US' => 'Date',
-									'fr_FR' => 'Date',
+									'en_US' => 'Begin date',
+									'fr_FR' => 'Date début',
+							),
+					),
+					'end_date' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'End date',
+									'fr_FR' => 'Date fin',
 							),
 					),
 					'duration' => array(
@@ -2664,7 +2671,7 @@ table.note-report tr.period {
 			'title' => array('en_US' => 'Absences/Lateness', 'fr_FR' => 'Absences/Retards'),
 			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
-			'main' => array('n_fn' => 'contains', 'school_period' => 'select', 'category' => 'select', 'subject' => 'select', 'date' => 'range'),
+			'main' => array('n_fn' => 'contains', 'school_period' => 'select', 'category' => 'select', 'subject' => 'select', 'begin_date' => 'range'),
 			'more' => array(),
 	),
 	
@@ -2673,7 +2680,8 @@ table.note-report tr.period {
 			'school_period' => 'text',
 			'category' => 'select',
 			'subject' => 'text',
-			'date' => 'date',
+			'begin_date' => 'date',
+			'end_date' => 'date',
 			'duration' => 'number',
 	),
 
@@ -3068,12 +3076,12 @@ table.note-report tr.period {
 											'route' => 'student/planning',
 											'label' => array('en_US' => 'Planning', 'fr_FR' => 'Planning'),
 									),
-									'file' => array(
+/*									'file' => array(
 											'type' => 'static',
 											'level' => 'subject',
 											'route' => 'student/file',
 											'label' => array('en_US' => 'Student file', 'fr_FR' => 'Dossier élève'),
-									),
+									),*/
 									'absence' => array(
 											'type' => 'static',
 											'level' => 'subject',

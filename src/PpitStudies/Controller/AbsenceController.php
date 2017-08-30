@@ -92,8 +92,8 @@ class AbsenceController extends AbstractActionController
     
     	$params = $this->getFilters($this->params());
     
-    	$major = ($this->params()->fromQuery('major', 'name'));
-    	$dir = ($this->params()->fromQuery('dir', 'ASC'));
+    	$major = ($this->params()->fromQuery('major', 'begin_date'));
+    	$dir = ($this->params()->fromQuery('dir', 'DESC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
@@ -186,8 +186,9 @@ class AbsenceController extends AbstractActionController
     			$data['category'] = $request->getPost('category');
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
-    			$data['date'] = $request->getPost('date');
-    			$data['duration'] = ($data['category'] == 'lateness') ? $request->getPost('duration') : 0;
+    			$data['begin_date'] = $request->getPost('begin_date');
+    			$data['end_date'] = $request->getPost('end_date');
+    			$data['duration'] = $request->getPost('duration');
 				$data['observations'] = $request->getPost('observations');
 				$data['comment'] = $request->getPost('comment');
 

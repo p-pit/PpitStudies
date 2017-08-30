@@ -52,7 +52,7 @@ table.note-report tr.period {
 	<!--Text-->
 	<?php $first=true; foreach ($absences as $absence) : ?>
 	<div>
-		<strong><?php echo $context->decodeDate($absence->date) ?></strong>
+		<strong><?php echo $context->decodeDate($absence->begin_date) ?></strong>
 		&mdash;
 		<?php echo $context->getConfig('student/property/school_subject')['modalities'][$absence->subject][$context->getLocale()] ?>
 		&mdash;
@@ -89,7 +89,7 @@ table.note-report tr.period {
 	<!--Text-->
 	<?php $first=true; foreach ($latenesss as $lateness) : ?>
 	<div>
-		<strong><?php echo $context->decodeDate($lateness->date) ?></strong>
+		<strong><?php echo $context->decodeDate($lateness->begin_date) ?></strong>
 		&mdash;
 		<?php echo $context->getConfig('student/property/school_subject')['modalities'][$lateness->subject][$context->getLocale()] ?>
 		&mdash;

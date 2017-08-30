@@ -239,11 +239,12 @@ class Note implements InputFilterAwareInterface
     	return $note;
     }
     
-    public static function instanciate($type = null)
+    public static function instanciate($type = null, $class = null)
     {
 		$note = new Note;
     	$note->status = 'new';
 		$note->type = $type;
+		$note->class = $class;
 		if ($type == 'note' || $type == 'report') $note->category = 'evaluation';
 		elseif ($type == 'done-work' || $type == 'todo-work' || $type == 'event') $note->category = 'homework';
 		$note->audit = array();

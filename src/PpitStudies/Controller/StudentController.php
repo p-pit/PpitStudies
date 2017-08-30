@@ -321,7 +321,8 @@ class StudentController extends AbstractActionController
     			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
-    			$data['date'] = $request->getPost('date');
+    			$data['begin_date'] = $request->getPost('begin_date');
+    			$data['end_date'] = $request->getPost('end_date');
     			$data['duration'] = $request->getPost('duration');
 				$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
@@ -458,9 +459,11 @@ class StudentController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     
-    	// Retrieve the type
+    	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
-    	$note = Note::instanciate('homework');
+    	$class = $this->params()->fromRoute('class', null);
+
+    	$note = Note::instanciate('homework', $class);
 
     	$documentList = array();
     	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
@@ -551,7 +554,7 @@ class StudentController extends AbstractActionController
     			}
     		}
     	}
-    
+
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
@@ -573,11 +576,12 @@ class StudentController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     
-    	// Retrieve the type
+    	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
-    
-    	$note = Note::instanciate($type);
-    
+    	$class = $this->params()->fromRoute('class', null);
+
+    	$note = Note::instanciate($type, $class);
+
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');

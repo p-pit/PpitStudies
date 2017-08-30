@@ -39,7 +39,7 @@ foreach ($absences as $absence) : ?>
 	<?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
 	
 		<?php if ($propertyId == 'subject') : ?>
-		<td><?php echo $context->getConfig('absence')['types'][$absence->type]['subject']['modalities'][$absence->subject][$context->getLocale()] ?></td>
+		<td><?php if ($absence->subject) echo $context->getConfig('absence')['types'][$absence->type]['subject']['modalities'][$absence->subject][$context->getLocale()] ?></td>
 		
 		<?php else : ?>
 			<?php $property = $context->getConfig('absence')['properties'][$propertyId] ?>

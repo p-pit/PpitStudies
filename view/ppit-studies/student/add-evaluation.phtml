@@ -35,8 +35,6 @@
 			$classes[$classId] = $class;
 		}
 	}
-	if (count($classes) == 1) foreach ($classes as $classId => $class) $selected = $classId;
-	else $selected = null;
 	?>
 		<div class="form-group" id="class_group">
 			<label class="col-sm-5 control-label">* <?php echo $context->getConfig('student/property/class')['labels'][$context->getLocale()] ?></label>
@@ -44,7 +42,7 @@
 				<select class="form-control" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
 					<option />
 	<?php foreach ($classes as $classId => $class) : ?>
-					<option value="<?php echo $classId ?>" <?php if ($selected) echo 'selected="'.$selected.'"' ?>><?php echo $class[$context->getLocale()] ?></option>
+					<option value="<?php echo $classId ?>" <?php if ($classId == $note->class) echo 'selected="selected"' ?>><?php echo $class[$context->getLocale()] ?></option>
 	<?php endforeach;?>
 				</select>
 			</div>
@@ -126,7 +124,12 @@
 <!-- Value -->
 		<input type="hidden" id="value_<?php echo $account->id ?>" />
 		<div class="form-group" id="input_value_<?php echo $account->id ?>_group">
-			<label class="col-sm-5 control-label"><?php echo $account->name ?></label>
+			<label class="col-sm-5 control-label">
+				<?php echo $account->name ?>
+	<?php if ($type == 'report') : ?>
+				<a class="report-attachment glyphicon glyphicon-paperclip" href="<?php echo $this->url('student/downloadReport', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'school_period' => $context->getConfig('student/property/school_year/default'))) ?>" title="<?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?>"></a>
+	<?php endif;?>
+			</label>
 			<div class="col-sm-7">
 				<input class="form-control" id="input_value_<?php echo $account->id ?>" placeholder="<?php echo $this->translate(($type == 'report') ? 'Average (computed if not input)' : 'Note', 'ppit-studies', $context->getLocale()) ?>" <?php if ($message == 'OK') echo 'value="'.$context->formatFloat($note->results[$account->id]['note'], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
 			</div>

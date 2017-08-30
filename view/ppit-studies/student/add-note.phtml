@@ -24,8 +24,6 @@
 			$classes[$classId] = $class;
 		}
 	}
-	if (count($classes) == 1) foreach ($classes as $classId => $class) $selected = $classId;
-	else $selected = null;
 	?>
 		<div class="form-group" id="class_group">
 			<label class="col-sm-5 control-label">* <?php echo $context->getConfig('student/property/class')['labels'][$context->getLocale()] ?></label>
@@ -33,7 +31,7 @@
 				<select class="form-control" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
 					<option />
 	<?php foreach ($classes as $classId => $class) : ?>
-					<option value="<?php echo $classId ?>" <?php if ($selected) echo 'selected="'.$selected.'"' ?>><?php echo $class[$context->getLocale()] ?></option>
+					<option value="<?php echo $classId ?>" <?php if ($classId == $note->class) echo 'selected="selected"' ?>><?php echo $class[$context->getLocale()] ?></option>
 	<?php endforeach;?>
 				</select>
 			</div>

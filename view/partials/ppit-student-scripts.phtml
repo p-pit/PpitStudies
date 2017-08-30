@@ -436,10 +436,11 @@ function getStudentHome(id) {
 <?php 
 $properties = array();
 $properties['category'] = array('type' => 'select', 'mandatory' => true);
-$properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['motive'] = array('type' => 'select', 'mandatory' => false);
-$properties['date'] = array('type' => 'date', 'mandatory' => true);
-$properties['duration'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 999);
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => true);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['duration'] = array('type' => 'number', 'mandatory' => false, 'minValue' => 0, 'maxValue' => 999);
+$properties['subject'] = array('type' => 'select', 'mandatory' => false);
 $properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['update_time'] = array('type' => 'hidden');
@@ -450,7 +451,8 @@ echo $this->partial('/partials/check-update-properties', array('entity' => 'Abse
 
 function connectAdd<?php echo $typeId ?>AbsenceForm()
 {
-	$('#input_date').datepicker();
+	$('#input_begin_date').datepicker();
+	$('#input_end_date').datepicker();
 
 	var form = document.getElementById('ppit-form');
 	form.onsubmit = function(event) {
@@ -480,7 +482,7 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
-				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+				formData.append('<?php echo $propertyId ?>', $('#<?php echo $propertyId ?>').val());
 <?php endforeach ?>
 			formData.append('duration', $('#duration').val());
 
@@ -494,6 +496,11 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('btn-primary').addClass('btn-default');
+					if ($('#category').val() != 'absence') $('#input_end_date_group').hide();
+					$('#category').change(function () {
+						if ($('#category').val() == 'absence') $('#input_end_date_group').show();
+						else $('#input_end_date_group').hide();
+					});
 				}
 			};
 			xhttp.send(formData);
@@ -516,13 +523,12 @@ function getAdd<?php echo $typeId?>Absence() {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
 			connectAdd<?php echo $typeId ?>AbsenceForm();
-
-//			$('#input_duration_group').hide();
+			if ($('#category').val() != 'absence') $('#input_end_date_group').hide();
 			$('#category').change(function () {
-				if ($('#category').val() == 'lateness') $('#input_duration_group').show();
-				else $('#input_duration_group').hide();
+				if ($('#category').val() == 'absence') $('#input_end_date_group').show();
+				else $('#input_end_date_group').hide();
 			});
-			$('#subject').focus();
+			$('#category').focus();
 
 <?php if (!$config['isTraceActive']) : ?>
 			}
@@ -675,7 +681,7 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAddNoteForm()
+function connectAddNoteForm(classe)
 {
 	$('#input_date').datepicker();
 	$('#input_target_date').datepicker();
@@ -718,7 +724,8 @@ function connectAddNoteForm()
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('student/addNote') ?>';
+			route = '<?php echo $this->url('student/addNote', array('type' => 'homework')) ?>';
+			if (classe) route += '/' + classe;
 			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -749,10 +756,11 @@ function connectAddNoteForm()
 	}
 }
 
-function getAddNote() {
+function getAddNote(classe) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addNote') ?>';
+	var route = '<?php echo $this->url('student/addNote', array('type' => 'homework')) ?>';
+	if (classe) route += '/' + classe;
 	var formData = new FormData();
 
 	var criteriaNumber = $('#group-nb-criteria').val();
@@ -788,7 +796,7 @@ function getAddNote() {
 			    });
 			});
 
-			connectAddNoteForm();
+			connectAddNoteForm(classe);
 			$('#school_year').focus();
 			
 			$('#input_target_date_group').hide();
@@ -837,7 +845,7 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Evaluation', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectAddEvaluationForm(type)
+function connectAddEvaluationForm(type, classe)
 {
 	$('#input_date').datepicker();
 
@@ -893,6 +901,7 @@ function connectAddEvaluationForm(type)
 			var xhttp = new XMLHttpRequest();
 			var route, target;
 			route = '<?php echo $this->url('student/addEvaluation') ?>/' + type;
+			if (classe) route += '/' + classe;
 			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -908,10 +917,11 @@ function connectAddEvaluationForm(type)
 	}
 }
 
-function getAddEvaluation(type) {
+function getAddEvaluation(type, classe) {
 	
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('student/addEvaluation') ?>/' + type;
+	if (classe) route += '/' + classe;
 	var formData = new FormData();
 
 	var criteriaNumber = $('#group-nb-criteria').val();
@@ -938,6 +948,11 @@ function getAddEvaluation(type) {
 			if (xhttp.status == 200) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+			$('.report-attachment').hide();
+			$('#subject').change(function () {
+				if ($('#subject').val() == 'global') $('.report-attachment').show();
+				else $('.report-attachment').hide();
+			});
 			
 			$(function () {
 			    $('.tip').tooltip({
@@ -947,7 +962,7 @@ function getAddEvaluation(type) {
 			    });
 			});
 
-			connectAddEvaluationForm(type);
+			connectAddEvaluationForm(type, classe);
 			$('#subject').focus();
 <?php if (!$config['isTraceActive']) : ?>
 			}
@@ -1388,17 +1403,17 @@ function getStudentGroup() {
 
 			$('#note-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddNote(); 
+				getAddNote($('#search_property_7').val()); // Class
 			});
 
 			$('#evaluation-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddEvaluation('note'); 
+				getAddEvaluation('note', $('#search_property_7').val()); // Class
 			});
 
 			$('#report-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddEvaluation('report'); 
+				getAddEvaluation('report', $('#search_property_7').val()); // Class
 			});
 
 			$('#progress-add-anchor').click(function () { 

@@ -131,10 +131,10 @@ function filterAbsenceList() {
 	}
 	else if (descCriterion) {
 		criterion = descCriterion.split('-')[0];
-		dir = 'ASC';
+		dir = 'DESC';
 	}
 	else {
-		criterion = 'date';
+		criterion = 'begin_date';
 		dir = 'DESC';
 	}
 	getAbsenceList(getParams(), criterion, dir);
@@ -265,10 +265,11 @@ function connectAuditPanel(id)
 <?php 
 $properties = array();
 $properties['category'] = array('type' => 'select', 'mandatory' => true);
-$properties['subject'] = array('type' => 'select', 'mandatory' => true);
-$properties['motive'] = array('type' => 'select', 'mandatory' => false);
-$properties['date'] = array('type' => 'date', 'mandatory' => false);
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
 $properties['duration'] = array('type' => 'number', 'mandatory' => false, 'minValue' => 0, 'maxValue' => 999);
+$properties['subject'] = array('type' => 'select', 'mandatory' => false);
+$properties['motive'] = array('type' => 'select', 'mandatory' => false);
 $properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 $properties['update_time'] = array('type' => 'hidden');
@@ -278,7 +279,8 @@ echo $this->partial('/partials/check-update-properties', array('entity' => 'Abse
 
 function connectAbsenceUpdateForm(id, action)
 {
-	$('#input_date').datepicker();
+	$('#input_begin_date').datepicker();
+	$('#input_end_date').datepicker();
 	var form = document.getElementById('ppit-form');
 	form.onsubmit = function(event) {
 		
@@ -309,6 +311,11 @@ function connectAbsenceUpdateForm(id, action)
 					document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;
 					connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
 					connectAuditPanel(id);
+					if ($('#category').val() != 'absence') $('#input_end_date_group').hide();
+					$('#category').change(function () {
+						if ($('#category').val() == 'absence') $('#input_end_date_group').show();
+						else $('#input_end_date_group').hide();
+					});
 
 					if (id) {
 						$('#update-anchor').click(function () { getAbsenceUpdate(id, 'update'); });
@@ -349,6 +356,12 @@ function getAbsenceUpdate(id, action) {
 			connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
 			connectAuditPanel(id);
 			connectAbsenceUpdateForm(id, action);
+			if ($('#category').val() != 'absence') $('#input_end_date_group').hide();
+			$('#category').change(function () {
+				if ($('#category').val() == 'absence') $('#input_end_date_group').show();
+				else $('#input_end_date_group').hide();
+			});
+			$('#category').focus();
 
 			if (id) {
 				$('#update-anchor').click(function () { getAbsenceUpdate(id, 'update'); });
@@ -381,7 +394,7 @@ function activateAbsence() {
 	// Connect the search inputs
 	connectAbsenceSearchInputs();
 	
-	getAbsenceList('?', 'name', 'ASC');
+	getAbsenceList('?', 'begin_date', 'DESC');
 	
 	$('#add-criteria').click(function () {
 		mode = $('#add-criteria').text();
