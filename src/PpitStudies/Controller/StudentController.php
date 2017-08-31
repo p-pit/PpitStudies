@@ -996,7 +996,7 @@ class StudentController extends AbstractActionController
 	
 		$account_id = (int) $this->params()->fromRoute('id');
 		$account = Account::get($account_id);
-		$absLates = Absence::getList('schooling', array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$absLates = Absence::getList('schooling', array('account_id' => $account_id, 'min_begin_date' => $context->getConfig('currentPeriodStart')), 'begin_date', 'DESC', 'search');
 		$absences = array();
 		$absenceCount = 0;
 		$cumulativeAbsence = 0;
