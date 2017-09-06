@@ -17,6 +17,8 @@ class Absence implements InputFilterAwareInterface
 {
     public $id;
     public $instance_id;
+    public $status;
+    public $place_id;
     public $category;
     public $school_year;
     public $school_period;
@@ -28,12 +30,10 @@ class Absence implements InputFilterAwareInterface
     public $end_date;
     public $duration;
     public $observations;
-    public $status;
     public $audit;
     public $update_time;
 
     // Joined properties
-    public $place_id;
     public $n_fn;
     public $name; // Deprecated
     public $sport;
@@ -59,6 +59,8 @@ class Absence implements InputFilterAwareInterface
     {
         $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->instance_id = (isset($data['instance_id'])) ? $data['instance_id'] : null;
+        $this->status = (isset($data['status'])) ? $data['status'] : null;
+        $this->place_id = (isset($data['place_id'])) ? $data['place_id'] : null;
         $this->category = (isset($data['category'])) ? $data['category'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
@@ -70,12 +72,10 @@ class Absence implements InputFilterAwareInterface
         $this->end_date = (isset($data['end_date'])) ? $data['end_date'] : null;
         $this->duration = (isset($data['duration'])) ? $data['duration'] : null;
         $this->observations = (isset($data['observations'])) ? $data['observations'] : null;
-        $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
         
         // Joined properties
-        $this->place_id = (isset($data['place_id'])) ? $data['place_id'] : null;
         $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
 //        $this->name = (isset($data['name'])) ? $data['name'] : null;
         $this->sport = (isset($data['sport'])) ? $data['sport'] : null;
@@ -89,6 +89,8 @@ class Absence implements InputFilterAwareInterface
     	$data = array();
     	$data['id'] = (int) $this->id;
     	$data['instance_id'] = (int) $this->instance_id;
+    	$data['status'] =  ($this->status) ? $this->status : null;
+    	$data['place_id'] = (int) $this->place_id;
     	$data['category'] = $this->category;
     	$data['school_year'] = $this->school_year;
     	$data['school_period'] = $this->school_period;
@@ -100,7 +102,6 @@ class Absence implements InputFilterAwareInterface
     	$data['end_date'] =  ($this->end_date) ? $this->end_date : null;
     	$data['duration'] = (int) $this->duration;
     	$data['observations'] =  ($this->observations) ? $this->observations : null;
-    	$data['status'] =  ($this->status) ? $this->status : null;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
 		return $data;
     }
@@ -110,7 +111,7 @@ class Absence implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	
     	$select = Absence::getTable()->getSelect()
-    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('place_id', 'sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
+    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
     		->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
     		->order(array($major.' '.$dir, 'begin_date', 'subject', 'name'));
 		$where = new Where;
@@ -125,8 +126,8 @@ class Absence implements InputFilterAwareInterface
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-//				if ($propertyId == 'name') $where->like('commitment_account.name', '%'.$params[$propertyId].'%');
-				if ($propertyId == 'n_fn') $where->like('core_vcard.n_fn', '%'.$params[$propertyId].'%');
+				if ($propertyId == 'place_id') $where->equalTo('student_absence.place_id', $params[$propertyId]);
+				elseif ($propertyId == 'n_fn') $where->like('core_vcard.n_fn', '%'.$params[$propertyId].'%');
 				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			else $where->like((($propertyId == 'type') ? 'student_absence.' : '').$propertyId, '%'.$params[$propertyId].'%');
@@ -205,6 +206,7 @@ class Absence implements InputFilterAwareInterface
     public static function instanciate($type = null)
     {
 		$absence = new Absence;
+		$absence->status = 'new';
 		$absence->type = $type;
 		$absence->audit = array();
 		return $absence;
@@ -214,7 +216,15 @@ class Absence implements InputFilterAwareInterface
     
     	$context = Context::getCurrent();
 
-        if (array_key_exists('category', $data)) {
+        if (array_key_exists('status', $data)) {
+		    $this->status = trim(strip_tags($data['status']));
+		    if (strlen($this->status) > 255) return 'Integrity';
+		}
+        if (array_key_exists('place_id', $data)) {
+		    $this->place_id = (int) $data['place_id'];
+		    if (!$this->place_id) return 'Integrity';
+		}
+		if (array_key_exists('category', $data)) {
 		    $this->category = trim(strip_tags($data['category']));
 		    if (!$this->category || strlen($this->category) > 255) return 'Integrity';
 		}
@@ -254,10 +264,6 @@ class Absence implements InputFilterAwareInterface
 		if (array_key_exists('observations', $data)) {
 		    $this->observations = trim(strip_tags($data['observations']));
 		    if (strlen($this->observations) > 2047) return 'Integrity';
-		}
-        if (array_key_exists('status', $data)) {
-		    $this->status = trim(strip_tags($data['status']));
-		    if (strlen($this->status) > 255) return 'Integrity';
 		}
 		if (array_key_exists('comment', $data)) {
 		    $this->comment = trim(strip_tags($data['comment']));

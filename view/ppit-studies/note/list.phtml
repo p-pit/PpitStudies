@@ -6,6 +6,7 @@
 	<?php 
 	$label = null;
 	if ($propertyId == 'type') $label = $this->translate('Type', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'place_id') $label = $context->getConfig('note')['properties']['place_id']['labels'][$context->getLocale()];
 	elseif ($propertyId == 'school_period') $label = $context->getConfig('student/property/school_period')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
 	elseif ($type == 'note' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
@@ -50,6 +51,9 @@
 	
 		<?php if ($propertyId == 'type') : ?>
 		<td <?php if ($backgroundColor) echo 'style="background-color: '.$backgroundColor.'"' ?>><?php echo $context->getConfig('note')['types'][$category][$note->type]['labels'][$context->getLocale()] ?></td>
+
+		<?php elseif ($propertyId == 'place_id') : ?>
+		<td><?php echo $places[$note->place_id]->caption ?></td>
 
 		<?php elseif ($propertyId == 'school_period') : ?>
 		<td><?php echo $context->getConfig('student/property/school_period')['modalities'][$note->school_period][$context->getLocale()] ?></td>

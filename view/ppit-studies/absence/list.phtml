@@ -45,7 +45,10 @@ foreach ($absences as $absence) : ?>
 			<?php $property = $context->getConfig('absence')['properties'][$propertyId] ?>
 			<?php if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']) ?>
 	
-			<?php if ($propertyId == 'n_fn') : ?>
+			<?php if ($propertyId == 'place_id') : ?>
+		<td><?php echo $places[$absence->place_id]->caption ?></td>
+	
+			<?php elseif ($propertyId == 'n_fn') : ?>
 		<td><?php echo $absence->n_fn ?></td>
 	
 			<?php elseif ($propertyId == 'duration') : ?>

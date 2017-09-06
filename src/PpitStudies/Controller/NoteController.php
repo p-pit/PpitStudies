@@ -40,6 +40,7 @@ class NoteController extends AbstractActionController
     			'currentEntry' => $currentEntry,
     			'category' => $category,
     			'type' => $type,
+    			'places' => Place::getList(array()),
     	));
     }
 
@@ -88,6 +89,7 @@ class NoteController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'places' => Place::getList(array()),
     			'category' => $category,
     			'type' => $type,
     	));
@@ -127,6 +129,7 @@ class NoteController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+	    		'places' => Place::getList(array()),
     			'category' => $category,
     			'type' => $type,
     			'notes' => $notes,

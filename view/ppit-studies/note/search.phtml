@@ -56,13 +56,25 @@
 
 	<?php else : ?>
 		<?php 
-		if ($propertyId == 'school_period') $property = $context->getConfig('student/property/school_period');
-		elseif ($propertyId == 'subject') $property = $context->getConfig('student/property/school_subject');
-		elseif ($propertyId == 'class') $property = $context->getConfig('student/property/class');
+		$property = $context->getConfig('note')['properties'][$propertyId];
+		if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
 		$label = $property['labels'][$context->getLocale()];
 		?>
+			
+		<?php if ($propertyId == 'place_id') : ?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $label ?></label>
+			<div class="col-sm-7">
+				<select id="search_place_id" class="form-control">
+					<option value=""></option>
+		<?php foreach ($places as $place) : ?>
+		    		<option value="<?php echo $place->id ?>"><?php echo $place->caption ?></option>
+		<?php endforeach;?>
+		    	</select>
+			</div>
+		</div>
 		
-		<?php if ($rendering == 'contains') : ?>
+		<?php elseif ($rendering == 'contains') : ?>
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
 			<div class="col-sm-7">

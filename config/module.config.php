@@ -1643,6 +1643,13 @@ return array(
 									'fr_FR' => 'Commentaire',
 							),
 					),
+					'update_time' => array(
+							'type' => 'time',
+							'labels' => array(
+									'en_US' => 'Last update',
+									'fr_FR' => 'Dernière mise à jour',
+							),
+					),
 			),
 			'order' => 'n_fn',
 	),
@@ -1668,8 +1675,9 @@ return array(
 	),
 	'commitmentAccount/list/p-pit-studies' => array(
 			'property_1' => 'image',
-			'photo_link_id' => 'photo',
+//			'photo_link_id' => 'photo',
 			'n_fn' => 'text',
+			'callback_date' => 'text',
 			'property_2' => 'phone',
 	),
 	'commitmentAccount/detail/p-pit-studies' => array(
@@ -2003,6 +2011,7 @@ return array(
 			'type' => 'select',
 			'modalities' => array(
 					'Football' => array('fr_FR' => 'Football'),
+					'Football-women' => array('fr_FR' => 'Football féminin'),
 					'Basketball' => array('fr_FR' => 'Basketball'),
 					'Equitation' => array('fr_FR' => 'Equitation'),
 					'Golf' => array('fr_FR' => 'Golf'),
@@ -2049,6 +2058,7 @@ return array(
 	'student/property/class' => array(
 			'type' => 'select',
 			'modalities' => array(
+					'cm2' => array('fr_FR' => 'CM2', 'level' => 'CM2'),
 					'6e' => array('fr_FR' => '6e', 'level' => '6e'),
 					'5e' => array('fr_FR' => '5e', 'level' => '5e'),
 					'4e' => array('fr_FR' => '4e', 'level' => '4e'),
@@ -2060,6 +2070,15 @@ return array(
 					'termS' => array('fr_FR' => 'Term. S', 'level' => 'Term.', 'specialty' => 'S'),
 					'termES' => array('fr_FR' => 'Term. ES', 'level' => 'Term.', 'specialty' => 'ES'),
 					'termSTMG' => array('fr_FR' => 'Term. STMG', 'level' => 'Term.', 'specialty' => 'STMG'),
+// Demande A Herrera
+					'2ndeProCommerce' => array('fr_FR' => '2nde Pro Commerce', 'level' => '2nde'),
+					'1ereProCommerce' => array('fr_FR' => '1ère Pro Commerce', 'level' => '1ere'),
+					'termProCommerce' => array('fr_FR' => 'Term. Pro Commerce', 'level' => 'Term.'),
+//
+					'fle' => array('fr_FR' => 'FLE', 'level' => 'FLE'),
+					'cap-vente' => array('fr_FR' => 'CAP Vente', 'level' => 'CAP'),
+					'bts1' => array('fr_FR' => 'BTS1', 'level' => 'BTS'),
+					'bts2' => array('fr_FR' => 'BTS2', 'level' => 'BTS'),
 			),
 			'labels' => array(
 					'en_US' => 'Class',
@@ -2117,6 +2136,10 @@ return array(
 					'oral-test' => array('en_US' => 'Oral test', 'fr_FR' => 'Interrogation orale'),
 					'written-test' => array('en_US' => 'Written test', 'fr_FR' => 'Interrogation écrite'),
 					'participation' => array('en_US' => 'Participation', 'fr_FR' => 'Participation'),
+// Demande A Herrera
+					'mock-exam' => array('en_US' => 'Mock exam', 'fr_FR' => 'Brevet blanc'),
+					'mock-bac' => array('en_US' => 'Mock Baccalaureate', 'fr_FR' => 'Baccalauréat blanc'),
+//
 			),
 			'labels' => array(
 					'en_US' => 'Evaluation category',
@@ -2127,17 +2150,44 @@ return array(
 	'student/property/school_subject' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'french' => array( 'en_US' => 'French', 'fr_FR' => 'Français'),
+					'french' => array( 'en_US' => 'French (native)', 'fr_FR' => 'Français'),
 					'philosophy' => array( 'en_US' => 'Philosophy', 'fr_FR' => 'Philosophie'),
 					'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
+					'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
 					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
 					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
 					'english' => array('en_US' => 'English', 'fr_FR' => 'Anglais'),
+					'german' => array('en_US' => 'German', 'fr_FR' => 'Allemand'),
+					'arabian' => array('en_US' => 'Arabian', 'fr_FR' => 'Arabe'),
 					'spanish' => array('en_US' => 'Spanish', 'fr_FR' => 'Espagnol'),
-					'marketing' => array('en_US' => 'Marketing', 'fr_FR' => 'Marketing'),
+					'fle' => array('en_US' => 'French', 'fr_FR' => 'FLE'),
+					'italien' => array('en_US' => 'Italian', 'fr_FR' => 'Italien'),
+					'portuguese' => array('en_US' => 'Portuguese', 'fr_FR' => 'Portugais'),
+					'technology' => array('en_US' => 'Technology', 'fr_FR' => 'Technologie'),
+					'computing' => array('en_US' => 'Computing', 'fr_FR' => 'Informatique'),
+					'management-sciences' => array('en_US' => 'Management sciences', 'fr_FR' => 'Science de la gestion'),
+					'marketing' => array('en_US' => 'Marketing', 'fr_FR' => 'Mercatique'),
 					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
 					'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie / Droit'),
-					'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+					'ess' => array('en_US' => 'Economic & social sciences', 'fr_FR' => 'SES'),
+					'sales' => array('en_US' => 'Sales', 'fr_FR' => 'Vente'),
+					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
+					'communication' => array('en_US' => 'Communication', 'fr_FR' => 'Communication'),
+// Demande A Herrera
+					'epi' => array('en_US' => 'EPI', 'fr_FR' => 'EPI'),
+					'vsp' => array('en_US' => 'VSP', 'fr_FR' => 'VSP'),
+//
+					'applied-arts' => array('en_US' => 'Applied arts', 'fr_FR' => 'Arts appliqués'),
+					'plastic-arts' => array('en_US' => 'Plastic arts', 'fr_FR' => 'Arts plastiques'),
+					'music' => array('en_US' => 'Music', 'fr_FR' => 'Musique'),
+					'spe-stmg' => array('en_US' => 'STMG specialty', 'fr_FR' => 'Spécialité STMG'),
+					'spe-acrc' => array('en_US' => 'ACRC specialty', 'fr_FR' => 'Spécialité ACRC'),
+					'spe-mguc' => array('en_US' => 'MGUC specialty', 'fr_FR' => 'Spécialité MGUC'),
+					'spe-cge' => array('en_US' => 'CGE specialty', 'fr_FR' => 'Spécialité CGE'),
+					'spe-pduc' => array('en_US' => 'PDUC specialty', 'fr_FR' => 'Spécialité PDUC'),
+					'spe-mo' => array('en_US' => 'MO specialty', 'fr_FR' => 'Spécialité MO'),
+					'spe-pse' => array('en_US' => 'PSE specialty', 'fr_FR' => 'Spécialité PSE'),
+					'spe-bac-pro' => array('en_US' => 'Bac pro specialty', 'fr_FR' => 'Spécialité Bac Pro'),
 			),
 			'labels' => array(
 					'en_US' => 'Subject',
@@ -2567,6 +2617,16 @@ table.note-report tr.period {
 					),
 			),
 			'properties' => array(
+					'place_id' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
+							),
+							'labels' => array(
+									'en_US' => 'Center',
+									'fr_FR' => 'Centre',
+							),
+					),
 					'category' => array(
 							'type' => 'select',
 							'modalities' => array(
@@ -2671,11 +2731,12 @@ table.note-report tr.period {
 			'title' => array('en_US' => 'Absences/Lateness', 'fr_FR' => 'Absences/Retards'),
 			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'Recherche'),
-			'main' => array('n_fn' => 'contains', 'school_period' => 'select', 'category' => 'select', 'subject' => 'select', 'begin_date' => 'range'),
+			'main' => array('place_id' => 'select', 'n_fn' => 'contains', 'school_period' => 'select', 'category' => 'select', 'subject' => 'select', 'begin_date' => 'range'),
 			'more' => array(),
 	),
 	
 	'absence/list' => array(
+			'place_id' => 'text',
 			'n_fn' => 'text',
 			'school_period' => 'text',
 			'category' => 'select',
@@ -2707,6 +2768,34 @@ table.note-report tr.period {
 						),
 					),
 			),
+			'properties' => array(
+					'place_id' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
+							),
+							'labels' => array(
+									'en_US' => 'Center',
+									'fr_FR' => 'Centre',
+							),
+					),
+					'school_year' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/school_year',
+					),
+					'school_period' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/school_period',
+					),
+					'subject' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/school_subject',
+					),
+					'class' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/class',
+					),
+			),
 	),
 
 	'note/colour' => array(
@@ -2723,6 +2812,7 @@ table.note-report tr.period {
 			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
 			'main' => array(
+					'place_id' => 'select',
 					'school_period' => 'select',
 					'class' => 'select',
 					'subject' => 'select',
@@ -2745,6 +2835,7 @@ table.note-report tr.period {
 			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
 			'main' => array(
+					'place_id' => 'select',
 					'type' => 'select',
 					'school_period' => 'select',
 					'class' => 'select',
@@ -2756,6 +2847,7 @@ table.note-report tr.period {
 	),
 
 	'note/list/homework' => array(
+			'place_id' => 'select',
 			'school_period' => 'select',
 			'type' => 'select',
 			'class' => 'select',
@@ -2764,6 +2856,7 @@ table.note-report tr.period {
 	),
 		
 	'note/list/evaluation' => array(
+			'place_id' => 'select',
 			'school_period' => 'select',
 			'class' => 'select',
 			'level' => 'select',
@@ -3115,6 +3208,7 @@ table.note-report tr.period {
 	'perimeters' => array(
 			'p-pit-studies' => array(
 					'property_1' => 'student/property/discipline',
+					'school_subject' => 'student/property/school_subject',
 					'property_7' => 'student/property/class',
 			),
 	),

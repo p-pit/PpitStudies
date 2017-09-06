@@ -35,6 +35,7 @@ class AbsenceController extends AbstractActionController
     			'community_id' => $community_id,
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
+    			'places' => Place::getList(array()),
     	));
     }
 
@@ -80,6 +81,7 @@ class AbsenceController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'places' => Place::getList(array()),
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -104,6 +106,7 @@ class AbsenceController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+	    		'places' => Place::getList(array()),
     			'absences' => $absences,
     			'mode' => $mode,
     			'params' => $params,

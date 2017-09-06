@@ -91,6 +91,9 @@
 		<?php if ($propertyId == 'n_fn') : ?>
 		<td><?php echo $account->n_fn ?></td>
 	
+		<?php elseif ($rendering == 'select' && $account->properties[$propertyId]) : ?>
+		<td><?php echo $property['modalities'][$account->properties[$propertyId]][$context->getLocale()] ?></td>
+	
 		<?php elseif ($rendering == 'text') : ?>
 		<td><?php echo $account->properties[$propertyId] ?></td>
 	

@@ -81,7 +81,7 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-    	$place = Place::get($context->getPlaceId());
+		$place = Place::get($context->getPlaceId());
 		
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
 		
@@ -333,6 +333,7 @@ class StudentController extends AbstractActionController
     			try {
     				foreach ($accounts as $account) {
     					$data['account_id'] = $account->id;
+    					$data['place_id'] = $account->place_id;
     					$rc = $absence->loadData($data);
     					if ($rc != 'OK') throw new \Exception('View error');
     
@@ -487,9 +488,11 @@ class StudentController extends AbstractActionController
     	if (!$request->isPost()) return $this->redirect()->toRoute('home');
     	$nbAccount = $request->getPost('nb-account');
     	$accounts = array();
+    	$place_id = null;
     	for ($i = 0; $i < $nbAccount; $i++) {
     		$account = Account::get($request->getPost('account_'.$i));
     		$accounts[$account->id] = $account;
+    		$place_id = $account->place_id;
     	}
     	
     	$nbCriteria = $request->getPost('nb-criteria');
@@ -509,6 +512,7 @@ class StudentController extends AbstractActionController
 
     			// Load the note data
     			$data = array();
+    			$data['place_id'] = $place_id;
     			$data['category'] = 'homework';
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $context->getConfig('student/property/school_period/default');
@@ -591,10 +595,12 @@ class StudentController extends AbstractActionController
     	$request = $this->getRequest();
     	if (!$request->isPost()) return $this->redirect()->toRoute('home');
     	$nbAccount = $request->getPost('nb-account');
+    	$place_id = null;
     	$accounts = array();
     	for ($i = 0; $i < $nbAccount; $i++) {
     		$account = Account::get($request->getPost('account_'.$i));
     		$accounts[$account->id] = $account;
+    		$place_id = $account->place_id;
     	}
     	 
     	$nbCriteria = $request->getPost('nb-criteria');
@@ -615,6 +621,7 @@ class StudentController extends AbstractActionController
     			// Load the input data
     			$data = array();
     			$data['status'] = 'current';
+    			$data['place_id'] = $place_id;
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['class'] = $request->getPost('class');
