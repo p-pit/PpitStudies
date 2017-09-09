@@ -49,7 +49,7 @@ echo $this->partial('/partials/student-progress-scripts');
 echo $this->partial('/partials/ppit-controller') 
 ?>
 
-<?php foreach ($context->getConfig('menus')['p-pit-studies'] as $entryId => $entry) : ?>
+<?php foreach ($context->getConfig('menus/p-pit-studies') as $entryId => $entry) : ?>
 	$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entry['route'], $entry['params']) ?>'); });
 <?php endforeach;?>
 

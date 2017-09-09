@@ -22,7 +22,7 @@ class NoteController extends AbstractActionController
     	$place = Place::get($context->getPlaceId());
 		$community_id = (int) $context->getCommunityId();
 
-		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
+		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
 		$category = $this->params()->fromRoute('category');
@@ -177,6 +177,7 @@ class NoteController extends AbstractActionController
  		if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
  			require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
  			$dropbox = $context->getConfig('ppitDocument')['dropbox'];
+var_dump($dropbox);
  			$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
  			try {
  				$properties = $dropboxClient->getMetadataWithChildren($dropbox['folders']['schooling']);

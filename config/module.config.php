@@ -877,8 +877,7 @@ return array(
 
 	'ppitStudiesDependencies' => array(),
 
-	'menus' => array(
-			'p-pit-studies' => array(
+	'menus/p-pit-studies' => array(
 					'student' => array(
 							'route' => 'student',
 							'params' => array('type' => ''),
@@ -978,7 +977,6 @@ return array(
 									'fr_FR' => 'Inscriptions',
 							),
 					),
-			),
 	),
 
 	'currentApplication' => 'p-pit-studies',
@@ -2170,6 +2168,7 @@ return array(
 					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
 					'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie / Droit'),
 					'ess' => array('en_US' => 'Economic & social sciences', 'fr_FR' => 'SES'),
+					'business' => array('en_US' => 'Business', 'fr_FR' => 'Commerce'),
 					'sales' => array('en_US' => 'Sales', 'fr_FR' => 'Vente'),
 					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
 					'communication' => array('en_US' => 'Communication', 'fr_FR' => 'Communication'),

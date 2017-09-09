@@ -22,7 +22,7 @@ class AbsenceController extends AbstractActionController
 		$instance_id = $context->getInstanceId();
 		$community_id = (int) $context->getCommunityId();
 
-		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
+		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(

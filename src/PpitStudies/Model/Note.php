@@ -142,19 +142,27 @@ class Note implements InputFilterAwareInterface
 //    	$criteria = $context->getConfig('note')['criteria'];
 		$notes = array();
 		foreach ($cursor as $note) {
-/*			$keep = true;
-			foreach ($params as $propertyId => $property) {
+			$note->properties = $note->toArray();
+			
+			$keep = true;
+			if (array_key_exists('p-pit-admin', $context->getPerimeters())) {
+				foreach ($context->getPerimeters()['p-pit-admin'] as $key => $values) {
+					$keep2 = false;
+					foreach ($values as $value) {
+						if ($note->properties[$key] == $value) $keep2 = true;
+					}
+					if (!$keep2) $keep = false;
+				}
+			}
+/*			foreach ($params as $propertyId => $property) {
 				if (array_key_exists($propertyId, $criteria) && !array_key_exists($propertyId, $note->criteria)) $keep = false;
 				else {
 					if (substr($propertyId, 0, 4) == 'min_' && $note->criteria[$propertyId] < $params[$propertyId]) $keep = false;
 	    			elseif (substr($propertyId, 0, 4) == 'max_' && $note->criteria[$propertyId] > $params[$propertyId]) $keep = false;
 	    			elseif ($params[$propertyId] != $note->criteria[$propertyId]) $keep = false;
 				}
-			}
-			if ($keep) {*/
-				$note->properties = $note->toArray();
-				$notes[] = $note;
-//			}
+			}*/
+			if ($keep) $notes[] = $note;
 		}
 		return $notes;
     }

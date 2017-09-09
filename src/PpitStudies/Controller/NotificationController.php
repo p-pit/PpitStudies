@@ -20,7 +20,7 @@ class NotificationController extends AbstractActionController
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
     	$place = Place::get($context->getPlaceId());
 		
-		$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
+		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
 		$currentEntry = $this->params()->fromQuery('entry', 'notification');
     	return new ViewModel(array(
     			'context' => $context,

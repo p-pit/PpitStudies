@@ -36,7 +36,7 @@ class StudentController extends AbstractActionController
     	$config = $context->getConfig();
     	$place = Place::get($context->getPlaceId());
 
-    	$menu = Context::getCurrent()->getConfig('menus')['p-pit-studies'];
+    	$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
 		$currentEntry = $this->params()->fromQuery('entry');
 
 		if ($config['isDemoAccountUpdatable'] || $context->getInstanceId() == 0) $outOfStockCredits = false;
@@ -85,7 +85,7 @@ class StudentController extends AbstractActionController
 		
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
 		
-		$menu = $context->getConfig('menus')[$type];
+		$menu = $context->getConfig('menus/'.$type);
 		$currentEntry = $this->params()->fromQuery('entry');
 
     	return new ViewModel(array(
