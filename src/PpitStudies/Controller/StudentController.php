@@ -942,9 +942,9 @@ class StudentController extends AbstractActionController
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
-		$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => $account_id), array('force_canonical' => true));
+		$contact_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($contact_id, 'contact_1_id');
+		$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => $account->id), array('force_canonical' => true));
 		
 		// Return the link list
 		$view = new ViewModel(array(
@@ -1001,9 +1001,9 @@ class StudentController extends AbstractActionController
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
-		$absLates = Absence::getList('schooling', array('account_id' => $account_id, 'min_begin_date' => $context->getConfig('currentPeriodStart')), 'begin_date', 'DESC', 'search');
+		$contact_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($contact_id, 'contact_1_id');
+		$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'min_begin_date' => $context->getConfig('currentPeriodStart')), 'begin_date', 'DESC', 'search');
 		$absences = array();
 		$absenceCount = 0;
 		$cumulativeAbsence = 0;
@@ -1044,10 +1044,10 @@ class StudentController extends AbstractActionController
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
+		$contact_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($contact_id, 'contact_1_id');
 	
-		$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account->id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
 	
 		// Return the link list
 		$view = new ViewModel(array(
@@ -1085,10 +1085,10 @@ class StudentController extends AbstractActionController
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
+		$contact_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($contact_id, 'contact_1_id');
 	
-		$notes = NoteLink::GetList('note', array('account_id' => $account_id), 'date', 'DESC', 'search');
+		$notes = NoteLink::GetList('note', array('account_id' => $account->id), 'date', 'DESC', 'search');
 	
 		// Return the link list
 		$view = new ViewModel(array(
@@ -1106,11 +1106,11 @@ class StudentController extends AbstractActionController
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
+		$contact_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($contact_id, 'contact_1_id');
 	
 		$periods = array();
-		$notes = NoteLink::GetList('report', array('account_id' => $account_id), 'date', 'DESC', 'search');
+		$notes = NoteLink::GetList('report', array('account_id' => $account->id), 'date', 'DESC', 'search');
 		foreach($notes as $note) {
 			$key = $note->school_year.'.'.$note->school_period;
 			if (!array_key_exists($key, $periods)) $periods[$key] = array();

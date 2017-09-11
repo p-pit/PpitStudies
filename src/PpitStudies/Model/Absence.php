@@ -165,14 +165,14 @@ class Absence implements InputFilterAwareInterface
 			}
 
 			if ($keep) {
-				if (array_key_exists('manager', $currentRoles)
+/*				if (array_key_exists('manager', $currentRoles)
 				||	$absence->type == 'schooling' && array_key_exists('teacher', $currentRoles)
 				||	$absence->type == 'sport' && array_key_exists('coach', $currentRoles)
 				||	$absence->type == 'boarding_school' && array_key_exists('boarding_school_headmaster', $currentRoles))
-				{
+				{*/
 					$absence->properties = $absence->toArray();
 					$absences[] = $absence;
-				}
+//				}
 			}
 		}
 		return $absences;
