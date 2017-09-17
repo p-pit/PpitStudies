@@ -141,10 +141,13 @@ if ($absence->id && $action != 'update' || $message == 'OK') $isDisabled = true;
 <?php 
 $subject = $context->getConfig('absence')['types'][$absence->type]['subject'];
 if ($absence->type == 'schooling') {
-	$modalities = array();
-	foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $modalityId) {
-		$modalities[$modalityId] = $context->getConfig('student/property/school_subject')['modalities'][$modalityId];	
+	if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('school_subject', $context->getPerimeters()['p-pit-studies'])) {
+		$modalities = array();
+		foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $modalityId) {
+			$modalities[$modalityId] = $context->getConfig('student/property/school_subject')['modalities'][$modalityId];	
+		}
 	}
+	else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
 }
 else $modalities = $subject['modalities'];
 ?>
