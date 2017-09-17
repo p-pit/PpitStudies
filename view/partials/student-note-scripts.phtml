@@ -203,6 +203,7 @@ function connectAuditPanel(id)
 
 <?php 
 $properties = array();
+$properties['place_id'] = array('type' => 'select', 'mandatory' => true);
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
@@ -215,7 +216,7 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-function connectNoteUpdateForm(id)
+function connectNoteUpdateForm(id, action)
 {
 	$('#input_date').datepicker();
 	var form = document.getElementById('ppit-form');
@@ -224,25 +225,31 @@ function connectNoteUpdateForm(id)
 		event.preventDefault();
 
 		// Check validity
-		var validity = checkNoteUpdateProperties();
+		var validity = true;
+		
+		if (action != 'delete') checkNoteUpdateProperties();
 
 		if (validity) {
 
 			// Create a new FormData object.
 			var formData = new FormData();
-			
-			// Get the properties values
-<?php foreach ($properties as $propertyId => $property) : ?>
-	<?php if ($property['type'] == 'ckeditor') : ?>
-				formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
-	<?php else : ?>	
-				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
-	<?php endif;?>
-<?php endforeach ?>
+
+			if (action == 'delete') formData.append('update_time', $('#update_time').value);
+			else {
+				// Get the properties values
+	<?php foreach ($properties as $propertyId => $property) : ?>
+		<?php if ($property['type'] == 'ckeditor') : ?>
+					formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
+		<?php else : ?>	
+					formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+		<?php endif;?>
+	<?php endforeach ?>
+			}
 
 			var xhttp = new XMLHttpRequest();
 			var route;
 			route = '<?php echo $this->url('note/update') ?>/' + id;
+			if (action) route +=  '/' + action;
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -314,7 +321,7 @@ function getNoteUpdate(id, action) {
 				});
 			}
 
-			connectNoteUpdateForm(id);
+			connectNoteUpdateForm(id, action);
 
 			if (id) {
 				$('#update-anchor').click(function () { getNoteUpdate(id, 'update'); });
@@ -332,6 +339,7 @@ function getNoteUpdate(id, action) {
 
 <?php 
 $properties = array();
+$properties['place_id'] = array('type' => 'select', 'mandatory' => true);
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
 $properties['level'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);

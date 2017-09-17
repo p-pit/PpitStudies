@@ -1552,7 +1552,12 @@ return array(
 							),
 					),
 					'property_3' => array(
-							'type' => 'input',
+							'type' => 'select',
+							'modalities' => array(
+								'student' => array('en_US' => 'Student', 'fr_FR' => 'Etudiant/Lycéen'),
+								'employee' => array('en_US' => 'Employee', 'fr_FR' => 'Salarié'),
+								'others' => array('en_US' => 'Others', 'fr_FR' => 'Autres'),
+							),
 							'labels' => array(
 									'en_US' => 'Current situation',
 									'fr_FR' => 'Situation actuelle',
@@ -1606,32 +1611,67 @@ return array(
 							'type' => 'repository',
 							'definition' => 'student/property/level',
 					),
+					'json_property_1' => array(
+							'type' => 'structured',
+							'labels' => array(
+									'en_US' => 'Origine Internet - Credentials',
+									'fr_FR' => 'Origine Internet - Diplômes',
+							),
+					),
+					'json_property_2' => array(
+							'type' => 'structured',
+							'labels' => array(
+									'en_US' => 'Origine Internet - Foreign languages',
+									'fr_FR' => 'Origine Internet - Langues étrangères',
+							),
+					),
+					'json_property_3' => array(
+							'type' => 'structured',
+							'labels' => array(
+									'en_US' => 'Origine Internet - Stays abroad',
+									'fr_FR' => 'Origine Internet - Séjours à l\'étranger',
+							),
+					),
+					'json_property_4' => array(
+							'type' => 'structured',
+							'labels' => array(
+									'en_US' => 'Origine Internet - Experiences',
+									'fr_FR' => 'Origine Internet - Expériences',
+							),
+					),
+					'json_property_5' => array(
+							'type' => 'structured',
+							'labels' => array(
+									'en_US' => 'Origine Internet - Motivations',
+									'fr_FR' => 'Origine Internet - Motivations',
+							),
+					),
 					'comment_1' => array(
 							'type' => 'textarea',
 							'labels' => array(
-									'en_US' => 'Trainings',
-									'fr_FR' => 'Formations',
+									'en_US' => 'Trainings comments',
+									'fr_FR' => 'Commentaires formations',
 							),
 					),
 					'comment_2' => array(
 							'type' => 'textarea',
 							'labels' => array(
-									'en_US' => 'Competencies',
-									'fr_FR' => 'Compétences',
+									'en_US' => 'Competencies comments',
+									'fr_FR' => 'Commentaires compétences',
 							),
 					),
 					'comment_3' => array(
 							'type' => 'textarea',
 							'labels' => array(
-									'en_US' => 'Professional experience',
-									'fr_FR' => 'Expérience professionnelle',
+									'en_US' => 'Experience comments',
+									'fr_FR' => 'Commentaire Expérience',
 							),
 					),
 					'comment_4' => array(
 							'type' => 'textarea',
 							'labels' => array(
-									'en_US' => 'Motivations',
-									'fr_FR' => 'Motivations',
+									'en_US' => 'Motivations comments',
+									'fr_FR' => 'Commentaires motivations',
 							),
 					),
 					'contact_history' => array(
@@ -1733,9 +1773,14 @@ return array(
 			'property_9' => array('mandatory' => false),
 			'property_6' => array('mandatory' => false),
 			'title_3' => null,
+			'json_property_1' => array('readonly' => true),
 			'comment_1' => array('mandatory' => false),
+			'json_property_2' => array('readonly' => true),
+			'json_property_3' => array('readonly' => true),
 			'comment_2' => array('mandatory' => false),
+			'json_property_4' => array('readonly' => true),
 			'comment_3' => array('mandatory' => false),
+			'json_property_5' => array('readonly' => true),
 			'comment_4' => array('mandatory' => false),
 			'contact_history' => array('mandatory' => false),
 	),
@@ -2008,14 +2053,15 @@ return array(
 	'student/property/discipline' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'Football' => array('fr_FR' => 'Football'),
-					'Football-women' => array('fr_FR' => 'Football féminin'),
-					'Basketball' => array('fr_FR' => 'Basketball'),
-					'Equitation' => array('fr_FR' => 'Equitation'),
-					'Golf' => array('fr_FR' => 'Golf'),
-					'Tennis' => array('fr_FR' => 'Tennis'),
-					'Danse' => array('fr_FR' => 'Danse'),
-					'Multisport' => array('fr_FR' => 'Multisport'),
+					'Football' => array('en_US' => 'Football', 'fr_FR' => 'Football'),
+					'football-women' => array('en_US' => 'Women\'s Football', 'fr_FR' => 'Football féminin'),
+					'rugby' => array('en_US' => 'Rugby', 'fr_FR' => 'Rugby'),
+					'Basketball' => array('en_US' => 'Basketball', 'fr_FR' => 'Basketball'),
+					'Equitation' => array('en_US' => 'Horse-riding', 'fr_FR' => 'Equitation'),
+					'Golf' => array('en_US' => 'Golf', 'fr_FR' => 'Golf'),
+					'Tennis' => array('en_US' => 'Tennis', 'fr_FR' => 'Tennis'),
+					'Danse' => array('en_US' => 'Danse', 'fr_FR' => 'Danse'),
+					'Multisport' => array('en_US' => 'Multisport', 'fr_FR' => 'Multisport'),
 			),
 			'labels' => array(
 					'en_US' => 'Sport',
@@ -2062,6 +2108,8 @@ return array(
 					'4e' => array('fr_FR' => '4e', 'level' => '4e'),
 					'3e' => array('fr_FR' => '3e', 'level' => '3e'),
 					'2nde' => array('fr_FR' => '2nde', 'level' => '2nde'),
+					'2ndea' => array('fr_FR' => '2nde A', 'level' => '2nde A'),
+					'2ndeb' => array('fr_FR' => '2nde B', 'level' => '2nde B'),
 					'1ereS' => array('fr_FR' => '1ère S', 'level' => '1ère', 'specialty' => 'S'),
 					'1ereES' => array('fr_FR' => '1ère ES', 'level' => '1ère', 'specialty' => 'ES'),
 					'1ereSTMG' => array('fr_FR' => '1ère STMG', 'level' => '1ère', 'specialty' => 'STMG'),
@@ -2588,16 +2636,7 @@ table.note-report tr.period {
 							'subject' => array(
 									'type' => 'select',
 									'labels' => array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
-									'modalities' => array(
-											'french' => array('en_US' => 'French', 'fr_FR' => 'Français'),
-											'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
-											'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
-											'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
-											'll1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
-											'll2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
-											'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
-											'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
-									),
+									//'modalities' => Listed in 'student/property/school_subject'
 							),
 					),
 					'boarding_school' => array(

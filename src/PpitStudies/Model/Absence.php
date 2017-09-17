@@ -142,7 +142,8 @@ class Absence implements InputFilterAwareInterface
 			$absence->properties['place_id'] = $absence->place_id;
 			$absence->properties['property_1'] = $absence->sport;
 			$absence->properties['property_7'] = $absence->class;
-
+			$absence->properties['school_subject'] = $absence->subject;
+				
 			// Filter on authorized perimeter
 			$keep = true;
 			if (array_key_exists('p-pit-admin', $context->getPerimeters())) {

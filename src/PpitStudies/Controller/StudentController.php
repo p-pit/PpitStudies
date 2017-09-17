@@ -459,13 +459,15 @@ class StudentController extends AbstractActionController
 
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
+    	$places = Place::getList(array());
+    	 
     	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
     	$class = $this->params()->fromRoute('class', null);
 
     	$note = Note::instanciate('homework', $class);
-
+		if (count($places) == 1) $note->place_id = current($places)->id;
+    	
     	$documentList = array();
     	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
     		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
@@ -473,7 +475,7 @@ class StudentController extends AbstractActionController
     		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
     		try {
     			$properties = $dropboxClient->getMetadataWithChildren($dropbox['folders']['schooling']);
-    			foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
+    			if ($properties) foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
     		}
     		catch(\Exception $e) {}
     	}
@@ -488,13 +490,11 @@ class StudentController extends AbstractActionController
     	if (!$request->isPost()) return $this->redirect()->toRoute('home');
     	$nbAccount = $request->getPost('nb-account');
     	$accounts = array();
-    	$place_id = null;
     	for ($i = 0; $i < $nbAccount; $i++) {
     		$account = Account::get($request->getPost('account_'.$i));
     		$accounts[$account->id] = $account;
-    		$place_id = $account->place_id;
     	}
-    	
+
     	$nbCriteria = $request->getPost('nb-criteria');
     	$criteria = array();
     	for ($i = 0; $i < $nbCriteria; $i++) {
@@ -512,7 +512,7 @@ class StudentController extends AbstractActionController
 
     			// Load the note data
     			$data = array();
-    			$data['place_id'] = $place_id;
+    			$data['place_id'] = $request->getPost('place_id');
     			$data['category'] = 'homework';
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $context->getConfig('student/property/school_period/default');
@@ -562,6 +562,7 @@ class StudentController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+				'places' => $places,
     			'type' => $type,
     			'accounts' => $accounts,
     			'note' => $note,
@@ -579,12 +580,14 @@ class StudentController extends AbstractActionController
     
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
+    	$places = Place::getList(array());
+
     	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
     	$class = $this->params()->fromRoute('class', null);
 
     	$note = Note::instanciate($type, $class);
+    	if (count($places) == 1) $note->place_id = current($places)->id;
 
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -595,12 +598,10 @@ class StudentController extends AbstractActionController
     	$request = $this->getRequest();
     	if (!$request->isPost()) return $this->redirect()->toRoute('home');
     	$nbAccount = $request->getPost('nb-account');
-    	$place_id = null;
     	$accounts = array();
     	for ($i = 0; $i < $nbAccount; $i++) {
     		$account = Account::get($request->getPost('account_'.$i));
     		$accounts[$account->id] = $account;
-    		$place_id = $account->place_id;
     	}
     	 
     	$nbCriteria = $request->getPost('nb-criteria');
@@ -621,7 +622,7 @@ class StudentController extends AbstractActionController
     			// Load the input data
     			$data = array();
     			$data['status'] = 'current';
-    			$data['place_id'] = $place_id;
+    			$data['place_id'] = $request->getPost('place_id');
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['class'] = $request->getPost('class');
@@ -715,6 +716,7 @@ class StudentController extends AbstractActionController
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'places' => $places,
     			'type' => $type,
     			'accounts' => $accounts,
     			'note' => $note,

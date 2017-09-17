@@ -177,11 +177,10 @@ class NoteController extends AbstractActionController
  		if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
  			require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
  			$dropbox = $context->getConfig('ppitDocument')['dropbox'];
-var_dump($dropbox);
  			$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
  			try {
  				$properties = $dropboxClient->getMetadataWithChildren($dropbox['folders']['schooling']);
- 				foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
+ 				if ($properties) foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
  			}
  			catch(\Exception $e) {}
  		}
@@ -201,21 +200,23 @@ var_dump($dropbox);
     		$csrfForm->setData($request->getPost());
     		 
     		if ($csrfForm->isValid()) { // CSRF check
-
-    			// Load the input data
-    			$data = array();
-    			$data['class'] = $request->getPost('class');
-    			$data['level'] = $request->getPost('level');
-    			$data['subject'] = $request->getPost('subject');
-    			$data['date'] = $request->getPost('date');
-    			$data['type'] = $request->getPost('type');
-    			$data['target_date'] = $request->getPost('target_date');
-    			$data['observations'] = $request->getPost('observations');
-    			$data['document'] = $request->getPost('document');
-    			$data['comment'] = $request->getPost('comment');
-
-    			$rc = $note->loadData($data);
-				if ($rc != 'OK') throw new \Exception('View error');
+    			if ($action != 'delete') {
+	    			// Load the input data
+	    			$data = array();
+	    			$data['place_id'] = $request->getPost('place_id');
+	    			$data['class'] = $request->getPost('class');
+	    			$data['level'] = $request->getPost('level');
+	    			$data['subject'] = $request->getPost('subject');
+	    			$data['date'] = $request->getPost('date');
+	    			$data['type'] = $request->getPost('type');
+	    			$data['target_date'] = $request->getPost('target_date');
+	    			$data['observations'] = $request->getPost('observations');
+	    			$data['document'] = $request->getPost('document');
+	    			$data['comment'] = $request->getPost('comment');
+	
+	    			$rc = $note->loadData($data);
+					if ($rc != 'OK') throw new \Exception('View error');
+    			}
 
     			// Atomically save
     			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
@@ -243,6 +244,7 @@ var_dump($dropbox);
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'places' => Place::getList(array()),
     			'id' => $id,
     			'action' => $action,
     			'note' => $note,
@@ -283,6 +285,7 @@ var_dump($dropbox);
     			// Load the input data
     			$data = array();
     			$data['status'] = 'current';
+    			$data['class'] = $request->getPost('place_id');
     			$data['class'] = $request->getPost('class');
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
@@ -356,6 +359,7 @@ var_dump($dropbox);
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'places' => Place::getList(array()),
     			'id' => $id,
     			'action' => $action,
     			'note' => $note,

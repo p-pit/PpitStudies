@@ -11,6 +11,20 @@
 
 <?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
 
+<!-- Place -->
+		<div class="form-group" id="place_id_group">
+			<label class="col-sm-5 control-label">* <?php echo $context->getConfig('student/property/place')['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="place_id" <?php if ($isDisabled || $note->place_id) echo 'disabled="disabled"'?>>
+					<option />
+	<?php foreach ($places as $place) : ?>
+					<option value="<?php echo $place->id ?>" <?php if ($note->place_id == $place->id) echo 'selected="selected"' ?>><?php echo $place->caption ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="place_id_error"></p></div>
+		</div>
+
 <!-- Class filtered on the user's accessibility perimeter -->
 	<?php 
 	$classes = array();
@@ -44,8 +58,11 @@
 			<div class="col-sm-7">
 	    		<select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
-<?php foreach ($context->getConfig('student/property/school_subject')['modalities'] as $subjectId => $subject) : ?>
-	<?php $caption = $subject[$context->getLocale()]; ?>
+<?php foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $subjectId) : ?>
+	<?php
+	$subject = $context->getConfig('student/property/school_subject')['modalities'][$subjectId];
+	$caption = $subject[$context->getLocale()];
+	?>
 	    			<option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
 <?php endforeach;?>
 	    		</select>

@@ -39,7 +39,16 @@ foreach ($absences as $absence) : ?>
 	<?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
 	
 		<?php if ($propertyId == 'subject') : ?>
-		<td><?php if ($absence->subject) echo $context->getConfig('absence')['types'][$absence->type]['subject']['modalities'][$absence->subject][$context->getLocale()] ?></td>
+			<?php
+			if ($absence->type == 'schooling') {
+				$modalities = array();
+				foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $modalityId) {
+					$modalities[$modalityId] = $context->getConfig('student/property/school_subject')['modalities'][$modalityId];
+				}
+			}
+			else $modalities = $context->getConfig('absence')['types'][$absence->type]['subject']['modalities'];
+			?>
+		<td><?php if ($absence->subject) echo $modalities[$absence->subject][$context->getLocale()] ?></td>
 		
 		<?php else : ?>
 			<?php $property = $context->getConfig('absence')['properties'][$propertyId] ?>
