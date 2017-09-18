@@ -1835,6 +1835,59 @@ return array(
 			'comment_3' => array('mandatory' => true),
 			'comment_4' => array('mandatory' => true),
 	),
+	'commitmentAccount/indexCard/p-pit-studies' => array(
+			'title' => array('en_US' => 'Student index card', 'fr_FR' => 'Fiche élève'),
+			'header' => array(
+					'place_id' => null,
+					'status' => null,
+					'origine' => null,
+			),
+			'1st-column' => array(
+				'title' => 'title_1',
+				'rows' => array(
+					'n_first' => array('mandatory' => true),
+					'n_last' => array('mandatory' => true),
+					'email' => array('mandatory' => false),
+					'property_2' => array('mandatory' => false),
+					'birth_date' => array('mandatory' => false),
+					'property_8' => array('mandatory' => false),
+					'property_3' => array('mandatory' => false),
+				),
+			),
+			'2nd-column' => array(
+				'title' => 'title_2',
+				'rows' => array(
+					'property_1' => array('mandatory' => false),
+					'property_10' => array('mandatory' => false),
+					'property_7' => array('mandatory' => false),
+					'property_4' => array('mandatory' => false),
+					'property_5' => array('mandatory' => false),
+					'property_9' => array('mandatory' => false),
+					'property_6' => array('mandatory' => false),
+				),
+			),
+			'pdfDetailStyle' => '
+<style>
+table.note-report {
+	font-size: 1em;
+	border: 1px solid gray;
+}
+table.note-report th {
+	color: #FFF;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: center;
+	border: 1px solid gray;
+	background-color: #006169;
+}
+
+table.note-report td {
+	color: #666;
+	border: 1px solid gray;
+}
+</style>
+',
+	),
 	'commitmentAccount/requestTypes' => array(
 			'general_information' => array('en_US' => 'General information', 'fr_FR' => 'Information générale'),
 	),

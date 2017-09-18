@@ -68,7 +68,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 	    		<select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
 <?php foreach ($modalities as $subjectId => $subject) : ?>
-	<?php $caption = $subject[$context->getLocale()]; ?>
+	<?php $caption = $subject[$context->getLocale()] ?>
 	    			<option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
 <?php endforeach;?>
 	    		</select>
