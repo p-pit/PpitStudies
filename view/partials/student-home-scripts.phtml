@@ -50,8 +50,10 @@ function getEvents(print = false) {
 	<?php endforeach;?>
 <?php endforeach;?>
 
-				var title = value.properties['property_3'];
-				if (value.properties['caption']) title += ' - ' + value.properties['caption'];
+				var title = '';
+				if (value.properties['property_3']) title += value.properties['property_3'];
+				if (value.properties['property_3'] && value.properties['caption']) title += ' - ';
+				if (value.properties['caption']) title += value.properties['caption'];
 				if (value.properties['location']) title += ' (' + value.properties['location'] + ')';
 				var event={
 					id:value.id,
