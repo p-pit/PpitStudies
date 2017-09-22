@@ -2115,6 +2115,7 @@ table.note-report td {
 					'Tennis' => array('en_US' => 'Tennis', 'fr_FR' => 'Tennis'),
 					'Danse' => array('en_US' => 'Danse', 'fr_FR' => 'Danse'),
 					'Multisport' => array('en_US' => 'Multisport', 'fr_FR' => 'Multisport'),
+					'car-racing' => array('en_US' => 'Car racing', 'fr_FR' => 'Sport automobile'),
 			),
 			'labels' => array(
 					'en_US' => 'Sport',
@@ -2253,6 +2254,8 @@ table.note-report td {
 					'philosophy' => array( 'en_US' => 'Philosophy', 'fr_FR' => 'Philosophie'),
 					'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
 					'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
+					'history' => array('en_US' => 'History', 'fr_FR' => 'Histoire'),
+					'civics' => array('en_US' => 'Civics', 'fr_FR' => 'Instruction civique'),
 					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
 					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
 					'english' => array('en_US' => 'English', 'fr_FR' => 'Anglais'),
@@ -2273,6 +2276,9 @@ table.note-report td {
 					'sales' => array('en_US' => 'Sales', 'fr_FR' => 'Vente'),
 					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
 					'communication' => array('en_US' => 'Communication', 'fr_FR' => 'Communication'),
+// Demande M. Volle
+					'pfeg' => array('en_US' => 'PFEG', 'fr_FR' => 'PFEG'),
+//
 // Demande A Herrera
 					'epi' => array('en_US' => 'EPI', 'fr_FR' => 'EPI'),
 					'vsp' => array('en_US' => 'VSP', 'fr_FR' => 'VSP'),
@@ -2807,6 +2813,7 @@ table.note-report tr.period {
 			'modalities' => array(
 					'medical' => array('en_US' => 'Medical', 'fr_FR' => 'Médical'),
 					'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
+					'competition' => array('en_US' => 'Tournament/Competition', 'fr_FR' => 'Tournoi/Compétition'),
 					'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
 					'transport' => array('en_US' => 'Transport', 'fr_FR' => 'Transport'),
 					'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),

@@ -302,7 +302,7 @@ function getNoteUpdate(id, action) {
 			connectAuditPanel(id);
 			$('#subject').focus();
 			
-			$('#input_target_date_group').hide();
+			if ($('#type').val() != 'todo-work') $('#input_target_date_group').hide();
 			if (action == 'update') {
 				CKEDITOR.replace('observations');
 				$('#type').change(function () { 
