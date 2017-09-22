@@ -2589,6 +2589,8 @@ table.note-report tr.period {
 					'type' => array('type' => 'specific', 'definition' => 'event/type'),
 					'identifier' => array('type' => 'specific', 'definition' => 'event/identifier/personal_data'),
 					'place_id' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
+					'n_fn' => array('type' => 'specific', 'definition' => 'event/n_fn'),
+//					'vcard_id' => array('type' => 'specific', 'definition' => 'event/n_fn'),
 					'place_identifier' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
 					'place_caption' => array('type' => 'specific', 'definition' => 'event/place_caption'),
 					'caption' => array('type' => 'specific', 'definition' => 'event/caption'),
@@ -2627,6 +2629,7 @@ table.note-report tr.period {
 					'place_id' => 'select',
 					'property_1' => 'select',
 					'property_2' => 'select',
+					'n_fn' => 'select',
 					'property_3' => 'select',
 					'caption' => 'contains',
 					'day_of_week' => 'select',
@@ -2638,6 +2641,7 @@ table.note-report tr.period {
 			'place_caption' => array('rendering' => 'text'),
 			'property_1' => array('rendering' => 'select'),
 			'property_2' => array('rendering' => 'select'),
+			'n_fn' => array('rendering' => 'text'),
 			'property_3' => array('rendering' => 'select'),
 			'caption' => array('rendering' => 'text'),
 			'day_of_week' => array('rendering' => 'select'),
@@ -2658,6 +2662,7 @@ table.note-report tr.period {
 			'place_id'=> array('mandatory' => true),
 			'property_1'=> array('mandatory' => true),
 			'property_2'=> array('mandatory' => false),
+			'n_fn'=> array('mandatory' => false),
 			'property_3'=> array('mandatory' => false),
 			'caption'=> array('mandatory' => false),
 			'day_of_week'=> array('mandatory' => false),
@@ -2670,13 +2675,14 @@ table.note-report tr.period {
 			'place_id'=> 'A',
 			'property_1'=> 'B',
 			'property_2'=> 'C',
-			'property_3'=> 'D',
-			'caption'=> 'E',
-			'day_of_week'=> 'F',
-			'begin_time'=> 'G',
-			'location'=> 'H',
+			'n_fn'=> 'D',
+			'property_3'=> 'E',
+			'caption'=> 'F',
+			'day_of_week'=> 'G',
+			'begin_time'=> 'H',
+			'location'=> 'I',
 	),
-		
+
 	'absence' => array(
 			'types' => array(
 					'sport' => array(

@@ -118,16 +118,27 @@ class EventController extends AbstractActionController
     	$context = Context::getCurrent();
     	$id = $this->params()->fromRoute('id');
     	$account = Account::get($id);
-    	$result = array(
-	    	'planning' => EventPlanningViewHelper::format(\PpitCore\Model\Event::getList(
+    	
+    	// Retrieve class level events
+    	$class = \PpitCore\Model\Event::getList(
 	    			'calendar', 
 	    			array(
 	    					'place_id' => $account->place_id,
 	    					'property_1' => $context->getConfig('student/property/school_year/default'),
 	    					'property_2' => $account->property_7,
-	    			)
-	    	)),
-    		'events' => $this->getList()->events,
+	    			));
+    	
+    	// Retrieve contact level events
+    	$contact = \PpitCore\Model\Event::getList(
+	    			'calendar', 
+	    			array(
+	    					'vcard_id' => $account->contact_1->id,
+	    					'property_1' => $context->getConfig('student/property/school_year/default'),
+	    					'property_2' => $account->property_7,
+	    			));
+    	$result = array(
+	    	'planning' => EventPlanningViewHelper::format(array_merge($class, $contact)),
+//    		'events' => $this->getList()->events,
     	);
     	return new JsonModel($result);
     }
