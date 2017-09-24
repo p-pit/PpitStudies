@@ -20,16 +20,17 @@ class AbsenceController extends AbstractActionController
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
     	$place = Place::get($context->getPlaceId());
 		$instance_id = $context->getInstanceId();
+    	$app = $this->params()->fromRoute('app', 'p-pit-studies');
 		$community_id = (int) $context->getCommunityId();
 
-		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
+		$menu = $context->getConfig('menus/'.$app);
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
     			'place' => $place,
-    			'applicationId' => 'p-pit-studies',
+    			'applicationId' => $app,
     			'applicationName' => 'P-Pit Studies',
     			'active' => 'application',
     			'community_id' => $community_id,

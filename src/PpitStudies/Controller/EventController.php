@@ -132,9 +132,9 @@ class EventController extends AbstractActionController
     	$contact = \PpitCore\Model\Event::getList(
 	    			'calendar', 
 	    			array(
-	    					'vcard_id' => $account->contact_1->id,
+	    					'place_id' => $account->place_id,
 	    					'property_1' => $context->getConfig('student/property/school_year/default'),
-	    					'property_2' => $account->property_7,
+	    					'vcard_id' => $account->contact_1->id,
 	    			));
     	$result = array(
 	    	'planning' => EventPlanningViewHelper::format(array_merge($class, $contact)),

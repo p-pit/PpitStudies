@@ -30,7 +30,7 @@ return array(
         						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index',
+        										'route' => '/index[/:app]',
         										'defaults' => array(
         												'action' => 'index',
         										),
@@ -210,7 +210,7 @@ return array(
         						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index[/:category][/:type]',
+        										'route' => '/index[/:app][/:category][/:type]',
         										'defaults' => array(
         												'action' => 'index',
         										),
@@ -390,7 +390,7 @@ return array(
         						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index[/:type]',
+        										'route' => '/index[/:app][/:type]',
         										'defaults' => array(
         												'action' => 'index',
         										),
@@ -463,7 +463,7 @@ return array(
         						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index',
+        										'route' => '/index[/:app]',
         										'defaults' => array(
         												'action' => 'index',
         										),
@@ -484,7 +484,7 @@ return array(
 	       						'registrationIndex' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/registration-index[/:type]',
+        										'route' => '/registration-index[/:app][/:type]',
         										'defaults' => array(
         												'action' => 'registrationIndex',
         										),
@@ -879,8 +879,8 @@ return array(
 
 	'menus/p-pit-studies' => array(
 					'student' => array(
-							'route' => 'student',
-							'params' => array('type' => ''),
+							'route' => 'student/index',
+							'params' => array('app' => 'p-pit-studies', 'type' => ''),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-list-alt',
 							'label' => array(
@@ -909,7 +909,7 @@ return array(
 					),
 					'progress' => array(
 							'route' => 'progress/index',
-							'params' => array(),
+							'params' => array('app' => 'p-pit-studies'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-edit',
 							'label' => array(
@@ -918,8 +918,8 @@ return array(
 							),
 					),*/
 					'absence' => array(
-							'route' => 'absence',
-							'params' => array('type' => ''),
+							'route' => 'absence/index',
+							'params' => array('app' => 'p-pit-studies', 'type' => ''),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-hourglass',
 							'label' => array(
@@ -929,7 +929,7 @@ return array(
 					),
 					'homework' => array(
 							'route' => 'note/index',
-							'params' => array('category' => 'homework'),
+							'params' => array('app' => 'p-pit-studies', 'category' => 'homework'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-calendar',
 							'label' => array(
@@ -939,7 +939,7 @@ return array(
 					),
 					'evaluation' => array(
 							'route' => 'note/index',
-							'params' => array('category' => 'evaluation', 'type' => 'note'),
+							'params' => array('app' => 'p-pit-studies', 'category' => 'evaluation', 'type' => 'note'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-dashboard',
 							'label' => array(
@@ -949,7 +949,7 @@ return array(
 					),
 					'report' => array(
 							'route' => 'note/index',
-							'params' => array('category' => 'evaluation', 'type' => 'report'),
+							'params' => array('app' => 'p-pit-studies', 'category' => 'evaluation', 'type' => 'report'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-education',
 							'label' => array(
@@ -969,12 +969,22 @@ return array(
 					),*/
 					'account' => array(
 							'route' => 'student/registrationIndex',
-							'params' => array('type' => 'p-pit-studies'),
+							'params' => array('app' => 'p-pit-studies', 'type' => 'p-pit-studies'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-folder-open',
 							'label' => array(
 									'en_US' => 'Registrations',
 									'fr_FR' => 'Inscriptions',
+							),
+					),
+					'user' => array(
+							'route' => 'user/index',
+							'params' => array('app' => 'p-pit-studies'),
+							'glyphicon' => 'glyphicon-user',
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Users',
+									'fr_FR' => 'Utilisateurs',
 							),
 					),
 	),
@@ -2659,16 +2669,16 @@ table.note-report tr.period {
 			'displayAudit' => true
 	),
 	'event/update/calendar'=> array(
-			'place_id'=> array('mandatory' => true),
-			'property_1'=> array('mandatory' => true),
-			'property_2'=> array('mandatory' => false),
-			'n_fn'=> array('mandatory' => false),
-			'property_3'=> array('mandatory' => false),
-			'caption'=> array('mandatory' => false),
-			'day_of_week'=> array('mandatory' => false),
-			'begin_time'=> array('mandatory' => false),
-			'end_time'=> array('mandatory' => false),
-			'location'=> array('mandatory' => false),
+			'place_id' => array('mandatory' => true, 'autofocus' => true),
+			'property_1' => array('mandatory' => true),
+			'property_2' => array('mandatory' => false),
+			'n_fn' => array('mandatory' => false),
+			'property_3' => array('mandatory' => false),
+			'caption' => array('mandatory' => false),
+			'day_of_week' => array('mandatory' => false),
+			'begin_time' => array('mandatory' => false),
+			'end_time' => array('mandatory' => false),
+			'location' => array('mandatory' => false),
 	),
 	
 	'event/export/calendar'=> array(

@@ -34,10 +34,11 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
+    	$app = $this->params()->fromRoute('app', 'p-pit-studies');
     	$place = Place::get($context->getPlaceId());
 
-    	$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
-		$currentEntry = $this->params()->fromQuery('entry');
+		$menu = $context->getConfig('menus/'.$app);
+    	$currentEntry = $this->params()->fromQuery('entry');
 
 		if ($config['isDemoAccountUpdatable'] || $context->getInstanceId() == 0) $outOfStockCredits = false;
 		elseif ($context->getConfig('credit')['unlimitedCredits']) $outOfStockCredits = false;

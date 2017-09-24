@@ -20,10 +20,11 @@ class NoteController extends AbstractActionController
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
     	$place = Place::get($context->getPlaceId());
-		$community_id = (int) $context->getCommunityId();
+    	$app = $this->params()->fromRoute('app', 'p-pit-studies');
+    	$community_id = (int) $context->getCommunityId();
 
-		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
-		$currentEntry = $this->params()->fromQuery('entry', 'account');
+		$menu = $context->getConfig('menus/'.$app);
+    	$currentEntry = $this->params()->fromQuery('entry', 'account');
 
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');

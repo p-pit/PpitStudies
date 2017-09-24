@@ -20,7 +20,8 @@ class ProgressController extends AbstractActionController
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
-    	$place = Place::get($context->getPlaceId());
+    	$app = $this->params()->fromRoute('app', 'p-pit-studies');
+		$place = Place::get($context->getPlaceId());
 		
 		$type = $this->params()->fromRoute('type');
 		if (!$type) {
@@ -39,7 +40,7 @@ class ProgressController extends AbstractActionController
 			}
 		}
 
-		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
+		$menu = $context->getConfig('menus/'.$app);
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(
