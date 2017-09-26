@@ -116,6 +116,7 @@ class EventController extends AbstractActionController
     public function planningAction()
     {
     	$context = Context::getCurrent();
+    	$viewBeginDate = $this->params()->fromQuery('begin', date('Y-m-d'));
     	$id = $this->params()->fromRoute('id');
     	$account = Account::get($id);
     	
@@ -137,7 +138,7 @@ class EventController extends AbstractActionController
 	    					'vcard_id' => $account->contact_1->id,
 	    			));
     	$result = array(
-	    	'planning' => EventPlanningViewHelper::format(array_merge($class, $contact)),
+	    	'planning' => EventPlanningViewHelper::format(array_merge($class, $contact), $viewBeginDate),
 //    		'events' => $this->getList()->events,
     	);
     	return new JsonModel($result);
