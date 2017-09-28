@@ -2600,7 +2600,7 @@ table.note-report tr.period {
 					'identifier' => array('type' => 'specific', 'definition' => 'event/identifier/personal_data'),
 					'place_id' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
 					'n_fn' => array('type' => 'specific', 'definition' => 'event/n_fn'),
-//					'vcard_id' => array('type' => 'specific', 'definition' => 'event/n_fn'),
+					'vcard_id' => array('type' => 'specific', 'definition' => 'event/n_fn'),
 					'place_identifier' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
 					'place_caption' => array('type' => 'specific', 'definition' => 'event/place_caption'),
 					'caption' => array('type' => 'specific', 'definition' => 'event/caption'),

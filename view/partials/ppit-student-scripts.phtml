@@ -156,6 +156,11 @@ function getStudentList(params, major, dir) {
 				});
 			});
 
+			// Able the group action button
+			$('.account-checkbox').click(function () {
+				$('.account-group-anchor').removeAttr('disabled');
+			});
+
 			// Connect the check all checkbox
 			$('#account-checkbox').click(function () {
 				var current = document.getElementById('account-checkbox').checked;
