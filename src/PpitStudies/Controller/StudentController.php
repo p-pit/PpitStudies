@@ -947,7 +947,7 @@ class StudentController extends AbstractActionController
 	
 		$contact_id = (int) $this->params()->fromRoute('id');
 		$account = Account::get($contact_id, 'contact_1_id');
-		$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => $account->id), array('force_canonical' => true));
+		$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => ($account) ? $account->id : null), array('force_canonical' => true));
 
 		// Return the link list
 		$view = new ViewModel(array(

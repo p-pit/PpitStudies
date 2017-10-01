@@ -1274,7 +1274,7 @@ return array(
 							'type' => 'select',
 							'modalities' => array(
 									'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
-									'interested' => array('en_US' => 'Interested', 'fr_FR' => 'Intéressé'),
+									'interested' => array('en_US' => 'To revive', 'fr_FR' => 'A relancer'),
 									'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
 									'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
 									'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
@@ -1606,8 +1606,8 @@ return array(
 					'property_8' => array(
 							'type' => 'date',
 							'labels' => array(
-									'en_US' => 'Detection day date',
-									'fr_FR' => 'Date concours / journée de détection',
+									'en_US' => 'Next meeting date',
+									'fr_FR' => 'Date prochaine rencontre',
 							),
 					),
 					'property_9' => array(
@@ -1620,6 +1620,24 @@ return array(
 					'property_10' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/level',
+					),
+					'property_11' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Sport level',
+									'fr_FR' => 'Niveau sportif',
+							),
+					),
+					'property_12' => array(
+							'type' => 'date',
+							'labels' => array(
+									'en_US' => 'Price communicated on',
+									'fr_FR' => 'Tarif communiqué le',
+							),
+					),
+					'property_13' => array(
+							'type' => 'repository',
+							'definition' => 'student/property/contact_meeting_context',
 					),
 					'json_property_1' => array(
 							'type' => 'structured',
@@ -1764,6 +1782,7 @@ return array(
 			'status' => array('mandatory' => true),
 			'callback_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
+			'property_12' => array('mandatory' => false),
 			'title_1' => null,
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
@@ -1772,9 +1791,11 @@ return array(
 			'property_2' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
+			'property_13' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
 			'title_2' => null,
 			'property_1' => array('mandatory' => false),
+			'property_11' => array('mandatory' => false),
 			'property_10' => array('mandatory' => false),
 //			'opening_date' => array('mandatory' => false),
 			'property_7' => array('mandatory' => false),
@@ -2112,7 +2133,20 @@ table.note-report td {
 					'fr_FR' => 'Centre',
 			),
 	),
-	
+
+	'student/property/contact_meeting_context' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'detection-day' => array('en_US' => 'Detection day', 'fr_FR' => 'Journée de détection'),
+					'competitive-examination' => array('en_US' => 'Competitive examination', 'fr_FR' => 'Concours'),
+					'appointment' => array('en_US' => 'Appointment', 'fr_FR' => 'Rendez-vous'),
+			),
+			'labels' => array(
+					'en_US' => 'Next meeting context',
+					'fr_FR' => 'Cadre de la prochaine rencontre',
+			),
+	),
+		
 	'student/property/discipline' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -2199,10 +2233,11 @@ table.note-report td {
 	'student/property/boarding_school' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'Externe' => array('fr_FR' => 'Externe'),
-					'Interne' => array('fr_FR' => 'Internat'),
-					'Weekend' => array('fr_FR' => 'Internat + WE'),
-					'Dimanche' => array('fr_FR' => 'Internat + dimanche'),
+					'Externe' => array('fr_FR' => 'Externe', 'fr_FR' => 'Externe'),
+					'Interne' => array('fr_FR' => 'Internat', 'fr_FR' => 'Internat'),
+					'Weekend' => array('fr_FR' => 'Internat + WE', 'fr_FR' => 'Internat + WE'),
+					'Dimanche' => array('fr_FR' => 'Internat + dimanche', 'fr_FR' => 'Internat + dimanche'),
+					'annual' => array('fr_FR' => 'Internat annuel', 'fr_FR' => 'Internat annuel'),
 			),
 			'labels' => array(
 					'en_US' => 'Boarding-school',
@@ -2215,6 +2250,7 @@ table.note-report td {
 			'modalities' => array(
 					'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017'),
 					'2017-2018' => array('fr_FR' => '2017-2018', 'en_US' => '2017-2018'),
+					'2018-2019' => array('fr_FR' => '2018-2019', 'en_US' => '2018-2019'),
 			),
 			'labels' => array(
 					'en_US' => 'School year',
@@ -2296,6 +2332,9 @@ table.note-report td {
 					'applied-arts' => array('en_US' => 'Applied arts', 'fr_FR' => 'Arts appliqués'),
 					'plastic-arts' => array('en_US' => 'Plastic arts', 'fr_FR' => 'Arts plastiques'),
 					'music' => array('en_US' => 'Music', 'fr_FR' => 'Musique'),
+// Demande E Moreau
+					'dance-history' => array('en_US' => 'Dance history', 'fr_FR' => 'Histoire de la danse'),
+//
 					'spe-stmg' => array('en_US' => 'STMG specialty', 'fr_FR' => 'Spécialité STMG'),
 					'spe-acrc' => array('en_US' => 'ACRC specialty', 'fr_FR' => 'Spécialité ACRC'),
 					'spe-mguc' => array('en_US' => 'MGUC specialty', 'fr_FR' => 'Spécialité MGUC'),
@@ -3242,6 +3281,13 @@ table.note-report tr.period {
 									'show' => true,
 											'en_US' => 'Medical',
 											'fr_FR' => 'Médical',
+									),
+							),
+							'student' => array(
+									'labels' => array(
+									'show' => true,
+											'en_US' => 'Student',
+											'fr_FR' => 'Etudiant',
 									),
 							),
 					),
