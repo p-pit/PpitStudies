@@ -1919,7 +1919,7 @@ table.note-report td {
 </style>
 ',
 	),
-	'commitmentAccount/requestTypes' => array(
+	'commitmentAccount/requestTypes/p-pit-studies' => array(
 			'general_information' => array('en_US' => 'General information', 'fr_FR' => 'Information générale'),
 	),
 	'commitmentAccount/export/p-pit-studies' => array(
@@ -2154,10 +2154,13 @@ table.note-report td {
 					'football-women' => array('en_US' => 'Women\'s Football', 'fr_FR' => 'Football féminin'),
 					'rugby' => array('en_US' => 'Rugby', 'fr_FR' => 'Rugby'),
 					'Basketball' => array('en_US' => 'Basketball', 'fr_FR' => 'Basketball'),
+					'handball' => array('en_US' => 'Handball', 'fr_FR' => 'Handball'),
 					'Equitation' => array('en_US' => 'Horse-riding', 'fr_FR' => 'Equitation'),
 					'Golf' => array('en_US' => 'Golf', 'fr_FR' => 'Golf'),
 					'Tennis' => array('en_US' => 'Tennis', 'fr_FR' => 'Tennis'),
+					'table-tennis' => array('en_US' => 'Table tennis', 'fr_FR' => 'Tennis de table'),
 					'Danse' => array('en_US' => 'Danse', 'fr_FR' => 'Danse'),
+					'figure-skating' => array('en_US' => 'Figure skating', 'fr_FR' => 'Patinage artistique'),
 					'Multisport' => array('en_US' => 'Multisport', 'fr_FR' => 'Multisport'),
 					'car-racing' => array('en_US' => 'Car racing', 'fr_FR' => 'Sport automobile'),
 			),
@@ -2223,6 +2226,7 @@ table.note-report td {
 					'cap-vente' => array('fr_FR' => 'CAP Vente', 'level' => 'CAP'),
 					'bts1' => array('fr_FR' => 'BTS1', 'level' => 'BTS'),
 					'bts2' => array('fr_FR' => 'BTS2', 'level' => 'BTS'),
+					'l1-staps' => array('fr_FR' => 'L1 STAPS', 'level' => 'L1 STAPS'),
 			),
 			'labels' => array(
 					'en_US' => 'Class',
@@ -2305,6 +2309,8 @@ table.note-report td {
 					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
 					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
 					'english' => array('en_US' => 'English', 'fr_FR' => 'Anglais'),
+					'english-toefl' => array('en_US' => 'English TOEFL', 'fr_FR' => 'Anglais TOEFL'),
+					'applied-english' => array('en_US' => 'Applied english', 'fr_FR' => 'Anglais appliqué'),
 					'german' => array('en_US' => 'German', 'fr_FR' => 'Allemand'),
 					'arabian' => array('en_US' => 'Arabian', 'fr_FR' => 'Arabe'),
 					'spanish' => array('en_US' => 'Spanish', 'fr_FR' => 'Espagnol'),
