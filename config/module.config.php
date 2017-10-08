@@ -3264,8 +3264,7 @@ table.note-report tr.period {
 	'ppitApplications' => array(
 			'p-pit-studies' => array(
     				'labels' => array('fr_FR' => 'P-Pit Studies', 'en_US' => 'Studies by 2Pit'),
-    				'route' => 'student',
-    				'params' => array(),
+    				'default' => 'student',
 					'roles' => array(
 							'manager' => array(
 									'show' => true,
