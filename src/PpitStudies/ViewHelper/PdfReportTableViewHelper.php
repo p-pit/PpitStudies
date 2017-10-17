@@ -24,7 +24,7 @@ class PdfReportTableViewHelper
 		return call_user_func_array('sprintf', $arguments);
 	}
 
-	public static function render($period)
+	public static function render($period, $category = 'report')
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -36,18 +36,21 @@ class PdfReportTableViewHelper
 	    $globalEvaluation = '';
 	    foreach ($period as $evaluation) {
 	    	if ($evaluation->subject != 'global') {
-		   		$distribution = array();
-		   		foreach ($evaluation->distribution as $category => $value) {
-		   			if ($category != 'global') {
-		   				$distribution[] = $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()].':&nbsp;'.$context->formatFloat($value, 2);
-		   			}
-		   		}
-		   		$distribution = implode('<br>', $distribution);
+	    		if ($category == 'note' && $evaluation->level) $distribution = $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()].'&nbsp;'.$context->decodeDate($evaluation->date);
+	    		else {
+			   		$distribution = array();
+			   		foreach ($evaluation->distribution as $category => $value) {
+			   			if ($category != 'global') {
+			   				$distribution[] = $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()].':&nbsp;'.$context->formatFloat($value, 2);
+			   			}
+			   		}
+			   		$distribution = implode('<br>', $distribution);
+	    		}
 		   		$rows.= sprintf(
 		   				$context->getConfig('student/report')['detailRow']['html'], 
 		   				(($color) ? 'style="background-color: #EEE"' : ''),
 		   				$context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()],
-						$context->getFormatedName(),
+						$evaluation->n_fn,
 		   				$context->formatFloat($evaluation->weight, 1),
 		   				$context->formatFloat($evaluation->value, 2),
 						$context->formatFloat($evaluation->lower_note, 2),

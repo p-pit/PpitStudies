@@ -676,15 +676,15 @@ return array(
         										),
         								),
         						),
-	       						'downloadReport' => array(
+	       						'download' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/download-report[/:account_id][/:school_year][/:school_period]',
+		        								'route' => '/download[/:category][/:account_id][/:school_year][/:school_period]',
 		        								'constraints' => array(
 		        										'account_id'     => '[0-9]*',
 		        								),
 		        								'defaults' => array(
-		        										'action' => 'downloadReport',
+		        										'action' => 'download',
 		        								),
 		        						),
 		        				),
@@ -834,7 +834,7 @@ return array(
 				array('route' => 'student/homework', 'roles' => array('guest')),
 				array('route' => 'student/evaluation', 'roles' => array('guest')),
 				array('route' => 'student/report', 'roles' => array('guest')),
-				array('route' => 'student/downloadReport', 'roles' => array('guest')),
+				array('route' => 'student/download', 'roles' => array('guest')),
             	array('route' => 'student/dropboxLink', 'roles' => array('guest')),
 				array('route' => 'student/letter', 'roles' => array('manager')),
 				array('route' => 'student/confirmation', 'roles' => array('manager')),
@@ -990,8 +990,8 @@ return array(
 	),
 
 	'currentApplication' => 'p-pit-studies',
-	'currentPeriodStart' => '2017-08-01',
-	'currentPeriodEnd' => '2017-11-30',
+	'currentPeriodStart' => '2017-09-01',
+	'currentPeriodEnd' => '2017-10-20',
 		
 	'ppitProduct/p-pit-studies' => array(
 			'properties' => array(),
@@ -1743,7 +1743,7 @@ return array(
 			'property_1' => 'image',
 //			'photo_link_id' => 'photo',
 			'n_fn' => 'text',
-			'callback_date' => 'text',
+			'callback_date' => 'date',
 			'property_2' => 'phone',
 	),
 	'commitmentAccount/detail/p-pit-studies' => array(
@@ -1968,7 +1968,7 @@ table.note-report td {
 			'comment_3' => array('mandatory' => false),
 			'comment_4' => array('mandatory' => false),
 
-//			'contact_history' => array('mandatory' => false),
+			'contact_history' => array('mandatory' => false),
 	),
 	'commitmentAccount/register/p-pit-studies' => array(
 			'title' => array(
@@ -2363,6 +2363,8 @@ table.note-report td {
 					'spe-mo' => array('en_US' => 'MO specialty', 'fr_FR' => 'Spécialité MO'),
 					'spe-pse' => array('en_US' => 'PSE specialty', 'fr_FR' => 'Spécialité PSE'),
 					'spe-bac-pro' => array('en_US' => 'Bac pro specialty', 'fr_FR' => 'Spécialité Bac Pro'),
+
+					'study-period' => array('en_US' => 'Study period', 'fr_FR' => 'Etude surveillée'),
 			),
 			'labels' => array(
 					'en_US' => 'Subject',

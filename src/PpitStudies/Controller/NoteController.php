@@ -205,6 +205,8 @@ class NoteController extends AbstractActionController
 	    			// Load the input data
 	    			$data = array();
 	    			$data['place_id'] = $request->getPost('place_id');
+	    			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
+	    			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
 	    			$data['class'] = $request->getPost('class');
 	    			$data['level'] = $request->getPost('level');
 	    			$data['subject'] = $request->getPost('subject');
@@ -214,7 +216,6 @@ class NoteController extends AbstractActionController
 	    			$data['observations'] = $request->getPost('observations');
 	    			$data['document'] = $request->getPost('document');
 	    			$data['comment'] = $request->getPost('comment');
-	
 	    			$rc = $note->loadData($data);
 					if ($rc != 'OK') throw new \Exception('View error');
     			}
@@ -286,7 +287,9 @@ class NoteController extends AbstractActionController
     			// Load the input data
     			$data = array();
     			$data['status'] = 'current';
-    			$data['class'] = $request->getPost('place_id');
+    			$data['place_id'] = $request->getPost('place_id');
+    			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
+    			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
     			$data['class'] = $request->getPost('class');
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
@@ -312,10 +315,13 @@ class NoteController extends AbstractActionController
     				$noteLink->value = $value;
     				$noteLink->assessment = $request->getPost('assessment_'.$noteLink->account_id);
     				$noteSum += $value;
-    				if ($value < $lowerNote) $lowerNote = $value;
-    				if ($value > $higherNote) $higherNote = $value;
-    				if ($noteLink->value != '') $noteLinks[] = $noteLink;
+    				if ($value != '') {
+	    				if ($value < $lowerNote) $lowerNote = $value;
+	    				if ($value > $higherNote) $higherNote = $value;
+    					$noteLinks[] = $noteLink;
+    				}
     			}
+				$note->links = $noteLinks;
     			if (count($note->links) > 0) {
     				$data['average_note'] = round($noteSum / count($note->links), 2);
     				$data['lower_note'] = $lowerNote;

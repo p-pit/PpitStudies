@@ -19,6 +19,7 @@ class Note implements InputFilterAwareInterface
     public $instance_id;
     public $status;
     public $place_id;
+    public $teacher_id;
     public $category;
     public $type;
     public $school_year;
@@ -60,6 +61,7 @@ class Note implements InputFilterAwareInterface
         $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->instance_id = (isset($data['instance_id'])) ? $data['instance_id'] : null;
         $this->place_id = (isset($data['place_id'])) ? $data['place_id'] : null;
+        $this->teacher_id = (isset($data['teacher_id'])) ? $data['teacher_id'] : null;
         $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->category = (isset($data['category'])) ? $data['category'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
@@ -89,6 +91,7 @@ class Note implements InputFilterAwareInterface
     	$data['id'] = (int) $this->id;
     	$data['instance_id'] = (int) $this->instance_id;
     	$data['place_id'] = (int) $this->place_id;
+    	$data['teacher_id'] = (int) $this->teacher_id;
     	$data['status'] =  $this->status;
     	$data['category'] =  $this->category;
     	$data['type'] = $this->type;
@@ -273,6 +276,9 @@ class Note implements InputFilterAwareInterface
         if (array_key_exists('place_id', $data)) {
 		    $this->place_id = (int) $data['place_id'];
 		    if (!$this->place_id) return 'Integrity';
+		}
+        if (array_key_exists('teacher_id', $data)) {
+		    $this->teacher_id = (int) $data['teacher_id'];
 		}
 		if (array_key_exists('category', $data)) {
 		    $this->category = trim(strip_tags($data['category']));

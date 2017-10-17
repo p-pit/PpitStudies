@@ -43,6 +43,7 @@ table.note-report tr.period {
 		<?php echo $this->translate('Last notes', 'ppit-studies', $context->getLocale()) ?>
 	</h4>
 	<!--Text-->
+		<div><a href="<?php echo $this->url('student/download', array('category' => 'note', 'account_id' => $account->id)) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
 		<table class="table note-report">
 			<tr>
 				<th rowspan="2"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>

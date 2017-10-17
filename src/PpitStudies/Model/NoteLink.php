@@ -67,7 +67,7 @@ class NoteLink implements InputFilterAwareInterface
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         
         // Joined properties
-        $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null; // Deprecated
+        $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null; // Deprecated
         $this->note_status = (isset($data['note_status'])) ? $data['note_status'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
@@ -108,8 +108,9 @@ class NoteLink implements InputFilterAwareInterface
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
     		->order(array($major.' '.$dir, 'date DESC', 'type ASC'))
-    		->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left');
-		$where = new Where;
+    		->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
+    		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('n_fn'), 'left');
+    		$where = new Where;
 		if ($type) $where->equalTo('type', $type);
 
     	// Todo list vs search modes

@@ -1136,26 +1136,28 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 	
-	public function downloadReportAction()
+	public function downloadAction()
 	{
 		// Retrieve the context
 		$context = Context::getCurrent();
+		$category = $this->params()->fromRoute('category');
 		$account_id = (int) $this->params()->fromRoute('account_id');
-		$school_year = $this->params()->fromRoute('school_year');
-		$school_period = $this->params()->fromRoute('school_period');
+		if ($category == 'report') { // To be changed to mi and max dates
+			$school_year = $this->params()->fromRoute('school_year');
+			$school_period = $this->params()->fromRoute('school_period');
+		}
 		
 		$account = Account::get($account_id);
 		$account->properties = $account->getProperties();
-		if ($account->contact_1_status == 'main') $addressee = $account->contact_1;
-		elseif ($account->contact_2_status == 'main') $addressee = $account->contact_2;
-		elseif ($account->contact_3_status == 'main') $addressee = $account->contact_3;
-		elseif ($account->contact_4_status == 'main') $addressee = $account->contact_4;
-		elseif ($account->contact_5_status == 'main') $addressee = $account->contact_5;
+		if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
+		elseif ($account->contact_3 && $account->contact_3->adr_street) $addressee = $account->contact_3;
+		elseif ($account->contact_4 && $account->contact_4->adr_street) $addressee = $account->contact_4;
+		elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
+		else $addressee = $account->contact_1;
 		
 		$place = Place::get($account->place_id);
 		
-		$category = $this->params()->fromRoute('category');
-		$absLates = Absence::getList($category, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$absLates = Absence::getList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
 		$absences = array();
 		$latenesss = array();
 		$cumulativeAbsence = 0;
@@ -1174,14 +1176,19 @@ class StudentController extends AbstractActionController
 				$latenessCount++;
 			}
 		}
-		$notes = NoteLink::GetList('report', array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
+		if ($category == 'report') {
+			$notes = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
+		}
+		else {
+			$notes = NoteLink::GetList($category, array('account_id' => $account_id), 'date', 'DESC', 'search');
+		}
 		$period = array();
 		foreach($notes as $note) $period[] = $note;
 
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($pdf, $place, $account, $addressee, $period, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness);
+    	PdfReportViewHelper::render($category, $pdf, $place, $account, $addressee, $period, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.
