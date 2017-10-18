@@ -10,6 +10,7 @@ use PpitCore\Model\Place;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
+use Zend\Db\Sql\Where;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -320,6 +321,7 @@ class NoteController extends AbstractActionController
 	    				if ($value > $higherNote) $higherNote = $value;
     					$noteLinks[] = $noteLink;
     				}
+    				else $noteLink->delete(null);
     			}
 				$note->links = $noteLinks;
     			if (count($note->links) > 0) {
@@ -376,5 +378,23 @@ class NoteController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
+    }
+    
+    public function repriseAction()
+    {
+    	$context = Context::getCurrent();
+    	$select = Note::getTable()->getSelect()
+    		->join('core_user', 'core_user.user_id = student_note.update_user', array(), 'left')
+    		->join('core_vcard', 'core_vcard.id = core_user.vcard_id', array('teacher_id' => 'id'));
+		$where = new Where;
+		$where->notEqualTo('student_note.status', 'deleted');
+		$where->greaterThan('student_note.id', 2740);
+		$select->where($where);
+		$cursor = Note::getTable()->selectWith($select);
+		foreach ($cursor as $note) {
+    		echo $note->id.': '.$note->teacher_id."<br>";
+    		$note->update(null);
+    	}
+    	return $this->response;
     }
 }

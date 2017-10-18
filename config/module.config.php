@@ -279,6 +279,15 @@ return array(
 		        								),
 		        						),
 		        				),
+			       				'reprise' => array(
+	       								'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/reprise',
+		        								'defaults' => array(
+		        										'action' => 'reprise',
+		        								),
+		        						),
+			       				),
 	       		),
             ),
         	'studentNotification' => array(
@@ -791,7 +800,8 @@ return array(
 				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
-
+				array('route' => 'note/reprise', 'roles' => array('admin')),
+						
 				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'studentNotification/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
@@ -1730,6 +1740,8 @@ return array(
 					'status' => 'select',
 					'place_id' => 'select',
 					'callback_date' => 'range',
+					'property_8' => 'range',
+					'property_13' => 'select',
 					'origine' => 'contains',
 					'property_1' => 'select',
 					'property_7' => 'select',
@@ -1830,6 +1842,10 @@ return array(
 			'adr_state' => array('mandatory' => false),
 			'adr_country' => array('mandatory' => false),
 			'locale' => array('mandatory' => true),
+	),
+	'commitmentAccount/groupUpdate/p-pit-studies' => array(
+			'status' => array('mandatory' => false),
+			'callback_date' => array('mandatory' => false),
 	),
 	'commitmentAccount/post/p-pit-studies' => array(
 			'place_identifier' => array('mandatory' => false),
@@ -2143,7 +2159,7 @@ table.note-report td {
 			),
 			'labels' => array(
 					'en_US' => 'Next meeting context',
-					'fr_FR' => 'Cadre de la prochaine rencontre',
+					'fr_FR' => 'Cadre prochaine rencontre',
 			),
 	),
 		

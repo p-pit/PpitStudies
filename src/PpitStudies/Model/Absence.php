@@ -109,7 +109,6 @@ class Absence implements InputFilterAwareInterface
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
     	$context = Context::getCurrent();
-    	
     	$select = Absence::getTable()->getSelect()
     		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
     		->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')

@@ -641,12 +641,13 @@ class StudentController extends AbstractActionController
     				$criterionValue = $request->getPost('criterion_'.$i);
     				$data['criteria'][$criterionId] = $criterionValue;
     			}
-    			$note->links = array();
+    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['level'], $data['date']);
+    			if ($previousNote) $note = $previousNote;
+    			else $note->links = array();
     			if ($type == 'report') {
     				$computedAverages = Note::computePeriodAverages(/*$data['school_year'], */$data['class'], /*$data['school_period'], */$data['subject']);
     			}
     			$nbAccount = $request->getPost('nb-account');
-    			$noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			for ($i = 0; $i < $nbAccount; $i++) {
     				$account = $accounts[$request->getPost('account_'.$i)];
     				$noteLink = NoteLink::instanciate($account->id, null);
@@ -667,13 +668,16 @@ class StudentController extends AbstractActionController
     					}
 	    			}
     				$noteLink->assessment = $request->getPost('assessment_'.$account->id);
-    				$noteSum += $value;
-    				if ($value < $lowerNote) $lowerNote = $value;
-    				if ($value > $higherNote) $higherNote = $value;
-    				/*if ($noteLink->value != '')*/ $note->links[] = $noteLink;
+    				$note->links[] = $noteLink;
     			}
-    			if ($nbAccount > 0) {
-    				$data['average_note'] = round($noteSum / $nbAccount, 2);
+    			$noteSum = 0; $lowerNote = 999; $higherNote = 0;
+    			foreach ($note->links as $noteLink) {
+    				$noteSum += $noteLink->value;
+    				if ($noteLink->value < $lowerNote) $lowerNote = $noteLink->value;
+    				if ($noteLink->value > $higherNote) $higherNote = $noteLink->value;
+    			}
+    			if (count($note->links) > 0) {
+    				$data['average_note'] = round($noteSum / count($note->links), 2);
 	    			$data['lower_note'] = $lowerNote;
 	    			$data['higher_note'] = $higherNote;
 	    			$rc = $note->loadData($data);
@@ -685,15 +689,18 @@ class StudentController extends AbstractActionController
 		    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		    			$connection->beginTransaction();
 		    			try {
-		    				$rc = $note->add();
+		    				if ($note->id) $rc = $note->update(null);
+		    				else $rc = $note->add();
 		    				if ($rc != 'OK') {
 		    					$connection->rollback();
 		    					$error = $rc;
 		    				}
 		    				// Save the note at the student level
 		    				else foreach ($note->links as $noteLink) {
-		    					$noteLink->note_id = $note->id;
-		    					$rc = $noteLink->add();
+		    					if (!$noteLink->id) {
+			    					$noteLink->note_id = $note->id;
+		    						$rc = $noteLink->add();
+		    					}
 			    				if ($rc != 'OK') {
 			    					$connection->rollback();
 			    					$error = $rc;
@@ -1156,8 +1163,8 @@ class StudentController extends AbstractActionController
 		else $addressee = $account->contact_1;
 		
 		$place = Place::get($account->place_id);
-		
-		$absLates = Absence::getList(null, array('account_id' => $account_id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+
+		$absLates = Absence::getList(null, array('account_id' => $account_id, 'min_begin_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
 		$absences = array();
 		$latenesss = array();
 		$cumulativeAbsence = 0;

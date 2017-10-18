@@ -40,7 +40,7 @@ class Note implements InputFilterAwareInterface
     public $average_note;
     public $audit;
     public $update_time;
-
+    
     // Transient properties
     public $links;
     public $comment;
@@ -170,6 +170,32 @@ class Note implements InputFilterAwareInterface
 		return $notes;
     }
 
+    public static function retrieve($place_id, $category, $type, $class, $level, $date)
+    {
+    	$select = Note::getTable()->getSelect();
+    	$where = new Where;
+    	$where->notEqualTo('status', 'deleted');
+    	$where->equalTo('place_id', $place_id);
+    	$where->equalTo('category', $category);
+    	$where->equalTo('type', $type);
+    	$where->equalTo('class', $class);
+    	$where->equalTo('level', $level);
+    	$where->equalTo('date', $date);
+    	$select->where($where);
+    	$cursor = Note::getTable()->selectWith($select);
+    	foreach ($cursor as $note) {
+	    	$note->links = array();
+	    	$select = NoteLink::getTable()->getSelect()
+	    				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
+	    				->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
+	    				->where(array('note_id' => $note->id));
+			$cursor = NoteLink::getTable()->selectWith($select);
+			foreach($cursor as $noteLink) $note->links[] = $noteLink;
+    		return $note;
+    	}
+    	return null;
+    }
+    
     public static function retrieveAll($type, $account_id)
     {
     	$select = Note::getTable()->getSelect()
@@ -391,7 +417,7 @@ class Note implements InputFilterAwareInterface
     	$note = Note::get($this->id);
 
     	// Isolation check
-    	if ($note->update_time > $update_time) return 'Isolation';
+    	if ($update_time && $note->update_time > $update_time) return 'Isolation';
     	 
     	Note::getTable()->save($this);
     
