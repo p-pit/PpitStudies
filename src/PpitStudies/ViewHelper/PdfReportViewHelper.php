@@ -129,6 +129,7 @@ class PdfReportViewHelper
     		$arguments = array();
     		foreach($line['params'] as $propertyId) {
     			if ($propertyId == 'date') $arguments[] = $context->decodeDate(date('Y-m-d'));
+    			elseif ($propertyId == 'name') $arguments[] = $addressee->n_fn;
     			else {
 					$property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
 					if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);

@@ -122,7 +122,7 @@ class NoteController extends AbstractActionController
 			foreach ($notes as $note) {
 				$maxAverage += $note->reference_value;
 				$totalWeight += $note->weight;
-				$average += $note->average_note / $note->reference_value * $note->weight;
+				if ($note->reference_value) $average += $note->average_note / $note->reference_value * $note->weight;
 			}
 			$average /= ($totalWeight) ? $totalWeight : 1;
     	}
@@ -388,7 +388,7 @@ class NoteController extends AbstractActionController
     		->join('core_vcard', 'core_vcard.id = core_user.vcard_id', array('teacher_id' => 'id'));
 		$where = new Where;
 		$where->notEqualTo('student_note.status', 'deleted');
-		$where->greaterThan('student_note.id', 2740);
+		$where->equalTo('student_note.teacher_id', 0);
 		$select->where($where);
 		$cursor = Note::getTable()->selectWith($select);
 		foreach ($cursor as $note) {

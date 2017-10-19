@@ -1338,6 +1338,20 @@ return array(
 									'fr_FR' => 'Email',
 							),
 					),
+					'tel_work' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Father phone',
+									'fr_FR' => 'Téléphone père',
+							),
+					),
+					'tel_cell' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Cell',
+									'fr_FR' => 'Portable',
+							),
+					),
 					'address' => array(
 							'type' => 'input',
 							'labels' => array(
@@ -1756,7 +1770,7 @@ return array(
 //			'photo_link_id' => 'photo',
 			'n_fn' => 'text',
 			'callback_date' => 'date',
-			'property_2' => 'phone',
+			'tel_cell' => 'phone',
 	),
 	'commitmentAccount/detail/p-pit-studies' => array(
 			'title' => array('en_US' => 'Student sheet:', 'fr_FR' => 'FICHE ELEVE'),
@@ -1800,7 +1814,7 @@ return array(
 			'n_last' => array('mandatory' => true),
 			'photo_link_id' => array('mandatory' => false),
 			'email' => array('mandatory' => false),
-			'property_2' => array('mandatory' => false),
+			'tel_cell' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
 			'property_13' => array('mandatory' => false),
@@ -1895,7 +1909,7 @@ return array(
 					'n_first' => array('mandatory' => true),
 					'n_last' => array('mandatory' => true),
 					'email' => array('mandatory' => false),
-					'property_2' => array('mandatory' => false),
+					'tel_cell' => array('mandatory' => false),
 					'birth_date' => array('mandatory' => false),
 					'property_8' => array('mandatory' => false),
 					'property_3' => array('mandatory' => false),
@@ -1951,7 +1965,7 @@ table.note-report td {
 			'email' => array('mandatory' => false),
 			'address' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
-			'property_2' => array('mandatory' => false),
+			'tel_cell' => array('mandatory' => false),
 			'property_7' => array('mandatory' => true),
 			'property_6' => array('mandatory' => false),
 				
@@ -1997,7 +2011,7 @@ table.note-report td {
 					'n_first' => array('mandatory' => true),
 					'n_last' => array('mandatory' => true),
 					'email' => array('mandatory' => true),
-					'property_2' => array('mandatory' => true),
+					'tel_cell' => array('mandatory' => true),
 					'property_8' => array('mandatory' => false),
 					'property_1' => array('mandatory' => true),
 					'place_id' => array('mandatory' => true),

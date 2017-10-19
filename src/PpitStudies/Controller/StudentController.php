@@ -624,6 +624,8 @@ class StudentController extends AbstractActionController
     			$data = array();
     			$data['status'] = 'current';
     			$data['place_id'] = $request->getPost('place_id');
+	    		if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
+	    		if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['class'] = $request->getPost('class');
