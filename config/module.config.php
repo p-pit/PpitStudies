@@ -1352,6 +1352,27 @@ return array(
 									'fr_FR' => 'Portable',
 							),
 					),
+					'adr_street' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Address - Street',
+									'fr_FR' => 'Adresse - Rue',
+							),
+					),
+					'adr_zip' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Address - ZIP',
+									'fr_FR' => 'Adresse - Code postal',
+							),
+					),
+					'adr_city' => array(
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Address - City',
+									'fr_FR' => 'Adresse - Ville',
+							),
+					),
 					'address' => array(
 							'type' => 'input',
 							'labels' => array(
@@ -1579,10 +1600,10 @@ return array(
 							'definition' => 'student/property/discipline',
 					),
 					'property_2' => array(
-							'type' => 'input',
+							'type' => 'time',
 							'labels' => array(
-									'en_US' => 'Phone',
-									'fr_FR' => 'Téléphone',
+									'en_US' => 'Next meeting time',
+									'fr_FR' => 'Heure prochain rendez-vous',
 							),
 					),
 					'property_3' => array(
@@ -1756,11 +1777,11 @@ return array(
 					'callback_date' => 'range',
 					'property_8' => 'range',
 					'property_13' => 'select',
-					'origine' => 'contains',
+					'origine' => 'select',
 					'property_1' => 'select',
 					'property_7' => 'select',
 					'property_6' => 'select',
-					'name' => 'contains',
+					'n_fn' => 'contains',
 			),
 			'more' => array(
 			),
@@ -1815,8 +1836,12 @@ return array(
 			'photo_link_id' => array('mandatory' => false),
 			'email' => array('mandatory' => false),
 			'tel_cell' => array('mandatory' => false),
+			'adr_street' => array('mandatory' => false),
+			'adr_zip' => array('mandatory' => false),
+			'adr_city' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
+			'property_2' => array('mandatory' => false),
 			'property_13' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
 			'title_2' => null,
@@ -1860,6 +1885,8 @@ return array(
 	'commitmentAccount/groupUpdate/p-pit-studies' => array(
 			'status' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
+			'property_8' => array('mandatory' => false),
+			'property_13' => array('mandatory' => false),
 	),
 	'commitmentAccount/post/p-pit-studies' => array(
 			'place_identifier' => array('mandatory' => false),
@@ -1912,6 +1939,7 @@ return array(
 					'tel_cell' => array('mandatory' => false),
 					'birth_date' => array('mandatory' => false),
 					'property_8' => array('mandatory' => false),
+					'property_2' => array('mandatory' => false),
 					'property_3' => array('mandatory' => false),
 				),
 			),

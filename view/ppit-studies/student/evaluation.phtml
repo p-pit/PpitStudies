@@ -62,7 +62,9 @@ table.note-report tr.period {
 			<tr>
 				<td class="subject">
 					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+		<?php if (array_key_exists($note->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) : ?>
 					<span style="font-weight: normal">(<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$note->level][$context->getLocale()] ?>)</span>
+		<?php endif;?>
 				</td>
 				<td><?php echo $context->decodeDate($note->date) ?></td>
 				<td align="right"><h5><?php echo $context->formatFloat($note->value, 2).'&nbsp;/&nbsp;'.$context->formatFloat($note->reference_value, 0) ?></h5></td>
