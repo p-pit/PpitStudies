@@ -643,7 +643,7 @@ class StudentController extends AbstractActionController
     				$criterionValue = $request->getPost('criterion_'.$i);
     				$data['criteria'][$criterionId] = $criterionValue;
     			}
-    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['level'], $data['date']);
+    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['subject'], $data['level'], $data['date']);
     			if ($previousNote) $note = $previousNote;
     			else $note->links = array();
     			if ($type == 'report') {

@@ -170,7 +170,7 @@ class Note implements InputFilterAwareInterface
 		return $notes;
     }
 
-    public static function retrieve($place_id, $category, $type, $class, $level, $date)
+    public static function retrieve($place_id, $category, $type, $class, $subject, $level, $date)
     {
     	$select = Note::getTable()->getSelect();
     	$where = new Where;
@@ -179,6 +179,7 @@ class Note implements InputFilterAwareInterface
     	$where->equalTo('category', $category);
     	$where->equalTo('type', $type);
     	$where->equalTo('class', $class);
+    	$where->equalTo('subject', $subject);
     	$where->equalTo('level', $level);
     	$where->equalTo('date', $date);
     	$select->where($where);

@@ -150,7 +150,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 			<label class="col-sm-5 control-label">
 				<?php echo $account->name ?>
 	<?php if ($type == 'report') : ?>
-				<a class="report-attachment glyphicon glyphicon-paperclip" href="<?php echo $this->url('student/downloadReport', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'school_period' => $context->getConfig('student/property/school_year/default'))) ?>" title="<?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?>"></a>
+				<a class="report-attachment glyphicon glyphicon-paperclip" href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'school_period' => $context->getConfig('student/property/school_year/default'))) ?>" title="<?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?>"></a>
 	<?php endif;?>
 			</label>
 			<div class="col-sm-7">
