@@ -383,17 +383,36 @@ class NoteController extends AbstractActionController
     public function repriseAction()
     {
     	$context = Context::getCurrent();
-    	$select = Note::getTable()->getSelect()
-    		->join('core_user', 'core_user.user_id = student_note.update_user', array(), 'left')
-    		->join('core_vcard', 'core_vcard.id = core_user.vcard_id', array('teacher_id' => 'id'));
+    	$select = NoteLink::getTable()->getSelect()
+    		->join('student_note', 'student_note.id = student_note_link.note_id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date'), 'left')
+    		->join('core_vcard', 'core_vcard.id = student_note.teacher_id', array('n_fn'), 'left')
+    		->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array('name'), 'left')
+    		->join(array('student_vcard' => 'core_vcard'), 'student_vcard.id = commitment_account.contact_1_id', array('name' => 'n_fn'), 'left')
+    		->order(array('student_note.type', 'student_note.id', 'student_note_link.account_id'));
 		$where = new Where;
-		$where->notEqualTo('student_note.status', 'deleted');
-		$where->equalTo('student_note.teacher_id', 0);
+		$where->equalTo('student_note.status', 'current');
+		$where->equalTo('student_note.category', 'evaluation');
 		$select->where($where);
-		$cursor = Note::getTable()->selectWith($select);
-		foreach ($cursor as $note) {
-    		echo $note->id.': '.$note->teacher_id."<br>";
-    		$note->update(null);
+		$cursor = NoteLink::getTable()->selectWith($select);
+		header('Content-Type: text/csv; charset=utf-8');
+		header("Content-disposition: filename=order-".date('Y-m-d').".csv");
+		echo "\xEF\xBB\xBF";
+		echo 'Professeur;account_id;Elève;Type;Année scolaire;Type d\'évaluation;Classe;Période;Matière;Date;Note;Appréciation;'."\n";
+		foreach ($cursor as $noteLink) {
+    		echo 
+      		$noteLink->n_fn.';'.
+    		$noteLink->account_id.';'.
+    		$noteLink->name.';'.
+    		$noteLink->type.';'.
+    		$noteLink->school_year.';'.
+    		((!$noteLink->level) ? $noteLink->level : $context->getConfig('student/property/evaluationCategory')['modalities'][$noteLink->level][$context->getLocale()]).';'.
+    		((!$noteLink->class) ? $noteLink->class : $context->getConfig('student/property/class')['modalities'][$noteLink->class][$context->getLocale()]).';'.
+    		$noteLink->school_period.';'.
+    		(($noteLink->subject == 'global') ? $noteLink->subject : $context->getConfig('student/property/school_subject')['modalities'][$noteLink->subject][$context->getLocale()]).';'.
+    		$noteLink->date.';'.
+    		$noteLink->value.';'.
+    		$noteLink->assessment.';'.
+    		"\n";
     	}
     	return $this->response;
     }
