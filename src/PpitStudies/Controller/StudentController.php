@@ -1189,7 +1189,7 @@ class StudentController extends AbstractActionController
 			$notes = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 		}
 		else {
-			$notes = NoteLink::GetList($category, array('account_id' => $account_id), 'date', 'DESC', 'search');
+			$notes = NoteLink::GetList($category, array('account_id' => $account_id), 'subject', 'ASC', 'search');
 		}
 		$period = array();
 		foreach($notes as $note) $period[] = $note;

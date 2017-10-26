@@ -398,21 +398,46 @@ class NoteController extends AbstractActionController
 		header("Content-disposition: filename=order-".date('Y-m-d').".csv");
 		echo "\xEF\xBB\xBF";
 		echo 'Professeur;account_id;Elève;Type;Année scolaire;Type d\'évaluation;Classe;Période;Matière;Date;Note;Appréciation;'."\n";
+		$previousKey = '';
+		$previousLink = null;
+		$lastPrinted = null;
 		foreach ($cursor as $noteLink) {
-    		echo 
-      		$noteLink->n_fn.';'.
-    		$noteLink->account_id.';'.
-    		$noteLink->name.';'.
-    		$noteLink->type.';'.
-    		$noteLink->school_year.';'.
-    		((!$noteLink->level) ? $noteLink->level : $context->getConfig('student/property/evaluationCategory')['modalities'][$noteLink->level][$context->getLocale()]).';'.
-    		((!$noteLink->class) ? $noteLink->class : $context->getConfig('student/property/class')['modalities'][$noteLink->class][$context->getLocale()]).';'.
-    		$noteLink->school_period.';'.
-    		(($noteLink->subject == 'global') ? $noteLink->subject : $context->getConfig('student/property/school_subject')['modalities'][$noteLink->subject][$context->getLocale()]).';'.
-    		$noteLink->date.';'.
-    		$noteLink->value.';'.
-    		$noteLink->assessment.';'.
-    		"\n";
+			$key = $noteLink->type.'_'.$noteLink->note_id.'_'.$noteLink->account_id;
+			if ($key == $previousKey) {
+				if ($previousLink && $previousLink->id != $lastPrinted) {
+					echo
+					$previousLink->n_fn.';'.
+					$previousLink->account_id.';'.
+					$previousLink->name.';'.
+					$previousLink->type.';'.
+					$previousLink->school_year.';'.
+					((!$previousLink->level) ? $previousLink->level : $context->getConfig('student/property/evaluationCategory')['modalities'][$previousLink->level][$context->getLocale()]).';'.
+					((!$previousLink->class) ? $previousLink->class : $context->getConfig('student/property/class')['modalities'][$previousLink->class][$context->getLocale()]).';'.
+					$previousLink->school_period.';'.
+					(($previousLink->subject == 'global') ? $previousLink->subject : $context->getConfig('student/property/school_subject')['modalities'][$previousLink->subject][$context->getLocale()]).';'.
+					$previousLink->date.';'.
+					$previousLink->value.';'.
+					$previousLink->assessment.';'.
+					"\n";
+				}
+				$lastPrinted = $noteLink->id;
+	    		echo 
+	      		$noteLink->n_fn.';'.
+	    		$noteLink->account_id.';'.
+	    		$noteLink->name.';'.
+	    		$noteLink->type.';'.
+	    		$noteLink->school_year.';'.
+	    		((!$noteLink->level) ? $noteLink->level : $context->getConfig('student/property/evaluationCategory')['modalities'][$noteLink->level][$context->getLocale()]).';'.
+	    		((!$noteLink->class) ? $noteLink->class : $context->getConfig('student/property/class')['modalities'][$noteLink->class][$context->getLocale()]).';'.
+	    		$noteLink->school_period.';'.
+	    		(($noteLink->subject == 'global') ? $noteLink->subject : $context->getConfig('student/property/school_subject')['modalities'][$noteLink->subject][$context->getLocale()]).';'.
+	    		$noteLink->date.';'.
+	    		$noteLink->value.';'.
+	    		$noteLink->assessment.';'.
+	    		"\n";
+			}
+			$previousKey = $key;
+			$previousLink = $noteLink;
     	}
     	return $this->response;
     }
