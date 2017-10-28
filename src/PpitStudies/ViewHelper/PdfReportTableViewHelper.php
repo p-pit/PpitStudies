@@ -49,7 +49,7 @@ class PdfReportTableViewHelper
 		   		$rows.= sprintf(
 		   				$context->getConfig('student/report')['detailRow']['html'], 
 		   				(($color) ? 'style="background-color: #EEE"' : ''),
-		   				$context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()],
+		   				(!$evaluation->subject) ? '' : $context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()],
 						$evaluation->n_fn,
 		   				$context->formatFloat($evaluation->weight, 1),
 		   				$context->formatFloat($evaluation->value, 2),

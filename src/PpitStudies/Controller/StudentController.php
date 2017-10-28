@@ -670,7 +670,8 @@ class StudentController extends AbstractActionController
     					}
 	    			}
     				$noteLink->assessment = $request->getPost('assessment_'.$account->id);
-    				$note->links[] = $noteLink;
+    				if (array_key_exists($noteLink->account_id, $note->links)) $note->links[$noteLink->account_id]->delete(null); 
+    				$note->links[$noteLink->account_id] = $noteLink;
     			}
     			$noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {

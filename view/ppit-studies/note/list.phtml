@@ -62,10 +62,18 @@
 		<td><?php echo $context->getConfig('student/property/class')['modalities'][$note->class][$context->getLocale()] ?></td>
 
 		<?php elseif ($type == 'note' && $propertyId == 'level') : ?>
+			<?php if (!$note->level)  : ?>
+		<td style="color: red;">A compléter</td>
+			<?php else : ?>
 		<td><?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$note->level][$context->getLocale()] ?></td>
+			<?php endif;?>
 
 		<?php elseif ($propertyId == 'subject') : ?>
+			<?php if (!$note->subject)  : ?>
+		<td style="color: red;">A compléter</td>
+			<?php else : ?>
 		<td><?php echo ($note->subject == 'global') ? $this->translate('Staff meeting', 'ppit-studies', $context->getLocale()) : $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
+			<?php endif;?>
 
 		<?php elseif ($propertyId == 'date') : ?>
 		<td><?php echo $context->decodeDate($note->date) ?></td>

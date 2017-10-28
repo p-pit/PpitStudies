@@ -386,6 +386,8 @@ class NoteController extends AbstractActionController
     	$select = NoteLink::getTable()->getSelect()
     		->join('student_note', 'student_note.id = student_note_link.note_id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date'), 'left')
     		->join('core_vcard', 'core_vcard.id = student_note.teacher_id', array('n_fn'), 'left')
+			->join('core_user', 'core_user.user_id = student_note_link.update_user', array(), 'left')
+			->join(array('user_vcard' => 'core_vcard'), 'user_vcard.id = core_user.vcard_id', array('user_n_fn' => 'n_fn'), 'left')
     		->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array('name'), 'left')
     		->join(array('student_vcard' => 'core_vcard'), 'student_vcard.id = commitment_account.contact_1_id', array('name' => 'n_fn'), 'left')
     		->order(array('student_note.type', 'student_note.id', 'student_note_link.account_id'));
@@ -397,16 +399,20 @@ class NoteController extends AbstractActionController
 		header('Content-Type: text/csv; charset=utf-8');
 		header("Content-disposition: filename=order-".date('Y-m-d').".csv");
 		echo "\xEF\xBB\xBF";
-		echo 'Professeur;account_id;Elève;Type;Année scolaire;Type d\'évaluation;Classe;Période;Matière;Date;Note;Appréciation;'."\n";
+		echo 'id;note_id;Professeur;Professeur initial;account_id;Elève;Type;Année scolaire;Type d\'évaluation;Classe;Période;Matière;Date;Note;Appréciation;'."\n";
 		$previousKey = '';
 		$previousLink = null;
 		$lastPrinted = null;
 		foreach ($cursor as $noteLink) {
 			$key = $noteLink->type.'_'.$noteLink->note_id.'_'.$noteLink->account_id;
+//			if (!$noteLink->subject) {
 			if ($key == $previousKey) {
 				if ($previousLink && $previousLink->id != $lastPrinted) {
 					echo
+					$previousLink->id.';'.
+					$previousLink->note_id.';'.
 					$previousLink->n_fn.';'.
+					$previousLink->user_n_fn.';'.
 					$previousLink->account_id.';'.
 					$previousLink->name.';'.
 					$previousLink->type.';'.
@@ -422,7 +428,10 @@ class NoteController extends AbstractActionController
 				}
 				$lastPrinted = $noteLink->id;
 	    		echo 
+	      		$noteLink->id.';'.
+	      		$noteLink->note_id.';'.
 	      		$noteLink->n_fn.';'.
+	    		$noteLink->user_n_fn.';'.
 	    		$noteLink->account_id.';'.
 	    		$noteLink->name.';'.
 	    		$noteLink->type.';'.

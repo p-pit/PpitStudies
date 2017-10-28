@@ -189,9 +189,9 @@ class Note implements InputFilterAwareInterface
 	    	$select = NoteLink::getTable()->getSelect()
 	    				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
 	    				->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
-	    				->where(array('note_id' => $note->id));
+	    				->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
 			$cursor = NoteLink::getTable()->selectWith($select);
-			foreach($cursor as $noteLink) $note->links[] = $noteLink;
+			foreach($cursor as $noteLink) $note->links[$noteLink->account_id] = $noteLink;
     		return $note;
     	}
     	return null;
@@ -220,6 +220,7 @@ class Note implements InputFilterAwareInterface
     		->order(array('date DESC', 'subject ASC'));
     	$where = new Where;
     	$where->notEqualTo('student_note.status', 'deleted');
+    	$where->notEqualTo('student_note_link.status', 'deleted');
     	$where->equalTo('type', 'note');
 //    	$where->equalTo('school_year', $school_year);
     	$where->equalTo('class', $class);
@@ -274,7 +275,7 @@ class Note implements InputFilterAwareInterface
     				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
     				->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
 //    				->join('core_community', 'core_community.id = commitment_account.customer_community_id', array('name'), 'left')
-    				->where(array('note_id' => $id));
+    				->where(array('note_id' => $id, 'student_note_link.status != ?' => 'deleted'));
 		$cursor = NoteLink::getTable()->selectWith($select);
 		foreach($cursor as $noteLink) $note->links[] = $noteLink;
     	return $note;
@@ -446,7 +447,8 @@ class Note implements InputFilterAwareInterface
     	// Isolation check
     	if ($note->update_time > $update_time) return 'Isolation';
     	 
-    	Note::getTable()->delete($this->id);
+    	$this->status = 'deleted';
+    	Note::getTable()->save($this);
     
     	return 'OK';
     }

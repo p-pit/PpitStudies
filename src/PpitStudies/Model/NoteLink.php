@@ -25,7 +25,8 @@ class NoteLink implements InputFilterAwareInterface
 
     // Joined properties
     public $n_fn;
-	public $name; // Deprecated
+    public $user_n_fn;
+    public $name; // Deprecated
     public $note_status;
     public $type;
     public $school_year;
@@ -68,6 +69,7 @@ class NoteLink implements InputFilterAwareInterface
         
         // Joined properties
         $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
+        $this->user_n_fn = (isset($data['user_n_fn'])) ? $data['user_n_fn'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null; // Deprecated
         $this->note_status = (isset($data['note_status'])) ? $data['note_status'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
@@ -110,8 +112,9 @@ class NoteLink implements InputFilterAwareInterface
     		->order(array($major.' '.$dir, 'date DESC', 'type ASC'))
     		->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('n_fn'), 'left');
-    		$where = new Where;
-		if ($type) $where->equalTo('type', $type);
+    	$where = new Where;
+    	$where->notEqualTo('student_note_link.status', 'deleted');
+    	if ($type) $where->equalTo('type', $type);
 
     	// Todo list vs search modes
     	if ($mode == 'todo') {
@@ -203,7 +206,8 @@ class NoteLink implements InputFilterAwareInterface
     	// Isolation check
     	if ($update_time && $noteLink->update_time > $update_time) return 'Isolation';
     	 
-    	NoteLink::getTable()->delete($this->id);
+    	$this->status = 'deleted';
+    	NoteLink::getTable()->save($this);
     
     	return 'OK';
     }
