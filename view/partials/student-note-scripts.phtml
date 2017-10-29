@@ -341,7 +341,7 @@ function getNoteUpdate(id, action) {
 $properties = array();
 $properties['place_id'] = array('type' => 'select', 'mandatory' => true);
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
-$properties['level'] = array('type' => 'select', 'mandatory' => true);
+$properties['level'] = array('type' => 'select', 'mandatory' => false);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
 $properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
