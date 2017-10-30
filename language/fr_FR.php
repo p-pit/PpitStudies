@@ -143,6 +143,7 @@
 		'Summary' => 'Synthèse',
 		'Sunday' => 'Dimanche',
 		'Target date' => 'Date cible',
+		'Teacher' => 'Professeur',
 		'Tennis' => 'Tennis',
 		'Text' => 'Texte',
 		'To remember:' => 'A noter :',

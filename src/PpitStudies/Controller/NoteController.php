@@ -7,6 +7,7 @@ use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
+use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
@@ -292,6 +293,21 @@ class NoteController extends AbstractActionController
     			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
     			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
     			$data['class'] = $request->getPost('class');
+    		    if ($request->getPost('teacher_n_fn')) {
+    				$select = Vcard::getTable()->getSelect();
+    				$where = new Where;
+    				$where->notEqualTo('status', 'deleted');
+    				$where->like('n_fn', '%'.$request->getPost('teacher_n_fn').'%');
+    				$where->like('roles', '%teacher%');
+			    	$select->where($where);
+    				$cursor = Vcard::getTable()->selectWith($select);
+    				$contact = null;
+    				foreach ($cursor as $contact);
+    				if ($contact) {
+    					$note->teacher_n_fn = $contact->n_fn;
+    					$data['teacher_id'] = $contact->id;
+    				}
+	    		}
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');

@@ -25,6 +25,7 @@ use PpitStudies\Model\StudentSportImport;
 use PpitStudies\ViewHelper\DocumentTemplate;
 use PpitStudies\ViewHelper\PdfReportTableViewHelper;
 use PpitStudies\ViewHelper\PdfReportViewHelper;
+use Zend\Db\Sql\Where;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -629,6 +630,18 @@ class StudentController extends AbstractActionController
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $context->getConfig('student/property/school_period/default');
     			$data['class'] = $request->getPost('class');
+    			if ($request->getPost('teacher_n_fn')) {
+    				$select = Vcard::getTable()->getSelect();
+    				$where = new Where;
+    				$where->notEqualTo('status', 'deleted');
+    				$where->like('n_fn', '%'.$request->getPost('teacher_n_fn').'%');
+    				$where->like('roles', '%teacher%');
+			    	$select->where($where);
+    				$cursor = Vcard::getTable()->selectWith($select);
+    				$contact = null;
+    				foreach ($cursor as $contact);
+    				if ($contact) $data['teacher_id'] = $contact->id;
+	    		}
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');

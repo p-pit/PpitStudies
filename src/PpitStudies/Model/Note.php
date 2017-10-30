@@ -5,6 +5,7 @@ use PpitCommitment\Model\Account;
 use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
+use PpitCore\Model\Vcard;
 use PpitStudies\Model\NoteLink;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
@@ -40,6 +41,9 @@ class Note implements InputFilterAwareInterface
     public $average_note;
     public $audit;
     public $update_time;
+    
+    // Joined properties
+    public $teacher_n_fn;
     
     // Transient properties
     public $links;
@@ -83,6 +87,9 @@ class Note implements InputFilterAwareInterface
         $this->higher_note = (isset($data['higher_note'])) ? $data['higher_note'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         $this->update_time = (isset($data['update_time'])) ? $data['update_time'] : null;
+ 
+    	// Joined properties
+        $this->teacher_n_fn = (isset($data['teacher_n_fn'])) ? $data['teacher_n_fn'] : null;
     }
     
     public function toArray()
@@ -120,6 +127,7 @@ class Note implements InputFilterAwareInterface
     {
     	$context = Context::getCurrent();
     	$select = Note::getTable()->getSelect()
+    		->join('core_vcard', 'core_vcard.id = student_note.teacher_id', array('teacher_n_fn' => 'n_fn'), 'left')
     		->order(array($major.' '.$dir, 'date DESC', 'subject'));
 		$where = new Where;
 		$where->notEqualTo('student_note.status', 'deleted');
@@ -270,6 +278,7 @@ class Note implements InputFilterAwareInterface
     public static function get($id, $column = 'id')
     {
     	$note = Note::getTable()->get($id, $column);
+    	if ($note->teacher_id) $note->teacher_n_fn = Vcard::get($note->teacher_id)->n_fn;
     	$note->links = array();
     	$select = NoteLink::getTable()->getSelect()
     				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
@@ -283,12 +292,14 @@ class Note implements InputFilterAwareInterface
     
     public static function instanciate($type = null, $class = null)
     {
+    	$context = Context::getCurrent();
 		$note = new Note;
     	$note->status = 'new';
 		$note->type = $type;
 		$note->class = $class;
 		if ($type == 'note' || $type == 'report') $note->category = 'evaluation';
 		elseif ($type == 'done-work' || $type == 'todo-work' || $type == 'event') $note->category = 'homework';
+		$note->teacher_n_fn = $context->getFormatedName();
 		$note->audit = array();
 		return $note;
     }
