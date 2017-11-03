@@ -215,7 +215,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 		<div class="form-group" id="input_value_<?php echo $noteLink->account_id ?>_group">
 			<label class="col-sm-5 control-label"><?php echo $noteLink->n_fn ?></label>
 			<div class="col-sm-7">
-				<input class="form-control" id="input_value_<?php echo $noteLink->account_id ?>" placeholder="<?php echo $this->translate(($note->type == 'report') ? 'Average (computed if not input)' : 'Note', 'ppit-studies', $context->getLocale()) ?>" value="<?php echo $context->formatFloat($noteLink->value, 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
+				<input class="form-control" id="input_value_<?php echo $noteLink->account_id ?>" placeholder="<?php echo $this->translate(($note->type == 'report') ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink->value !== null) echo 'value="'.$context->formatFloat($noteLink->value, 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="input_value_<?php echo $noteLink->account_id ?>_error"></p></div>
 		</div>

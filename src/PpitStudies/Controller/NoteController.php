@@ -319,11 +319,12 @@ class NoteController extends AbstractActionController
     			if ($note->type == 'report') {
     				$computedAverages = Note::computePeriodAverages(/*$data['school_year'], */$data['class'], /*$data['school_period'], */$data['subject']);
     			}
-    			$noteSum = 0; $lowerNote = 999; $higherNote = 0;
+    			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
     				$noteLink->audit = array();
     				$value = $request->getPost('value_'.$noteLink->account_id);
-    				if ($note->type == 'report' && $value == '') {
+    				if (!$value) $value = null;
+    				if ($note->type == 'report' && $value === null) {
     					if (array_key_exists($noteLink->account_id, $computedAverages)) {
     						$value = $computedAverages[$noteLink->account_id]['global']['note'];
     						$noteLink->audit = $computedAverages[$noteLink->account_id]['global']['notes'];
@@ -331,17 +332,18 @@ class NoteController extends AbstractActionController
     				}
     				$noteLink->value = $value;
     				$noteLink->assessment = $request->getPost('assessment_'.$noteLink->account_id);
-    				$noteSum += $value;
-    				if ($value != '') {
-	    				if ($value < $lowerNote) $lowerNote = $value;
+    				if ($value !== null) {
+    					$noteSum += $value;
+    					$noteCount++;
+    					if ($value < $lowerNote) $lowerNote = $value;
 	    				if ($value > $higherNote) $higherNote = $value;
-    					$noteLinks[] = $noteLink;
     				}
+    				if ($value !== null || $noteLink->assessment) $noteLinks[] = $noteLink;
     				else $noteLink->delete(null);
     			}
 				$note->links = $noteLinks;
-    			if (count($note->links) > 0) {
-    				$data['average_note'] = round($noteSum / count($note->links), 2);
+    			if ($noteCount > 0) {
+    				$data['average_note'] = round($noteSum / $noteCount, 2);
     				$data['lower_note'] = $lowerNote;
     				$data['higher_note'] = $higherNote;
     			}

@@ -99,6 +99,7 @@ class StudentController extends AbstractActionController
     			'applicationName' => $context->getConfig('ppitApplications')[$type]['labels'][$context->getLocale()],
     			'menu' => $menu,
     			'currentEntry' => $currentEntry,
+    			'templates' => array(),
     			'entry' => 'account',
     			'type' => $type,
     			'status' => 'active',
@@ -665,37 +666,47 @@ class StudentController extends AbstractActionController
     			$nbAccount = $request->getPost('nb-account');
     			for ($i = 0; $i < $nbAccount; $i++) {
     				$account = $accounts[$request->getPost('account_'.$i)];
-    				$noteLink = NoteLink::instanciate($account->id, null);
     				$value = $request->getPost('value_'.$account->id);
-    				if ($value == '') {
-    					if (array_key_exists($account->id, $computedAverages)) {
-    						$value = $computedAverages[$account->id]['global']['note'];
-    						$noteLink->audit = $computedAverages[$account->id]['global']['notes'];
-    					}
-    				}
-    				$noteLink->value = $value;
-    				$noteLink->distribution = array();
-	    			if ($type == 'report') {
-    					if (array_key_exists($account->id, $computedAverages)) {
-		    				foreach ($computedAverages[$account->id] as $categoryId => $category) {
-		    					$noteLink->distribution[$categoryId] = $category['note'];
-		    				}
-    					}
+    				if (!$value) $value = null;
+	    			$assessment = $request->getPost('assessment_'.$account->id);
+    				if ($type == 'report' && $value === null) {
+						if (array_key_exists($account->id, $computedAverages)) {
+							$value = $computedAverages[$account->id]['global']['note'];
+							$audit = $computedAverages[$account->id]['global']['notes'];
+						}
 	    			}
-    				$noteLink->assessment = $request->getPost('assessment_'.$account->id);
-    				if (array_key_exists($noteLink->account_id, $note->links)) $note->links[$noteLink->account_id]->delete(null); 
-    				$note->links[$noteLink->account_id] = $noteLink;
+    				if ($value !== null || $assessment) {
+	    				$noteLink = NoteLink::instanciate($account->id, null);
+	    				$noteLink->value = $value;
+	    				$noteLink->assessment = $assessment;
+	    				$noteLink->distribution = array();
+		    			if ($type == 'report') {
+	    					if (array_key_exists($account->id, $computedAverages)) {
+			    				foreach ($computedAverages[$account->id] as $categoryId => $category) {
+			    					$noteLink->distribution[$categoryId] = $category['note'];
+			    				}
+			    				$noteLink->audit = $audit;
+	    					}
+		    			}
+	    				if (array_key_exists($noteLink->account_id, $note->links)) $note->links[$noteLink->account_id]->delete(null); 
+	    				$note->links[$noteLink->account_id] = $noteLink;
+    				}
     			}
-    			$noteSum = 0; $lowerNote = 999; $higherNote = 0;
+    			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
-    				$noteSum += $noteLink->value;
-    				if ($noteLink->value < $lowerNote) $lowerNote = $noteLink->value;
-    				if ($noteLink->value > $higherNote) $higherNote = $noteLink->value;
+    			    if ($noteLink->value !== null) {
+    					$noteSum += $noteLink->value;
+    					$noteCount++;
+	    				if ($value < $lowerNote) $lowerNote = $noteLink->value;
+	    				if ($value > $higherNote) $higherNote = $noteLink->value;
+    			    }
     			}
-    			if (count($note->links) > 0) {
-    				$data['average_note'] = round($noteSum / count($note->links), 2);
+    			if ($noteCount > 0) {
+    				$data['average_note'] = round($noteSum / $noteCount, 2);
 	    			$data['lower_note'] = $lowerNote;
 	    			$data['higher_note'] = $higherNote;
+    			};
+    			if (count($note->links)) {
 	    			$rc = $note->loadData($data);
 	    			if ($rc == 'Integrity') throw new \Exception('View error');
 	    			if ($rc == 'Duplicate') $error = $rc;

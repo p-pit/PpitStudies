@@ -242,8 +242,10 @@ class Note implements InputFilterAwareInterface
     	$periodNotes = array();
     	$periodCategoryNotes = array();
     	foreach ($cursor as $noteLink) {
-	    	$periodNotes[$noteLink->account_id][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
-	    	$periodCategoryNotes[$noteLink->account_id][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+    		if ($noteLink->value !== null) {
+		    	$periodNotes[$noteLink->account_id][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+		    	$periodCategoryNotes[$noteLink->account_id][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+    		}
     	}
         $categoryAverages = array();
     	foreach ($periodNotes as $account_id => $notes) {

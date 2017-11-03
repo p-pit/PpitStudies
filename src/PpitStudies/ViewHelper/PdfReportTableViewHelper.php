@@ -52,7 +52,7 @@ class PdfReportTableViewHelper
 		   				(!$evaluation->subject) ? '' : $context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()],
 						$evaluation->n_fn,
 		   				$context->formatFloat($evaluation->weight, 1),
-		   				$context->formatFloat($evaluation->value, 2),
+		   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 2),
 						$context->formatFloat($evaluation->lower_note, 2),
 		   				$context->formatFloat($evaluation->average_note, 2),
 						$context->formatFloat($evaluation->higher_note, 2),
