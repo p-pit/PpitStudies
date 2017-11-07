@@ -2028,6 +2028,9 @@ table.note-report td {
 
 			'contact_history' => array('mandatory' => false),
 	),
+
+	'commitmentAccount/contactForm/p-pit-studies' => array('definition' => 'customization/esi/commitmentAccount/contactForm/p-pit-studies'),
+
 	'commitmentAccount/register/p-pit-studies' => array(
 			'title' => array(
 					'en_US' => 'Subscribe:',
@@ -2334,7 +2337,7 @@ table.note-report td {
 			),
 	),
 	'student/property/school_year/default' => '2017-2018',
-		
+
 	'student/property/school_period' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -2347,8 +2350,9 @@ table.note-report td {
 					'fr_FR' => 'Période',
 			),
 	),
+	
 	'student/property/school_period/default' => 'Q1',
-
+		
 	'student/property/evaluationCategory' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -2366,6 +2370,22 @@ table.note-report td {
 			'labels' => array(
 					'en_US' => 'Evaluation category',
 					'fr_FR' => 'Catégorie d\'évaluation',
+			),
+	),
+
+	'student/property/reportMention' => array(
+			'type' => 'select',
+			'modalities' => array(
+					20 => array( 'en_US' => 'Congratulations', 'fr_FR' => 'Félicitations'),
+					16 => array( 'en_US' => 'Compliments', 'fr_FR' => 'Compliments'),
+					12 => array( 'en_US' => 'Encouragements', 'fr_FR' => 'Encouragements'),
+					8 => array( 'en_US' => 'Warning on work', 'fr_FR' => 'Avert. travail'),
+					4 => array( 'en_US' => 'Warning on behaviour', 'fr_FR' => 'Avert. conduite'),
+					1 => array( 'en_US' => 'Warning behaviour & work', 'fr_FR' => 'Avert. conduite & travail'),
+			),
+			'labels' => array(
+					'en_US' => 'Mention',
+					'fr_FR' => 'Mention',
 			),
 	),
 		
@@ -2585,7 +2605,7 @@ table.note-report td {
 					array(
 							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('name'),
+							'params' => array('n_fn'),
 					),
 					array(
 							'left' => array('en_US' => 'Class', 'fr_FR' => 'Classe'),
@@ -2658,7 +2678,62 @@ table.note-report td {
 </tr>',
 					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
 			),
-				
+
+			'evaluationHeader' => array(
+					'html' => '
+<table class="table note-report">
+	<tr>
+		<th rowspan="2" style="width: 15%%">%s</th>
+		<th rowspan="2" style="width: 10%%">%s</th>
+		<th rowspan="2" style="width: 10%%">%s</th>
+		<th colspan="3" style="width: 24%%">%s</th>
+		<th rowspan="2" style="width: 10%%">%s</th>
+		<th rowspan="2" style="width: 31%%">%s</th>
+	</tr>
+    <tr>
+    	<th style="width: 8%%">%s</th>
+	   	<th style="width: 8%%">%s</th>
+		<th style="width: 8%%">%s</th>
+	</tr>
+%s
+</table>',
+					'params' => array(
+							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
+							array('en_US' => 'Weight', 'fr_FR' => 'Coef.'),
+							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
+							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
+							array('en_US' => 'Date', 'fr_FR' => 'Date'),
+							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
+							array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
+							array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
+							array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
+							'rows' => null,
+					),
+			),
+
+			'evaluationSubject' => array(
+					'html' => '
+<tr %s>
+	<td colspan="8" style="font-weight: bold">%s</td>
+</tr>',
+					'params' => array('color', 'subject'),
+			),
+
+			'evaluationRow' => array(
+					'html' => '
+<tr %s>
+	<td style="width: 15%%">%s<br><span style="font-weight: normal">%s</span></td>
+	<td style="width: 10%%" align="right">%s</td>
+	<td style="width: 10%%; font-size: 1.2em; font-weight: bold" align="right">%s</td>
+	<td style="width: 8%%" align="right">%s</td>
+	<td style="width: 8%%" align="right">%s</td>
+	<td style="width: 8%%" align="right">%s</td>
+	<td style="width: 10%%; font-size: 0.8em" align="right">%s</td>
+	<td style="width: 31%%">%s</td>
+</tr>',
+					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
+			),
+
 			'pdfDetailStyle' => '
 <style>
 table.note-report {
@@ -2693,8 +2768,9 @@ table.note-report tr.period {
 					'html' => '
 <table class="table note-report">
     <tr>
-    	<td style="width: 100%%">%s</td>
-    </tr>
+    	<td style="width: 70%%">%s</td>
+    	<td style="width: 30%%">%s</td>
+	</tr>
 </table>',
 					),
 	),

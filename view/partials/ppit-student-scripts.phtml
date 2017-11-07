@@ -844,6 +844,7 @@ $properties = array();
 $properties['place_id'] = array('type' => 'select', 'mandatory' => true);
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
 $properties['level'] = array('type' => 'select', 'mandatory' => false);
+$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
 $properties['teacher_n_fn'] = array('type' => 'text', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
@@ -899,6 +900,10 @@ function connectAddEvaluationForm(type, classe)
 				}
 				
 				formData.append('value_' + account_id, value);
+
+				mention = $('#select_value_' + account_id).val();
+				formData.append('mention_' + account_id, mention);
+
 				formData.append('assessment_' + account_id, $('#assessment_' + account_id).val());
 			}
 			formData.append('nb-account', accountNumber);
@@ -971,6 +976,20 @@ function getAddEvaluation(type, classe) {
 			        }
 			    });
 			});
+
+			if (type == 'report') {
+				$('.select_value').hide();
+				$('#subject').change(function () { 
+					if ($('#subject').val() == 'global') {
+						$('.select_value').show();
+						$('.input_value').hide();
+					}
+					else {
+						$('.select_value').hide();
+						$('.input_value').show();
+					}
+				});
+			}
 
 			connectAddEvaluationForm(type, classe);
 			$('#subject').focus();

@@ -584,12 +584,13 @@ class StudentController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     	$places = Place::getList(array());
-
+    	
     	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
     	$class = $this->params()->fromRoute('class', null);
 
     	$note = Note::instanciate($type, $class);
+    	$note->school_period = $context->getConfig('student/property/school_period/default');
     	if (count($places) == 1) $note->place_id = current($places)->id;
 
     	// Instanciate the csrf form
@@ -629,7 +630,7 @@ class StudentController extends AbstractActionController
 	    		if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
 	    		if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
-    			$data['school_period'] = $context->getConfig('student/property/school_period/default');
+    			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
     			if ($request->getPost('teacher_n_fn')) {
     				$select = Vcard::getTable()->getSelect();
@@ -657,16 +658,16 @@ class StudentController extends AbstractActionController
     				$criterionValue = $request->getPost('criterion_'.$i);
     				$data['criteria'][$criterionId] = $criterionValue;
     			}
-    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['subject'], $data['level'], $data['date']);
+    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
     			if ($previousNote) $note = $previousNote;
     			else $note->links = array();
     			if ($type == 'report') {
-    				$computedAverages = Note::computePeriodAverages(/*$data['school_year'], */$data['class'], /*$data['school_period'], */$data['subject']);
+    				$computedAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
     			}
     			$nbAccount = $request->getPost('nb-account');
     			for ($i = 0; $i < $nbAccount; $i++) {
     				$account = $accounts[$request->getPost('account_'.$i)];
-    				$value = $request->getPost('value_'.$account->id);
+    				$value = ($data['subject'] == 'global') ? $request->getPost('mention_'.$account->id) : $request->getPost('value_'.$account->id);
     				if (!$value) $value = null;
 	    			$assessment = $request->getPost('assessment_'.$account->id);
     				if ($type == 'report' && $value === null) {
@@ -1180,7 +1181,7 @@ class StudentController extends AbstractActionController
 			$school_year = $this->params()->fromRoute('school_year');
 			$school_period = $this->params()->fromRoute('school_period');
 		}
-		
+
 		$account = Account::get($account_id);
 		$account->properties = $account->getProperties();
 		if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
@@ -1191,7 +1192,7 @@ class StudentController extends AbstractActionController
 		
 		$place = Place::get($account->place_id);
 
-		$absLates = Absence::getList(null, array('account_id' => $account_id, 'min_begin_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'school_period' => $context->getConfig('student/property/school_period/default')), 'date', 'DESC', 'search');
 		$absences = array();
 		$latenesss = array();
 		$cumulativeAbsence = 0;
@@ -1211,18 +1212,15 @@ class StudentController extends AbstractActionController
 			}
 		}
 		if ($category == 'report') {
-			$notes = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
+			$averages = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 		}
-		else {
-			$notes = NoteLink::GetList($category, array('account_id' => $account_id), 'subject', 'ASC', 'search');
-		}
-		$period = array();
-		foreach($notes as $note) $period[] = $note;
+		else $averages = null;
+		$notes = NoteLink::GetList('note', array('account_id' => $account_id), 'subject', 'ASC', 'search');
 
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($category, $pdf, $place, $account, $addressee, $period, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness);
+    	PdfReportViewHelper::render($category, $pdf, $place, $context->getConfig('student/property/school_year/default'), $context->getConfig('student/property/school_period/default'), $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

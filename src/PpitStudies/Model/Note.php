@@ -178,7 +178,7 @@ class Note implements InputFilterAwareInterface
 		return $notes;
     }
 
-    public static function retrieve($place_id, $category, $type, $class, $subject, $level, $date)
+    public static function retrieve($place_id, $category, $type, $class, $school_year, $school_period, $subject, $level, $date)
     {
     	$select = Note::getTable()->getSelect();
     	$where = new Where;
@@ -187,6 +187,8 @@ class Note implements InputFilterAwareInterface
     	$where->equalTo('category', $category);
     	$where->equalTo('type', $type);
     	$where->equalTo('class', $class);
+    	$where->equalTo('school_year', $school_year);
+    	$where->equalTo('school_period', $school_period);
     	$where->equalTo('subject', $subject);
     	$where->equalTo('level', $level);
     	$where->equalTo('date', $date);
@@ -220,7 +222,7 @@ class Note implements InputFilterAwareInterface
     	return $notes;
     }
 
-    public static function computePeriodAverages(/*$school_year, */$class/*, $period*/, $subject)
+    public static function computePeriodAverages($place_id, $school_year, $class, $period, $subject)
     {
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
@@ -230,13 +232,11 @@ class Note implements InputFilterAwareInterface
     	$where->notEqualTo('student_note.status', 'deleted');
     	$where->notEqualTo('student_note_link.status', 'deleted');
     	$where->equalTo('type', 'note');
-//    	$where->equalTo('school_year', $school_year);
+    	$where->equalTo('place_id', $place_id);
+    	$where->equalTo('school_year', $school_year);
     	$where->equalTo('class', $class);
-//    	$where->equalTo('school_period', $period);
+    	$where->equalTo('school_period', $period);
     	$where->equalTo('subject', $subject);
-//		$where->greaterThanOrEqualTo('date', $context->getConfig('currentPeriodStart'));
-		$where->equalTo('school_year', $context->getConfig('student/property/school_year/default'));
-		$where->equalTo('school_period', $context->getConfig('student/property/school_period/default'));
 		$select->where($where);
     	$cursor = NoteLink::getTable()->selectWith($select);
     	$periodNotes = array();

@@ -292,6 +292,8 @@ class NoteController extends AbstractActionController
     			$data['place_id'] = $request->getPost('place_id');
     			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
     			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
+    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+    			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
     		    if ($request->getPost('teacher_n_fn')) {
     				$select = Vcard::getTable()->getSelect();
@@ -317,12 +319,12 @@ class NoteController extends AbstractActionController
     			$data['comment'] = $request->getPost('comment');
     			$noteLinks = array();
     			if ($note->type == 'report') {
-    				$computedAverages = Note::computePeriodAverages(/*$data['school_year'], */$data['class'], /*$data['school_period'], */$data['subject']);
+    				$computedAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
     			}
     			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
     				$noteLink->audit = array();
-    				$value = $request->getPost('value_'.$noteLink->account_id);
+    				$value = ($data['subject'] == 'global') ? $request->getPost('mention_'.$noteLink->account_id) : $request->getPost('value_'.$noteLink->account_id);
     				if (!$value) $value = null;
     				if ($note->type == 'report' && $value === null) {
     					if (array_key_exists($noteLink->account_id, $computedAverages)) {

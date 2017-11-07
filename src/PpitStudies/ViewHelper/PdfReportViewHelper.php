@@ -15,7 +15,7 @@ require_once('vendor/TCPDF-master/tcpdf.php');
 
 class PdfReportViewHelper
 {	
-    public static function render($category, $pdf, $place, $account, $addressee, $period, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness)
+    public static function render($category, $pdf, $place, $school_year, $school_period, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -110,10 +110,11 @@ class PdfReportViewHelper
 
     	// Title
     	if ($category == 'report') {
-	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
+//	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
+	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	else {
-    		$text = '<div style="text-align: center"><strong>Evaluations à mi-période</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
+    		$text = '<div style="text-align: center"><strong>Evaluations à mi-période</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	$pdf->writeHTML($text, true, 0, true, 0);
     	$pdf->Ln(10);
@@ -152,52 +153,75 @@ class PdfReportViewHelper
 	    $pdf->Ln();
 	    $pdf->SetDrawColor(0, 0, 0);
 
-	    $text = PdfReportTableViewHelper::render($period, $category);
+	    if ($category == 'report') {
+	    	$text = PdfReportTableViewHelper::render($averages, $category);
+	    	$pdf->writeHTML($text, true, 0, true, 0);
+	
+			$pdf->SetDrawColor(255, 255, 255);
+			
+			// Absences
+			$pdf->MultiCell(16, 5, '<strong>'.'Absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+			$pdf->MultiCell(10, 5, $absenceCount, 1, 'L', 1, 0, '' ,'', true);
+	
+			$pdf->MultiCell(24, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+			$pdf->MultiCell(30, 5, (((int)($cumulativeAbsence/60)) ? ((int)($cumulativeAbsence/60)).'h' : '').(($cumulativeAbsence%60) ? sprintf('%02u', $cumulativeAbsence%60).'mn' : ''), 1, 'L', 1, 0, '' ,'', true);
+			
+			// Lateness
+			$pdf->MultiCell(16, 5, '<strong>'.'Retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+			$pdf->MultiCell(10, 5, $latenessCount, 1, 'L', 1, 0, '' ,'', true);
+			
+			$pdf->MultiCell(24, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+			$pdf->MultiCell(30, 5, (((int)($cumulativeLateness/60)) ? ((int)($cumulativeLateness/60)).'h' : '').(($cumulativeLateness%60) ? sprintf('%02u', $cumulativeLateness%60).'mn' : ''), 1, 'L', 0, 1, '' ,'', true);
 
-		$pdf->writeHTML($text, true, 0, true, 0);
-
-		$pdf->SetDrawColor(255, 255, 255);
-		
-		// Absences
-		$pdf->MultiCell(15, 5, '<strong>'.'Absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-		$pdf->MultiCell(10, 5, $absenceCount, 1, 'L', 1, 0, '' ,'', true);
-
-		$pdf->MultiCell(25, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-		$pdf->MultiCell(30, 5, (((int)($cumulativeAbsence/60)) ? ((int)($cumulativeAbsence/60)).'h' : '').(($cumulativeAbsence%60) ? sprintf('%02u', $cumulativeAbsence%60).'mn' : ''), 1, 'L', 1, 0, '' ,'', true);
-		
-		// Lateness
-		$pdf->MultiCell(15, 5, '<strong>'.'Retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-		$pdf->MultiCell(10, 5, $latenessCount, 1, 'L', 1, 0, '' ,'', true);
-		
-		$pdf->MultiCell(25, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-		$pdf->MultiCell(30, 5, (((int)($cumulativeLateness/60)) ? ((int)($cumulativeLateness/60)).'h' : '').(($cumulativeLateness%60) ? sprintf('%02u', $cumulativeLateness%60).'mn' : ''), 1, 'L', 0, 1, '' ,'', true);
-
-		if ($category == 'report') {
 			$globalEvaluation = '';
-			foreach ($period as $evaluation) if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
+			foreach ($averages as $evaluation) if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
 			
 			$text = $context->getConfig('student/report')['pdfDetailStyle'];
-			$text .= sprintf(
-						$context->getConfig('student/report')['signatureFrame']['html'],
-						'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
-						(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
-						'<br><br>'.
-						'<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$context->getFormatedName()
-					);
-			$pdf->writeHTML($text, true, 0, true, 0);
-		}
-		$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
+			$mention = '';
+			if ($globalEvaluation) {
+				$first = true;
+				foreach ($context->getConfig('student/property/reportMention')['modalities'] as $modalityId => $modality) {
+					if (!$first) $mention .= '<br>';
+					if ($globalEvaluation->value == $modalityId) $mention .= '<strong>';
+					else $mention .= '<span style="font-style: italic; color: lightgray">';
+					$mention .= $context->getConfig('student/property/reportMention')['modalities'][$modalityId][$context->getLocale()];
+					if ($globalEvaluation->value == $modalityId) $mention .= '</strong>';
+					else $mention .= '</span>';
+					$first = false;
+				}
+				$text .= sprintf(
+							$context->getConfig('student/report')['signatureFrame']['html'],
+							'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
+							(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
+							'<br><br><br><br>'.
+							'<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$context->getFormatedName(),
+							$mention
+						);
+				$pdf->writeHTML($text, true, 0, true, 0);
+			}
+			$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'<em>P-Pit Studies</em> (www.p-pit.fr)'
+						'<em>P-Pit Studies</em> (www.p-pit.fr)<br pagebreak="true"/>'
 						, true, 0, true, 0);
+		
+	    	$pdf->SetFont('', '', 12);
+			$pdf->Ln(5);
+			$text = '<div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].' Relevé de notes</strong></div>';
+			$pdf->writeHTML($text, true, 0, true, 0);
+			$pdf->Ln(10);
+	    }
+		
+    	$pdf->SetFont('', '', 8);
+		$text = PdfEvaluationTableViewHelper::render($notes, $category);
+		$pdf->writeHTML($text, true, 0, true, 0);
 		
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

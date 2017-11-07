@@ -341,6 +341,7 @@ function getNoteUpdate(id, action) {
 $properties = array();
 $properties['place_id'] = array('type' => 'select', 'mandatory' => true);
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
 $properties['teacher_n_fn'] = array('type' => 'text', 'mandatory' => true);
 $properties['level'] = array('type' => 'select', 'mandatory' => false);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
@@ -394,6 +395,10 @@ function connectEvaluationUpdateForm(id, action)
 					}
 					
 					formData.append('value_' + account_id, value);
+
+					mention = $('#select_value_' + account_id).val();
+					formData.append('mention_' + account_id, mention);
+
 					formData.append('assessment_' + account_id, $('#assessment_' + account_id).val());
 				}
 				formData.append('nb-account', accountNumber);
@@ -459,6 +464,25 @@ function getEvaluationUpdate(id, action) {
 			connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
 			connectAuditPanel(id);
 			$('#subject').focus();
+
+			if ($('#note_type').val() == 'report') {
+				if ($('#subject').val() == 'global') {
+					$('.input_value').hide();
+				}
+				else {
+					$('.select_value').hide();
+				}
+				$('#subject').change(function () { 
+					if ($('#subject').val() == 'global') {
+						$('.select_value').show();
+						$('.input_value').hide();
+					}
+					else {
+						$('.select_value').hide();
+						$('.input_value').show();
+					}
+				});
+			}
 
 			connectEvaluationUpdateForm(id, action);
 
