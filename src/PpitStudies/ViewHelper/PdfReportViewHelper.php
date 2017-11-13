@@ -15,7 +15,7 @@ require_once('vendor/TCPDF-master/tcpdf.php');
 
 class PdfReportViewHelper
 {	
-    public static function render($category, $pdf, $place, $school_year, $school_period, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness)
+    public static function render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -111,10 +111,14 @@ class PdfReportViewHelper
     	// Title
     	if ($category == 'report') {
 //	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
-	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire';
+	    	if ($date) $text .= ' au '.$context->decodeDate($date);
+	    	$text .= '</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	else {
-    		$text = '<div style="text-align: center"><strong>Evaluations à mi-période</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    		$text = '<div style="text-align: center"><strong>Evaluations à mi-période';
+	    	if ($date) $text .= ' au '.$context->decodeDate($date);
+    		$text .= '</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	$pdf->writeHTML($text, true, 0, true, 0);
     	$pdf->Ln(10);
@@ -198,7 +202,7 @@ class PdfReportViewHelper
 							'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
 							(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
 							'<br><br><br><br>'.
-							'<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$context->getFormatedName(),
+							(($globalEvaluation) ? '<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$globalEvaluation->n_fn : ''),
 							$mention
 						);
 				$pdf->writeHTML($text, true, 0, true, 0);

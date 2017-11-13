@@ -1573,8 +1573,7 @@ return array(
 					'opening_date' => array(
 							'type' => 'date',
 							'labels' => array(
-									'en_US' => 'Subscription date',
-									'fr_FR' => 'Date d\'inscription',
+									'fr_FR' => 'Date 1er contact',
 							),
 					),
 					'closing_date' => array(
@@ -1774,6 +1773,7 @@ return array(
 			'main' => array(
 					'status' => 'select',
 					'place_id' => 'select',
+					'opening_date' => 'range',
 					'callback_date' => 'range',
 					'property_8' => 'range',
 					'property_13' => 'select',
@@ -1827,6 +1827,7 @@ return array(
 	'commitmentAccount/update/p-pit-studies' => array(
 			'place_id' => array('mandatory' => true),
 			'status' => array('mandatory' => true),
+			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
 			'property_12' => array('mandatory' => false),
@@ -1982,6 +1983,7 @@ table.note-report td {
 	),
 	'commitmentAccount/export/p-pit-studies' => array(
 			'status' => array('mandatory' => true),
+			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
 			'n_first' => array('mandatory' => true),
@@ -2642,7 +2644,7 @@ table.note-report td {
 		<th rowspan="2" style="width: 10%%">%s</th>
 		<th rowspan="2" style="width: 10%%">%s</th>
 		<th colspan="3" style="width: 24%%">%s</th>
-	   	<th rowspan="2" colspan="2" style="width: 41%%">%s</th>
+	   	<th rowspan="2" style="width: 41%%">%s</th>
 	</tr>
     <tr>
     	<th style="width: 8%%">%s</th>
@@ -2673,8 +2675,7 @@ table.note-report td {
 	<td style="width: 8%%" align="right">%s</td>
 	<td style="width: 8%%" align="right">%s</td>
 	<td style="width: 8%%" align="right">%s</td>
-	<td style="width: 16%%; font-size: 0.8em" align="right">%s</td>
-	<td style="width: 25%%">%s</td>
+	<td style="width: 41%%">%s</td>
 </tr>',
 					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
 			),
