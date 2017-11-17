@@ -997,6 +997,29 @@ return array(
 									'fr_FR' => 'Professeurs',
 							),
 					),
+					'admin' => array(
+							'route' => 'instance/admin',
+							'params' => array('app' => 'p-pit-studies'),
+							'glyphicon' => 'glyphicon-cog',
+							'urlParams' => array(),
+							'label' => array(
+									'en_US' => 'Admin',
+									'fr_FR' => 'Admin',
+							),
+					),
+	),
+
+	'admin/p-pit-studies' => array(
+			'student/property/contact_meeting_context',
+			'student/property/discipline',
+			'student/property/level',
+			'student/property/class',
+			'student/property/boarding_school',
+			'student/property/school_year',
+			'student/property/school_period',
+			'student/property/evaluation_category',
+			'student/property/report_mention',
+			'student/property/school_subject',
 	),
 
 	'currentApplication' => 'p-pit-studies',
@@ -1122,7 +1145,7 @@ return array(
 							'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
 							'properties' => array(
 									'account_id' => 'update',
-									//								'subscription_id' => 'update',
+	//								'subscription_id' => 'update',
 									'caption' => 'update',
 									'description' => 'update',
 									'quantity' => 'update',
@@ -1573,6 +1596,7 @@ return array(
 					'opening_date' => array(
 							'type' => 'date',
 							'labels' => array(
+									'en_US' => '1st contact date',
 									'fr_FR' => 'Date 1er contact',
 							),
 					),
@@ -3458,6 +3482,7 @@ table.note-report tr.period {
 					'date' => '2017-09-01',
 					'parts' => array(
 							array(
+									'type' => null,
 									'text' => array(
 											'en_US' => 'To be translated',
 											'fr_FR' => '<h2>Rentrée 2017-2018</h2><hr><p>En forme après les vacances ? L\'année sera bien remplie, promis !</p><p>D\'ailleurs, voici ton planning.',
