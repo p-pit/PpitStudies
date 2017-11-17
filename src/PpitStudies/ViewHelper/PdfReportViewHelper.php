@@ -119,7 +119,7 @@ class PdfReportViewHelper
     	else {
     		$text = '<div style="text-align: center"><strong>Evaluations à mi-période';
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-    		$text .= '</strong></div><div style="text-align: center"><strong>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	$pdf->writeHTML($text, true, 0, true, 0);
     	$pdf->Ln(10);
