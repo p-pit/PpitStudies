@@ -91,9 +91,9 @@ class PdfReportViewHelper
     	// Report header
     	$pdf->MultiCell(100, 5, '', 0, 'L', 0, 0, '', '', true);
     	$pdf->SetTextColor(0);
-    	$pdf->SetFont('', '', 12);
+    	$pdf->SetFont('', '', 10);
     	
-    	$header = "\n"."\n";
+    	$header = "\n";
     	if ($addressee->n_fn) $header .= $addressee->n_fn."\n";
     	if ($addressee->adr_street) $header .= $addressee->adr_street."\n";
     	if ($addressee->adr_extended) $header .= $addressee->adr_extended."\n";
@@ -106,19 +106,20 @@ class PdfReportViewHelper
     	if ($addressee->adr_state) $header .= $addressee->adr_state."\n";
     	if ($addressee->adr_country) $header .= $addressee->adr_country."\n";
     	$pdf->MultiCell(80, 5, $header, 0, 'L', 0, 1, '', '', true);
-    	$pdf->Ln(10);
-
+    	$pdf->Ln(8);
+    	 
     	// Title
+    	$pdf->SetFont('', '', 12);
     	if ($category == 'report') {
 //	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
 	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire';
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-	    	$text .= '</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+	    	$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	else {
     		$text = '<div style="text-align: center"><strong>Evaluations à mi-période';
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-    		$text .= '</strong></div><div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    		$text .= '</strong></div><div style="text-align: center"><strong>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	$pdf->writeHTML($text, true, 0, true, 0);
     	$pdf->Ln(10);
@@ -216,22 +217,24 @@ class PdfReportViewHelper
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'<em>P-Pit Studies</em> (www.p-pit.fr)<br pagebreak="true"/>'
+						'<em>P-Pit Studies</em> (www.p-pit.fr)'
 						, true, 0, true, 0);
-		
+/*		
 	    	$pdf->SetFont('', '', 12);
 			$pdf->Ln(5);
 			$text = '<div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].' Relevé de notes</strong></div>';
 			$pdf->writeHTML($text, true, 0, true, 0);
-			$pdf->Ln(10);
+			$pdf->Ln(10);*/
 	    }
-		
-    	$pdf->SetFont('', '', 8);
-		$text = PdfEvaluationTableViewHelper::render($notes, $category);
-		$pdf->writeHTML($text, true, 0, true, 0);
-		
-    	// Close and output PDF document
-    	// This method has several options, check the source code documentation for more information.
-    	return $pdf;
+	    else {
+			
+	    	$pdf->SetFont('', '', 8);
+			$text = PdfEvaluationTableViewHelper::render($notes, $category);
+			$pdf->writeHTML($text, true, 0, true, 0);
+			
+	    	// Close and output PDF document
+	    	// This method has several options, check the source code documentation for more information.
+	    	return $pdf;
+	    }
     }
 }
