@@ -15,7 +15,7 @@ require_once('vendor/TCPDF-master/tcpdf.php');
 
 class PdfReportViewHelper
 {	
-    public static function render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness)
+    public static function render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $classSize = null)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -135,11 +135,12 @@ class PdfReportViewHelper
     		foreach($line['params'] as $propertyId) {
     			if ($propertyId == 'date') $arguments[] = $context->decodeDate(date('Y-m-d'));
     			elseif ($propertyId == 'name') $arguments[] = $addressee->n_fn;
+				elseif ($propertyId == 'class_size') $arguments[] = $classSize;
     			else {
 					$property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId];
 					if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
 					if ($propertyId == 'name') $arguments[] = $account->name;
-	    			elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
+					elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
 	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $property['modalities'][$account->properties[$propertyId]][$context->getLocale()];
 	    			else $arguments[] = $account->properties[$propertyId];
@@ -187,15 +188,17 @@ class PdfReportViewHelper
 			$text = $context->getConfig('student/report')['pdfDetailStyle'];
 			$mention = '';
 			if ($globalEvaluation) {
-				$first = true;
-				foreach ($context->getConfig('student/property/reportMention')['modalities'] as $modalityId => $modality) {
-					if (!$first) $mention .= '<br>';
-					if ($globalEvaluation->value == $modalityId) $mention .= '<strong>';
-					else $mention .= '<span style="font-style: italic; color: lightgray">';
-					$mention .= $context->getConfig('student/property/reportMention')['modalities'][$modalityId][$context->getLocale()];
-					if ($globalEvaluation->value == $modalityId) $mention .= '</strong>';
-					else $mention .= '</span>';
-					$first = false;
+				if ($globalEvaluation->value) {
+					$first = true;
+					foreach ($context->getConfig('student/property/reportMention')['modalities'] as $modalityId => $modality) {
+						if (!$first) $mention .= '<br>';
+						if ($globalEvaluation->value == $modalityId) $mention .= '<strong>';
+						else $mention .= '<span style="font-style: italic; color: lightgray">';
+						$mention .= $context->getConfig('student/property/reportMention')['modalities'][$modalityId][$context->getLocale()];
+						if ($globalEvaluation->value == $modalityId) $mention .= '</strong>';
+						else $mention .= '</span>';
+						$first = false;
+					}
 				}
 				$text .= sprintf(
 							$context->getConfig('student/report')['signatureFrame']['html'],

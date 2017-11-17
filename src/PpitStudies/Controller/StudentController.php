@@ -1212,9 +1212,13 @@ class StudentController extends AbstractActionController
 			}
 		}
 		$date = null;
+		$classSize = null;
 		if ($category == 'report') {
 			$averages = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
-			foreach ($averages as $average) if ($average->subject == 'global') $date = $average->date;
+			foreach ($averages as $average) if ($average->subject == 'global') {
+				$date = $average->date;
+				$classSize = count(NoteLink::GetList($category, array('note_id' => $average->note_id), 'date', 'DESC', 'search'));
+			}
 		}
 		else $averages = null;
 		$notes = NoteLink::GetList('note', array('account_id' => $account_id), 'subject', 'ASC', 'search');
@@ -1223,7 +1227,7 @@ class StudentController extends AbstractActionController
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($category, $pdf, $place, $context->getConfig('student/property/school_year/default'), $context->getConfig('student/property/school_period/default'), $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness);
+    	PdfReportViewHelper::render($category, $pdf, $place, $context->getConfig('student/property/school_year/default'), $context->getConfig('student/property/school_period/default'), $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $classSize);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

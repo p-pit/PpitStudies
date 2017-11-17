@@ -1017,8 +1017,8 @@ return array(
 			'student/property/boarding_school',
 			'student/property/school_year',
 			'student/property/school_period',
-			'student/property/evaluation_category',
-			'student/property/report_mention',
+			'student/property/evaluationCategory',
+			'student/property/reportMention',
 			'student/property/school_subject',
 	),
 
@@ -2290,44 +2290,44 @@ table.note-report td {
 	'student/property/class' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'cm1/cm2' => array('fr_FR' => 'CM1/CM2', 'level' => 'CM1/CM2'),
-					'cm2' => array('fr_FR' => 'CM2', 'level' => 'CM2'),
-					'6e' => array('fr_FR' => '6e', 'level' => '6e'),
-					'5e' => array('fr_FR' => '5e', 'level' => '5e'),
-					'4e' => array('fr_FR' => '4e', 'level' => '4e'),
-					'4e1' => array('fr_FR' => '4e1', 'level' => '4e1'),
-					'4e2' => array('fr_FR' => '4e2', 'level' => '4e2'),
-					'3e' => array('fr_FR' => '3e', 'level' => '3e'),
-					'3e1' => array('fr_FR' => '3e1', 'level' => '3e1'),
-					'3e2' => array('fr_FR' => '3e2', 'level' => '3e2'),
-					'2nde' => array('fr_FR' => '2nde', 'level' => '2nde'),
-					'2nde1' => array('fr_FR' => '2nde1', 'level' => '2nde1'),
-					'2nde2' => array('fr_FR' => '2nde2', 'level' => '2nde2'),
-					'2nde3' => array('fr_FR' => '2nde3', 'level' => '2nde3'),
-					'2nde4' => array('fr_FR' => '2nde4', 'level' => '2nde4'),
-					'2ndea' => array('fr_FR' => '2nde A', 'level' => '2nde A'),
-					'2ndeb' => array('fr_FR' => '2nde B', 'level' => '2nde B'),
-					'1ereS' => array('fr_FR' => '1ère S', 'level' => '1ère', 'specialty' => 'S'),
-					'1ereES' => array('fr_FR' => '1ère ES', 'level' => '1ère', 'specialty' => 'ES'),
-					'1ereSTMG' => array('fr_FR' => '1ère STMG', 'level' => '1ère', 'specialty' => 'STMG'),
-					'1ereSTMG1' => array('fr_FR' => '1ère STMG 1', 'level' => '1ère', 'specialty' => 'STMG'),
-					'1ereSTMG2' => array('fr_FR' => '1ère STMG 2', 'level' => '1ère', 'specialty' => 'STMG'),
-					'termS' => array('fr_FR' => 'Term. S', 'level' => 'Term.', 'specialty' => 'S'),
-					'termES' => array('fr_FR' => 'Term. ES', 'level' => 'Term.', 'specialty' => 'ES'),
-					'termSTMG' => array('fr_FR' => 'Term. STMG', 'level' => 'Term.', 'specialty' => 'STMG'),
+					'cm1/cm2' => array('fr_FR' => 'CM1/CM2'),
+					'cm2' => array('fr_FR' => 'CM2'),
+					'6e' => array('fr_FR' => '6e'),
+					'5e' => array('fr_FR' => '5e'),
+					'4e' => array('fr_FR' => '4e'),
+					'4e1' => array('fr_FR' => '4e1'),
+					'4e2' => array('fr_FR' => '4e2'),
+					'3e' => array('fr_FR' => '3e'),
+					'3e1' => array('fr_FR' => '3e1'),
+					'3e2' => array('fr_FR' => '3e2'),
+					'2nde' => array('fr_FR' => '2nde'),
+					'2nde1' => array('fr_FR' => '2nde1'),
+					'2nde2' => array('fr_FR' => '2nde2'),
+					'2nde3' => array('fr_FR' => '2nde3'),
+					'2nde4' => array('fr_FR' => '2nde4'),
+					'2ndea' => array('fr_FR' => '2nde A'),
+					'2ndeb' => array('fr_FR' => '2nde B'),
+					'1ereS' => array('fr_FR' => '1ère S'),
+					'1ereES' => array('fr_FR' => '1ère ES'),
+					'1ereSTMG' => array('fr_FR' => '1ère STMG'),
+					'1ereSTMG1' => array('fr_FR' => '1ère STMG 1'),
+					'1ereSTMG2' => array('fr_FR' => '1ère STMG 2'),
+					'termS' => array('fr_FR' => 'Term. S'),
+					'termES' => array('fr_FR' => 'Term. ES'),
+					'termSTMG' => array('fr_FR' => 'Term. STMG'),
 // Demande A Herrera
-					'2ndeProCommerce' => array('fr_FR' => '2nde Pro Commerce', 'level' => '2nde'),
-					'1ereProCommerce' => array('fr_FR' => '1ère Pro Commerce', 'level' => '1ere'),
-					'termProCommerce' => array('fr_FR' => 'Term. Pro Commerce', 'level' => 'Term.'),
+					'2ndeProCommerce' => array('fr_FR' => '2nde Pro Commerce'),
+					'1ereProCommerce' => array('fr_FR' => '1ère Pro Commerce'),
+					'termProCommerce' => array('fr_FR' => 'Term. Pro Commerce'),
 //
 					'fle' => array('fr_FR' => 'FLE', 'level' => 'FLE'),
-					'cap-vente' => array('fr_FR' => 'CAP Vente', 'level' => 'CAP'),
-					'bts1' => array('fr_FR' => 'BTS1', 'level' => 'BTS'),
-					'bts2' => array('fr_FR' => 'BTS2', 'level' => 'BTS'),
-					'bts-muc1' => array('fr_FR' => 'BTS MUC 1', 'level' => 'BTS'),
-					'bts-muc2' => array('fr_FR' => 'BTS MUC 2', 'level' => 'BTS'),
-					'bts-com2' => array('fr_FR' => 'BTS COM 2', 'level' => 'BTS'),
-					'l1-staps' => array('fr_FR' => 'L1 STAPS', 'level' => 'L1 STAPS'),
+					'cap-vente' => array('fr_FR' => 'CAP Vente'),
+					'bts1' => array('fr_FR' => 'BTS1'),
+					'bts2' => array('fr_FR' => 'BTS2'),
+					'bts-muc1' => array('fr_FR' => 'BTS MUC 1'),
+					'bts-muc2' => array('fr_FR' => 'BTS MUC 2'),
+					'bts-com2' => array('fr_FR' => 'BTS COM 2'),
+					'l1-staps' => array('fr_FR' => 'L1 STAPS'),
 			),
 			'labels' => array(
 					'en_US' => 'Class',
@@ -2639,14 +2639,9 @@ table.note-report td {
 							'params' => array('property_7'),
 					),
 					array(
-							'left' => array('en_US' => 'Languages', 'fr_FR' => 'Langues'),
+							'left' => array('en_US' => 'Birth date', 'fr_FR' => 'Date de naissance'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('property_4'),
-					),
-					array(
-							'left' => array('en_US' => 'Options', 'fr_FR' => 'Options'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('property_5'),
+							'params' => array('birth_date'),
 					),
 					array(
 							'left' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
@@ -2654,9 +2649,14 @@ table.note-report td {
 							'params' => array('property_1'),
 					),
 					array(
-							'left' => array('en_US' => 'Référent sportif', 'fr_FR' => 'Sport referent'),
+							'left' => array('en_US' => 'Status', 'fr_FR' => 'Statut'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('property_9'),
+							'params' => array('property_6'),
+					),
+					array(
+							'left' => array('en_US' => 'Class size', 'fr_FR' => 'Effectif'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('class_size'),
 					),
 			),
 
@@ -2668,7 +2668,7 @@ table.note-report td {
 		<th rowspan="2" style="width: 10%%">%s</th>
 		<th rowspan="2" style="width: 10%%">%s</th>
 		<th colspan="3" style="width: 24%%">%s</th>
-	   	<th rowspan="2" style="width: 41%%">%s</th>
+	   	<th rowspan="2" colspan="2" style="width: 41%%">%s</th>
 	</tr>
     <tr>
     	<th style="width: 8%%">%s</th>
@@ -2699,7 +2699,8 @@ table.note-report td {
 	<td style="width: 8%%" align="right">%s</td>
 	<td style="width: 8%%" align="right">%s</td>
 	<td style="width: 8%%" align="right">%s</td>
-	<td style="width: 41%%">%s</td>
+	<td style="width: 16%%; font-size: 0.8em" align="right">%s</td>
+	<td style="width: 25%%">%s</td>
 </tr>',
 					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
 			),
