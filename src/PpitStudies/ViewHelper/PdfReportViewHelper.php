@@ -117,7 +117,7 @@ class PdfReportViewHelper
 	    	$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	else {
-    		$text = '<div style="text-align: center"><strong>Evaluations à mi-période';
+    		$text = '<div style="text-align: center"><strong>Relevé de notes à mi-période';
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
     		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
@@ -201,16 +201,16 @@ class PdfReportViewHelper
 						$first = false;
 					}
 				}
-				$text .= sprintf(
-							$context->getConfig('student/report')['signatureFrame']['html'],
-							'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
-							(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
-							'<br><br><br><br>'.
-							(($globalEvaluation) ? '<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$globalEvaluation->n_fn : ''),
-							$mention
-						);
-				$pdf->writeHTML($text, true, 0, true, 0);
 			}
+			$text .= sprintf(
+						$context->getConfig('student/report')['signatureFrame']['html'],
+						'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
+						(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
+						'<br><br><br><br>'.
+						(($globalEvaluation) ? '<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$globalEvaluation->n_fn : ''),
+						$mention
+					);
+			$pdf->writeHTML($text, true, 0, true, 0);
 			$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
@@ -227,11 +227,23 @@ class PdfReportViewHelper
 			$pdf->Ln(10);*/
 	    }
 	    else {
-			
+
 	    	$pdf->SetFont('', '', 8);
 			$text = PdfEvaluationTableViewHelper::render($notes, $category);
+			$text .= sprintf(
+					'<div><br></div>'.$context->getConfig('student/report')['evaluationSignatureFrame']['html'],
+					'<br><br><br><br><br><br><br><br>',
+					''
+			);
 			$pdf->writeHTML($text, true, 0, true, 0);
-			
+			$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
+					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
+					'<em>P-Pit Studies</em> (www.p-pit.fr)'
+					, true, 0, true, 0);
 	    	// Close and output PDF document
 	    	// This method has several options, check the source code documentation for more information.
 	    	return $pdf;

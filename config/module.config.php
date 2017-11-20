@@ -2237,18 +2237,18 @@ table.note-report td {
 	'student/property/discipline' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'Football' => array('en_US' => 'Football', 'fr_FR' => 'Football'),
+					'football' => array('en_US' => 'Football', 'fr_FR' => 'Football'),
 					'football-women' => array('en_US' => 'Women\'s Football', 'fr_FR' => 'Football féminin'),
 					'rugby' => array('en_US' => 'Rugby', 'fr_FR' => 'Rugby'),
-					'Basketball' => array('en_US' => 'Basketball', 'fr_FR' => 'Basketball'),
+					'basketball' => array('en_US' => 'Basketball', 'fr_FR' => 'Basketball'),
 					'handball' => array('en_US' => 'Handball', 'fr_FR' => 'Handball'),
-					'Equitation' => array('en_US' => 'Horse-riding', 'fr_FR' => 'Equitation'),
-					'Golf' => array('en_US' => 'Golf', 'fr_FR' => 'Golf'),
-					'Tennis' => array('en_US' => 'Tennis', 'fr_FR' => 'Tennis'),
+					'equitation' => array('en_US' => 'Horse-riding', 'fr_FR' => 'Equitation'),
+					'golf' => array('en_US' => 'Golf', 'fr_FR' => 'Golf'),
+					'tennis' => array('en_US' => 'Tennis', 'fr_FR' => 'Tennis'),
 					'table-tennis' => array('en_US' => 'Table tennis', 'fr_FR' => 'Tennis de table'),
-					'Danse' => array('en_US' => 'Danse', 'fr_FR' => 'Danse'),
+					'danse' => array('en_US' => 'Danse', 'fr_FR' => 'Danse'),
 					'figure-skating' => array('en_US' => 'Figure skating', 'fr_FR' => 'Patinage artistique'),
-					'Multisport' => array('en_US' => 'Multisport', 'fr_FR' => 'Multisport'),
+					'multisport' => array('en_US' => 'Multisport', 'fr_FR' => 'Multisport'),
 					'car-racing' => array('en_US' => 'Car racing', 'fr_FR' => 'Sport automobile'),
 			),
 			'labels' => array(
@@ -2682,7 +2682,7 @@ table.note-report td {
 							array('en_US' => 'Weight', 'fr_FR' => 'Coef.'),
 							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
 							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
-							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
+							array('en_US' => 'Assessment', 'fr_FR' => 'Appréciation'),
 							array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
 							array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
 							array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
@@ -2705,21 +2705,31 @@ table.note-report td {
 					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
 			),
 
+			'signatureFrame' => array(
+					'html' => '
+<table class="table note-report">
+    <tr>
+    	<td style="width: 70%%">%s</td>
+    	<td style="width: 30%%">%s</td>
+	</tr>
+</table>',
+			),
+
 			'evaluationHeader' => array(
 					'html' => '
 <table class="table note-report">
 	<tr>
-		<th rowspan="2" style="width: 15%%">%s</th>
-		<th rowspan="2" style="width: 10%%">%s</th>
-		<th rowspan="2" style="width: 10%%">%s</th>
-		<th colspan="3" style="width: 24%%">%s</th>
-		<th rowspan="2" style="width: 10%%">%s</th>
-		<th rowspan="2" style="width: 31%%">%s</th>
+		<th rowspan="2" style="width: 22%%">%s</th>
+		<th rowspan="2" style="width: 16%%">%s</th>
+		<th rowspan="2" style="width: 16%%">%s</th>
+		<th colspan="3" style="width: 30%%">%s</th>
+		<th rowspan="2" style="width: 16%%">%s</th>
+<!--		<th rowspan="2" style="width: 31%%">s</th> -->
 	</tr>
     <tr>
-    	<th style="width: 8%%">%s</th>
-	   	<th style="width: 8%%">%s</th>
-		<th style="width: 8%%">%s</th>
+    	<th style="width: 10%%">%s</th>
+	   	<th style="width: 10%%">%s</th>
+		<th style="width: 10%%">%s</th>
 	</tr>
 %s
 </table>',
@@ -2729,7 +2739,7 @@ table.note-report td {
 							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
 							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
 							array('en_US' => 'Date', 'fr_FR' => 'Date'),
-							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
+//							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
 							array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
 							array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
 							array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
@@ -2748,16 +2758,16 @@ table.note-report td {
 			'evaluationRow' => array(
 					'html' => '
 <tr %s>
-	<td style="width: 15%%">%s<br><span style="font-weight: normal">%s</span></td>
+	<td style="width: 22%%">%s<br><span style="font-weight: normal">%s</span></td>
+	<td style="width: 16%%" align="right">%s</td>
+	<td style="width: 16%%; font-size: 1.2em; font-weight: bold" align="right">%s</td>
 	<td style="width: 10%%" align="right">%s</td>
-	<td style="width: 10%%; font-size: 1.2em; font-weight: bold" align="right">%s</td>
-	<td style="width: 8%%" align="right">%s</td>
-	<td style="width: 8%%" align="right">%s</td>
-	<td style="width: 8%%" align="right">%s</td>
-	<td style="width: 10%%; font-size: 0.8em" align="right">%s</td>
-	<td style="width: 31%%">%s</td>
+	<td style="width: 10%%" align="right">%s</td>
+	<td style="width: 10%%" align="right">%s</td>
+	<td style="width: 16%%; font-size: 0.8em" align="right">%s</td>
+<!--	<td style="width: 31%%">s</td> -->
 </tr>',
-					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
+					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution'/*, 'assessment'*/),
 			),
 
 			'pdfDetailStyle' => '
@@ -2790,12 +2800,11 @@ table.note-report tr.period {
 </style>
 ',
 
-			'signatureFrame' => array(
+			'evaluationSignatureFrame' => array(
 					'html' => '
 <table class="table note-report">
     <tr>
-    	<td style="width: 70%%">%s</td>
-    	<td style="width: 30%%">%s</td>
+    	<td style="width: 100%%">%s</td>
 	</tr>
 </table>',
 					),
