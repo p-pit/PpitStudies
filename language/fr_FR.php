@@ -92,6 +92,7 @@
 		'Muscle checkup' => 'Bilan musculaire',
 		'Nationality' => 'Nationalité',
 		'News flash' => 'Flash infos',
+		'Non yet visible' => 'Non encore visible',
 		'Not eval.' => 'Non noté',
 		'Note' => 'Note',
 		'Notification date' => 'Date de notification',

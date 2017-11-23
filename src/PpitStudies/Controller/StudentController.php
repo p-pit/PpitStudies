@@ -308,7 +308,9 @@ class StudentController extends AbstractActionController
     				$account = Account::get($request->getPost('account_'.$i));
     				$accounts[] = $account;
     			}
-
+				$place = Place::get($account->place_id);
+				$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+				
     			$nbCriteria = $request->getPost('nb-criteria');
     			$criteria = array();
     			for ($i = 0; $i < $nbCriteria; $i++) {
@@ -321,7 +323,7 @@ class StudentController extends AbstractActionController
     			$data = array();
     			$data['category'] = $request->getPost('category');
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
-    			$data['school_period'] = $context->getConfig('student/property/school_period/default');
+    			$data['school_period'] = $school_period;
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
     			$data['begin_date'] = $request->getPost('begin_date');
@@ -497,7 +499,9 @@ class StudentController extends AbstractActionController
     		$account = Account::get($request->getPost('account_'.$i));
     		$accounts[$account->id] = $account;
     	}
-
+    	$place = Place::get($account->place_id);
+		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+    	
     	$nbCriteria = $request->getPost('nb-criteria');
     	$criteria = array();
     	for ($i = 0; $i < $nbCriteria; $i++) {
@@ -518,7 +522,7 @@ class StudentController extends AbstractActionController
     			$data['place_id'] = $request->getPost('place_id');
     			$data['category'] = 'homework';
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
-    			$data['school_period'] = $context->getConfig('student/property/school_period/default');
+    			$data['school_period'] = $school_period;
     			$data['class'] = $request->getPost('class');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
@@ -590,7 +594,6 @@ class StudentController extends AbstractActionController
     	$class = $this->params()->fromRoute('class', null);
 
     	$note = Note::instanciate($type, $class);
-    	$note->school_period = $context->getConfig('student/property/school_period/default');
     	if (count($places) == 1) $note->place_id = current($places)->id;
 
     	// Instanciate the csrf form
@@ -607,7 +610,10 @@ class StudentController extends AbstractActionController
     		$account = Account::get($request->getPost('account_'.$i));
     		$accounts[$account->id] = $account;
     	}
-    	 
+    	$place = Place::get($account->place_id);
+		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+    	$note->school_period = $school_period;
+
     	$nbCriteria = $request->getPost('nb-criteria');
     	$criteria = array();
     	for ($i = 0; $i < $nbCriteria; $i++) {
@@ -1125,8 +1131,10 @@ class StudentController extends AbstractActionController
 	
 		$contact_id = (int) $this->params()->fromRoute('id');
 		$account = Account::get($contact_id, 'contact_1_id');
-	
-		$notes = NoteLink::GetList('note', array('account_id' => $account->id), 'date', 'DESC', 'search');
+		$school_year = $context->getConfig('student/property/school_year/default');
+		$place = Place::get($account->place_id);
+		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+		$notes = NoteLink::GetList('note', array('account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 	
 		// Return the link list
 		$view = new ViewModel(array(
@@ -1155,17 +1163,13 @@ class StudentController extends AbstractActionController
 			$periods[$key][] = $note;
 		}
 		krsort($periods);
-		$renderedPeriods = array();
-		foreach($periods as $periodId => $period) {
-			$renderedPeriods[$periodId] = PdfReportTableViewHelper::render($period);
-		}
 
 		// Return the link list
 		$view = new ViewModel(array(
 				'context' => $context,
 				'config' => $context->getconfig(),
 				'account' => $account,
-				'renderedPeriods' => $renderedPeriods,
+				'periods' => $periods,
 		));
 		$view->setTerminal(true);
 		return $view;
@@ -1177,11 +1181,6 @@ class StudentController extends AbstractActionController
 		$context = Context::getCurrent();
 		$category = $this->params()->fromRoute('category');
 		$account_id = (int) $this->params()->fromRoute('account_id');
-		if ($category == 'report') { // To be changed to mi and max dates
-			$school_year = $this->params()->fromRoute('school_year');
-			$school_period = $this->params()->fromRoute('school_period');
-		}
-
 		$account = Account::get($account_id);
 		$account->properties = $account->getProperties();
 		if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
@@ -1190,9 +1189,13 @@ class StudentController extends AbstractActionController
 		elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
 		else $addressee = $account->contact_1;
 		
+		$school_year = $this->params()->fromRoute('school_year');
+		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
 		$place = Place::get($account->place_id);
-
-		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'school_period' => $context->getConfig('student/property/school_period/default')), 'date', 'DESC', 'search');
+		$school_period = $this->params()->fromRoute('school_period');
+		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+		
+		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 		$absences = array();
 		$latenesss = array();
 		$cumulativeAbsence = 0;
@@ -1221,13 +1224,13 @@ class StudentController extends AbstractActionController
 			}
 		}
 		else $averages = null;
-		$notes = NoteLink::GetList('note', array('account_id' => $account_id), 'subject', 'ASC', 'search');
+		$notes = NoteLink::GetList('note', array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'subject', 'ASC', 'search');
 		if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
 		
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($category, $pdf, $place, $context->getConfig('student/property/school_year/default'), $context->getConfig('student/property/school_period/default'), $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $classSize);
+    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $classSize);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

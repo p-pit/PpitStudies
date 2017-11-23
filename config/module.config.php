@@ -1020,12 +1020,28 @@ return array(
 			'student/property/evaluationCategory',
 			'student/property/reportMention',
 			'student/property/school_subject',
+			'absence/property/motive',
 	),
 
 	'currentApplication' => 'p-pit-studies',
 	'currentPeriodStart' => '2017-09-01',
 	'currentPeriodEnd' => '2017-10-20',
-		
+
+	'place_config/default' => array(
+			'school_periods' => array(
+					'type' => 'periods',
+					'end_dates' => array(
+							'Q1' => '2017-12-10',
+							'Q2' => '2018-02-28',
+							'Q3' => '2018-06-15',
+					),
+			),
+	),
+
+	'calendar/p-pit-studies' => array(
+			'school_periods' => array('definition' => 'place_config'),
+	),
+
 	'ppitProduct/p-pit-studies' => array(
 			'properties' => array(),
 			'criteria' => array(),
@@ -2015,7 +2031,6 @@ table.note-report td {
 			'property_8' => array('mandatory' => false),
 			'property_1' => array('mandatory' => true),
 			'place_id' => array('mandatory' => true),
-			'opening_date' => array('mandatory' => true),
 			'email' => array('mandatory' => false),
 			'address' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
@@ -2377,7 +2392,7 @@ table.note-report td {
 			),
 	),
 	
-	'student/property/school_period/default' => 'Q1',
+//	'student/property/school_period/default' => 'Q1',
 		
 	'student/property/evaluationCategory' => array(
 			'type' => 'select',
@@ -2682,7 +2697,7 @@ table.note-report td {
 							array('en_US' => 'Weight', 'fr_FR' => 'Coef.'),
 							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
 							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
-							array('en_US' => 'Assessment', 'fr_FR' => 'Appréciation'),
+							array('en_US' => 'Assessments', 'fr_FR' => 'Appréciations'),
 							array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
 							array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
 							array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
@@ -3070,6 +3085,7 @@ table.note-report tr.period {
 					'medical' => array('en_US' => 'Medical', 'fr_FR' => 'Médical'),
 					'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
 					'competition' => array('en_US' => 'Tournament/Competition', 'fr_FR' => 'Tournoi/Compétition'),
+					'spectacle' => array('en_US' => 'Spectacle', 'fr_FR' => 'Spectacle'),
 					'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
 					'transport' => array('en_US' => 'Transport', 'fr_FR' => 'Transport'),
 					'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),

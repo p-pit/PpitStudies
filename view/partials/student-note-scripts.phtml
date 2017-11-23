@@ -93,8 +93,12 @@ function filterNoteList() {
 		criterion = ascCriterion.split('-')[0];
 		dir = 'ASC';
 	}
-	else {
+	elseif (descCriterion) {
 		criterion = descCriterion.split('-')[0];
+		dir = 'DESC';
+	}
+	else {
+		criterion = 'date';
 		dir = 'DESC';
 	}
 	getNoteList(getParams(), criterion, dir);
