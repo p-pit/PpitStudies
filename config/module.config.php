@@ -1338,8 +1338,8 @@ return array(
 					'name' => array(
 							'type' => 'input',
 							'labels' => array(
-									'en_US' => 'Name',
-									'fr_FR' => 'Nom',
+									'en_US' => 'Denomination',
+									'fr_FR' => 'Dénomination',
 							),
 					),
 					'contact_1_id' => array(
@@ -1867,6 +1867,7 @@ return array(
 	'commitmentAccount/update/p-pit-studies' => array(
 			'place_id' => array('mandatory' => true),
 			'status' => array('mandatory' => true),
+			'name' => array('mandatory' => false),
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),

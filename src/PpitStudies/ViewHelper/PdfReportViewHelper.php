@@ -117,7 +117,7 @@ class PdfReportViewHelper
 	    	$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	else {
-    		$text = '<div style="text-align: center"><strong>Relevé de notes à mi-période';
+    		$text = '<div style="text-align: center"><strong>Relevé de notes au '.$context->decodeDate(date('Y-m-d'));
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
     		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}

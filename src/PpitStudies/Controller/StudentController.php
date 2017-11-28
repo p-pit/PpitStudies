@@ -156,14 +156,15 @@ class StudentController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     	$params = $this->getFilters($this->params());
-    	$major = ($this->params()->fromQuery('major'));
-    	$dir = ($this->params()->fromQuery('dir'));
-    
+    	$major = $this->params()->fromQuery('major');
+    	$dir = $this->params()->fromQuery('dir');
+    	$limit = $this->params()->fromQuery('limit');
+    	 
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     	$params['status'] = 'active';
 
     	// Retrieve the list
-    	$accounts = Account::getList('p-pit-studies', 'account', $params, $major, $dir, $mode);
+    	$accounts = Account::getList('p-pit-studies', 'account', $params, $major, $dir, $mode, $limit);
 
     	// Return the link list
     	$view = new ViewModel(array(
@@ -1193,7 +1194,10 @@ class StudentController extends AbstractActionController
 		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
 		$place = Place::get($account->place_id);
 		$school_period = $this->params()->fromRoute('school_period');
-		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+		if (!$school_period) {
+			$school_period = $this->params()->fromRoute('school_period');
+			$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+		}
 		
 		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 		$absences = array();

@@ -127,7 +127,7 @@ function connectStudentSearchInputs() {
 function getStudentList(params, major, dir) {		
 
 	// Execute the ajax request
-	route = '<?php echo $this->url('student/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	route = '<?php echo $this->url('student/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
@@ -154,6 +154,12 @@ function getStudentList(params, major, dir) {
 				$(this).click(function () {
 					sortStudentList($(this).attr('id').split('-')[0]);
 				});
+			});
+
+			// Connect the more anchor
+			$('#account-more-anchor').click(function () {
+				$('#limit').val('');
+				filterStudentList();
 			});
 
 			// Able the group action button
