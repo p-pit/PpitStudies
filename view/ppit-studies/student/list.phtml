@@ -145,7 +145,7 @@
 			</button>
 		</td>
 
-<?php if (count($accounts) == '20') : ?>
+<?php if ($mode == 'todo' && count($accounts) == '50') : ?>
 		<td style="text-align: center">
 			<button type="button" class="btn btn-default index-btn" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="account-more-anchor">
 				<span class="glyphicon glyphicon-option-horizontal" id="more-glyphicon"></span>

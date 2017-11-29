@@ -1723,6 +1723,22 @@ return array(
 							'type' => 'repository',
 							'definition' => 'student/property/contact_meeting_context',
 					),
+					'property_14' => array(
+							'type' => 'select',
+							'modalities' => array(
+									'6e' => array('fr_FR' => '6e'),
+									'5e' => array('fr_FR' => '5e'),
+									'4e' => array('fr_FR' => '4e'),
+									'3e' => array('fr_FR' => '3e'),
+									'2nde' => array('fr_FR' => '2nde'),
+									'1ère' => array('fr_FR' => '1ère'),
+									'Term.' => array('fr_FR' => 'Term.'),
+							),
+							'labels' => array(
+									'en_US' => 'School level at registration',
+									'fr_FR' => 'Niveau scolaire à l\'inscription',
+							),
+					),
 					'json_property_1' => array(
 							'type' => 'structured',
 							'labels' => array(
@@ -1889,6 +1905,7 @@ return array(
 			'title_2' => null,
 			'property_1' => array('mandatory' => false),
 			'property_11' => array('mandatory' => false),
+			'property_14' => array('mandatory' => false),
 			'property_10' => array('mandatory' => false),
 //			'opening_date' => array('mandatory' => false),
 			'property_7' => array('mandatory' => false),
@@ -1960,6 +1977,7 @@ return array(
 			'property_8' => array('mandatory' => true),
 			'property_9' => array('mandatory' => true),
 			'property_10' => array('mandatory' => true),
+			'property_14' => array('mandatory' => true),
 			'comment_1' => array('mandatory' => true),
 			'comment_2' => array('mandatory' => true),
 			'comment_3' => array('mandatory' => true),
@@ -2285,8 +2303,8 @@ table.note-report td {
 					'Term.' => array('fr_FR' => 'Term.'),
 			),
 			'labels' => array(
-					'en_US' => 'School level',
-					'fr_FR' => 'Niveau scolaire',
+					'en_US' => 'Target school level',
+					'fr_FR' => 'Niveau scolaire à intégrer',
 			),
 	),
 

@@ -43,6 +43,7 @@ function getParams() {
 	$searchTitle = (isset ($context->getConfig('student/search')['searchTitle']) ? $context->getConfig('student/search')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
+	if (!todo) $('#limit').val('');
 
 	return params;
 }
