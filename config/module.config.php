@@ -2503,24 +2503,14 @@ table.note-report td {
 					'spe-bac-pro' => array('en_US' => 'Bac pro specialty', 'fr_FR' => 'Spécialité Bac Pro'),
 
 					'study-period' => array('en_US' => 'Study period', 'fr_FR' => 'Etude surveillée'),
+
+					'sport' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
 			),
 			'labels' => array(
 					'en_US' => 'Subject',
 					'fr_FR' => 'Matière'
 			),
 	),
-/*
-	'student/property/discipline_subject' => array(
-			'type' => 'select',
-			'modalities' => array(
-					'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
-					'footing' => array('en_US' => 'Footing', 'fr_FR' => 'Footing'),
-			),
-			'labels' => array(
-					'en_US' => 'Appointment',
-					'fr_FR' => 'Rendez-vous'
-			),
-	),*/
 
 	'student/property/prestation' => array(
 			'type' => 'select',
