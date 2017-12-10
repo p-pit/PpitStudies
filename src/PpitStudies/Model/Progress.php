@@ -1,7 +1,7 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitCommitment\Model\Account;
+use PpitCore\Model\Account;
 use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
@@ -91,7 +91,7 @@ class Progress implements InputFilterAwareInterface
     public static function getList($type, $params, $major, $dir, $mode = 'todo')
     {
     	$select = Progress::getTable()->getSelect()
-    		->join('commitment_account', 'student_progress.account_id = commitment_account.id', array('name', 'photo' => 'contact_1_id', 'sport' => 'property_1'), 'left')
+    		->join('core_account', 'student_progress.account_id = core_account.id', array('name', 'photo' => 'contact_1_id', 'sport' => 'property_1'), 'left')
     		->order(array($major.' '.$dir, 'school_year DESC', 'period DESC', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_progress.status', 'deleted');

@@ -1,7 +1,7 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitCommitment\Model\Account;
+use PpitCore\Model\Account;
 use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
@@ -110,8 +110,8 @@ class Absence implements InputFilterAwareInterface
     {
     	$context = Context::getCurrent();
     	$select = Absence::getTable()->getSelect()
-    		->join('commitment_account', 'student_absence.account_id = commitment_account.id', array('sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
-    		->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
+    		->join('core_account', 'student_absence.account_id = core_account.id', array('sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
+    		->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
     		->order(array($major.' '.$dir, 'begin_date', 'subject', 'name'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');

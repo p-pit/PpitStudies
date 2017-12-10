@@ -2,12 +2,12 @@
 
 namespace PpitStudies\Controller;
 
-use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Event;
 use PpitCommitment\Model\Notification;
 use PpitCommitment\ViewHelper\SsmlAccountViewHelper;
 use PpitCore\Form\CsrfForm;
+use PpitCore\Model\Account;
 use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Credit;
@@ -113,7 +113,7 @@ class StudentController extends AbstractActionController
     	// Retrieve the query parameters
     	$filters = array();
 
-    	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) {
+    	foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) $filters[$propertyId] = $property;
@@ -122,17 +122,6 @@ class StudentController extends AbstractActionController
     		$max_property = ($params()->fromQuery('max_'.$propertyId, null));
     		if ($max_property) $filters['max_'.$propertyId] = $max_property;
     	}
-
-    	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) {
-    	
-    		$property = ($params()->fromQuery($propertyId, null));
-    		if ($property) $filters[$propertyId] = $property;
-    		$min_property = ($params()->fromQuery('min_'.$propertyId, null));
-    		if ($min_property) $filters['min_'.$propertyId] = $min_property;
-    		$max_property = ($params()->fromQuery('max_'.$propertyId, null));
-    		if ($max_property) $filters['max_'.$propertyId] = $max_property;
-    	}
-    	 
     	return $filters;
     }
 
@@ -649,7 +638,10 @@ class StudentController extends AbstractActionController
     				$cursor = Vcard::getTable()->selectWith($select);
     				$contact = null;
     				foreach ($cursor as $contact);
-    				if ($contact) $data['teacher_id'] = $contact->id;
+    				if ($contact) {
+    					$data['teacher_id'] = $contact->id;
+    					$note->teacher_n_fn = $contact->n_fn;
+    				}
 	    		}
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
@@ -705,8 +697,8 @@ class StudentController extends AbstractActionController
     			    if ($noteLink->value !== null) {
     					$noteSum += $noteLink->value;
     					$noteCount++;
-	    				if ($value < $lowerNote) $lowerNote = $noteLink->value;
-	    				if ($value > $higherNote) $higherNote = $noteLink->value;
+	    				if ($noteLink->value < $lowerNote) $lowerNote = $noteLink->value;
+	    				if ($noteLink->value > $higherNote) $higherNote = $noteLink->value;
     			    }
     			}
     			if ($noteCount > 0) {

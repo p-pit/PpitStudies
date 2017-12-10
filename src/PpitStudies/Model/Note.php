@@ -1,7 +1,6 @@
 <?php
 namespace PpitStudies\Model;
 
-use PpitCommitment\Model\Account;
 use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
@@ -197,8 +196,8 @@ class Note implements InputFilterAwareInterface
     	foreach ($cursor as $note) {
 	    	$note->links = array();
 	    	$select = NoteLink::getTable()->getSelect()
-	    				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
-	    				->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
+	    				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
+	    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
 	    				->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
 			$cursor = NoteLink::getTable()->selectWith($select);
 			foreach($cursor as $noteLink) $note->links[$noteLink->account_id] = $noteLink;
@@ -283,9 +282,9 @@ class Note implements InputFilterAwareInterface
     	if ($note->teacher_id) $note->teacher_n_fn = Vcard::get($note->teacher_id)->n_fn;
     	$note->links = array();
     	$select = NoteLink::getTable()->getSelect()
-    				->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array(), 'left')
-    				->join('core_vcard', 'core_vcard.id = commitment_account.contact_1_id', array('n_fn'), 'left')
-//    				->join('core_community', 'core_community.id = commitment_account.customer_community_id', array('name'), 'left')
+    				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
+    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
+//    				->join('core_community', 'core_community.id = core_account.customer_community_id', array('name'), 'left')
     				->where(array('note_id' => $id, 'student_note_link.status != ?' => 'deleted'));
 		$cursor = NoteLink::getTable()->selectWith($select);
 		foreach($cursor as $noteLink) $note->links[] = $noteLink;

@@ -2,7 +2,6 @@
 namespace PpitStudies\ViewHelper;
 
 use Zend\View\Model\ViewModel;
-use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Term;
 use PpitCore\Model\Context;
@@ -45,7 +44,7 @@ class PdfEvaluationTableViewHelper
 	   				$context->getConfig('student/report')['evaluationRow']['html'], 
 	    			'',
 	   				'',
-					$context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()],
+					(array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()] : '',
 	   				$context->formatFloat($evaluation->weight, 1),
 	   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 2),
 					$context->formatFloat($evaluation->lower_note, 2),

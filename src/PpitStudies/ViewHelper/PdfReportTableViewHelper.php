@@ -2,7 +2,6 @@
 namespace PpitStudies\ViewHelper;
 
 use Zend\View\Model\ViewModel;
-use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Term;
 use PpitCore\Model\Context;

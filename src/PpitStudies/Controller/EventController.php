@@ -2,9 +2,9 @@
 
 namespace PpitStudies\Controller;
 
-use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Event;
 use PpitCore\Form\CsrfForm;
+use PpitCore\Model\Account;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;

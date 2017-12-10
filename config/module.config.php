@@ -1033,7 +1033,7 @@ return array(
 					'end_dates' => array(
 							'Q1' => '2017-12-10',
 							'Q2' => '2018-02-28',
-							'Q3' => '2018-06-15',
+							'Q3' => '2018-06-30',
 					),
 			),
 	),
@@ -1854,27 +1854,27 @@ return array(
 			'displayAudit' => false,
 			'tabs' => array(
 					'contact_1' => array(
-							'route' => 'commitmentAccount/update',
+							'route' => 'account/update',
 							'params' => array('type' => 'p-pit-studies'),
 							'labels' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 					),
 					'user' => array(
-							'route' => 'commitmentAccount/updateUser',
+							'route' => 'account/updateUser',
 							'params' => array('type' => 'p-pit-studies'),
 							'labels' => array('en_US' => 'User account', 'fr_FR' => 'Compte utilisateur'),
 					),
 					'contact_2' => array(
-							'route' => 'commitmentAccount/updateContact',
+							'route' => 'account/updateContact',
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 2),
 							'labels' => array('en_US' => 'Father', 'fr_FR' => 'Père'),
 					),
 					'contact_3' => array(
-							'route' => 'commitmentAccount/updateContact',
+							'route' => 'account/updateContact',
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 3),
 							'labels' => array('en_US' => 'Mother', 'fr_FR' => 'Mère'),
 					),
 					'contact_4' => array(
-							'route' => 'commitmentAccount/updateContact',
+							'route' => 'account/updateContact',
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 4),
 							'labels' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 					),
@@ -2493,6 +2493,7 @@ table.note-report td {
 // Demande E Moreau
 					'dance-history' => array('en_US' => 'Dance history', 'fr_FR' => 'Histoire de la danse'),
 //
+					'specialite' => array('en_US' => 'Specialty', 'fr_FR' => 'Spécialité'),
 					'spe-stmg' => array('en_US' => 'STMG specialty', 'fr_FR' => 'Spécialité STMG'),
 					'spe-acrc' => array('en_US' => 'ACRC specialty', 'fr_FR' => 'Spécialité ACRC'),
 					'spe-mguc' => array('en_US' => 'MGUC specialty', 'fr_FR' => 'Spécialité MGUC'),

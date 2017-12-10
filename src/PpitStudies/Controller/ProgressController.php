@@ -2,7 +2,6 @@
 
 namespace PpitStudies\Controller;
 
-use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;

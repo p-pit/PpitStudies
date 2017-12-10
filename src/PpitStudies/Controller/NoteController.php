@@ -2,7 +2,6 @@
 
 namespace PpitStudies\Controller;
 
-use PpitCommitment\Model\Account;
 use PpitCommitment\Model\Notification;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
@@ -408,8 +407,8 @@ class NoteController extends AbstractActionController
     		->join('core_vcard', 'core_vcard.id = student_note.teacher_id', array('n_fn'), 'left')
 			->join('core_user', 'core_user.user_id = student_note_link.update_user', array(), 'left')
 			->join(array('user_vcard' => 'core_vcard'), 'user_vcard.id = core_user.vcard_id', array('user_n_fn' => 'n_fn'), 'left')
-    		->join('commitment_account', 'commitment_account.id = student_note_link.account_id', array('name'), 'left')
-    		->join(array('student_vcard' => 'core_vcard'), 'student_vcard.id = commitment_account.contact_1_id', array('name' => 'n_fn'), 'left')
+    		->join('core_account', 'core_account.id = student_note_link.account_id', array('name'), 'left')
+    		->join(array('student_vcard' => 'core_vcard'), 'student_vcard.id = core_account.contact_1_id', array('name' => 'n_fn'), 'left')
     		->order(array('student_note.type', 'student_note.id', 'student_note_link.account_id'));
 		$where = new Where;
 		$where->equalTo('student_note.status', 'current');
