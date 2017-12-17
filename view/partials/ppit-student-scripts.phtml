@@ -101,7 +101,7 @@ function connectStudentSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterStudentList(); });
@@ -114,7 +114,7 @@ function connectStudentSearchInputs() {
 	<?php else : ?>
 		$('#search_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_<?php echo $propertyId ?>").datepicker();
 	$('#search_<?php echo $propertyId ?>').change(function () { filterStudentList(); });
 		<?php endif;?>
@@ -852,7 +852,8 @@ $properties['place_id'] = array('type' => 'select', 'mandatory' => true);
 $properties['class'] = array('type' => 'select', 'mandatory' => true);
 $properties['level'] = array('type' => 'select', 'mandatory' => false);
 $properties['school_period'] = array('type' => 'select', 'mandatory' => true);
-$properties['teacher_n_fn'] = array('type' => 'text', 'mandatory' => true);
+//$properties['teacher_n_fn'] = array('type' => 'text', 'mandatory' => true);
+$properties['teacher_id'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
 $properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
@@ -1478,7 +1479,7 @@ function activateStudent() {
 	$(studentAnchor).removeClass("btn-default").addClass("btn-primary");
 
 	<?php
-	$todoTitle = (isset ($context->getConfig('commitmentAccount/search/p-pit-studies')['todoTitle']) ? $context->getConfig('commitmentAccount/search/p-pit-studies')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
+	$todoTitle = (isset ($context->getConfig('core_account/search/p-pit-studies')['todoTitle']) ? $context->getConfig('core_account/search/p-pit-studies')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text('<?php echo $todoTitle ?>');
 		

@@ -318,7 +318,7 @@ function connectContentPanel()
 $properties = array();
 
 foreach ($context->getConfig('commitmentNotification/update/p-pit-studies')['criteria'] as $criterionId => $unused) {
-	$criterion = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$criterionId];
+	$criterion = $context->getConfig('core_account/p-pit-studies')['properties'][$criterionId];
 	$properties[$criterionId] = array('type' => $criterion['type'], 'mandatory' => false, 'maxSize' => 255);
 }
 

@@ -39,7 +39,7 @@ class PdfReportTableViewHelper
 	    		else {
 			   		$distribution = array();
 			   		foreach ($evaluation->distribution as $category => $value) {
-			   			if ($category != 'global') {
+			   			if ($category && $category != 'global') {
 			   				$distribution[] = $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()].':&nbsp;'.$context->formatFloat($value, 2);
 			   			}
 			   		}

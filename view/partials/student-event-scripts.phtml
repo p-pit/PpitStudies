@@ -151,7 +151,7 @@ function connectEventSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterEventList(); });
@@ -254,7 +254,7 @@ function connectAuditPanel()
 $properties = array();
 
 foreach ($context->getConfig('commitmentEvent/update/p-pit-studies')['criteria'] as $criterionId => $unused) {
-	$criterion = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$criterionId];
+	$criterion = $context->getConfig('core_account/p-pit-studies')['properties'][$criterionId];
 	$properties[$criterionId] = array('type' => $criterion['type'], 'mandatory' => false, 'maxSize' => 255);
 }
 

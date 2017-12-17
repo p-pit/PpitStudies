@@ -26,6 +26,7 @@ use PpitStudies\ViewHelper\DocumentTemplate;
 use PpitStudies\ViewHelper\PdfReportTableViewHelper;
 use PpitStudies\ViewHelper\PdfReportViewHelper;
 use Zend\Db\Sql\Where;
+use Zend\Http\Client;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -229,7 +230,7 @@ class StudentController extends AbstractActionController
        	}
 
        	$criteria = array();
-       	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['main'] as $propertyId => $rendering) {
+       	foreach ($context->getConfig('core_account/search/p-pit-studies')['main'] as $propertyId => $rendering) {
        		if ($rendering == 'range') {
        			if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
        			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
@@ -238,7 +239,7 @@ class StudentController extends AbstractActionController
        			if ($request->getPost($propertyId)) $criteria[$propertyId] = $request->getPost($propertyId);
        		}
        	}
-       	foreach ($context->getConfig('commitmentAccount/search/p-pit-studies')['more'] as $propertyId => $rendering) {
+       	foreach ($context->getConfig('core_account/search/p-pit-studies')['more'] as $propertyId => $rendering) {
        		if ($rendering == 'range') {
        			if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
        			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
@@ -584,14 +585,7 @@ class StudentController extends AbstractActionController
     	$class = $this->params()->fromRoute('class', null);
 
     	$note = Note::instanciate($type, $class);
-    	if (count($places) == 1) $note->place_id = current($places)->id;
 
-    	// Instanciate the csrf form
-    	$csrfForm = new CsrfForm();
-    	$csrfForm->addCsrfElement('csrf');
-    	$error = null;
-    	$message = null;
-    
     	$request = $this->getRequest();
     	if (!$request->isPost()) return $this->redirect()->toRoute('home');
     	$nbAccount = $request->getPost('nb-account');
@@ -601,6 +595,37 @@ class StudentController extends AbstractActionController
     		$accounts[$account->id] = $account;
     	}
     	$place = Place::get($account->place_id);
+    	$note->place_id = $account->place_id;
+    	 
+    	// Retrieve the teachers
+    	$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
+    	$where = new Where;
+    	$where->notEqualTo('status', 'deleted');
+    	$where->like('roles', '%teacher%');
+    	$select->where($where);
+    	$cursor = Vcard::getTable()->selectWith($select);
+    	$contact = null;
+    	$teachers = array();
+    	foreach ($cursor as $contact) {
+    		if (	!$account->place_id
+    			||	!array_key_exists('p-pit-admin', $contact->perimeters) 
+    			|| 	!array_key_exists('place_id', $contact->perimeters['p-pit-admin'])) {
+    			$teachers[$contact->id] = $contact;
+    		}
+    		else {
+    			foreach ($contact->perimeters['p-pit-admin']['place_id'] as $place_id) {
+    				if ($account->place_id == $place_id) $teachers[$contact->id] = $contact;
+    			}
+    		}
+    	}
+    	if (array_key_exists($context->getContactId(), $teachers)) $note->teacher_id = $context->getContactId();
+
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
 		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
     	$note->school_period = $school_period;
 
@@ -628,7 +653,7 @@ class StudentController extends AbstractActionController
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
-    			if ($request->getPost('teacher_n_fn')) {
+/*    			if ($request->getPost('teacher_n_fn')) {
     				$select = Vcard::getTable()->getSelect();
     				$where = new Where;
     				$where->notEqualTo('status', 'deleted');
@@ -642,7 +667,12 @@ class StudentController extends AbstractActionController
     					$data['teacher_id'] = $contact->id;
     					$note->teacher_n_fn = $contact->n_fn;
     				}
-	    		}
+	    		}*/
+    			$teacher_id = $request->getPost('teacher_id');
+    			if ($teacher_id) {
+    				$teacher = $teachers[$teacher_id];
+    				$data['teacher_id'] = $teacher->id;
+    			}
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
@@ -669,6 +699,7 @@ class StudentController extends AbstractActionController
     				$value = ($data['subject'] == 'global') ? $request->getPost('mention_'.$account->id) : $request->getPost('value_'.$account->id);
     				if (!$value) $value = null;
 	    			$assessment = $request->getPost('assessment_'.$account->id);
+	    			$audit = [];
     				if ($type == 'report' && $value === null) {
 						if (array_key_exists($account->id, $computedAverages)) {
 							$value = $computedAverages[$account->id]['global']['note'];
@@ -752,6 +783,7 @@ class StudentController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'places' => $places,
+    			'teachers' => $teachers,
     			'type' => $type,
     			'accounts' => $accounts,
     			'note' => $note,
@@ -1127,14 +1159,22 @@ class StudentController extends AbstractActionController
 		$school_year = $context->getConfig('student/property/school_year/default');
 		$place = Place::get($account->place_id);
 		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-		$notes = NoteLink::GetList('note', array('account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 	
+		$periods = array();
+		$notes = NoteLink::GetList('note', array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/), 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			$key = $note->school_year.'.'.$note->school_period;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $note;
+		}
+		krsort($periods);
+		
 		// Return the link list
 		$view = new ViewModel(array(
 				'context' => $context,
 				'config' => $context->getconfig(),
 				'account' => $account,
-				'notes' => $notes,
+				'periods' => $periods,
 		));
 		$view->setTerminal(true);
 		return $view;
@@ -1758,5 +1798,58 @@ class StudentController extends AbstractActionController
     	}
 		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
     	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
+    }
+    
+    public function nomadAction()
+    {
+    	$context = Context::getCurrent();
+    	$request = $this->params()->fromRoute('request');
+    	$from = $this->params()->fromRoute('from');
+    	$safe = $context->getConfig()['ppitUserSettings']['safe'];
+    	$limit = $this->params()->fromQuery('limit', 10);
+    	$url = $context->getConfig()['ppitStudies']['nomadUrl'].$request.'?from='.$from.'&limit='.$limit;
+    	$client = new Client(
+    			$url,
+    			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
+    	);
+    	
+		$client->setHeaders(array(
+			'Authorization' => $safe[$context->getInstance()->caption]['nomad'],
+			'Accept-Encoding' => 'gzip,deflate',
+		));
+    	$client->setMethod('GET');
+    	$response = $client->send();
+    	$body = $response->getBody();
+    	$leads = json_decode($body, true);
+    	foreach ($leads as $lead) {
+    		echo $lead['id']."\n";
+    		$data = [];
+    		$data['identifier'] = $lead['id'];
+    		$data['status'] = 'new';
+    		$data['origine'] = 'nomad';
+    		$data['callback_date'] = date('Y-m-d');
+    		foreach ($context->getConfig('core_account/nomad/p-pit-studies')['properties'] as $propertyId => $property) {
+    			if (array_key_exists($property, $lead)) $data[$propertyId] = $lead[$property];
+    		}
+    		$data['json_property_2'] = $lead['wishedDomain'];
+    		unset($lead['wishedDomain']);
+    		$data['json_property_3'] = $lead['engagements'];
+    		unset($lead['engagements']);
+    		$data['json_property_1'] = $lead;
+    		$url = $context->getConfig()['ppitStudies']['flow_er']['url'];
+   			$target = $url.'account/v1/p-pit-studies/'.$lead['id'];
+   			$client2 = new Client(
+	    			$target,
+	    			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
+	    	);
+   			$data['contact_history'] = 'P-Pit -> Nomad connector';
+			$client2->setAuth($context->getConfig()['ppitStudies']['flow_er']['userid'], $safe[$context->getInstance()->caption]['flow_er'], Client::AUTH_BASIC);
+	    	$client2->setMethod('POST');
+			$client->setEncType('application/json');
+	    	$client2->setRawBody(json_encode($data, JSON_PRETTY_PRINT));
+	    	$response = $client2->send();
+			echo $response->renderStatusLine()."\n";
+    	}
+    	return $this->response;
     }
 }

@@ -22,7 +22,7 @@
 	elseif ($criterionId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
 	elseif ($criterionId == 'property_7') $property = $context->getConfig('student/property/class');
 	elseif ($criterionId == 'place_id') $property = $context->getConfig('student/property/place');
-	else $property = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$criterionId];
+	else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$criterionId];
 	$label = $property['labels'][$context->getLocale()];
 	if ($criterionId == 'place_id') $value = $places[$criterionValue]->caption; 
 	if ($property['type'] == 'select') $value = $property['modalities'][$criterionValue][$context->getLocale()];

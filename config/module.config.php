@@ -766,6 +766,15 @@ return array(
 		        								),
 		        						),
 		        				),
+	       						'nomad' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/nomad[/:request][/:from]',
+		        								'defaults' => array(
+		        										'action' => 'nomad',
+		        								),
+		        						),
+		        				),
 	       		),
 	    	   	),
 	    ),
@@ -851,6 +860,7 @@ return array(
 				array('route' => 'student/attestation', 'roles' => array('manager')),
 				array('route' => 'student/acknowledgement', 'roles' => array('manager')),
 				array('route' => 'student/commitment', 'roles' => array('manager')),
+				array('route' => 'student/nomad', 'roles' => array('admin')),
 			)
 		)
 	),
@@ -1295,10 +1305,11 @@ return array(
 			),
 	),
 		
-	'commitmentAccount/p-pit-studies' => array(
+	'core_account/p-pit-studies' => array(
 			'statuses' => array(),
 			'properties' => array(
 					'title_1' => array(
+							'definition' => 'inline',
 							'type' => 'title',
 							'labels' => array(
 									'en_US' => 'PERSONAL DATA',
@@ -1306,6 +1317,7 @@ return array(
 							),
 					),
 					'title_2' => array(
+							'definition' => 'inline',
 							'type' => 'title',
 							'labels' => array(
 									'en_US' => 'REGISTRATION DATA',
@@ -1313,6 +1325,7 @@ return array(
 							),
 					),
 					'title_3' => array(
+							'definition' => 'inline',
 							'type' => 'title',
 							'labels' => array(
 									'en_US' => 'COMMENTS',
@@ -1320,6 +1333,7 @@ return array(
 							),
 					),
 					'status' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 									'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
@@ -1336,6 +1350,7 @@ return array(
 							),
 					),
 					'name' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Denomination',
@@ -1343,6 +1358,7 @@ return array(
 							),
 					),
 					'contact_1_id' => array(
+							'definition' => 'inline',
 							'type' => 'photo',
 							'labels' => array(
 									'en_US' => '',
@@ -1350,6 +1366,7 @@ return array(
 							),
 					),
 					'n_first' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'First name',
@@ -1357,6 +1374,7 @@ return array(
 							),
 					),
 					'n_last' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Last name',
@@ -1364,6 +1382,7 @@ return array(
 							),
 					),
 					'n_fn' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Name',
@@ -1371,6 +1390,7 @@ return array(
 							),
 					),
 					'email' => array(
+							'definition' => 'inline',
 							'type' => 'email',
 							'labels' => array(
 									'en_US' => 'Email',
@@ -1378,6 +1398,7 @@ return array(
 							),
 					),
 					'tel_work' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father phone',
@@ -1385,6 +1406,7 @@ return array(
 							),
 					),
 					'tel_cell' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Cell',
@@ -1392,6 +1414,7 @@ return array(
 							),
 					),
 					'adr_street' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Address - Street',
@@ -1399,6 +1422,7 @@ return array(
 							),
 					),
 					'adr_zip' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Address - ZIP',
@@ -1406,6 +1430,7 @@ return array(
 							),
 					),
 					'adr_city' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Address - City',
@@ -1413,6 +1438,7 @@ return array(
 							),
 					),
 					'address' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Address',
@@ -1420,6 +1446,7 @@ return array(
 							),
 					),
 					'birth_date' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Birth date',
@@ -1427,6 +1454,7 @@ return array(
 							),
 					),
 					'photo_link_id' => array(
+							'definition' => 'inline',
 							'type' => 'photo',
 							'labels' => array(
 									'en_US' => '',
@@ -1434,6 +1462,7 @@ return array(
 							),
 					),
 					'n_title_2' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father title',
@@ -1441,6 +1470,7 @@ return array(
 							),
 					),
 					'n_first_2' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father first name',
@@ -1448,6 +1478,7 @@ return array(
 							),
 					),
 					'n_last_2' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father last name',
@@ -1455,6 +1486,7 @@ return array(
 							),
 					),
 					'n_fn_2' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father name',
@@ -1462,6 +1494,7 @@ return array(
 							),
 					),
 					'email_2' => array(
+							'definition' => 'inline',
 							'type' => 'email',
 							'labels' => array(
 									'en_US' => 'Father email',
@@ -1469,6 +1502,7 @@ return array(
 							),
 					),
 					'tel_work_2' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father phone',
@@ -1476,6 +1510,7 @@ return array(
 							),
 					),
 					'tel_cell_2' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father cell',
@@ -1483,6 +1518,7 @@ return array(
 							),
 					),
 					'address_2' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Father address',
@@ -1490,6 +1526,7 @@ return array(
 							),
 					),
 					'n_title_3' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Mother title',
@@ -1497,6 +1534,7 @@ return array(
 							),
 					),
 					'n_first_3' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Mother first name',
@@ -1504,6 +1542,7 @@ return array(
 							),
 					),
 					'n_last_3' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Mother last name',
@@ -1511,6 +1550,7 @@ return array(
 							),
 					),
 					'n_fn_3' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Mother name',
@@ -1518,6 +1558,7 @@ return array(
 							),
 					),
 					'email_3' => array(
+							'definition' => 'inline',
 							'type' => 'email',
 							'labels' => array(
 									'en_US' => 'Mother email',
@@ -1525,6 +1566,7 @@ return array(
 							),
 					),
 					'tel_work_3' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Mother phone',
@@ -1532,6 +1574,7 @@ return array(
 							),
 					),
 					'tel_cell_3' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Mother cell',
@@ -1539,6 +1582,7 @@ return array(
 							),
 					),
 					'address_3' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Mother address',
@@ -1546,6 +1590,7 @@ return array(
 							),
 					),
 					'n_title_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Legal repr. title',
@@ -1553,6 +1598,7 @@ return array(
 							),
 					),
 					'n_first_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Legal repr. first name',
@@ -1560,6 +1606,7 @@ return array(
 							),
 					),
 					'n_last_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Legal repr. last name',
@@ -1567,6 +1614,7 @@ return array(
 							),
 					),
 					'n_fn_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Legal repr. name',
@@ -1574,6 +1622,7 @@ return array(
 							),
 					),
 					'email_4' => array(
+							'definition' => 'inline',
 							'type' => 'email',
 							'labels' => array(
 									'en_US' => 'Legal repr. email',
@@ -1581,6 +1630,7 @@ return array(
 							),
 					),
 					'tel_work_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Legal repr. phone',
@@ -1588,6 +1638,7 @@ return array(
 							),
 					),
 					'tel_cell_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Legal repr. cell',
@@ -1595,6 +1646,7 @@ return array(
 							),
 					),
 					'address_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Legal repr. address',
@@ -1610,6 +1662,7 @@ return array(
 							),
 					),
 					'opening_date' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => '1st contact date',
@@ -1617,6 +1670,7 @@ return array(
 							),
 					),
 					'closing_date' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Account closing date',
@@ -1624,6 +1678,7 @@ return array(
 							),
 					),
 					'callback_date' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Callback date',
@@ -1632,13 +1687,14 @@ return array(
 					),
 					'origine' => array(
 							'type' => 'repository',
-							'definition' => 'commitmentAccount/property/origine',
+							'definition' => 'core_account/property/origine',
 					),
 					'property_1' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/discipline',
 					),
 					'property_2' => array(
+							'definition' => 'inline',
 							'type' => 'time',
 							'labels' => array(
 									'en_US' => 'Next meeting time',
@@ -1646,6 +1702,7 @@ return array(
 							),
 					),
 					'property_3' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 								'student' => array('en_US' => 'Student', 'fr_FR' => 'Etudiant/Lycéen'),
@@ -1658,6 +1715,7 @@ return array(
 							),
 					),
 					'property_4' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Languages',
@@ -1665,6 +1723,7 @@ return array(
 							),
 					),
 					'property_5' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Options',
@@ -1688,6 +1747,7 @@ return array(
 							),
 					),
 					'property_8' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Next meeting date',
@@ -1695,6 +1755,7 @@ return array(
 							),
 					),
 					'property_9' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Sport referent',
@@ -1706,6 +1767,7 @@ return array(
 							'definition' => 'student/property/level',
 					),
 					'property_11' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Sport level',
@@ -1713,6 +1775,7 @@ return array(
 							),
 					),
 					'property_12' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Price communicated on',
@@ -1724,6 +1787,7 @@ return array(
 							'definition' => 'student/property/contact_meeting_context',
 					),
 					'property_14' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 									'6e' => array('fr_FR' => '6e'),
@@ -1740,6 +1804,61 @@ return array(
 							),
 					),
 					'json_property_1' => array(
+							'definition' => 'inline',
+							'type' => 'key_value',
+							'labels' => array(
+									'en_US' => 'Collected informations',
+									'fr_FR' => 'Informations collectées',
+							),
+							'properties' => array(
+									'updatedAt' => null,
+									'type' => null,
+									'state' => null,
+									'levelOfEducation' => null,
+									'minor' => null,
+									'branch' => null,
+									'currentDegree' => null,
+									'birthDate' => null,
+									'sponsorName' => null,
+									'payForStudies' => null,
+									'appName' => null,
+									'createdAt' => null,
+									'emailResult' => null,
+									'emailSendex' => null,
+									'emailDeliverable' => null,
+									'emailOriginal' => null,
+									'phoneOriginal' => null,
+							),
+					),
+					'json_property_2' => array(
+							'definition' => 'inline',
+							'type' => 'array',
+							'labels' => array(
+									'en_US' => 'Wished domains',
+									'fr_FR' => 'Domaines souhaités',
+							),
+							'properties' => array(
+									'name' => null,
+									'studyDomainOptions' => null,
+							),
+					),
+					'json_property_3' => array(
+							'definition' => 'inline',
+							'type' => 'array',
+							'labels' => array(
+									'en_US' => 'Engagements',
+									'fr_FR' => 'Engagements',
+							),
+							'properties' => array(
+									'source' => null,
+									'contextModel' => null,
+									'contentModel' => null,
+									'mailSentToUser' => null,
+									'mailSentToSponsor' => null,
+							),
+					),
+/*					'json_property_1' => array(
+							'definition' => 'inline',
 							'type' => 'structured',
 							'labels' => array(
 									'en_US' => 'Origine Internet - Credentials',
@@ -1747,6 +1866,7 @@ return array(
 							),
 					),
 					'json_property_2' => array(
+							'definition' => 'inline',
 							'type' => 'structured',
 							'labels' => array(
 									'en_US' => 'Origine Internet - Foreign languages',
@@ -1754,6 +1874,7 @@ return array(
 							),
 					),
 					'json_property_3' => array(
+							'definition' => 'inline',
 							'type' => 'structured',
 							'labels' => array(
 									'en_US' => 'Origine Internet - Stays abroad',
@@ -1761,6 +1882,7 @@ return array(
 							),
 					),
 					'json_property_4' => array(
+							'definition' => 'inline',
 							'type' => 'structured',
 							'labels' => array(
 									'en_US' => 'Origine Internet - Experiences',
@@ -1768,13 +1890,15 @@ return array(
 							),
 					),
 					'json_property_5' => array(
+							'definition' => 'inline',
 							'type' => 'structured',
 							'labels' => array(
 									'en_US' => 'Origine Internet - Motivations',
 									'fr_FR' => 'Origine Internet - Motivations',
 							),
-					),
+					),*/
 					'comment_1' => array(
+							'definition' => 'inline',
 							'type' => 'textarea',
 							'labels' => array(
 									'en_US' => 'Trainings comments',
@@ -1782,6 +1906,7 @@ return array(
 							),
 					),
 					'comment_2' => array(
+							'definition' => 'inline',
 							'type' => 'textarea',
 							'labels' => array(
 									'en_US' => 'Competencies comments',
@@ -1789,6 +1914,7 @@ return array(
 							),
 					),
 					'comment_3' => array(
+							'definition' => 'inline',
 							'type' => 'textarea',
 							'labels' => array(
 									'en_US' => 'Experience comments',
@@ -1796,6 +1922,7 @@ return array(
 							),
 					),
 					'comment_4' => array(
+							'definition' => 'inline',
 							'type' => 'textarea',
 							'labels' => array(
 									'en_US' => 'Motivations comments',
@@ -1803,6 +1930,7 @@ return array(
 							),
 					),
 					'contact_history' => array(
+							'definition' => 'inline',
 							'type' => 'log',
 							'labels' => array(
 									'en_US' => 'Comment',
@@ -1810,6 +1938,7 @@ return array(
 							),
 					),
 					'update_time' => array(
+							'definition' => 'inline',
 							'type' => 'time',
 							'labels' => array(
 									'en_US' => 'Last update',
@@ -1819,11 +1948,11 @@ return array(
 			),
 			'order' => 'n_fn',
 	),
-		
-	'commitmentAccount/index/p-pit-studies' => array(
+
+	'core_account/index/p-pit-studies' => array(
 			'title' => array('en_US' => 'P-PIT Commitments', 'fr_FR' => 'P-PIT Engagements'),
 	),
-	'commitmentAccount/search/p-pit-studies' => array(
+	'core_account/search/p-pit-studies' => array(
 			'title' => array('en_US' => 'Students', 'fr_FR' => 'Eleves'),
 			'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
 			'main' => array(
@@ -1842,14 +1971,14 @@ return array(
 			'more' => array(
 			),
 	),
-	'commitmentAccount/list/p-pit-studies' => array(
+	'core_account/list/p-pit-studies' => array(
 			'property_1' => 'image',
 //			'photo_link_id' => 'photo',
 			'n_fn' => 'text',
 			'callback_date' => 'date',
 			'tel_cell' => 'phone',
 	),
-	'commitmentAccount/detail/p-pit-studies' => array(
+	'core_account/detail/p-pit-studies' => array(
 			'title' => array('en_US' => 'Student sheet:', 'fr_FR' => 'FICHE ELEVE'),
 			'displayAudit' => false,
 			'tabs' => array(
@@ -1880,7 +2009,7 @@ return array(
 					),
 			),
 	),
-	'commitmentAccount/update/p-pit-studies' => array(
+	'core_account/update/p-pit-studies' => array(
 			'place_id' => array('mandatory' => true),
 			'status' => array('mandatory' => true),
 			'name' => array('mandatory' => false),
@@ -1914,18 +2043,20 @@ return array(
 			'property_9' => array('mandatory' => false),
 			'property_6' => array('mandatory' => false),
 			'title_3' => null,
-			'json_property_1' => array('readonly' => true),
 			'comment_1' => array('mandatory' => false),
-			'json_property_2' => array('readonly' => true),
-			'json_property_3' => array('readonly' => true),
+//			'json_property_2' => array('readonly' => true),
+//			'json_property_3' => array('readonly' => true),
 			'comment_2' => array('mandatory' => false),
-			'json_property_4' => array('readonly' => true),
+//			'json_property_4' => array('readonly' => true),
 			'comment_3' => array('mandatory' => false),
-			'json_property_5' => array('readonly' => true),
+//			'json_property_5' => array('readonly' => true),
 			'comment_4' => array('mandatory' => false),
 			'contact_history' => array('mandatory' => false),
+			'json_property_1' => array('readonly' => true),
+			'json_property_2' => array('readonly' => true),
+			'json_property_3' => array('readonly' => true),
 	),
-	'commitmentAccount/updateContact/p-pit-studies' => array(
+	'core_account/updateContact/p-pit-studies' => array(
 			'n_title' => array('mandatory' => false),
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
@@ -1941,13 +2072,13 @@ return array(
 			'adr_country' => array('mandatory' => false),
 			'locale' => array('mandatory' => true),
 	),
-	'commitmentAccount/groupUpdate/p-pit-studies' => array(
+	'core_account/groupUpdate/p-pit-studies' => array(
 			'status' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
 			'property_13' => array('mandatory' => false),
 	),
-	'commitmentAccount/post/p-pit-studies' => array(
+	'core_account/post/p-pit-studies' => array(
 			'place_identifier' => array('mandatory' => false),
 			'n_title' => array('mandatory' => false),
 			'n_last' => array('mandatory' => true),
@@ -1983,7 +2114,7 @@ return array(
 			'comment_3' => array('mandatory' => true),
 			'comment_4' => array('mandatory' => true),
 	),
-	'commitmentAccount/indexCard/p-pit-studies' => array(
+	'core_account/indexCard/p-pit-studies' => array(
 			'title' => array('en_US' => 'Student index card', 'fr_FR' => 'Fiche élève'),
 			'header' => array(
 					'place_id' => null,
@@ -2037,10 +2168,10 @@ table.note-report td {
 </style>
 ',
 	),
-	'commitmentAccount/requestTypes/p-pit-studies' => array(
+	'core_account/requestTypes/p-pit-studies' => array(
 			'general_information' => array('en_US' => 'General information', 'fr_FR' => 'Information générale'),
 	),
-	'commitmentAccount/export/p-pit-studies' => array(
+	'core_account/export/p-pit-studies' => array(
 			'status' => array('mandatory' => true),
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
@@ -2089,26 +2220,20 @@ table.note-report td {
 			'contact_history' => array('mandatory' => false),
 	),
 
-	'commitmentAccount/contactForm/p-pit-studies' => array('definition' => 'customization/esi/commitmentAccount/contactForm/p-pit-studies'),
-
-	'commitmentAccount/register/p-pit-studies' => array(
-			'title' => array(
-					'en_US' => 'Subscribe:',
-					'fr_FR' => 'S\'enregistrer :'),
-			'text' => array(
-					'en_US' => 'With these few informations, will answer better to your request',
-					'fr_FR' => 'Avec ces quelques informations, nous pourrons mieux vous répondre'),
+	'core_account/nomad/p-pit-studies' => array(
 			'properties' => array(
-					'n_first' => array('mandatory' => true),
-					'n_last' => array('mandatory' => true),
-					'email' => array('mandatory' => true),
-					'tel_cell' => array('mandatory' => true),
-					'property_8' => array('mandatory' => false),
-					'property_1' => array('mandatory' => true),
-					'place_id' => array('mandatory' => true),
-					'birth_date' => array('mandatory' => false),
+					'n_first' => 'firstName',
+					'n_last' => 'lastName',
+					'gender' => 'gender',
+					'email' => 'email',
+					'tel_cell' => 'phone',
+					'adr_zip' => 'zip',
+					'adr_country' => 'country',
 			),
 	),
+
+	'commitmentAccount/contactForm/p-pit-studies' => array('definition' => 'customization/esi/commitmentAccount/contactForm/p-pit-studies'),
+
 	'commitment/accountList/p-pit-studies' => array(
 			'title' => array('en_US' => 'Registrations', 'fr_FR' => 'INSCRIPTIONS'),
 			'properties' => array(
@@ -2324,7 +2449,7 @@ table.note-report td {
 	'student/property/class' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'cm1/cm2' => array('fr_FR' => 'CM1/CM2'),
+					'cm1_cm2' => array('fr_FR' => 'CM1/CM2'),
 					'cm2' => array('fr_FR' => 'CM2'),
 					'6e' => array('fr_FR' => '6e'),
 					'5e' => array('fr_FR' => '5e'),
@@ -2349,11 +2474,11 @@ table.note-report td {
 					'termS' => array('fr_FR' => 'Term. S'),
 					'termES' => array('fr_FR' => 'Term. ES'),
 					'termSTMG' => array('fr_FR' => 'Term. STMG'),
-// Demande A Herrera
 					'2ndeProCommerce' => array('fr_FR' => '2nde Pro Commerce'),
 					'1ereProCommerce' => array('fr_FR' => '1ère Pro Commerce'),
 					'termProCommerce' => array('fr_FR' => 'Term. Pro Commerce'),
-//
+					'1ereProVente' => array('fr_FR' => '1ère Pro Vente'),
+					'termProVente' => array('fr_FR' => 'Term. Pro Vente'),
 					'fle' => array('fr_FR' => 'FLE', 'level' => 'FLE'),
 					'cap-vente' => array('fr_FR' => 'CAP Vente'),
 					'bts1' => array('fr_FR' => 'BTS1'),
@@ -2460,6 +2585,7 @@ table.note-report td {
 					'civics' => array('en_US' => 'Civics', 'fr_FR' => 'Instruction civique'),
 					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
 					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+					'sciences' => array('en_US' => 'Sciences', 'fr_FR' => 'Sciences'),
 					'english' => array('en_US' => 'English', 'fr_FR' => 'Anglais'),
 					'english-toefl' => array('en_US' => 'English TOEFL', 'fr_FR' => 'Anglais TOEFL'),
 					'applied-english' => array('en_US' => 'Applied english', 'fr_FR' => 'Anglais appliqué'),
@@ -2502,6 +2628,8 @@ table.note-report td {
 					'spe-mo' => array('en_US' => 'MO specialty', 'fr_FR' => 'Spécialité MO'),
 					'spe-pse' => array('en_US' => 'PSE specialty', 'fr_FR' => 'Spécialité PSE'),
 					'spe-bac-pro' => array('en_US' => 'Bac pro specialty', 'fr_FR' => 'Spécialité Bac Pro'),
+
+					'physio_pathologie' => array('en_US' => 'Physio-pathology', 'fr_FR' => 'Physio-pathologie'),
 
 					'study-period' => array('en_US' => 'Study period', 'fr_FR' => 'Etude surveillée'),
 
@@ -3803,7 +3931,7 @@ table.note-report tr.period {
 /*
  * Contacts
  */
-			'commitmentAccount/search/contact/title' => array(
+			'core_account/search/contact/title' => array(
 					'en_US' => '
 <h4>CRM</h4>
 <p>The <em>Contacts</em> tab is the place where you can add manage contacts.</p>
@@ -3819,7 +3947,7 @@ table.note-report tr.period {
 <p>Dès lors qu\'un des critères ci-dessous est spécifié, le mode de recherche est automatiquement activé.</p>
 ',
 			),
-			'commitmentAccount/list/contact/add' => array(
+			'core_account/list/contact/add' => array(
 					'en_US' => '',
 					'fr_FR' => '
 <h4>Ajout d\'un contact</h4>
@@ -3828,7 +3956,7 @@ table.note-report tr.period {
 <p>On peut ainsi lors de la vente transformer un contact en compte élève regroupant ces inscriptions successives.</p>
 ',
 			),
-			'commitmentAccount/list/contact/detail' => array(
+			'core_account/list/contact/detail' => array(
 					'en_US' => '',
 					'fr_FR' => '
 <h4>Détail d\'un élève</h4>
@@ -3840,7 +3968,7 @@ table.note-report tr.period {
 /*
  *  Inscriptions
  */
-			'commitmentAccount/search/p-pit-studies/title' => array(
+			'core_account/search/p-pit-studies/title' => array(
 					'en_US' => '
 <h4>Back-office</h4>
 <p>The <em>Subscriptions</em> tab is the place where you can add students and manage personal and parental data.</p>
@@ -3872,7 +4000,7 @@ table.note-report tr.period {
 <p>Dès lors qu\'un des critères ci-dessous est spécifié, le mode de recherche est automatiquement activé.</p>
 ',
 			),
-			'commitmentAccount/list/p-pit-studies/add' => array(
+			'core_account/list/p-pit-studies/add' => array(
 					'en_US' => '',
 					'fr_FR' => '
 <h4>Ajout d\'un élève</h4>
@@ -3881,7 +4009,7 @@ table.note-report tr.period {
 <p>On peut ainsi gérer un compte élève regroupant ces inscriptions successives.</p>
 ',
 			),
-			'commitmentAccount/add/p-pit-studies' => array(
+			'core_account/add/p-pit-studies' => array(
 					'en_US' => '',
 					'fr_FR' => '
 <h4>Ajout d\'un élève (contact ou client)</h4>
@@ -3904,14 +4032,14 @@ table.note-report tr.period {
 	</ul>
 ',
 			),
-			'commitmentAccount/list/p-pit-studies/detail' => array(
+			'core_account/list/p-pit-studies/detail' => array(
 					'en_US' => '',
 					'fr_FR' => '
 <h4>Détail d\'un élève</h4>
 <p>Le bouton zoom permet d\'accéder au détail d\'un élève et aux inscriptions associées.</p>
 ',
 			),
-			'commitmentAccount/update/p-pit-studies' => array(
+			'core_account/update/p-pit-studies' => array(
 					'en_US' => '',
 					'fr_FR' => '
 <h4>Gestion des données de l\'élève</h4>

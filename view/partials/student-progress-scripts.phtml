@@ -160,7 +160,7 @@ function connectProgressSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
@@ -189,7 +189,7 @@ function connectProgressSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 
-		<?php if ($context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });

@@ -9,7 +9,7 @@
 	elseif ($propertyId == 'end_date') $label = $this->translate('Display end', 'ppit-commitment', $context->getLocale());
 	elseif ($propertyId == 'title') $label =  $this->translate('Title', 'ppit-commitment', $context->getLocale());
 	elseif ($rendering == 'select') $label = $context->getConfig('student/'.$propertyId)['labels'][$context->getLocale()];
-	else $label = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()];
+	else $label = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()];
 	?>
 	<?php if ($label) : ?>
 			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">

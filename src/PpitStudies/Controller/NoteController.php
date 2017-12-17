@@ -270,6 +270,27 @@ class NoteController extends AbstractActionController
     	$note = Note::get($id);
     	$action = $this->params()->fromRoute('act', null);
 
+    	// Retrieve the teachers
+    	$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
+    	$where = new Where;
+    	$where->notEqualTo('status', 'deleted');
+    	$where->like('roles', '%teacher%');
+    	$select->where($where);
+    	$cursor = Vcard::getTable()->selectWith($select);
+    	$contact = null;
+    	$teachers = array();
+    	foreach ($cursor as $contact) {
+    	    if (	!array_key_exists('p-pit-admin', $contact->perimeters) 
+    			|| 	!array_key_exists('place_id', $contact->perimeters['p-pit-admin'])) {
+    			$teachers[$contact->id] = $contact;
+    		}
+    		else {
+    			foreach ($contact->perimeters['p-pit-admin']['place_id'] as $place_id) {
+    				if ($note->place_id == $place_id) $teachers[$contact->id] = $contact;
+    			}
+    		}
+    	}
+
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
@@ -294,7 +315,7 @@ class NoteController extends AbstractActionController
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
-    		    if ($request->getPost('teacher_n_fn')) {
+/*    		    if ($request->getPost('teacher_n_fn')) {
     				$select = Vcard::getTable()->getSelect();
     				$where = new Where;
     				$where->notEqualTo('status', 'deleted');
@@ -308,7 +329,12 @@ class NoteController extends AbstractActionController
     					$note->teacher_n_fn = $contact->n_fn;
     					$data['teacher_id'] = $contact->id;
     				}
-	    		}
+	    		}*/
+    		    $teacher_id = $request->getPost('teacher_id');
+    			if ($teacher_id) {
+    				$teacher = $teachers[$teacher_id];
+    				$data['teacher_id'] = $teacher->id;
+    			}
     			$data['level'] = $request->getPost('level');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
@@ -328,11 +354,19 @@ class NoteController extends AbstractActionController
     				if ($note->type == 'report' && $value === null) {
     					if (array_key_exists($noteLink->account_id, $computedAverages)) {
     						$value = $computedAverages[$noteLink->account_id]['global']['note'];
-    						$noteLink->audit = $computedAverages[$noteLink->account_id]['global']['notes'];
+    						$noteLink->audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
     					}
     				}
     				$noteLink->value = $value;
     				$noteLink->assessment = $request->getPost('assessment_'.$noteLink->account_id);
+					$noteLink->distribution = array();
+					if ($note->type == 'report') {
+						if (array_key_exists($noteLink->account_id, $computedAverages)) {
+							foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
+								$noteLink->distribution[$categoryId] = $category['note'];
+							}
+						}
+					}
     				if ($value !== null) {
     					$noteSum += $value;
     					$noteCount++;
@@ -388,6 +422,7 @@ class NoteController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'places' => Place::getList(array()),
+    			'teachers' => $teachers,
     			'id' => $id,
     			'action' => $action,
     			'note' => $note,
@@ -398,7 +433,7 @@ class NoteController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
+/*    
     public function repriseAction()
     {
     	$context = Context::getCurrent();
@@ -468,5 +503,43 @@ class NoteController extends AbstractActionController
 			$previousLink = $noteLink;
     	}
     	return $this->response;
-    }
+    }*/
+	    
+	    public function repriseAction()
+	    {
+	    	foreach (Note::getList('evaluation', 'report', array('place_id', '1'), 'id', 'asc') as $note) {
+	    		print_r($note->id."\n");
+		    	$note->links = array();
+		    	$select = NoteLink::getTable()->getSelect()
+		    				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
+		    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
+	    					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
+		    				$cursor = NoteLink::getTable()->selectWith($select);
+	    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
+		    	foreach($cursor as $noteLink) {
+					$note->links[] = $noteLink;
+					$audit = array();
+					$distribution = array();
+					if (array_key_exists($noteLink->account_id, $computedAverages)) {
+	    				$value = $computedAverages[$noteLink->account_id]['global']['note'];
+	    				$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
+	    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
+	    					$distribution[$categoryId] = $category['note'];
+						}
+						if ($value != $noteLink->value || count($distribution) != count($noteLink->distribution)) {
+							print_r($noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
+							print_r('New: '.$value."\n");
+							print_r($distribution);
+							print_r('Old: '.$noteLink->value."\n");
+							print_r($noteLink->distribution);
+							$noteLink->value = $value;
+							$noteLink->distribution = $distribution;
+							$noteLink->audit = $audit;
+//							$noteLink->update(null);
+						}
+					}
+				}
+	    	}
+	    	return $this->response;
+	    }
 }

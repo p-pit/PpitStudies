@@ -158,7 +158,7 @@
 		</div>
 
 <?php foreach ($context->getConfig('commitmentEvent/update/p-pit-studies')['criteria'] as $criterionId => $unused) : ?>
-	<?php $criterion = $context->getConfig('commitmentAccount/p-pit-studies')['properties'][$criterionId] ?>
+	<?php $criterion = $context->getConfig('core_account/p-pit-studies')['properties'][$criterionId] ?>
 		<div class="form-group" id="<?php echo $criterionId?>_group">
 			<label class="col-sm-5 control-label"><?php echo $criterion['labels'][$context->getlocale()] ?></label>
 			<div class="col-sm-7">
