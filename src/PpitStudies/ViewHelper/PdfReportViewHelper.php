@@ -163,24 +163,26 @@ class PdfReportViewHelper
 	    	$pdf->writeHTML($text, true, 0, true, 0);
 	
 			$pdf->SetDrawColor(255, 255, 255);
-			
-			// Absences
-			$pdf->MultiCell(16, 5, '<strong>'.'Absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-			$pdf->MultiCell(10, 5, $absenceCount, 1, 'L', 1, 0, '' ,'', true);
 	
-			$pdf->MultiCell(24, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-			$pdf->MultiCell(30, 5, (((int)($cumulativeAbsence/60)) ? ((int)($cumulativeAbsence/60)).'h' : '').(($cumulativeAbsence%60) ? sprintf('%02u', $cumulativeAbsence%60).'mn' : ''), 1, 'L', 1, 0, '' ,'', true);
-			
-			// Lateness
-			$pdf->MultiCell(16, 5, '<strong>'.'Retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-			$pdf->MultiCell(10, 5, $latenessCount, 1, 'L', 1, 0, '' ,'', true);
-			
-			$pdf->MultiCell(24, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
-			$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
-			$pdf->MultiCell(30, 5, (((int)($cumulativeLateness/60)) ? ((int)($cumulativeLateness/60)).'h' : '').(($cumulativeLateness%60) ? sprintf('%02u', $cumulativeLateness%60).'mn' : ''), 1, 'L', 0, 1, '' ,'', true);
+			if (!in_array($place->id, [28, 36, 37])) {
+				// Absences
+				$pdf->MultiCell(16, 5, '<strong>'.'Absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+				$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+				$pdf->MultiCell(10, 5, $absenceCount, 1, 'L', 1, 0, '' ,'', true);
+		
+				$pdf->MultiCell(24, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+				$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+				$pdf->MultiCell(30, 5, (((int)($cumulativeAbsence/60)) ? ((int)($cumulativeAbsence/60)).'h' : '').(($cumulativeAbsence%60) ? sprintf('%02u', $cumulativeAbsence%60).'mn' : ''), 1, 'L', 1, 0, '' ,'', true);
+				
+				// Lateness
+				$pdf->MultiCell(16, 5, '<strong>'.'Retards'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+				$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+				$pdf->MultiCell(10, 5, $latenessCount, 1, 'L', 1, 0, '' ,'', true);
+				
+				$pdf->MultiCell(24, 5, '<strong>'.'Durée cumulée'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+				$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
+				$pdf->MultiCell(30, 5, (((int)($cumulativeLateness/60)) ? ((int)($cumulativeLateness/60)).'h' : '').(($cumulativeLateness%60) ? sprintf('%02u', $cumulativeLateness%60).'mn' : ''), 1, 'L', 0, 1, '' ,'', true);
+			}
 
 			$globalEvaluation = '';
 			foreach ($averages as $evaluation) if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
@@ -229,13 +231,13 @@ class PdfReportViewHelper
 
 	    	$pdf->SetFont('', '', 8);
 			$text = PdfEvaluationTableViewHelper::render($notes, $category);
-			$text .= sprintf(
+/*			$text .= sprintf(
 					'<div><br></div>'.$context->getConfig('student/report')['evaluationSignatureFrame']['html'],
 					'<br><br><br><br><br><br><br><br>',
 					''
-			);
+			);*/
 			$pdf->writeHTML($text, true, 0, true, 0);
-			$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
+			$pdf->writeHTML('<strong>'.$translator->translate('Relevé à conserver préciseusement. Aucun duplicata ne sera délivré', 'ppit-studies', $context->getLocale()).'</strong>'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.

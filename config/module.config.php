@@ -2384,8 +2384,11 @@ table.note-report td {
 			'type' => 'select',
 			'modalities' => array(
 					'detection-day' => array('en_US' => 'Detection day', 'fr_FR' => 'Journée de détection'),
+					'detection-day-confirmed' => array('en_US' => 'Detection day', 'fr_FR' => 'Journée de détection confirmée'),
 					'competitive-examination' => array('en_US' => 'Competitive examination', 'fr_FR' => 'Concours'),
+					'competitive-examination-confirmed' => array('en_US' => 'Competitive examination', 'fr_FR' => 'Concours confirmé'),
 					'appointment' => array('en_US' => 'Appointment', 'fr_FR' => 'Rendez-vous'),
+					'appointment-confirmed' => array('en_US' => 'Appointment', 'fr_FR' => 'Rendez-vous confirmé'),
 			),
 			'labels' => array(
 					'en_US' => 'Next meeting context',

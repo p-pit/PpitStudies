@@ -46,7 +46,7 @@ class PdfEvaluationTableViewHelper
 	   				'',
 					(array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()] : '',
 	   				$context->formatFloat($evaluation->weight, 1),
-	   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 2),
+	   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0),
 					$context->formatFloat($evaluation->lower_note, 2),
 	   				$context->formatFloat($evaluation->average_note, 2),
 					$context->formatFloat($evaluation->higher_note, 2),
