@@ -127,8 +127,6 @@ class Progress implements InputFilterAwareInterface
     	$progress = Progress::getTable()->get($id, $column);
     	$account = Account::get($progress->account_id);
     	$progress->account = $account;
-    	$community = Community::get($account->customer_community_id);
-    	$progress->name = $community->name;
     	return $progress;
     }
     

@@ -1304,7 +1304,30 @@ return array(
 					),
 			),
 	),
-		
+	
+	// Account p-pit-studies
+
+	'core_account/p-pit-studies/property/origine' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'web' => array('en_US' => 'Web site', 'fr_FR' => 'Site web'),
+					'inscription' => array('en_US' => 'Online subscription', 'fr_FR' => 'Inscription en ligne'),
+					'show' => array('en_US' => 'Show', 'fr_FR' => 'Salon'),
+					'cooptation' => array('en_US' => 'Cooptation', 'fr_FR' => 'Cooptation'),
+					'incoming' => array('en_US' => 'Incoming call', 'fr_FR' => 'Appel entrant'),
+					'outcoming' => array('en_US' => 'Outcoming call', 'fr_FR' => 'Appel sortant'),
+					'file' => array('en_US' => 'File', 'fr_FR' => 'Fichier'),
+					'agency' => array('en_US' => 'Agency', 'fr_FR' => 'Agence'),
+					'nomad' => array('en_US' => 'Nomad', 'fr_FR' => 'Nomad'),
+					'indeed' => array('en_US' => 'Indeed', 'fr_FR' => 'Indeed'),
+					'diplomeo' => array('en_US' => 'Diplomeo', 'fr_FR' => 'Diplomeo'),
+			),
+			'labels' => array(
+					'en_US' => 'Origine',
+					'fr_FR' => 'Origine',
+			),
+	),
+
 	'core_account/p-pit-studies' => array(
 			'statuses' => array(),
 			'properties' => array(
@@ -1337,10 +1360,11 @@ return array(
 							'type' => 'select',
 							'modalities' => array(
 									'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
-									'interested' => array('en_US' => 'To revive', 'fr_FR' => 'A relancer'),
+									'interested' => array('en_US' => 'Said yes', 'fr_FR' => 'A dit oui'),
 									'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
 									'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
 									'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
+									'committed' => array('en_US' => 'Committed', 'fr_FR' => 'Engagé'),
 									'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
 									'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 							),
@@ -1348,6 +1372,11 @@ return array(
 									'en_US' => 'Status',
 									'fr_FR' => 'Statut',
 							),
+							'perspectives' => array(
+									'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
+									'account' => array('committed', 'active'),
+							),
+							'mandatory' => true,
 					),
 					'name' => array(
 							'definition' => 'inline',
@@ -1372,6 +1401,7 @@ return array(
 									'en_US' => 'First name',
 									'fr_FR' => 'Prénom',
 							),
+							'mandatory' => true,
 					),
 					'n_last' => array(
 							'definition' => 'inline',
@@ -1380,6 +1410,7 @@ return array(
 									'en_US' => 'Last name',
 									'fr_FR' => 'Nom',
 							),
+							'mandatory' => true,
 					),
 					'n_fn' => array(
 							'definition' => 'inline',
@@ -1437,6 +1468,7 @@ return array(
 									'fr_FR' => 'Adresse - Ville',
 							),
 					),
+					'adr_country' => array('definition' => 'core_account/generic/property/adr_country'),
 					'address' => array(
 							'definition' => 'inline',
 							'type' => 'input',
@@ -1453,6 +1485,8 @@ return array(
 									'fr_FR' => 'Date de naissance',
 							),
 					),
+					'gender' => array('definition' => 'core_account/generic/property/gender'),
+					'nationality' => array('definition' => 'core_account/generic/property/nationality'),
 					'photo_link_id' => array(
 							'definition' => 'inline',
 							'type' => 'photo',
@@ -1687,7 +1721,7 @@ return array(
 					),
 					'origine' => array(
 							'type' => 'repository',
-							'definition' => 'core_account/property/origine',
+							'definition' => 'core_account/p-pit-studies/property/origine',
 					),
 					'property_1' => array(
 							'type' => 'repository',
@@ -1904,6 +1938,7 @@ return array(
 									'en_US' => 'Trainings comments',
 									'fr_FR' => 'Commentaires formations',
 							),
+							'max_length' => 65535,
 					),
 					'comment_2' => array(
 							'definition' => 'inline',
@@ -1912,6 +1947,7 @@ return array(
 									'en_US' => 'Competencies comments',
 									'fr_FR' => 'Commentaires compétences',
 							),
+							'max_length' => 65535,
 					),
 					'comment_3' => array(
 							'definition' => 'inline',
@@ -1920,6 +1956,7 @@ return array(
 									'en_US' => 'Experience comments',
 									'fr_FR' => 'Commentaire Expérience',
 							),
+							'max_length' => 65535,
 					),
 					'comment_4' => array(
 							'definition' => 'inline',
@@ -1928,6 +1965,7 @@ return array(
 									'en_US' => 'Motivations comments',
 									'fr_FR' => 'Commentaires motivations',
 							),
+							'max_length' => 65535,
 					),
 					'contact_history' => array(
 							'definition' => 'inline',
@@ -2373,7 +2411,7 @@ table.note-report td {
 	),
 
 	'student/property/place' => array(
-			'type' => 'table',
+			'type' => 'select',
 			'labels' => array(
 					'en_US' => 'Center',
 					'fr_FR' => 'Centre',

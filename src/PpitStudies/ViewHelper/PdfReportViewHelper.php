@@ -105,7 +105,7 @@ class PdfReportViewHelper
     	if ($addressee->adr_state) $header .= $addressee->adr_state."\n";
     	if ($addressee->adr_country) $header .= $addressee->adr_country."\n";
     	$pdf->MultiCell(80, 5, $header, 0, 'L', 0, 1, '', '', true);
-    	$pdf->Ln(8);
+    	$pdf->Ln(4);
     	 
     	// Title
     	$pdf->SetFont('', '', 12);
@@ -121,7 +121,7 @@ class PdfReportViewHelper
     		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	$pdf->writeHTML($text, true, 0, true, 0);
-    	$pdf->Ln(10);
+    	$pdf->Ln(4);
 
     	// Report references
 		$pdf->SetFillColor(255, 255, 255);

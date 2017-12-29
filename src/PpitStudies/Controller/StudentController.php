@@ -154,7 +154,7 @@ class StudentController extends AbstractActionController
     	$params['status'] = 'active';
 
     	// Retrieve the list
-    	$accounts = Account::getList('p-pit-studies', 'account', $params, $major, $dir, $mode, $limit);
+    	$accounts = Account::getList('p-pit-studies', $params, [$major.' '.$dir], $limit);
 
     	// Return the link list
     	$view = new ViewModel(array(

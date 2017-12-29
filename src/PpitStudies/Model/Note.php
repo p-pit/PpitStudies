@@ -284,7 +284,6 @@ class Note implements InputFilterAwareInterface
     	$select = NoteLink::getTable()->getSelect()
     				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
     				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
-//    				->join('core_community', 'core_community.id = core_account.customer_community_id', array('name'), 'left')
     				->where(array('note_id' => $id, 'student_note_link.status != ?' => 'deleted'));
 		$cursor = NoteLink::getTable()->selectWith($select);
 		foreach($cursor as $noteLink) $note->links[] = $noteLink;
