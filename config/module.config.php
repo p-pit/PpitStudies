@@ -1306,6 +1306,41 @@ return array(
 	),
 	
 	// Account p-pit-studies
+	'core_account/p-pit-studies/property/status' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+					'interested' => array('en_US' => 'Intéressé', 'fr_FR' => 'A relancer'),
+					'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
+					'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
+					'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
+					'committed' => array('en_US' => 'Committed', 'fr_FR' => 'Engagé'),
+					'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
+					'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
+			),
+			'labels' => array(
+					'en_US' => 'Status',
+					'fr_FR' => 'Statut',
+			),
+			'perspectives' => array(
+					'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
+					'account' => array('committed', 'active'),
+			),
+			'mandatory' => true,
+	),
+
+	'core_account/p-pit-studies/property/basket' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'p1' => array('en_US' => 'P1', 'fr_FR' => 'P1'),
+					'p2' => array('en_US' => 'P2', 'fr_FR' => 'P2'),
+					'p3' => array('en_US' => 'P3', 'fr_FR' => 'P3'),
+			),
+			'labels' => array(
+					'en_US' => 'Basket',
+					'fr_FR' => 'Panier',
+			),
+	),
 
 	'core_account/p-pit-studies/property/origine' => array(
 			'type' => 'select',
@@ -1325,6 +1360,19 @@ return array(
 			'labels' => array(
 					'en_US' => 'Origine',
 					'fr_FR' => 'Origine',
+			),
+	),
+		
+	'core_account/p-pit-studies/property/study_choice' => array(
+			'type' => 'select',
+			'modalities' => array(
+					'initial' => array('en_US' => 'Initial training', 'fr_FR' => 'Formation initiale'),
+					'part_time' => array('en_US' => 'Part time training', 'fr_FR' => 'Formation en alternance'),
+					'part_time_initial' => array('en_US' => 'Part time/Initial training', 'fr_FR' => 'Formation initiale/en alternance'),
+			),
+			'labels' => array(
+					'en_US' => 'Study choice',
+					'fr_FR' => 'Choix d\'études',
 			),
 	),
 
@@ -1355,29 +1403,8 @@ return array(
 									'fr_FR' => 'COMMENTAIRES',
 							),
 					),
-					'status' => array(
-							'definition' => 'inline',
-							'type' => 'select',
-							'modalities' => array(
-									'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
-									'interested' => array('en_US' => 'Said yes', 'fr_FR' => 'A dit oui'),
-									'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
-									'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
-									'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
-									'committed' => array('en_US' => 'Committed', 'fr_FR' => 'Engagé'),
-									'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
-									'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
-							),
-							'labels' => array(
-									'en_US' => 'Status',
-									'fr_FR' => 'Statut',
-							),
-							'perspectives' => array(
-									'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
-									'account' => array('committed', 'active'),
-							),
-							'mandatory' => true,
-					),
+					'status' => array('definition' => 'core_account/p-pit-studies/property/status'),
+					'identifier' => array('definition' => 'core_account/generic/property/identifier'),
 					'name' => array(
 							'definition' => 'inline',
 							'type' => 'input',
@@ -1386,6 +1413,7 @@ return array(
 									'fr_FR' => 'Dénomination',
 							),
 					),
+					'basket' => array('definition' => 'core_account/p-pit-studies/property/basket'),
 					'contact_1_id' => array(
 							'definition' => 'inline',
 							'type' => 'photo',
@@ -1688,9 +1716,9 @@ return array(
 							),
 					),
 					'place_id' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/place',
-							'labels' => array(
+							'labels' => array( // Deprecated
 									'en_US' => 'Center',
 									'fr_FR' => 'Centre',
 							),
@@ -1720,11 +1748,11 @@ return array(
 							),
 					),
 					'origine' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'core_account/p-pit-studies/property/origine',
 					),
 					'property_1' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/discipline',
 					),
 					'property_2' => array(
@@ -1765,17 +1793,17 @@ return array(
 							),
 					),
 					'property_6' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/boarding_school',
-							'labels' => array(
+							'labels' => array( //Deprecated
 									'en_US' => 'Boarding-school',
 									'fr_FR' => 'Internat',
 							),
 					),
 					'property_7' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/class',
-							'labels' => array(
+							'labels' => array( // Deprecated
 									'en_US' => 'Class',
 									'fr_FR' => 'Classe',
 							),
@@ -1797,7 +1825,7 @@ return array(
 							),
 					),
 					'property_10' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/level',
 					),
 					'property_11' => array(
@@ -1817,7 +1845,7 @@ return array(
 							),
 					),
 					'property_13' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/contact_meeting_context',
 					),
 					'property_14' => array(
@@ -1837,6 +1865,8 @@ return array(
 									'fr_FR' => 'Niveau scolaire à l\'inscription',
 							),
 					),
+					'property_15' => array('definition' => 'core_account/p-pit-studies/property/study_choice'),
+					'property_16' => array('definition' => 'student/property/school_year'),
 					'json_property_1' => array(
 							'definition' => 'inline',
 							'type' => 'key_value',
@@ -1996,6 +2026,8 @@ return array(
 			'main' => array(
 					'status' => 'select',
 					'place_id' => 'select',
+					'property_16' => 'select',
+					'basket' => 'select',
 					'opening_date' => 'range',
 					'callback_date' => 'range',
 					'property_8' => 'range',
@@ -2004,6 +2036,7 @@ return array(
 					'property_1' => 'select',
 					'property_7' => 'select',
 					'property_6' => 'select',
+					'property_15' => 'select',
 					'n_fn' => 'contains',
 			),
 			'more' => array(
@@ -2051,6 +2084,8 @@ return array(
 			'place_id' => array('mandatory' => true),
 			'status' => array('mandatory' => true),
 			'name' => array('mandatory' => false),
+			'property_16' => array('mandatory' => false),
+			'basket' => array('mandatory' => false),
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
@@ -2070,6 +2105,7 @@ return array(
 			'property_13' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
 			'title_2' => null,
+			'property_15' => array('mandatory' => false),
 			'property_1' => array('mandatory' => false),
 			'property_11' => array('mandatory' => false),
 			'property_14' => array('mandatory' => false),
@@ -2158,6 +2194,8 @@ return array(
 					'place_id' => null,
 					'status' => null,
 					'origine' => null,
+					'property_16' => null,
+					'basket' => null,
 			),
 			'1st-column' => array(
 				'title' => 'title_1',
@@ -2175,6 +2213,7 @@ return array(
 			'2nd-column' => array(
 				'title' => 'title_2',
 				'rows' => array(
+					'property_15' => array('mandatory' => false),
 					'property_1' => array('mandatory' => false),
 					'property_10' => array('mandatory' => false),
 					'property_7' => array('mandatory' => false),
@@ -2211,6 +2250,8 @@ table.note-report td {
 	),
 	'core_account/export/p-pit-studies' => array(
 			'status' => array('mandatory' => true),
+			'property_16' => array('mandatory' => true),
+			'basket' => array('mandatory' => true),
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
@@ -2218,6 +2259,7 @@ table.note-report td {
 			'n_last' => array('mandatory' => true),
 			'property_8' => array('mandatory' => false),
 			'property_1' => array('mandatory' => true),
+			'property_15' => array('mandatory' => true),
 			'place_id' => array('mandatory' => true),
 			'email' => array('mandatory' => false),
 			'address' => array('mandatory' => false),
@@ -3173,6 +3215,7 @@ table.note-report tr.period {
 			),
 			'properties' => array(
 					'place_id' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 									'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
@@ -3183,6 +3226,7 @@ table.note-report tr.period {
 							),
 					),
 					'category' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 									'absence' => array('en_US' => 'Absence', 'fr_FR' => 'Absence'),
@@ -3194,14 +3238,15 @@ table.note-report tr.period {
 							),
 					),
 					'school_year' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/school_year',
 					),
 					'school_period' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/school_period',
 					),
 					'type' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 									'sport' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
@@ -3214,6 +3259,7 @@ table.note-report tr.period {
 							),
 					),
 					'n_fn' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Name',
@@ -3228,7 +3274,7 @@ table.note-report tr.period {
 							),
 					),*/
 					'subject' => array(
-							'type' => 'repository',
+							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/school_subject',
 					),
 					'motive' => array(
@@ -3236,6 +3282,7 @@ table.note-report tr.period {
 							'definition' => 'absence/property/motive',
 					),
 					'begin_date' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Begin date',
@@ -3243,6 +3290,7 @@ table.note-report tr.period {
 							),
 					),
 					'end_date' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'End date',
@@ -3250,6 +3298,7 @@ table.note-report tr.period {
 							),
 					),
 					'duration' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Duration',
@@ -3257,6 +3306,7 @@ table.note-report tr.period {
 							),
 					),
 					'observations' => array(
+							'definition' => 'inline',
 							'type' => 'textarea',
 							'labels' => array(
 									'en_US' => 'Observations',
@@ -3644,8 +3694,8 @@ table.note-report tr.period {
 									'show' => true,
 									'default' => true,
 									'labels' => array(
-											'en_US' => 'School life',
-											'fr_FR' => 'Vie scolaire',
+											'en_US' => 'Head of training',
+											'fr_FR' => 'Responsable pédagogique',
 									),
 							),
 							'coach' => array(

@@ -154,7 +154,7 @@ class StudentController extends AbstractActionController
     	$params['status'] = 'active';
 
     	// Retrieve the list
-    	$accounts = Account::getList('p-pit-studies', $params, [$major.' '.$dir], $limit);
+    	$accounts = Account::getList('p-pit-studies', $params, (($dir == 'DESC') ? '-' : '+').$major, $limit);
 
     	// Return the link list
     	$view = new ViewModel(array(
@@ -1825,7 +1825,7 @@ class StudentController extends AbstractActionController
     		echo $lead['id']."\n";
     		$data = [];
     		$data['identifier'] = $lead['id'];
-    		$data['status'] = 'new';
+    		$data['status'] = (array_key_exists('type', $lead) && $lead['type'] == 'registration') ? 'suspect' : 'new';
     		$data['origine'] = 'nomad';
     		$data['callback_date'] = date('Y-m-d');
     		foreach ($context->getConfig('core_account/nomad/p-pit-studies')['properties'] as $propertyId => $property) {
@@ -1835,20 +1835,32 @@ class StudentController extends AbstractActionController
     		unset($lead['wishedDomain']);
     		$data['json_property_3'] = $lead['engagements'];
     		unset($lead['engagements']);
+    		if (array_key_exists('studyChoices', $lead)) {
+    			foreach ($lead['studyChoices'] as $group) {
+	    			foreach ($group as $key => $value) {
+	    				if ($key == 'name') {
+			    			if ($value == 'Alternance') $data['property_15'] = 'part_time';
+			    			elseif ($value == 'Formation initiale') $data['property_15'] = 'initial';
+			    			else $data['property_15'] = $value;
+	    				}
+	    			}
+    			}
+    		}
     		$data['json_property_1'] = $lead;
     		$url = $context->getConfig()['ppitStudies']['flow_er']['url'];
-   			$target = $url.'account/v1/p-pit-studies/'.$lead['id'];
+   			$target = $url.'account/v1/p-pit-studies/contact/'.$lead['id'];
    			$client2 = new Client(
 	    			$target,
 	    			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
 	    	);
    			$data['contact_history'] = 'P-Pit -> Nomad connector';
 			$client2->setAuth($context->getConfig()['ppitStudies']['flow_er']['userid'], $safe[$context->getInstance()->caption]['flow_er'], Client::AUTH_BASIC);
-	    	$client2->setMethod('POST');
-			$client->setEncType('application/json');
+	    	$client2->setMethod('PUT');
+			$client2->setEncType('application/json');
 	    	$client2->setRawBody(json_encode($data, JSON_PRETTY_PRINT));
 	    	$response = $client2->send();
 			echo $response->renderStatusLine()."\n";
+			echo $response->getContent()."\n";
     	}
     	return $this->response;
     }

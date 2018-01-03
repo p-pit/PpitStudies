@@ -38,32 +38,6 @@ function getParams() {
 
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('absence/search')['more'] as $propertyId => $rendering) : ?>
-
-	<?php if ($rendering == 'range') : ?>
-	
-	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
-	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
-	if (min_<?php echo $propertyId ?>.length >= 2) { params += 'min_<?php echo $propertyId ?>=' + min_<?php echo $propertyId ?> + '&'; todo = false; }
-
-	var max_<?php echo $propertyId ?> = document.getElementById('search_max_<?php echo $propertyId ?>').value;
-	if (max_<?php echo $propertyId ?>) max_<?php echo $propertyId ?> = encodeDate(max_<?php echo $propertyId ?>);
-	if (max_<?php echo $propertyId ?>.length >= 2) { params += 'max_<?php echo $propertyId ?>=' + max_<?php echo $propertyId ?> + '&'; todo = false; }
-
-	<?php elseif ($rendering == 'select') : ?>
-
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (<?php echo $propertyId ?>) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
-	
-	<?php else : ?>
-
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
-	
-	<?php endif;?>
-
-<?php endforeach;?>
-
 	<?php
 	$todoTitle = (isset ($context->getConfig('absence/search')['todoTitle']) ? $context->getConfig('absence/search')['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
 	$searchTitle = (isset ($context->getConfig('absence/search')['searchTitle']) ? $context->getConfig('absence/search')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));

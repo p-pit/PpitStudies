@@ -138,6 +138,10 @@ function connectEventSearchInputs() {
 	$('#erase-button').click(function () { eraseEventSearch(); });
 
 <?php foreach ($context->getConfig('commitmentEvent/search/p-pit-studies')['main'] as $propertyId => $rendering) : ?>
+	<?php 
+	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+	?>
 	
 	<?php if (
 			$propertyId == 'category'
@@ -151,7 +155,7 @@ function connectEventSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterEventList(); });
 
-		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($property['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterEventList(); });
@@ -255,6 +259,7 @@ $properties = array();
 
 foreach ($context->getConfig('commitmentEvent/update/p-pit-studies')['criteria'] as $criterionId => $unused) {
 	$criterion = $context->getConfig('core_account/p-pit-studies')['properties'][$criterionId];
+	if ($criterion['definition'] != 'inline') $criterion = $context->getConfig($criterion['definition']);
 	$properties[$criterionId] = array('type' => $criterion['type'], 'mandatory' => false, 'maxSize' => 255);
 }
 

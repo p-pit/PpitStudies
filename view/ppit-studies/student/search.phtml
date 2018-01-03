@@ -40,8 +40,12 @@
 		</div>
 
 <?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
+	<?php 
+	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	if ($property['definition'] != 'inline') $property = $context->getConfig('definition');
+	?>
 
-	<?php if ($rendering != 'select') $label = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()]; ?>
+	<?php if ($rendering != 'select') $label = $property['labels'][$context->getLocale()]; ?>
 
 	<?php if ($rendering == 'select') : ?>
 

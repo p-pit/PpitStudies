@@ -138,7 +138,7 @@ class PdfReportViewHelper
 				elseif ($propertyId == 'class_size') $arguments[] = $classSize;
     			else {
 					$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
-					if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
+					if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 					if ($propertyId == 'name') $arguments[] = $account->name;
 					elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);

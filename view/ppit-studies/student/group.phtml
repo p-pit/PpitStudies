@@ -18,11 +18,8 @@
 
 <?php $i = 0; foreach ($criteria as $criterionId => $criterionValue) : ?>
 	<?php
-	if ($criterionId == 'property_1') $property = $context->getConfig('student/property/discipline');
-	elseif ($criterionId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
-	elseif ($criterionId == 'property_7') $property = $context->getConfig('student/property/class');
-	elseif ($criterionId == 'place_id') $property = $context->getConfig('student/property/place');
-	else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$criterionId];
+	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$criterionId];
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	$label = $property['labels'][$context->getLocale()];
 	if ($criterionId == 'place_id') $value = $places[$criterionValue]->caption; 
 	if ($property['type'] == 'select') $value = $property['modalities'][$criterionValue][$context->getLocale()];

@@ -147,6 +147,10 @@ function connectProgressSearchInputs() {
 	$('#erase-button').click(function () { eraseProgressSearch(); });
 
 <?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
+	<?php 
+	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+	?>
 	
 	<?php if ($propertyId == 'property_1') : ?>
 	$('#search_<?php echo $propertyId ?>').change(function () { document.location = '<?php echo $this->url('progress/index') ?>/' + $('#search_<?php echo $propertyId ?>').val(); });
@@ -160,7 +164,7 @@ function connectProgressSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 
-		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($property['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
@@ -178,6 +182,10 @@ function connectProgressSearchInputs() {
 <?php endforeach;?>
 
 <?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
+	<?php 
+	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+	?>
 	
 	<?php if (
 			$propertyId == 'discipline'
@@ -189,7 +197,7 @@ function connectProgressSearchInputs() {
 	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterProgressList(); });
 
-		<?php if ($context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['type'] == 'date') : ?>
+		<?php if ($property['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
 	$("#search_max_<?php echo $propertyId ?>").datepicker();
 	$('#search_min_<?php echo $propertyId ?>').change(function () { filterProgressList(); });
