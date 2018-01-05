@@ -13,7 +13,23 @@ return array(
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
         ),
     ),
- 
+
+	'console' => array(
+			'router' => array(
+					'routes' => array(
+							'batchNomad' => array(
+									'options' => array(
+											'route'    => 'student nomad <instance_id> <request> <from> [--place_identifier=] [--limit=]',
+											'defaults' => array(
+													'controller' => 'PpitStudies\Controller\Student',
+													'action'     => 'batchNomad'
+											)
+									)
+							),
+					),
+			),
+	),
+		
     'router' => array(
         'routes' => array(
         	'absence' => array(

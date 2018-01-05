@@ -1800,13 +1800,10 @@ class StudentController extends AbstractActionController
     	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
     }
     
-    public function nomadAction()
+    public function nomad($request, $from, $place_identifier, $limit)
     {
     	$context = Context::getCurrent();
-    	$request = $this->params()->fromRoute('request');
-    	$from = $this->params()->fromRoute('from');
     	$safe = $context->getConfig()['ppitUserSettings']['safe'];
-    	$limit = $this->params()->fromQuery('limit', 10);
     	$url = $context->getConfig()['ppitStudies']['nomadUrl'].$request.'?from='.$from.'&limit='.$limit;
     	$client = new Client(
     			$url,
@@ -1824,6 +1821,7 @@ class StudentController extends AbstractActionController
     	foreach ($leads as $lead) {
     		echo $lead['id']."\n";
     		$data = [];
+    		if ($place_identifier) $data['place_id'] = Place::get($place_identifier, 'identifier')->id;
     		$data['identifier'] = $lead['id'];
     		$data['status'] = (array_key_exists('type', $lead) && $lead['type'] == 'registration') ? 'suspect' : 'new';
     		$data['origine'] = 'nomad';
@@ -1860,8 +1858,26 @@ class StudentController extends AbstractActionController
 	    	$client2->setRawBody(json_encode($data, JSON_PRETTY_PRINT));
 	    	$response = $client2->send();
 			echo $response->renderStatusLine()."\n";
-			echo $response->getContent()."\n";
     	}
     	return $this->response;
+    }
+    
+    public function nomadAction() {
+    	$request = $this->params()->fromRoute('request');
+    	$from = $this->params()->fromRoute('from');
+    	$place_identifier = $this->params()->fromQuery('place_identifier', '');
+    	$limit = $this->params()->fromQuery('limit', 10);
+    	return $this->nomad($request, $from, $place_identifier, $limit);
+    }
+    
+    public function batchNomadAction() {
+    	$context = Context::getCurrent();
+    	$instance_id = $this->params()->fromRoute('instance_id');
+		$context->updateFromInstanceId($instance_id);
+    	$request = $this->params()->fromRoute('request');
+		$from = $this->params()->fromRoute('from');
+    	$place_identifier = $this->params()->fromRoute('place_identifier', '');
+    	$limit = $this->params()->fromRoute('limit', 10);
+    	return $this->nomad($request, $from, $place_identifier, $limit);
     }
 }
