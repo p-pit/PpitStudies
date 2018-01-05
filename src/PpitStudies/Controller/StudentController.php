@@ -1878,6 +1878,7 @@ class StudentController extends AbstractActionController
 		$from = $this->params()->fromRoute('from');
     	$place_identifier = $this->params()->fromRoute('place_identifier', '');
     	$limit = $this->params()->fromRoute('limit', 10);
+    	echo date('Y-m-d')."\n";
     	return $this->nomad($request, $from, $place_identifier, $limit);
     }
 }
