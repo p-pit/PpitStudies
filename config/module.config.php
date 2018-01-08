@@ -19,7 +19,7 @@ return array(
 					'routes' => array(
 							'batchNomad' => array(
 									'options' => array(
-											'route'    => 'student nomad <instance_id> <request> <from> [--place_identifier=] [--limit=]',
+											'route'    => 'student nomad <instance_id> <request> [--place_identifier=] [--limit=]',
 											'defaults' => array(
 													'controller' => 'PpitStudies\Controller\Student',
 													'action'     => 'batchNomad'
@@ -2039,7 +2039,7 @@ return array(
 	'core_account/search/p-pit-studies' => array(
 			'title' => array('en_US' => 'Students', 'fr_FR' => 'Eleves'),
 			'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
-			'main' => array(
+			'properties' => array(
 					'status' => 'select',
 					'place_id' => 'select',
 					'property_16' => 'select',
@@ -2055,15 +2055,23 @@ return array(
 					'property_15' => 'select',
 					'n_fn' => 'contains',
 			),
-			'more' => array(
-			),
 	),
 	'core_account/list/p-pit-studies' => array(
-			'property_1' => 'image',
-//			'photo_link_id' => 'photo',
-			'n_fn' => 'text',
-			'callback_date' => 'date',
-			'tel_cell' => 'phone',
+			'properties' => array(
+					'n_fn' => [],
+					'tel_cell' => ['rendering' => 'phone'],
+					'status' => [],
+					'property_16' => [],
+					'basket' => [],
+					'property_1' => ['rendering' => 'image'],
+					'callback_date' => [],
+					'property_8' => [],
+					'property_13' => [],
+					'origine' => [],
+					'property_7' => [],
+					'property_15' => [],
+					'place_id' => [],
+			),
 	),
 	'core_account/detail/p-pit-studies' => array(
 			'title' => array('en_US' => 'Student sheet:', 'fr_FR' => 'FICHE ELEVE'),
@@ -2167,6 +2175,10 @@ return array(
 			'callback_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
 			'property_13' => array('mandatory' => false),
+			'property_16' => array('mandatory' => false),
+			'property_15' => array('mandatory' => false),
+			'property_7' => array('mandatory' => false),
+			'contact_history' => array('mandatory' => false),
 	),
 	'core_account/post/p-pit-studies' => array(
 			'place_identifier' => array('mandatory' => false),
@@ -2614,6 +2626,8 @@ table.note-report td {
 					'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017'),
 					'2017-2018' => array('fr_FR' => '2017-2018', 'en_US' => '2017-2018'),
 					'2018-2019' => array('fr_FR' => '2018-2019', 'en_US' => '2018-2019'),
+					'2019-2020' => array('fr_FR' => '2019-2020', 'en_US' => '2019-2020'),
+					'2020-2021' => array('fr_FR' => '2020-2021', 'en_US' => '2020-2021'),
 			),
 			'labels' => array(
 					'en_US' => 'School year',

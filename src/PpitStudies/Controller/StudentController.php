@@ -32,7 +32,27 @@ use Zend\View\Model\ViewModel;
 
 class StudentController extends AbstractActionController
 {
-    public function indexAction()
+	public function getConfigProperties($type) {
+		$context = Context::getCurrent();
+		$properties = array();
+		foreach($context->getConfig('core_account/'.$type)['properties'] as $propertyId => $property) {
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+			$properties[$propertyId] = $property;
+		}
+		return $properties;
+	}
+
+	public function getVcardProperties() {
+		$context = Context::getCurrent();
+		$properties = array();
+		foreach($context->getConfig('vcard/properties') as $propertyId => $property) {
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+			$properties[$propertyId] = $property;
+		}
+		return $properties;
+	}
+	
+	public function indexAction()
     {
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
@@ -87,12 +107,16 @@ class StudentController extends AbstractActionController
 		$place = Place::get($context->getPlaceId());
 		
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
+		$configProperties = $this->getConfigProperties($type);
+		$vcardProperties = $this->getVcardProperties();
 		
 		$menu = $context->getConfig('menus/'.$type);
 		$currentEntry = $this->params()->fromQuery('entry');
 
     	return new ViewModel(array(
     			'context' => $context,
+				'configProperties' => $configProperties,
+				'vcardProperties' => $vcardProperties,
     			'config' => $context->getConfig(),
     			'place' => $place,
     			'active' => 'application',
@@ -103,6 +127,14 @@ class StudentController extends AbstractActionController
     			'templates' => array(),
     			'entry' => 'account',
     			'type' => $type,
+				'page' => $context->getConfig('core_account/index/'.$type),
+				'indexPage' => $context->getConfig('core_account/index/'.$type),
+    			'searchPage' => $context->getConfig('core_account/search/'.$type),
+				'listPage' => $context->getConfig('core_account/list/'.$type),
+				'detailPage' => $context->getConfig('core_account/detail/'.$type),
+				'updatePage' => $context->getConfig('core_account/update/'.$type),
+				'updateContactPage' => $context->getConfig('core_account/updateContact/'.$type),
+    			'groupUpdatePage' => $context->getConfig('core_account/groupUpdate/'.$type),
     			'status' => 'active',
     	));
     }
@@ -1875,10 +1907,9 @@ class StudentController extends AbstractActionController
     	$instance_id = $this->params()->fromRoute('instance_id');
 		$context->updateFromInstanceId($instance_id);
     	$request = $this->params()->fromRoute('request');
-		$from = $this->params()->fromRoute('from');
     	$place_identifier = $this->params()->fromRoute('place_identifier', '');
     	$limit = $this->params()->fromRoute('limit', 10);
     	echo date('Y-m-d')."\n";
-    	return $this->nomad($request, $from, $place_identifier, $limit);
+    	return $this->nomad($request, date('Y-m-d'), $place_identifier, $limit);
     }
 }
