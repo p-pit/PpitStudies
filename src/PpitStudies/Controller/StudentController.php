@@ -262,18 +262,11 @@ class StudentController extends AbstractActionController
        	}
 
        	$criteria = array();
-       	foreach ($context->getConfig('core_account/search/p-pit-studies')['main'] as $propertyId => $rendering) {
-       		if ($rendering == 'range') {
-       			if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
-       			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
-       		}
-       		else {
-       			if ($request->getPost($propertyId)) $criteria[$propertyId] = $request->getPost($propertyId);
-       		}
-       	}
-       	foreach ($context->getConfig('core_account/search/p-pit-studies')['more'] as $propertyId => $rendering) {
-       		if ($rendering == 'range') {
-       			if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
+       	foreach ($context->getConfig('core_account/search/p-pit-studies')['properties'] as $propertyId => $unused) {
+			$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+			if (in_array($property['type'], array('date', 'time', 'datetime', 'number'))) {
+				if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
        			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
        		}
        		else {
