@@ -1095,6 +1095,7 @@ return array(
 							'definition' => 'commitment/types',
 					),
 					'status' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 								'new' => array('en_US' => 'To be confirmed', 'fr_FR' => 'A confirmer'),
@@ -1108,6 +1109,7 @@ return array(
 							),
 					),
 					'account_name' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Name',
@@ -1123,6 +1125,7 @@ return array(
 							),
 					),
 					'description' => array(
+							'definition' => 'inline',
 							'type' => 'textarea',
 							'labels' => array(
 									'en_US' => 'Description',
@@ -1130,6 +1133,7 @@ return array(
 							),
 					),
 					'product_brand' => array(
+							'definition' => 'inline',
 							'type' => 'input',
 							'labels' => array(
 									'en_US' => 'Brand',
@@ -1161,6 +1165,7 @@ return array(
 							),
 					),
 					'including_options_amount' => array(
+							'definition' => 'inline',
 							'type' => 'number',
 							'labels' => array(
 									'en_US' => 'Amount',
@@ -1168,6 +1173,7 @@ return array(
 							),
 					),
 					'invoice_date' => array(
+							'definition' => 'inline',
 							'type' => 'date',
 							'labels' => array(
 									'en_US' => 'Invoice date',
@@ -2078,26 +2084,31 @@ return array(
 			'displayAudit' => false,
 			'tabs' => array(
 					'contact_1' => array(
+							'definition' => 'inline',
 							'route' => 'account/update',
 							'params' => array('type' => 'p-pit-studies'),
 							'labels' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 					),
 					'user' => array(
+							'definition' => 'inline',
 							'route' => 'account/updateUser',
 							'params' => array('type' => 'p-pit-studies'),
 							'labels' => array('en_US' => 'User account', 'fr_FR' => 'Compte utilisateur'),
 					),
 					'contact_2' => array(
+							'definition' => 'inline',
 							'route' => 'account/updateContact',
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 2),
 							'labels' => array('en_US' => 'Father', 'fr_FR' => 'Père'),
 					),
 					'contact_3' => array(
+							'definition' => 'inline',
 							'route' => 'account/updateContact',
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 3),
 							'labels' => array('en_US' => 'Mother', 'fr_FR' => 'Mère'),
 					),
 					'contact_4' => array(
+							'definition' => 'inline',
 							'route' => 'account/updateContact',
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 4),
 							'labels' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
