@@ -14,7 +14,7 @@ require_once('vendor/TCPDF-master/tcpdf.php');
 
 class PdfReportViewHelper
 {	
-    public static function render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $classSize = null)
+    public static function render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize = null)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -207,27 +207,13 @@ class PdfReportViewHelper
 						$context->getConfig('student/report')['signatureFrame']['html'],
 						'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
 						(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
-						'<br><br><br><br>'.
+						'<br><br><br><br><br><br><br><br>'.
 						(($globalEvaluation) ? '<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$globalEvaluation->n_fn : ''),
 						$mention
 					);
 			$pdf->writeHTML($text, true, 0, true, 0);
-			$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
-						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-						'<em>P-Pit Studies</em> (www.p-pit.fr)'
-						, true, 0, true, 0);
-/*		
-	    	$pdf->SetFont('', '', 12);
-			$pdf->Ln(5);
-			$text = '<div style="text-align: center"><strong>Période : '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].' Relevé de notes</strong></div>';
-			$pdf->writeHTML($text, true, 0, true, 0);
-			$pdf->Ln(10);*/
 	    }
-	    else {
+	    elseif ($category == 'note') {
 
 	    	$pdf->SetFont('', '', 8);
 			$text = PdfEvaluationTableViewHelper::render($notes, $category);
@@ -237,7 +223,14 @@ class PdfReportViewHelper
 					''
 			);*/
 			$pdf->writeHTML($text, true, 0, true, 0);
-			$pdf->writeHTML('<strong>'.$translator->translate('Relevé à conserver préciseusement. Aucun duplicata ne sera délivré', 'ppit-studies', $context->getLocale()).'</strong>'.
+	    }
+    	elseif ($category == 'absence') {
+
+	    	$pdf->SetFont('', '', 8);
+			$text = PdfAbsenceTableViewHelper::render($absences);
+			$pdf->writeHTML($text, true, 0, true, 0);
+	    }
+		$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
@@ -245,9 +238,6 @@ class PdfReportViewHelper
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 					'<em>P-Pit Studies</em> (www.p-pit.fr)'
 					, true, 0, true, 0);
-	    	// Close and output PDF document
-	    	// This method has several options, check the source code documentation for more information.
-	    	return $pdf;
-	    }
+	    return $pdf;
     }
 }

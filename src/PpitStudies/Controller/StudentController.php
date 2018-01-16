@@ -1255,6 +1255,7 @@ class StudentController extends AbstractActionController
 			$school_period = $this->params()->fromRoute('school_period');
 			$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
 		}
+		$level = $this->params()->fromRoute('level');
 		
 		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 		$absences = array();
@@ -1285,13 +1286,16 @@ class StudentController extends AbstractActionController
 			}
 		}
 		else $averages = null;
-		$notes = NoteLink::GetList('note', array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'subject', 'ASC', 'search');
+
+		$params = array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period);
+		if ($level) $params['level'] = $level;
+		$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
 		if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
 		
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $classSize);
+    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

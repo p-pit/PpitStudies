@@ -704,7 +704,7 @@ return array(
 	       						'download' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/download[/:category][/:account_id][/:school_year][/:school_period]',
+		        								'route' => '/download[/:category][/:account_id][/:school_year][/:school_period][/:level]',
 		        								'constraints' => array(
 		        										'account_id'     => '[0-9]*',
 		        								),
@@ -2665,16 +2665,33 @@ table.note-report td {
 	'student/property/evaluationCategory' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'cned' => array( 'en_US' => 'CNED', 'fr_FR' => 'CNED'),
 					'assessment' => array( 'en_US' => 'Assessment', 'fr_FR' => 'Contrôle'),
 					'homework' => array('en_US' => 'Homework', 'fr_FR' => 'Devoirs maison'),
 					'oral-test' => array('en_US' => 'Oral test', 'fr_FR' => 'Interrogation orale'),
 					'written-test' => array('en_US' => 'Written test', 'fr_FR' => 'Interrogation écrite'),
 					'participation' => array('en_US' => 'Participation', 'fr_FR' => 'Participation'),
-// Demande A Herrera
-					'mock-exam' => array('en_US' => 'Mock exam', 'fr_FR' => 'Brevet blanc'),
-					'mock-bac' => array('en_US' => 'Mock Baccalaureate', 'fr_FR' => 'Baccalauréat blanc'),
-//
+					'mock-exam' => array('en_US' => '1st Mock exam', 'fr_FR' => '1er brevet blanc'),
+					'mock-exam_2' => array('en_US' => '2nd Mock exam', 'fr_FR' => '2nd brevet blanc'),
+					'mock-exam_3' => array('en_US' => '3rd Mock exam', 'fr_FR' => '3e brevet blanc'),
+					'mock-bac' => array('en_US' => '1st Mock Baccalaureate', 'fr_FR' => '1er baccalauréat blanc'),
+					'mock-bac_2' => array('en_US' => '2nd Mock Baccalaureate', 'fr_FR' => '2nd baccalauréat blanc'),
+					'mock-bac_3' => array('en_US' => '3rd Mock Baccalaureate', 'fr_FR' => '3e baccalauréat blanc'),
+					'mock-bts' => array('en_US' => '1st Mock BTS', 'fr_FR' => '1er BTS blanc'),
+					'mock-bts_2' => array('en_US' => '2nd Mock BTS', 'fr_FR' => '2nd BTS blanc'),
+					'mock-bts_3' => array('en_US' => '3rd Mock BTS', 'fr_FR' => '3e BTS blanc'),
+					'cned' => array( 'en_US' => 'CNED', 'fr_FR' => 'CNED'),
+					'cned_1' => array( 'en_US' => 'CNED Nbr 1', 'fr_FR' => 'CNED N°1'),
+					'cned_2' => array( 'en_US' => 'CNED Nbr 2', 'fr_FR' => 'CNED N°2'),
+					'cned_3' => array( 'en_US' => 'CNED Nbr 3', 'fr_FR' => 'CNED N°3'),
+					'cned_4' => array( 'en_US' => 'CNED Nbr 4', 'fr_FR' => 'CNED N°4'),
+					'cned_5' => array( 'en_US' => 'CNED Nbr 5', 'fr_FR' => 'CNED N°5'),
+					'cned_6' => array( 'en_US' => 'CNED Nbr 6', 'fr_FR' => 'CNED N°6'),
+					'cned_7' => array( 'en_US' => 'CNED Nbr 7', 'fr_FR' => 'CNED N°7'),
+					'cned_8' => array( 'en_US' => 'CNED Nbr 8', 'fr_FR' => 'CNED N°8'),
+					'cned_9' => array( 'en_US' => 'CNED Nbr 9', 'fr_FR' => 'CNED N°9'),
+					'cned_10' => array( 'en_US' => 'CNED Nbr 10', 'fr_FR' => 'CNED N°10'),
+					'cned_11' => array( 'en_US' => 'CNED Nbr 11', 'fr_FR' => 'CNED N°11'),
+					'cned_12' => array( 'en_US' => 'CNED Nbr 12', 'fr_FR' => 'CNED N°12'),
 			),
 			'labels' => array(
 					'en_US' => 'Evaluation category',
@@ -2907,8 +2924,8 @@ table.note-report td {
 			'description' => array(
 					array(
 							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('n_fn'),
+							'right' => array('en_US' => '%s - %s - %s', 'fr_FR' => '%s - %s - %s'),
+							'params' => array('n_fn', 'property_1', 'property_6'),
 					),
 					array(
 							'left' => array('en_US' => 'Class', 'fr_FR' => 'Classe'),
@@ -2919,16 +2936,6 @@ table.note-report td {
 							'left' => array('en_US' => 'Birth date', 'fr_FR' => 'Date de naissance'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 							'params' => array('birth_date'),
-					),
-					array(
-							'left' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('property_1'),
-					),
-					array(
-							'left' => array('en_US' => 'Status', 'fr_FR' => 'Statut'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('property_6'),
 					),
 					array(
 							'left' => array('en_US' => 'Class size', 'fr_FR' => 'Effectif'),
@@ -2976,10 +2983,9 @@ table.note-report td {
 	<td style="width: 8%%" align="right">%s</td>
 	<td style="width: 8%%" align="right">%s</td>
 	<td style="width: 8%%" align="right">%s</td>
-	<td style="width: 16%%; font-size: 0.8em" align="right">%s</td>
-	<td style="width: 25%%">%s</td>
+	<td style="width: 41%%">%s</td>
 </tr>',
-					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution', 'assessment'),
+					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'assessment'),
 			),
 
 			'signatureFrame' => array(
@@ -3045,6 +3051,37 @@ table.note-report td {
 <!--	<td style="width: 31%%">s</td> -->
 </tr>',
 					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution'/*, 'assessment'*/),
+			),
+
+			'absenceHeader' => array(
+					'html' => '
+<table class="table note-report">
+	<tr>
+		<th style="width: 20%%">%s</th>
+		<th style="width: 20%%">%s</th>
+		<th style="width: 20%%">%s</th>
+		<th style="width: 40%%">%s</th>
+	</tr>
+%s
+</table>',
+					'params' => array(
+							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
+							array('en_US' => 'Period', 'fr_FR' => 'Période'),
+							array('en_US' => 'Motive', 'fr_FR' => 'Motif'),
+							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
+							'rows' => null,
+					),
+			),
+			
+			'absenceRow' => array(
+					'html' => '
+<tr %s>
+	<td style="width: 20%%">%s</td>
+	<td style="width: 20%%">%s</td>
+	<td style="width: 20%%">%s</td>
+	<td style="width: 20%%">%s</td>
+</tr>',
+					'params' => array('color', 'subject', 'period', 'motive', 'observations'),
 			),
 
 			'pdfDetailStyle' => '

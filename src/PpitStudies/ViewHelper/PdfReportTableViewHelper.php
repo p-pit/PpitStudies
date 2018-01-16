@@ -35,7 +35,7 @@ class PdfReportTableViewHelper
 	    $globalEvaluation = '';
 	    foreach ($period as $evaluation) {
 	    	if ($evaluation->subject != 'global') {
-	    		if ($category == 'note' && $evaluation->level) $distribution = $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()].'&nbsp;'.$context->decodeDate($evaluation->date);
+/*	    		if ($category == 'note' && $evaluation->level) $distribution = $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()].'&nbsp;'.$context->decodeDate($evaluation->date);
 	    		else {
 			   		$distribution = array();
 			   		foreach ($evaluation->distribution as $category => $value) {
@@ -44,7 +44,7 @@ class PdfReportTableViewHelper
 			   			}
 			   		}
 			   		$distribution = implode('<br>', $distribution);
-	    		}
+	    		}*/
 		   		$rows.= sprintf(
 		   				$context->getConfig('student/report')['detailRow']['html'], 
 		   				(($color) ? 'style="background-color: #EEE"' : ''),
@@ -55,7 +55,7 @@ class PdfReportTableViewHelper
 						$context->formatFloat($evaluation->lower_note, 2),
 		   				$context->formatFloat($evaluation->average_note, 2),
 						$context->formatFloat($evaluation->higher_note, 2),
-						$distribution,
+//						$distribution,
 						$evaluation->assessment
 		   		);
 		   		$color = ($color+1)%2;
