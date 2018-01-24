@@ -521,9 +521,11 @@ class NoteController extends AbstractActionController
 	    public function repriseAction()
 	    {
 	    	$context = Context::getCurrent();
-	    	$place_caption = $this->params()->fromRoute('place_caption', 0);
-	    	$place = Place::get($place_caption, 'caption');
-	    	foreach (Note::getList('evaluation', 'report', array('place_id', $place->id), 'id', 'asc') as $note) {
+	    	$place_identifier = $this->params()->fromRoute('place_identifier');
+	    	$place = Place::get($place_identifier, 'identifier');
+	    	$where = array();
+	    	if ($place_identifier) $where['place_id'] = $place->id;
+	    	foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc') as $note) {
 	    		print_r($note->id.' '.$note->subject."\n");
 //		    	$note->links = array();
 		    	$select = NoteLink::getTable()->getSelect()
@@ -533,7 +535,7 @@ class NoteController extends AbstractActionController
 		    				$cursor = NoteLink::getTable()->selectWith($select);
 		    	if ($note->subject == 'global') {
 		    		foreach($cursor as $noteLink) {
-						$value = $noteLink->computeStudentAverage($note->school_year, $note->school_period);
+/*						$value = $noteLink->computeStudentAverage($note->school_year, $note->school_period);
 						$value = $value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'];
 						if (round($value, 2) != round($noteLink->value, 2)) {
 							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
@@ -541,6 +543,13 @@ class NoteController extends AbstractActionController
 							print_r('Old: '.$noteLink->value."\n");
 							$noteLink->value = $value;
 							$noteLink->update(null);
+			    		}*/
+						if ($noteLink->value) {
+							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
+							$noteLink->evaluation = $noteLink->value;
+							print_r('Evaluation: '.$noteLink->evaluation."\n");
+							$noteLink = null;
+//							$noteLink->update(null);
 			    		}
 		    		}
 		    	}

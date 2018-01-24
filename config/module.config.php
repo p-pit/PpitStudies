@@ -298,7 +298,7 @@ return array(
 			       				'reprise' => array(
 	       								'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/reprise[/:place_caption]',
+		        								'route' => '/reprise[/:place_identifier]',
 		        								'defaults' => array(
 		        										'action' => 'reprise',
 		        								),
