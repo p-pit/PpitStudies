@@ -194,10 +194,10 @@ class PdfReportViewHelper
 					$first = true;
 					foreach ($context->getConfig('student/property/reportMention')['modalities'] as $modalityId => $modality) {
 						if (!$first) $mention .= '<br>';
-						if ($globalEvaluation->value == $modalityId) $mention .= '<strong>';
+						if ($globalEvaluation->evaluation == $modalityId) $mention .= '<strong>';
 						else $mention .= '<span style="font-style: italic; color: lightgray">';
 						$mention .= $context->getConfig('student/property/reportMention')['modalities'][$modalityId][$context->getLocale()];
-						if ($globalEvaluation->value == $modalityId) $mention .= '</strong>';
+						if ($globalEvaluation->evaluation == $modalityId) $mention .= '</strong>';
 						else $mention .= '</span>';
 						$first = false;
 					}

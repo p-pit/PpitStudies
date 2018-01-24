@@ -678,21 +678,6 @@ class StudentController extends AbstractActionController
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
-/*    			if ($request->getPost('teacher_n_fn')) {
-    				$select = Vcard::getTable()->getSelect();
-    				$where = new Where;
-    				$where->notEqualTo('status', 'deleted');
-    				$where->like('n_fn', '%'.$request->getPost('teacher_n_fn').'%');
-    				$where->like('roles', '%teacher%');
-			    	$select->where($where);
-    				$cursor = Vcard::getTable()->selectWith($select);
-    				$contact = null;
-    				foreach ($cursor as $contact);
-    				if ($contact) {
-    					$data['teacher_id'] = $contact->id;
-    					$note->teacher_n_fn = $contact->n_fn;
-    				}
-	    		}*/
     			$teacher_id = $request->getPost('teacher_id');
     			if ($teacher_id) {
     				$teacher = $teachers[$teacher_id];
@@ -721,19 +706,26 @@ class StudentController extends AbstractActionController
     			$nbAccount = $request->getPost('nb-account');
     			for ($i = 0; $i < $nbAccount; $i++) {
     				$account = $accounts[$request->getPost('account_'.$i)];
-    				$value = ($data['subject'] == 'global') ? $request->getPost('mention_'.$account->id) : $request->getPost('value_'.$account->id);
+	    			$noteLink = NoteLink::instanciate($account->id, null);
+    				// Global mention to move to another property
+    				$value = $request->getPost('value_'.$account->id);
     				if (!$value) $value = null;
-	    			$assessment = $request->getPost('assessment_'.$account->id);
+    				$mention = $request->getPost('mention_'.$account->id);
+    				$assessment = $request->getPost('assessment_'.$account->id);
 	    			$audit = [];
     				if ($type == 'report' && $value === null) {
-						if (array_key_exists($account->id, $computedAverages)) {
+    				    if ($data['subject'] == 'global') {
+    			    		$value = $noteLink->computeStudentAverage($data['school_year'], $data['school_period']);
+    			    	}
+    					elseif (array_key_exists($account->id, $computedAverages)) {
 							$value = $computedAverages[$account->id]['global']['note'];
 							$audit = $computedAverages[$account->id]['global']['notes'];
 						}
-	    			}
+    			    	$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+    				}
     				if ($value !== null || $assessment) {
-	    				$noteLink = NoteLink::instanciate($account->id, null);
 	    				$noteLink->value = $value;
+	    				$noteLink->evaluation = $mention;
 	    				$noteLink->assessment = $assessment;
 	    				$noteLink->distribution = array();
 		    			if ($type == 'report') {

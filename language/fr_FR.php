@@ -53,6 +53,7 @@
 		'Final year' => 'Terminale',
 		'Football' => 'Football',
 		'For the' => 'Pour le',
+		'Global average' => 'Moyenne générale',
 		'Health insurance' => 'Assurance médicale, mutuelle',
 		'Homework notebook' => 'Cahier de textes',
 		'Golf' => 'Golf',

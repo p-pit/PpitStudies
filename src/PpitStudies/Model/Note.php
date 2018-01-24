@@ -230,6 +230,7 @@ class Note implements InputFilterAwareInterface
     	$where = new Where;
     	$where->notEqualTo('student_note.status', 'deleted');
     	$where->notEqualTo('student_note_link.status', 'deleted');
+    	$where->equalTo('category', 'evaluation');
     	$where->equalTo('type', 'note');
     	$where->equalTo('place_id', $place_id);
     	$where->equalTo('school_year', $school_year);
@@ -246,7 +247,7 @@ class Note implements InputFilterAwareInterface
 		    	$periodCategoryNotes[$noteLink->account_id][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
     		}
     	}
-        $categoryAverages = array();
+    	$categoryAverages = array();
     	foreach ($periodNotes as $account_id => $notes) {
     		$average = 0;
     		$globalWeight = 0;

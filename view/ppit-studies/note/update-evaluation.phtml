@@ -207,7 +207,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 		</div>
 
 <!-- Reference value -->
-<?php $reference_value = ($note->reference_value) ? $note->reference_value : '20' ?>
+<?php $reference_value = ($note->reference_value) ? $note->reference_value : (($note->type == 'report') ? $context->getConfig('student/parameter/average_computation')['reference_value'] : 20 ) ?>
 		<input type="hidden" id="reference_value" />
 		<div class="form-group" id="input_reference_value_group">
 			<label class="col-sm-5 control-label"><?php echo $this->translate('Reference value', 'ppit-studies', $context->getLocale()) ?></label>

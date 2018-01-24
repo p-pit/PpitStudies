@@ -10,6 +10,7 @@ use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
+use PpitStudies\ViewHelper\SsmlNoteViewHelper;
 use Zend\Db\Sql\Where;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -152,8 +153,27 @@ class NoteController extends AbstractActionController
     
     public function exportAction()
     {
-    	$view = $this->getList();
-
+        	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+		$category = $this->params()->fromRoute('category');
+		$type = $this->params()->fromRoute('type');
+		$params = $this->getFilters($category, $this->params());
+    
+    	$major = ($this->params()->fromQuery('major', 'date'));
+    	$dir = ($this->params()->fromQuery('dir', 'DESC'));
+    
+    	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
+    
+    	// Retrieve the list
+    	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
+    	
+    	// Return the link list
+    	$view = new ViewModel(array(
+    			'category' => $category,
+    			'noteLinks' => $noteLinks,
+    	));
+    	
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
@@ -164,6 +184,7 @@ class NoteController extends AbstractActionController
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition:inline;filename=Fichier.xlsx ');
 		$writer->save('php://output');
+		return $this->response;
     }
     
     public function updateAction()
@@ -315,21 +336,6 @@ class NoteController extends AbstractActionController
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
-/*    		    if ($request->getPost('teacher_n_fn')) {
-    				$select = Vcard::getTable()->getSelect();
-    				$where = new Where;
-    				$where->notEqualTo('status', 'deleted');
-    				$where->like('n_fn', '%'.$request->getPost('teacher_n_fn').'%');
-    				$where->like('roles', '%teacher%');
-			    	$select->where($where);
-    				$cursor = Vcard::getTable()->selectWith($select);
-    				$contact = null;
-    				foreach ($cursor as $contact);
-    				if ($contact) {
-    					$note->teacher_n_fn = $contact->n_fn;
-    					$data['teacher_id'] = $contact->id;
-    				}
-	    		}*/
     		    $teacher_id = $request->getPost('teacher_id');
     			if ($teacher_id) {
     				$teacher = $teachers[$teacher_id];
@@ -349,15 +355,22 @@ class NoteController extends AbstractActionController
     			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
     				$noteLink->audit = array();
-    				$value = ($data['subject'] == 'global') ? $request->getPost('mention_'.$noteLink->account_id) : $request->getPost('value_'.$noteLink->account_id);
+    				// Global mention to move to another property
+    				$value = $request->getPost('value_'.$noteLink->account_id);
     				if (!$value) $value = null;
+    				$mention = $request->getPost('mention_'.$noteLink->account_id);
     				if ($note->type == 'report' && $value === null) {
-    					if (array_key_exists($noteLink->account_id, $computedAverages)) {
-    						$value = $computedAverages[$noteLink->account_id]['global']['note'];
+    				    if ($data['subject'] == 'global') {
+    			    		$value = $noteLink->computeStudentAverage($data['school_year'], $data['school_period']);
+    			    	}
+    					elseif (array_key_exists($noteLink->account_id, $computedAverages)) {
+    						$value = $computedAverages[$noteLink->account_id]['global']['note'] * $data['reference_value'] / 20;
     						$noteLink->audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
     					}
+    			    	$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
     				}
     				$noteLink->value = $value;
+    				$noteLink->evaluation = $mention;
     				$noteLink->assessment = $request->getPost('assessment_'.$noteLink->account_id);
 					$noteLink->distribution = array();
 					if ($note->type == 'report') {
@@ -385,7 +398,7 @@ class NoteController extends AbstractActionController
 
 	    			if ($action != 'delete') {
 	    				$rc = $note->loadData($data);
-    					if ($rc == 'Integrity') throw new \Exception('View error');
+	    				if ($rc == 'Integrity') throw new \Exception('View error');
     					if ($rc == 'Duplicate') $error = $rc;
 	    			}
 	    			if (!$error) {
@@ -507,38 +520,56 @@ class NoteController extends AbstractActionController
 	    
 	    public function repriseAction()
 	    {
-	    	foreach (Note::getList('evaluation', 'report', array('place_id', '1'), 'id', 'asc') as $note) {
-	    		print_r($note->id."\n");
-		    	$note->links = array();
+	    	$context = Context::getCurrent();
+	    	$place_caption = $this->params()->fromRoute('place_caption', 0);
+	    	$place = Place::get($place_caption, 'caption');
+	    	foreach (Note::getList('evaluation', 'report', array('place_id', $place->id), 'id', 'asc') as $note) {
+	    		print_r($note->id.' '.$note->subject."\n");
+//		    	$note->links = array();
 		    	$select = NoteLink::getTable()->getSelect()
 		    				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
 		    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
 	    					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
 		    				$cursor = NoteLink::getTable()->selectWith($select);
-	    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
-		    	foreach($cursor as $noteLink) {
-					$note->links[] = $noteLink;
-					$audit = array();
-					$distribution = array();
-					if (array_key_exists($noteLink->account_id, $computedAverages)) {
-	    				$value = $computedAverages[$noteLink->account_id]['global']['note'];
-	    				$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
-	    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
-	    					$distribution[$categoryId] = $category['note'];
-						}
-						if ($value != $noteLink->value || count($distribution) != count($noteLink->distribution)) {
-							print_r($noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
+		    	if ($note->subject == 'global') {
+		    		foreach($cursor as $noteLink) {
+						$value = $noteLink->computeStudentAverage($note->school_year, $note->school_period);
+						$value = $value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'];
+						if (round($value, 2) != round($noteLink->value, 2)) {
+							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
 							print_r('New: '.$value."\n");
-							print_r($distribution);
 							print_r('Old: '.$noteLink->value."\n");
-							print_r($noteLink->distribution);
 							$noteLink->value = $value;
-							$noteLink->distribution = $distribution;
-							$noteLink->audit = $audit;
-//							$noteLink->update(null);
+							$noteLink->update(null);
+			    		}
+		    		}
+		    	}
+		    	else {
+/*		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
+			    	foreach($cursor as $noteLink) {
+//						$note->links[] = $noteLink;
+						$audit = array();
+						$distribution = array();
+						if (array_key_exists($noteLink->account_id, $computedAverages)) {
+		    				$value = $computedAverages[$noteLink->account_id]['global']['note'];
+		    				$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
+		    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
+		    					$distribution[$categoryId] = $category['note'];
+							}
+							if (round($value, 2) != round($noteLink->value, 2) || count($distribution) != count($noteLink->distribution)) {
+								print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
+								print_r('New: '.$value."\n");
+								print_r($distribution);
+								print_r('Old: '.$noteLink->value."\n");
+								print_r($noteLink->distribution);
+								$noteLink->value = $value;
+								$noteLink->distribution = $distribution;
+								$noteLink->audit = $audit;
+								$noteLink->update(null);
+							}
 						}
-					}
-				}
+					}*/
+		    	}
 	    	}
 	    	return $this->response;
 	    }

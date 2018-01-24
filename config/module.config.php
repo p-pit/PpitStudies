@@ -298,7 +298,7 @@ return array(
 			       				'reprise' => array(
 	       								'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/reprise',
+		        								'route' => '/reprise[/:place_caption]',
 		        								'defaults' => array(
 		        										'action' => 'reprise',
 		        								),
@@ -1375,9 +1375,6 @@ return array(
 					'outcoming' => array('en_US' => 'Outcoming call', 'fr_FR' => 'Appel sortant'),
 					'file' => array('en_US' => 'File', 'fr_FR' => 'Fichier'),
 					'agency' => array('en_US' => 'Agency', 'fr_FR' => 'Agence'),
-					'nomad' => array('en_US' => 'Nomad', 'fr_FR' => 'Nomad'),
-					'indeed' => array('en_US' => 'Indeed', 'fr_FR' => 'Indeed'),
-					'diplomeo' => array('en_US' => 'Diplomeo', 'fr_FR' => 'Diplomeo'),
 			),
 			'labels' => array(
 					'en_US' => 'Origine',
@@ -2060,6 +2057,7 @@ return array(
 					'property_6' => 'select',
 					'property_15' => 'select',
 					'n_fn' => 'contains',
+					'email' => 'contains',
 			),
 	),
 	'core_account/list/p-pit-studies' => array(
@@ -2489,6 +2487,10 @@ table.note-report td {
 					'property_4' => 'select',
 					'place_id' => 'select',
 			)
+	),
+
+	'student/parameter/average_computation' => array(
+			'reference_value' => 20,
 	),
 
 	'student/property/place' => array(
@@ -2963,7 +2965,7 @@ table.note-report td {
 </table>',
 					'params' => array(
 							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
-							array('en_US' => 'Weight', 'fr_FR' => 'Coef.'),
+							array('en_US' => 'Weight', 'fr_FR' => 'Coef. / Crédits'),
 							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
 							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
 							array('en_US' => 'Assessments', 'fr_FR' => 'Appréciations'),
@@ -3431,6 +3433,94 @@ table.note-report tr.period {
 			'duration' => 'number',
 	),
 
+	// Note
+
+	'note/property/place_caption' => array(
+			'type' => 'text',
+			'labels' => array(
+					'en_US' => 'Place',
+					'fr_FR' => 'Centre',
+			),
+	),
+
+	'note/property/date' => array(
+			'type' => 'date',
+			'labels' => array(
+					'en_US' => 'Date',
+					'fr_FR' => 'Date',
+			),
+	),
+	'note/property/name' => array(
+			'type' => 'text',
+			'labels' => array(
+					'en_US' => 'Student name',
+					'fr_FR' => 'Nom de l\'élève',
+			),
+	),
+	'note/property/n_fn' => array(
+			'type' => 'text',
+			'labels' => array(
+					'en_US' => 'Student name',
+					'fr_FR' => 'Nom de l\'élève',
+			),
+	),
+	'note/property/value' => array(
+			'type' => 'number',
+			'labels' => array(
+					'en_US' => 'Value',
+					'fr_FR' => 'Valeur',
+			),
+	),
+	'note/property/reference_value' => array(
+			'type' => 'number',
+			'labels' => array(
+					'en_US' => 'Reference value',
+					'fr_FR' => 'Valeur de référence',
+			),
+	),
+	'note/property/weight' => array(
+			'type' => 'number',
+			'labels' => array(
+					'en_US' => 'Coef. / Credits',
+					'fr_FR' => 'Coef./ Crédits',
+			),
+	),
+	'note/property/lower_note' => array(
+			'type' => 'number',
+			'labels' => array(
+					'en_US' => 'Lowest note',
+					'fr_FR' => 'Note inférieure',
+			),
+	),
+	'note/property/higher_note' => array(
+			'type' => 'number',
+			'labels' => array(
+					'en_US' => 'Highest note',
+					'fr_FR' => 'Note supérieure',
+			),
+	),
+	'note/property/average_note' => array(
+			'type' => 'number',
+			'labels' => array(
+					'en_US' => 'Average note',
+					'fr_FR' => 'Note moyenne',
+			),
+	),
+	'note/property/assessment' => array(
+			'type' => 'textarea',
+			'labels' => array(
+					'en_US' => 'Assessment',
+					'fr_FR' => 'Appréciation',
+			),
+	),
+	'note/property/distribution' => array(
+			'type' => 'key_value',
+			'labels' => array(
+					'en_US' => 'Distribution',
+					'fr_FR' => 'Distribution',
+			),
+	),
+
 	'note' => array(
 			'types' => array(
 					'evaluation' => array(
@@ -3454,7 +3544,28 @@ table.note-report tr.period {
 					),
 			),
 			'properties' => array(
+					'id' => array(
+							'definition' => 'inline',
+							'type' => 'text',
+							'labels' => array(
+									'en_US' => 'ID',
+									'fr_FR' => 'ID',
+							),
+					),
+					'type' => array(
+							'definition' => 'inline',
+							'type' => 'select',
+							'modalities' => array(
+									'note' => array('en_US' => 'Note', 'fr_FR' => 'Note'),
+									'report' => array('en_US' => 'Report', 'fr_FR' => 'Bulletin'),
+							),
+							'labels' => array(
+									'en_US' => 'Type',
+									'fr_FR' => 'Type',
+							),
+					),
 					'place_id' => array(
+							'definition' => 'inline',
 							'type' => 'select',
 							'modalities' => array(
 									'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
@@ -3464,22 +3575,36 @@ table.note-report tr.period {
 									'fr_FR' => 'Centre',
 							),
 					),
+					'place_caption' => array('definition' => 'note/property/place_caption'),
 					'school_year' => array(
-							'type' => 'repository',
+							'type' => 'repository', //Deprecated
 							'definition' => 'student/property/school_year',
 					),
 					'school_period' => array(
-							'type' => 'repository',
+							'type' => 'repository', //Deprecated
 							'definition' => 'student/property/school_period',
 					),
-					'subject' => array(
-							'type' => 'repository',
-							'definition' => 'student/property/school_subject',
-					),
 					'class' => array(
-							'type' => 'repository',
+							'type' => 'repository', //Deprecated
 							'definition' => 'student/property/class',
 					),
+					'subject' => array(
+							'type' => 'repository', //Deprecated
+							'definition' => 'student/property/school_subject',
+					),
+					'n_fn' => array('definition' => 'note/property/n_fn'),
+					'level' => array('definition' => 'student/property/evaluationCategory'),
+					'date' => array('definition' => 'note/property/date'),
+					'name' => array('definition' => 'note/property/name'),
+					'value' => array('definition' => 'note/property/value'),
+					'reference_value' => array('definition' => 'note/property/reference_value'),
+					'weight' => array('definition' => 'note/property/weight'),
+					'lower_note' => array('definition' => 'note/property/lower_note'),
+					'higher_note' => array('definition' => 'note/property/higher_note'),
+					'average_note' => array('definition' => 'note/property/average_note'),
+					'distribution' => array('definition' => 'note/property/distribution'),
+					'assessment' => array('definition' => 'note/property/assessment'),
+					'evaluation' => array('definition' => 'student/property/reportMention'),
 			),
 	),
 
@@ -3552,24 +3677,29 @@ table.note-report tr.period {
 			'average_note' => 'number',
 			'higher_note' => 'number',
 	),
-/*	
-	'note/update' => array(
-			'types' => array(
-					'schooling' => array(
-							'definition' => 'student/property/school_subject',
-							'subjects' => array(
-									'french' => array('en_US' => 'French', 'fr_FR' => 'Français'),
-									'mathematics' => array('en_US' => 'Mathematics', 'fr_FR' => 'Mathématiques'),
-									'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
-									'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
-									'll1' => array('en_US' => 'LL1', 'fr_FR' => 'LV1'),
-									'll2' => array('en_US' => 'LL2', 'fr_FR' => 'LV2'),
-									'economics' => array('en_US' => 'Economics', 'fr_FR' => 'Economie'),
-									'history-geography' => array('en_US' => 'History/geography', 'fr_FR' => 'Histoire/géographie'),
-							),
-					),
+
+	'note/export/evaluation' => array(
+			'title' => ['default' => 'evaluations', 'fr_FR' => 'evaluations'],
+			'properties' => array(
+				'id' => 'A',
+				'type' => 'B',
+				'place_caption' => 'C',
+				'school_period' => 'D',
+				'class' => 'E',
+				'level' => 'F',
+				'subject' => 'G',
+				'name' => 'H',
+				'date' => 'I',
+				'reference_value' => 'J',
+				'weight' => 'K',
+				'value' => 'L',
+				'lower_note' => 'M',
+				'average_note' => 'N',
+				'higher_note' => 'O',
+				'assessment' => 'P',
+				'evaluation' => 'Q',
 			),
-	),*/
+	),
 
 	'progress/Basketball' => array(
 			'criteria' => array(
