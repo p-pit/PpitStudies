@@ -242,7 +242,7 @@ class NoteLink implements InputFilterAwareInterface
     	$periodAverages = array();
     	foreach ($cursor as $noteLink) {
     		if ($noteLink->value !== null) {
-    			$periodAverages[] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+    			$periodAverages[] = array('reference_value' => ($noteLink->reference_value) ? $noteLink->reference_value : 20, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
     		}
     	}
     	$globalAverage = 0;

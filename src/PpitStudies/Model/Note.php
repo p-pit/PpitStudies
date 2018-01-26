@@ -141,7 +141,8 @@ class Note implements InputFilterAwareInterface
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-				if (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
+    			if ($propertyId == 'place_id') $where->equalTo('place_id', $params[$propertyId]);
+				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			else $where->like('student_note.'.$propertyId, '%'.$params[$propertyId].'%');
     		}

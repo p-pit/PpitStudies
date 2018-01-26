@@ -190,7 +190,7 @@ class PdfReportViewHelper
 			$text = $context->getConfig('student/report')['pdfDetailStyle'];
 			$mention = '';
 			if ($globalEvaluation) {
-				if ($globalEvaluation->value) {
+				if ($globalEvaluation->evaluation) {
 					$first = true;
 					foreach ($context->getConfig('student/property/reportMention')['modalities'] as $modalityId => $modality) {
 						if (!$first) $mention .= '<br>';

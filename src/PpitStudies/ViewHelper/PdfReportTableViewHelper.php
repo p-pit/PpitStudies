@@ -97,9 +97,9 @@ class PdfReportTableViewHelper
 		    		$evaluation->n_fn,
 		    		'',
 		    		$note,
-		    		$context->formatFloat($evaluation->lower_note, 2),
-		    		$context->formatFloat($evaluation->average_note, 2),
-		    		$context->formatFloat($evaluation->higher_note, 2),
+		    		'', //$context->formatFloat($evaluation->lower_note, 2),
+		    		'', //$context->formatFloat($evaluation->average_note, 2),
+		    		'', //$context->formatFloat($evaluation->higher_note, 2),
 		    		''
 		    );
 	    };
