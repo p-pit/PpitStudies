@@ -42,6 +42,7 @@ function getParams() {
 	$searchTitle = (isset ($context->getConfig('note/search'.'/'.$category)['searchTitle']) ? $context->getConfig('note/search'.'/'.$category)['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
+	if (!todo) $('#limit').val('');
 
 	return params;
 }
@@ -72,6 +73,7 @@ function eraseNoteSearch() {
 
 <?php endforeach;?>
 
+	$('#limit').val('50');
 	getNoteList(getParams(), 'date', 'DESC');
 }
 
@@ -146,7 +148,7 @@ function connectNoteSearchInputs() {
 // Load the list
 function getNoteList(params, major, dir) {
 	// Execute the ajax request
-	route = '<?php echo $this->url('note/list', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	route = '<?php echo $this->url('note/list', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
@@ -174,7 +176,13 @@ function getNoteList(params, major, dir) {
 					sortNoteList($(this).attr('id').split('-')[0]);
 				});
 			});
-			
+
+			// Connect the more anchor
+			$('#note-more-anchor').click(function () {
+				$('#limit').val('');
+				filterNoteList();
+			});
+
 			// Connect the detail anchors
 			$('.note-detail-anchor').each(function () {
 				$(this).click(function () {

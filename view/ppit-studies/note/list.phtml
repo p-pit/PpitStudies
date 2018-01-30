@@ -99,6 +99,20 @@
 	<tr class="invisible"><td colspan="99"></td></tr>
 	
 <?php endforeach; ?>
+
+	<tr>
+
+<?php if ($mode == 'todo' && count($notes) == '50') : ?>
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default index-btn" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="note-more-anchor">
+				<span class="glyphicon glyphicon-option-horizontal" id="more-glyphicon"></span>
+			</button>
+		</td>
+<?php else : ?>
+		<td>&nbsp;</td>
+<?php endif;?>
+		<td colspan="<?php echo count($context->getConfig('note/list/'.$category)) ?>">&nbsp;</td>
+	</tr>
 	
 	<tr>
 		<th>&nbsp;</th>

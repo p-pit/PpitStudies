@@ -122,7 +122,7 @@ class Note implements InputFilterAwareInterface
     	return $data;
     }
     
-    public static function getList($category, $type, $params, $major, $dir, $mode = 'todo')
+    public static function getList($category, $type, $params, $major, $dir, $mode = 'todo', $limit = 50)
     {
     	$context = Context::getCurrent();
     	$select = Note::getTable()->getSelect()
@@ -152,6 +152,8 @@ class Note implements InputFilterAwareInterface
 		$cursor = Note::getTable()->selectWith($select);
 //    	$criteria = $context->getConfig('note')['criteria'];
 		$notes = array();
+
+		$i = 0;
 		foreach ($cursor as $note) {
 			$note->properties = $note->toArray();
 			
@@ -173,7 +175,11 @@ class Note implements InputFilterAwareInterface
 	    			elseif ($params[$propertyId] != $note->criteria[$propertyId]) $keep = false;
 				}
 			}*/
-			if ($keep) $notes[] = $note;
+			if ($keep) {
+				$i++;
+				if ($limit && $i > $limit) break;
+				$notes[] = $note;
+			}
 		}
 		return $notes;
     }

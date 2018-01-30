@@ -108,14 +108,14 @@ class NoteController extends AbstractActionController
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
 		$params = $this->getFilters($category, $this->params());
-    
-    	$major = ($this->params()->fromQuery('major', 'date'));
+		$limit = $this->params()->fromQuery('limit');
+		$major = ($this->params()->fromQuery('major', 'date'));
     	$dir = ($this->params()->fromQuery('dir', 'DESC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
     	// Retrieve the list
-    	$notes = Note::getList($category, $type, $params, $major, $dir, $mode);
+    	$notes = Note::getList($category, $type, $params, $major, $dir, $mode, $limit);
 		$average = 0;
     	if ($category == 'evaluation') {
 			$totalWeight = 0;
