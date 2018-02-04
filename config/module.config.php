@@ -1284,7 +1284,12 @@ return array(
 			'property_2' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
 	),
-
+	'commitment/group/p-pit-studies' => array(
+			'status' => [],
+			'caption' => [],
+			'description' => [],
+	),
+		
 	'commitment/invoice/p-pit-studies' => array(
 			'header' => array(),
 			'description' => array(

@@ -58,7 +58,7 @@ class PdfReportTableViewHelper
 		    		}
 	    			$note = $context->formatFloat($evaluation->value, 2);
 		    		if ($evaluation->reference_value != 20) $note .= '/'.$context->formatFloat($evaluation->reference_value, 0);
-	    			if ($score) $note = $score.' ('.$note.')';
+	    			if ($score) $note = $score; //.' ('.$note.')';
 	    		}
 		   		$rows.= sprintf(
 		   				$context->getConfig('student/report')['detailRow']['html'], 
@@ -88,7 +88,7 @@ class PdfReportTableViewHelper
 	    		}
     			$note = $context->formatFloat($evaluation->value, 2);
 	    		if ($evaluation->reference_value != 20) $note .= '/'.$context->formatFloat($evaluation->reference_value, 0);
-    			if ($score) $note = $score.' ('.$note.')';
+//    			if ($score) $note = $score.' ('.$note.')';
 		    }
 		    $rows.= sprintf(
 		    		$context->getConfig('student/report')['detailRow']['html'],
