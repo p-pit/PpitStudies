@@ -364,10 +364,11 @@ class NoteController extends AbstractActionController
     			    		$value = $noteLink->computeStudentAverage($data['school_year'], $data['school_period']);
     			    	}
     					elseif (array_key_exists($noteLink->account_id, $computedAverages)) {
-    						$value = $computedAverages[$noteLink->account_id]['global']['note'] * $data['reference_value'] / 20;
+    						$value = $computedAverages[$noteLink->account_id]['global']['note'];
     						$noteLink->audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
     					}
-    			    	$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+    					else $value = null;
+    			    	if ($value !== null) $value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
     				}
     				$noteLink->value = $value;
     				$noteLink->evaluation = $mention;

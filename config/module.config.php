@@ -1108,6 +1108,7 @@ return array(
 									'fr_FR' => 'Statut',
 							),
 					),
+					'place_id' => array('definition' => 'commitment/property/place_id'),
 					'account_name' => array(
 							'definition' => 'inline',
 							'type' => 'input',
@@ -1262,6 +1263,7 @@ return array(
 			'title' => array('en_US' => 'Subscriptions', 'fr_FR' => 'Inscriptions'),
 			'todoTitle' => array('en_US' => 'active', 'fr_FR' => 'actifs'),
 			'main' => array(
+					'place_id' => 'select',
 					'type' => 'select',
 					'status' => 'select',
 					'including_options_amount' => 'range',
@@ -1270,6 +1272,7 @@ return array(
 	),
 
 	'commitment/list/p-pit-studies' => array(
+			'place_id' => 'select',
 			'property_1' => 'select',
 			'property_2' => 'select',
 			'property_3' => 'select',

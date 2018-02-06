@@ -721,7 +721,8 @@ class StudentController extends AbstractActionController
 							$value = $computedAverages[$account->id]['global']['note'];
 							$audit = $computedAverages[$account->id]['global']['notes'];
 						}
-    			    	$value = $value * $data['reference_value'] / 20; //$context->getConfig('student/parameter/average_computation')['reference_value'];
+    			    	else $value = null;
+    			    	if ($value !== null) $value = $value * $data['reference_value'] / 20;
     				}
     				if ($value !== null || $assessment) {
 	    				$noteLink->value = $value;
