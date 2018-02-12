@@ -357,7 +357,7 @@ class NoteController extends AbstractActionController
     				$noteLink->audit = array();
     				// Global mention to move to another property
     				$value = $request->getPost('value_'.$noteLink->account_id);
-    				if (!$value) $value = null;
+    				if ($value == '') $value = null;
     				$mention = $request->getPost('mention_'.$noteLink->account_id);
     				if ($note->type == 'report' && $value === null) {
     				    if ($data['subject'] == 'global') {

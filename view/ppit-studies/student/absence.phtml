@@ -36,6 +36,48 @@ table.note-report tr.period {
 }
 </style>
 
+<?php foreach ($periods as $periodId => $period) : ?>
+	<?php 
+	$params = explode('.', $periodId); 
+	$school_year = $params[0];
+	$school_period = $params[1];
+	?>
+	
+    <!--Card content-->
+<div class="card-block" style="color: #686868">
+    <!--Title-->
+    <h4 class="card-title" style="text-align: center">
+		<?php echo $context->getConfig('student/property/school_year')['labels'][$context->getLocale()] ?>:
+		<?php echo $context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()] ?> &mdash;
+		<?php echo $context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()] ?>
+	</h4>
+	<!--Text-->
+		<div><a href="<?php echo $this->url('student/download', array('category' => 'absence', 'account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+		<table class="table note-report">
+			<tr>
+				<th><?php echo $this->translate('Type', 'ppit-core', $context->getLocale()) ?></th>
+				<th><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>
+				<th><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></th>
+				<th><?php echo $this->translate('Motive', 'ppit-studies', $context->getLocale()) ?></th>
+				<th><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></th>
+			</tr>
+	<?php $first=true; foreach ($period as $absLate) : ?>
+			<tr>
+				<td class="subject">
+					<?php echo $this->translate((($absLate->category == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()) ?>
+				</td>
+				<td class="subject">
+					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()] ?>
+				</td>
+				<td><?php echo $context->decodeDate($absLate->begin_date) ?></td>
+				<td><?php if ($absLate->motive) echo $context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate->motive]) ?></td>
+				<td><?php echo $absLate->observations ?></td>
+			</tr>
+	<?php endforeach;?>
+		</table>
+</div>
+<?php endforeach;?>
+
 <?php if (count($absences) > 0) : ?>
 
 <!-- Absences -->

@@ -709,7 +709,7 @@ class StudentController extends AbstractActionController
 	    			$noteLink = NoteLink::instanciate($account->id, null);
     				// Global mention to move to another property
     				$value = $request->getPost('value_'.$account->id);
-    				if (!$value) $value = null;
+    				if ($value == '') $value = null;
     				$mention = $request->getPost('mention_'.$account->id);
     				$assessment = $request->getPost('assessment_'.$account->id);
 	    			$audit = [];
@@ -1109,12 +1109,22 @@ class StudentController extends AbstractActionController
 				$cumulativeLateness += $absLate->duration;
 			}
 		}
-	
+
+		$periods = array();
+		$absLates = Absence::GetList('schooling', array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/), 'date', 'DESC', 'search');
+		foreach($absLates as $absLate) {
+			$key = $absLate->school_year.'.'.$absLate->school_period;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $absLate;
+		}
+		krsort($periods);
+
 		// Return the link list
 		$view = new ViewModel(array(
 				'context' => $context,
 				'config' => $context->getconfig(),
 				'account' => $account,
+				'periods' => $periods,
 				'absences' => $absences,
 				'absenceCount' => $absenceCount,
 				'cumulativeAbsence' => $cumulativeAbsence,
@@ -1288,7 +1298,7 @@ class StudentController extends AbstractActionController
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize);
+    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize, $absLates);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

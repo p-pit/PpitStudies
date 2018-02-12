@@ -1181,6 +1181,7 @@ return array(
 									'fr_FR' => 'Date de facture',
 							),
 					),
+					'update_time' => array('definition' => 'commitment/property/update_time'),
 			),
 			'order' => 'school_year DESC',
 			'todo' => array(
@@ -1278,6 +1279,7 @@ return array(
 			'property_3' => 'select',
 			'including_options_amount' => 'number',
 			'status' => 'select',
+			'update_time' => 'datetime',
 	),
 		
 	'commitment/update/p-pit-studies' => array(
@@ -3067,16 +3069,20 @@ table.note-report td {
 					'html' => '
 <table class="table note-report">
 	<tr>
-		<th style="width: 20%%">%s</th>
-		<th style="width: 20%%">%s</th>
-		<th style="width: 20%%">%s</th>
-		<th style="width: 40%%">%s</th>
+		<th style="width: 10%%">%s</th>
+		<th style="width: 15%%">%s</th>
+		<th style="width: 15%%">%s</th>
+		<th style="width: 15%%">%s</th>
+		<th style="width: 15%%">%s</th>
+		<th style="width: 30%%">%s</th>
 	</tr>
 %s
 </table>',
 					'params' => array(
+							array('en_US' => 'Type', 'fr_FR' => 'Type'),
 							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
 							array('en_US' => 'Period', 'fr_FR' => 'Période'),
+							array('en_US' => 'Duration', 'fr_FR' => 'Durée'),
 							array('en_US' => 'Motive', 'fr_FR' => 'Motif'),
 							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
 							'rows' => null,
@@ -3086,10 +3092,12 @@ table.note-report td {
 			'absenceRow' => array(
 					'html' => '
 <tr %s>
-	<td style="width: 20%%">%s</td>
-	<td style="width: 20%%">%s</td>
-	<td style="width: 20%%">%s</td>
-	<td style="width: 20%%">%s</td>
+	<td style="width: 10%%">%s</td>
+	<td style="width: 15%%">%s</td>
+	<td style="width: 15%%">%s</td>
+	<td style="width: 15%%; text-align: right">%s</td>
+	<td style="width: 15%%">%s</td>
+	<td style="width: 30%%">%s</td>
 </tr>',
 					'params' => array('color', 'subject', 'period', 'motive', 'observations'),
 			),

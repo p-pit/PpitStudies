@@ -36,19 +36,26 @@ class PdfAbsenceTableViewHelper
 	    	$period = '';
 			if ($absLate->end_date > $absLate->begin_date) {
 				$period .= $translator->translate('From the', 'ppit-studies', $context->getLocale());
-				$period .= '<strong>'.$context->decodeDate($absLate->begin_date).'</strong>';
+				$period .= ' <strong>'.$context->decodeDate($absLate->begin_date).'</strong><br>';
 				$period .= $translator->translate('to the', 'ppit-studies', $context->getLocale());
-				$period .= $context->decodeDate($absLate->end_date).'</strong>';
+				$period .= ' <strong>'.$context->decodeDate($absLate->end_date).'</strong>';
 			}
 			else {
-				$period .= '<strong>'.$context->decodeDate($absLate->begin_date).'</strong>';
+				$period .= $context->decodeDate($absLate->begin_date);
+			}
+			$duration = '';
+			if ($absLate->duration) {
+				if ((int)($absLate->duration/60)) $duration .= ((int)($absLate->duration/60)).'h';
+				if ($absLate->duration%60) $duration .= sprintf('%02u', $absLate->duration%60).'mn';
 			}
 	    	$rows.= sprintf(
 	   				$context->getConfig('student/report')['absenceRow']['html'], 
 	    			'',
-	    			$absLate->subject,
+					$translator->translate((($absLate->category == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()),
+	    			$context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()],
 					$period,
-	    			(($absLate->motive) ? '<strong>'.$context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate->motive]).'</strong>' : ''),
+	    			$duration,
+	    			(($absLate->motive) ? $context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate->motive]) : ''),
 	    			(($absLate->observations) ? $absLate->observations : '')
 	   		);
 	    }
@@ -58,7 +65,7 @@ class PdfAbsenceTableViewHelper
 		$params['rows'] = $rows;
 		$header = PdfAbsenceTableViewHelper::mapArgs($headerDef, $params, $context->getLocale());
 	    $text .= $header;
-echo($text);
+
     	return $text;
     }
 }

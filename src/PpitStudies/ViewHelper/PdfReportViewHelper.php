@@ -14,7 +14,7 @@ require_once('vendor/TCPDF-master/tcpdf.php');
 
 class PdfReportViewHelper
 {	
-    public static function render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize = null)
+    public static function render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize = null, $absLates = null)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -114,6 +114,11 @@ class PdfReportViewHelper
 	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire';
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
 	    	$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    	}
+        elseif ($category == 'absence') {
+    		$text = '<div style="text-align: center"><strong>Relevé d\'absences au '.$context->decodeDate(date('Y-m-d'));
+	    	if ($date) $text .= ' au '.$context->decodeDate($date);
+    		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
     	else {
     		$text = '<div style="text-align: center"><strong>Relevé de notes au '.$context->decodeDate(date('Y-m-d'));
@@ -227,7 +232,7 @@ class PdfReportViewHelper
     	elseif ($category == 'absence') {
 
 	    	$pdf->SetFont('', '', 8);
-			$text = PdfAbsenceTableViewHelper::render($absences);
+			$text = PdfAbsenceTableViewHelper::render($absLates);
 			$pdf->writeHTML($text, true, 0, true, 0);
 	    }
 		$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
