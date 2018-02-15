@@ -1125,6 +1125,7 @@ return array(
 									'fr_FR' => 'Année scolaire',
 							),
 					),
+					'account_id' => array('definition' => 'commitment/property/account_id'),
 					'description' => array(
 							'definition' => 'inline',
 							'type' => 'textarea',
@@ -1274,6 +1275,8 @@ return array(
 
 	'commitment/list/p-pit-studies' => array(
 			'place_id' => 'select',
+			'account_name' => 'text',
+			'caption' => 'text',
 			'property_1' => 'select',
 			'property_2' => 'select',
 			'property_3' => 'select',
@@ -1284,6 +1287,7 @@ return array(
 		
 	'commitment/update/p-pit-studies' => array(
 			'caption' => array('mandatory' => true),
+			'account_id' => array('mandatory' => true),
 			'description' => array('mandatory' => false),
 			'property_1' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
@@ -2314,7 +2318,7 @@ table.note-report td {
 			'tel_cell' => array('mandatory' => false),
 			'property_7' => array('mandatory' => true),
 			'property_6' => array('mandatory' => false),
-				
+
 			'n_title_2' => array('mandatory' => false),
 			'n_first_2' => array('mandatory' => true),
 			'n_last_2' => array('mandatory' => true),
@@ -3417,7 +3421,7 @@ table.note-report tr.period {
 			'modalities' => array(
 					'medical' => array('en_US' => 'Medical', 'fr_FR' => 'Médical'),
 					'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
-					'competition' => array('en_US' => 'Tournament/Competition', 'fr_FR' => 'Tournoi/Compétition'),
+					'competition' => array('en_US' => 'Tournament / Competition', 'fr_FR' => 'Tournoi / Compétition'),
 					'spectacle' => array('en_US' => 'Spectacle', 'fr_FR' => 'Spectacle'),
 					'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
 					'transport' => array('en_US' => 'Transport', 'fr_FR' => 'Transport'),

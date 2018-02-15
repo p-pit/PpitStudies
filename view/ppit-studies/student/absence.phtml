@@ -67,7 +67,7 @@ table.note-report tr.period {
 					<?php echo $this->translate((($absLate->category == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()) ?>
 				</td>
 				<td class="subject">
-					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()] ?>
+					<?php echo ($absLate->subject) ? $context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()] : '' ?>
 				</td>
 				<td><?php echo $context->decodeDate($absLate->begin_date) ?></td>
 				<td><?php if ($absLate->motive) echo $context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate->motive]) ?></td>
@@ -83,7 +83,7 @@ table.note-report tr.period {
 <!-- Absences -->
 <div class="card-block" style="color: #686868">
 	<!--Title-->
-	<h4 class="card-title" style="text-align: center">
+<!--	<h4 class="card-title" style="text-align: center">
 		<?php echo $this->translate('Number of absences on period', 'ppit-studies', $context->getLocale()) ?>:
 		<strong><?php echo $absenceCount ?></strong>
 	<?php if ($cumulativeAbsence) : ?>
@@ -91,10 +91,10 @@ table.note-report tr.period {
 		<?php echo $this->translate('Cumulative duration', 'ppit-studies', $context->getLocale()) ?>:
 		<strong><?php if ((int)($cumulativeAbsence/60)) echo ((int)($cumulativeAbsence/60)).'h' ?><?php if ($cumulativeAbsence%60) echo sprintf('%02u', $cumulativeAbsence%60).'mn' ?></strong>
 	<?php endif;?>
-	</h4>
+	</h4> -->
 
 	<!--Text-->
-	<?php $first=true; foreach ($absences as $absence) : ?>
+<!--	<?php $first=true; foreach ($absences as $absence) : ?>
 	<div>
 	<?php if ($absence->end_date > $absence->begin_date) : ?>
 		<?php echo $this->translate('From the', 'ppit-studies', $context->getLocale()) ?>
@@ -127,7 +127,7 @@ table.note-report tr.period {
 	</div>
 
 	<?php $first=false; endforeach;?>
-<hr/>
+<hr/> -->
 </div>
 <?php endif;?>
 
@@ -136,7 +136,7 @@ table.note-report tr.period {
 <!-- Lateness -->
 <div class="card-block" style="color: #686868">
 	<!--Title-->
-	<h4 class="card-title" style="text-align: center">
+<!--	<h4 class="card-title" style="text-align: center">
 		<?php echo $this->translate('Number of lateness on period', 'ppit-studies', $context->getLocale()) ?>:
 		<strong><?php echo $latenessCount ?></strong>
 	<?php if ($cumulativeLateness) : ?>
@@ -144,10 +144,10 @@ table.note-report tr.period {
 		<?php echo $this->translate('Cumulative duration', 'ppit-studies', $context->getLocale()) ?>:
 		<strong><?php if ((int)($cumulativeLateness/60)) echo ((int)($cumulativeLateness/60)).'h' ?><?php if ($cumulativeLateness%60) echo sprintf('%02u', $cumulativeLateness%60).'mn' ?></strong>
 	<?php endif;?>
-	</h4>
+	</h4> -->
 
 	<!--Text-->
-	<?php $first=true; foreach ($latenesss as $lateness) : ?>
+<!--	<?php $first=true; foreach ($latenesss as $lateness) : ?>
 	<div>
 		<strong><?php echo $context->decodeDate($lateness->begin_date) ?></strong>
 	<?php if ($lateness->subject) : ?>
@@ -170,6 +170,6 @@ table.note-report tr.period {
 	</div>
 
 	<?php $first=false; endforeach;?>
-<hr/>
+<hr/> -->
 </div>
 <?php endif;?>
