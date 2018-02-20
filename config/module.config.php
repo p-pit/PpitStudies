@@ -680,7 +680,7 @@ return array(
 	       						'evaluation' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/evaluation[/:id]',
+        										'route' => '/evaluation[/:id][/:mock]',
         										'constraints' => array(
         												'id' => '[0-9]*',
         										),
@@ -4033,6 +4033,7 @@ table.note-report tr.period {
 											'type' => 'static',
 											'level' => 'subject',
 											'route' => 'student/evaluation',
+											'filter' => 'evaluation_category',
 											'label' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
 									),
 									'schooling' => array(
@@ -4041,7 +4042,13 @@ table.note-report tr.period {
 											'route' => 'student/report',
 											'label' => array('en_US' => 'School reports', 'fr_FR' => 'Bulletins scolaires'),
 									),
-									
+									'mock_evaluation' => array(
+											'type' => 'static',
+											'level' => 'subject',
+											'route' => 'student/evaluation',
+											'params' => ['mock' => 'mock'],
+											'label' => array('en_US' => 'Mock evaluations', 'fr_FR' => 'Epreuves blanches'),
+									),
 							),
 					),
 			),

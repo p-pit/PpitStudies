@@ -186,7 +186,8 @@ class NoteLink implements InputFilterAwareInterface
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
     			if ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
-				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
+    			elseif ($propertyId == 'level') $where->like('student_note.level', '%'.$params[$propertyId].'%');
+    			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			else $where->like($propertyId, '%'.$params[$propertyId].'%');
     		}

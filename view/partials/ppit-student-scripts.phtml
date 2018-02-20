@@ -454,6 +454,7 @@ function getStudentHome(id) {
 <?php 
 $properties = array();
 $properties['category'] = array('type' => 'select', 'mandatory' => true);
+$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
 $properties['motive'] = array('type' => 'select', 'mandatory' => false);
 $properties['begin_date'] = array('type' => 'date', 'mandatory' => true);
 $properties['end_date'] = array('type' => 'date', 'mandatory' => false);
@@ -531,8 +532,18 @@ function getAdd<?php echo $typeId?>Absence() {
 	
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('student/addAbsence', array('type' => $typeId)) ?>';
+	var formData = new FormData();
 
-	xhttp.open('GET', route, true);
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('POST', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
@@ -553,7 +564,7 @@ function getAdd<?php echo $typeId?>Absence() {
 <?php endif;?>
 		}
 	}
-	xhttp.send();
+	xhttp.send(formData);
 
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass("btn-primary").addClass("btn-default");

@@ -306,26 +306,27 @@ class StudentController extends AbstractActionController
 //    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
     	}
 
+    	$nbAccount = $request->getPost('nb-account');
+    	$accounts = array();
+    	for ($i = 0; $i < $nbAccount; $i++) {
+    		$account = Account::get($request->getPost('account_'.$i));
+    		$accounts[] = $account;
+    	}
+    	$place = Place::get($account->place_id);
+    	$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+    	$absence->school_period = $school_period;
+    	 
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
     	$error = null;
     	$message = null;
 
-    	if ($request->isPost()) {
+    	if ($request->getPost('category')) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
-
-    			$nbAccount = $request->getPost('nb-account');
-    			$accounts = array();
-    			for ($i = 0; $i < $nbAccount; $i++) {
-    				$account = Account::get($request->getPost('account_'.$i));
-    				$accounts[] = $account;
-    			}
-				$place = Place::get($account->place_id);
-				$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
 				
     			$nbCriteria = $request->getPost('nb-criteria');
     			$criteria = array();
@@ -339,7 +340,7 @@ class StudentController extends AbstractActionController
     			$data = array();
     			$data['category'] = $request->getPost('category');
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
-    			$data['school_period'] = $school_period;
+    			$data['school_period'] = $request->getPost('school_period');
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
     			$data['begin_date'] = $request->getPost('begin_date');
@@ -347,7 +348,7 @@ class StudentController extends AbstractActionController
     			$data['duration'] = $request->getPost('duration');
 				$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
-    			 
+
     			// Atomically save
     			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
@@ -1187,9 +1188,12 @@ class StudentController extends AbstractActionController
 		$school_year = $context->getConfig('student/property/school_year/default');
 		$place = Place::get($account->place_id);
 		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-	
+		$mock = $this->params()->fromRoute('mock');
+
 		$periods = array();
-		$notes = NoteLink::GetList('note', array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/), 'date', 'DESC', 'search');
+		$params = array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/);
+		if ($mock) $params['level'] = "mock";
+		$notes = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
 		foreach($notes as $note) {
 			$key = $note->school_year.'.'.$note->school_period;
 			if (!array_key_exists($key, $periods)) $periods[$key] = array();
@@ -1203,6 +1207,7 @@ class StudentController extends AbstractActionController
 				'config' => $context->getconfig(),
 				'account' => $account,
 				'periods' => $periods,
+				'mock' => $mock,
 		));
 		$view->setTerminal(true);
 		return $view;
@@ -1298,7 +1303,7 @@ class StudentController extends AbstractActionController
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize, $absLates);
+    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize, $absLates, $level);
     	
     	// Close and output PDF document
     	// This method has several options, check the source code documentation for more information.

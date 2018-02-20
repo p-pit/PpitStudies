@@ -188,6 +188,7 @@ class AbsenceController extends AbstractActionController
     			$data = array();
 				$data['update_time'] = $request->getPost('update_time');
     			$data['category'] = $request->getPost('category');
+    			$data['school_period'] = $request->getPost('school_period');
     			$data['subject'] = $request->getPost('subject');
     			$data['motive'] = $request->getPost('motive');
     			$data['begin_date'] = $request->getPost('begin_date');
