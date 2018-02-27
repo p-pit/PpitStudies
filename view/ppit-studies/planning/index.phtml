@@ -21,7 +21,7 @@ echo $this->partial('/partials/header');
 	
 	<div class="row" id="main_menu" >
 
-<?php foreach ($context->getConfig('menus/p-pit-studies') as $entryId => $entry) : ?>
+<?php foreach ($context->getConfig('menus/p-pit-studies')['entries'] as $entryId => $entry) : ?>
 	<?php if ($context->isAllowed($entry['route'])) : ?>
 		<?php if ($entryId == 'planning') $color = 'btn-primary'; else $color = 'btn-default' ?>
 		<div class="col-md-2">
@@ -60,7 +60,7 @@ echo $this->partial('/partials/event-scripts');
 echo $this->partial('/partials/ppit-controller') 
 ?>
 
-<?php foreach ($context->getConfig('menus/p-pit-studies') as $entryId => $entry) : ?>
+<?php foreach ($context->getConfig('menus/p-pit-studies')['entries'] as $entryId => $entry) : ?>
 	$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entry['route'], $entry['params']) ?>'); });
 <?php endforeach;?>
 

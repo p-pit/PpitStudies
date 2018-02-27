@@ -23,7 +23,7 @@ class AbsenceController extends AbstractActionController
     	$app = $this->params()->fromRoute('app', 'p-pit-studies');
 		$community_id = (int) $context->getCommunityId();
 
-		$menu = $context->getConfig('menus/'.$app);
+		$menu = $context->getConfig('menus/'.$app)['entries'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(

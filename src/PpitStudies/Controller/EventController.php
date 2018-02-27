@@ -21,7 +21,7 @@ class EventController extends AbstractActionController
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
     	$place = Place::get($context->getPlaceId());
 		
-		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies');
+		$menu = Context::getCurrent()->getConfig('menus/p-pit-studies')['entries'];
 		$currentEntry = $this->params()->fromQuery('entry', 'event');
 
     	return new ViewModel(array(

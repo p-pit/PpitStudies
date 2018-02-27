@@ -39,7 +39,7 @@ class ProgressController extends AbstractActionController
 			}
 		}
 
-		$menu = $context->getConfig('menus/'.$app);
+		$menu = $context->getConfig('menus/'.$app)['entries'];
 		$currentEntry = $this->params()->fromQuery('entry', 'account');
 
     	return new ViewModel(array(

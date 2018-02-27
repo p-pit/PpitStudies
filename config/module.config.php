@@ -914,6 +914,7 @@ return array(
 	'ppitStudiesDependencies' => array(),
 
 	'menus/p-pit-studies' => array(
+		'entries' => array(
 					'student' => array(
 							'route' => 'student/index',
 							'params' => array('app' => 'p-pit-studies', 'type' => ''),
@@ -1033,6 +1034,7 @@ return array(
 									'fr_FR' => 'Admin',
 							),
 					),
+		),
 	),
 
 	'admin/p-pit-studies' => array(

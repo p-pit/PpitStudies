@@ -69,7 +69,11 @@ table.note-report tr.period {
 				<td class="subject">
 					<?php echo ($absLate->subject) ? $context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()] : '' ?>
 				</td>
+		<?php if ($absLate->end_date > $absLate->begin_date) : ?>
+				<td><?php echo $this->translate('From the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($absLate->begin_date).'<br>'.$this->translate('to the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($absLate->end_date) ?></td>
+		<?php else : ?>
 				<td><?php echo $context->decodeDate($absLate->begin_date) ?></td>
+		<?php endif;?>
 				<td><?php if ($absLate->motive) echo $context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate->motive]) ?></td>
 				<td><?php echo $absLate->observations ?></td>
 			</tr>

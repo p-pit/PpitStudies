@@ -59,7 +59,7 @@ class StudentController extends AbstractActionController
     	$app = $this->params()->fromRoute('app', 'p-pit-studies');
     	$place = Place::get($context->getPlaceId());
 
-		$menu = $context->getConfig('menus/'.$app);
+		$menu = $context->getConfig('menus/'.$app)['entries'];
     	$currentEntry = $this->params()->fromQuery('entry');
 
 		if ($config['isDemoAccountUpdatable'] || $context->getInstanceId() == 0) $outOfStockCredits = false;
@@ -110,7 +110,7 @@ class StudentController extends AbstractActionController
 		$configProperties = $this->getConfigProperties($type);
 		$vcardProperties = $this->getVcardProperties();
 		
-		$menu = $context->getConfig('menus/'.$type);
+		$menu = $context->getConfig('menus/'.$type)['entries'];
 		$currentEntry = $this->params()->fromQuery('entry');
 
     	return new ViewModel(array(
@@ -1264,7 +1264,7 @@ class StudentController extends AbstractActionController
 			$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
 		}
 		$level = $this->params()->fromRoute('level');
-		
+
 		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
 		$absences = array();
 		$latenesss = array();
