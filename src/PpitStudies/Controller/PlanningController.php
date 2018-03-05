@@ -9,7 +9,7 @@
 
 namespace PpitStudies\Controller;
 
-use PpitCore\Model\App;
+//use PpitCore\Model\App;
 use PpitCore\Model\Community;
 use PpitCore\Model\Event;
 use PpitCore\Model\Generic;
@@ -29,8 +29,8 @@ class PlanningController extends AbstractActionController
 {
     public function indexAction()
     {
-    	$app = App::get('p-pit-studies', 'identifier');
-    	$context = Context::getCurrent($app);
+//    	$app = App::get('p-pit-studies', 'identifier');
+    	$context = Context::getCurrent(/*$app*/);
 
     	// Retrieve parameters
     	$type = $this->params()->fromRoute('type', $context->getConfig('event/type')['default']);

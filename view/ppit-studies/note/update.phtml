@@ -133,6 +133,20 @@
 			<div class="col-sm-12"><p class="help-block" id="class_error"></p></div>
 		</div>
 
+<!-- Evaluation period -->
+		<div class="form-group" id="school_period_group">
+			<label class="col-sm-5 control-label">* <?php echo $context->getConfig('student/property/school_period')['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+				<select class="form-control" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+					<option />
+	<?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $modalityId => $modality) : ?>
+					<option value="<?php echo $modalityId ?>" <?php if ($modalityId == $note->school_period) echo 'selected="selected"' ?>><?php echo $modality[$context->getLocale()] ?></option>
+	<?php endforeach;?>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="school_period_error"></p></div>
+		</div>
+
 <!-- Subject -->
 <?php 
 if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('school_subject', $context->getPerimeters()['p-pit-studies'])) {

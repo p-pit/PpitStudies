@@ -230,6 +230,7 @@ class NoteController extends AbstractActionController
 	    			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
 	    			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
 	    			$data['class'] = $request->getPost('class');
+    				$data['school_period'] = $request->getPost('school_period');
 	    			$data['level'] = $request->getPost('level');
 	    			$data['subject'] = $request->getPost('subject');
 	    			$data['date'] = $request->getPost('date');

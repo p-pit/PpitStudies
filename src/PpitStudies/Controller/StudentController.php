@@ -518,7 +518,8 @@ class StudentController extends AbstractActionController
     	}
     	$place = Place::get($account->place_id);
 		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-    	
+		$note->school_period = $school_period;
+		
     	$nbCriteria = $request->getPost('nb-criteria');
     	$criteria = array();
     	for ($i = 0; $i < $nbCriteria; $i++) {

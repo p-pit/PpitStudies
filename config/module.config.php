@@ -2205,7 +2205,7 @@ return array(
 			'property_7' => array('mandatory' => false),
 			'contact_history' => array('mandatory' => false),
 	),
-	'core_account/post/p-pit-studies' => array(
+/*	'core_account/post/p-pit-studies' => array(
 			'place_identifier' => array('mandatory' => false),
 			'n_title' => array('mandatory' => false),
 			'n_last' => array('mandatory' => true),
@@ -2240,7 +2240,7 @@ return array(
 			'comment_2' => array('mandatory' => true),
 			'comment_3' => array('mandatory' => true),
 			'comment_4' => array('mandatory' => true),
-	),
+	),*/
 	'core_account/indexCard/p-pit-studies' => array(
 			'title' => array('en_US' => 'Student index card', 'fr_FR' => 'Fiche élève'),
 			'header' => array(
