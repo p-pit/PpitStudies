@@ -1184,6 +1184,22 @@ return array(
 									'fr_FR' => 'Date de facture',
 							),
 					),
+					'account_property_1' => array('definition' => 'student/property/discipline'),
+					'account_property_2' => array('definition' => 'core_account/generic/property/property_2'),
+					'account_property_3' => array('definition' => 'core_account/generic/property/property_3'),
+					'account_property_4' => array('definition' => 'core_account/generic/property/property_4'),
+					'account_property_5' => array('definition' => 'core_account/generic/property/property_5'),
+					'account_property_6' => array('definition' => 'student/property/boarding_school'),
+					'account_property_7' => array('definition' => 'student/property/class'),
+					'account_property_8' => array('definition' => 'core_account/generic/property/property_8'),
+					'account_property_9' => array('definition' => 'core_account/generic/property/property_9'),
+					'account_property_10' => array('definition' => 'student/property/level'),
+					'account_property_11' => array('definition' => 'core_account/generic/property/property_11'),
+					'account_property_12' => array('definition' => 'core_account/generic/property/property_12'),
+					'account_property_13' => array('definition' => 'student/property/contact_meeting_context'),
+					'account_property_14' => array('definition' => 'core_account/generic/property/property_14'),
+					'account_property_15' => array('definition' => 'core_account/p-pit-studies/property/study_choice'),
+					'account_property_16' => array('definition' => 'student/property/school_year'),
 					'update_time' => array('definition' => 'commitment/property/update_time'),
 			),
 			'order' => 'school_year DESC',
@@ -1272,6 +1288,7 @@ return array(
 					'status' => 'select',
 					'including_options_amount' => 'range',
 					'account_name' => 'contains',
+					'account_property_15' => 'contains',
 			),
 	),
 
@@ -1302,27 +1319,6 @@ return array(
 	),
 		
 	'commitment/invoice/p-pit-studies' => array(
-			'header' => array(),
-			'description' => array(
-					array(
-							'left' => array('en_US' => 'Caption', 'fr_FR' => 'Libellé'),
-							'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Année scolaire %s %s'),
-							'params' => array('product_brand', 'caption'),
-					),
-					array(
-							'left' => array('en_US' => 'Invoice date', 'fr_FR' => 'Date de facture'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('date'),
-					),
-					array(
-							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('account_name'),
-					),
-			),
-	),
-
-	'commitment/proforma/p-pit-studies' => array(
 			'header' => array(),
 			'description' => array(
 					array(
