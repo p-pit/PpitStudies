@@ -115,7 +115,10 @@ class PdfReportViewHelper
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
 	    	$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
     	}
-        elseif ($category == 'absence') {
+		elseif ($category == 'exam') {
+    		$text = '<div style="text-align: center"><strong>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/evaluationCategory')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    	}
+    	elseif ($category == 'absence') {
     		$text = '<div style="text-align: center"><strong>Relevé d\'absences au '.$context->decodeDate(date('Y-m-d'));
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
     		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
@@ -163,13 +166,13 @@ class PdfReportViewHelper
 	    $pdf->Ln();
 	    $pdf->SetDrawColor(0, 0, 0);
 
-	    if ($category == 'report') {
+	    if (in_array($category, ['report', 'exam'])) {
 	    	$text = PdfReportTableViewHelper::render($averages, $category);
 	    	$pdf->writeHTML($text, true, 0, true, 0);
 	
 			$pdf->SetDrawColor(255, 255, 255);
 	
-			if (!in_array($place->id, [28, 36, 37])) {
+			if ($category == 'report' && !in_array($place->id, [28, 36, 37])) {
 				// Absences
 				$pdf->MultiCell(16, 5, '<strong>'.'Absences'.'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
 				$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
@@ -208,14 +211,22 @@ class PdfReportViewHelper
 					}
 				}
 			}
-			$text .= sprintf(
-						$context->getConfig('student/report')['signatureFrame']['html'],
-						'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
-						(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
-						'<br><br><br><br><br><br><br><br>'.
-						(($globalEvaluation) ? '<strong>'.$translator->translate('Main teacher', 'ppit-studies', $context->getLocale()).' : </strong>'.$globalEvaluation->n_fn : ''),
-						$mention
-					);
+			if ($category == 'report') {
+				$text .= sprintf(
+					$context->getConfig('student/report')['signatureFrame']['html'],
+					'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
+					(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
+					'<br><br><br><br><br><br><br><br>'.
+					(($globalEvaluation) ? '<strong>'.$translator->translate('Head of training', 'ppit-studies', $context->getLocale()).' : </strong>'.$globalEvaluation->n_fn : ''),
+					$mention
+				);
+			}
+			elseif ($category == 'exam') {
+				$text .= sprintf(
+					$context->getConfig('student/report')['withoutMentionFrame']['html'],
+					'<br><br><br><br><br><br><br><br>'
+				);				
+			}
 			$pdf->writeHTML($text, true, 0, true, 0);
 	    }
 	    elseif ($category == 'note') {

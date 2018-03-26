@@ -87,7 +87,6 @@
 					<option value="<?php echo $teacher_id ?>" <?php if ($teacher_id == $note->teacher_id) echo 'selected="selected"' ?>><?php echo $teacher->n_fn ?></option>
 	<?php endforeach;?>
 				</select>
-<!--				<input class="form-control" id="teacher_n_fn" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Name', 'ppit-core', $context->getLocale()) ?>" value="<?php echo $note->teacher_n_fn ?>"/> -->
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="teacher_id_error"></p></div>
 		</div>
@@ -103,40 +102,61 @@ if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_ex
 else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
 ?>
 		<div class="form-group" id="subject_group">
+<?php if ($type != 'exam') : ?>
 			<label class="col-sm-5 control-label">* <?php echo $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 	    		<select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
-<?php foreach ($modalities as $subjectId => $subject) : ?>
-	<?php $caption = $subject[$context->getLocale()] ?>
+	<?php foreach ($modalities as $subjectId => $subject) : ?>
+		<?php $caption = $subject[$context->getLocale()] ?>
 	    			<option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
-<?php endforeach;?>
-<?php if ($type == 'report' && $context->hasRole('manager')) : ?>
+	<?php endforeach;?>
+	<?php if ($type == 'report' && $context->hasRole('manager')) : ?>
 	    			<option value="global"><?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?></option>
-<?php endif;?>
+	<?php endif;?>
 	    		</select>
 			</div>
+<?php else : ?>
+			<input type="hidden" id="subject" value="global" />
+<?php endif;?>
 			<div class="col-sm-12"><p class="help-block" id="subject_error"></p></div>
 		</div>
 
 <!-- Evaluation category -->
+<?php if ($type != 'exam') : ?>
 		<div class="form-group" id="level_group">
-<?php if ($type != 'report') : ?>
+	<?php if ($type != 'report') : ?>
 			<label class="col-sm-5 control-label"><?php echo $context->getConfig('student/property/evaluationCategory')['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 	    		<select class="form-control" id="level" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
-<?php foreach ($context->getConfig('student/property/evaluationCategory')['modalities'] as $categoryId => $category) : ?>
-	<?php $caption = $category[$context->getLocale()]; ?>
+	<?php foreach ($context->getConfig('student/property/evaluationCategory')['modalities'] as $categoryId => $category) : ?>
+		<?php $caption = $category[$context->getLocale()]; ?>
 	    			<option value="<?php echo $categoryId ?>" <?php if ($note->level == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
-<?php endforeach;?>
+	<?php endforeach;?>
 	    		</select>
 			</div>
-<?php else : ?>
+	<?php else : ?>
 			<input type="hidden" id="level" />
-<?php endif;?>
+	<?php endif;?>
 			<div class="col-sm-12"><p class="help-block" id="level_error"></p></div>
 		</div>
+<?php else : ?>
+<!-- Exam -->
+		<div class="form-group" id="level_group">
+			<label class="col-sm-5 control-label"><?php echo $context->getConfig('student/property/exam')['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+	    		<select class="form-control" id="level" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+	<?php foreach ($context->getConfig('student/property/exam')['modalities'] as $categoryId => $unused) : ?>
+		<?php $caption = $context->getConfig('student/property/evaluationCategory')['modalities'][$categoryId][$context->getLocale()]; ?>
+	    			<option value="<?php echo $categoryId ?>" <?php if ($note->level == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+	<?php endforeach;?>
+	    		</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="level_error"></p></div>
+		</div>
+<?php endif;?>
 
 <!-- Note date -->
 <?php $noteDate = ($note->date) ? $note->date : Date('Y-m-d') ?>
@@ -192,7 +212,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 	<?php endforeach;?>
 	    		</select>
 <?php endif?>
-				<input class="form-control input_value" id="input_value_<?php echo $account->id ?>" placeholder="<?php echo $this->translate(($type == 'report') ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($message == 'OK' && $note->results[$account->id]['note'] !== null) echo 'value="'.$context->formatFloat($note->results[$account->id]['note'], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
+				<input class="form-control input_value" id="input_value_<?php echo $account->id ?>" placeholder="<?php echo $this->translate((in_array($type, ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($message == 'OK' && $note->results[$account->id]['note'] !== null) echo 'value="'.$context->formatFloat($note->results[$account->id]['note'], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="input_value_<?php echo $account->id ?>_error"></p></div>
 		</div>

@@ -16,7 +16,7 @@ echo $this->partial('/partials/header');
 <?php foreach ($menu as $entryId => $entry) : ?>
 	<?php if ($context->isAllowed($entry['route'])) : ?>
 		<div class="col-md-2">
-				<button type="button" class="btn <?php echo ($entryId == 'evaluation' && $type == 'note' || $entryId == 'report' && $type == 'report' || $entryId == 'homework' && $category == 'homework') ? 'btn-primary' : 'btn-default' ?> menu-btn" style="width:100%; text-align: left" id="<?php echo $entryId ?>-anchor">
+				<button type="button" class="btn <?php echo ($entryId == 'evaluation' && $type == 'note' || $entryId == 'report' && $type == 'report' || $entryId == 'exam' && $type == 'exam' || $entryId == 'homework' && $category == 'homework') ? 'btn-primary' : 'btn-default' ?> menu-btn" style="width:100%; text-align: left" id="<?php echo $entryId ?>-anchor">
 		<?php if (array_key_exists('glyphicon', $entry)) : ?>
 					<span class="glyphicon <?php echo $entry['glyphicon'] ?>"></span>
 		<?php endif;?>

@@ -1025,7 +1025,8 @@ function getAddEvaluation(type, classe) {
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass("btn-primary").addClass("btn-default");
 	if (type == 'note') $('#evaluation-add-anchor').removeClass("btn-default").addClass("btn-primary");
-	else $('#report-add-anchor').removeClass("btn-default").addClass("btn-primary");
+	else if (type == 'report') $('#report-add-anchor').removeClass("btn-default").addClass("btn-primary");
+	else if (type == 'exam') $('#exam-add-anchor').removeClass("btn-default").addClass("btn-primary");
 }
 
 /////////////////////////////
@@ -1465,6 +1466,11 @@ function getStudentGroup() {
 			$('#report-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
 				getAddEvaluation('report', $('#search_property_7').val()); // Class
+			});
+
+			$('#exam-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddEvaluation('exam', $('#search_property_7').val()); // Class
 			});
 
 			$('#progress-add-anchor').click(function () { 

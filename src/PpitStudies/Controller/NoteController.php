@@ -353,6 +353,9 @@ class NoteController extends AbstractActionController
     			if ($note->type == 'report') {
     				$computedAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
     			}
+    		    elseif ($note->type == 'exam') {
+    				$examAverages = Note::computeExamAverages($data['place_id'], $data['school_year'], $data['class'], $data['level']);
+    			}
     			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
     				$noteLink->audit = array();
@@ -370,6 +373,14 @@ class NoteController extends AbstractActionController
     					}
     					else $value = null;
     			    	if ($value !== null) $value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+    				}
+    			    elseif ($note->type == 'exam' && $value === null) {
+    					if (array_key_exists($noteLink->account_id, $examAverages)) {
+							$value = $examAverages[$noteLink->account_id]['global']['note'];
+							$audit = $examAverages[$noteLink->account_id]['global']['notes'];
+						}
+    			    	else $value = null;
+    			    	if ($value !== null) $value = $value * $data['reference_value'] / 20;
     				}
     				$noteLink->value = $value;
     				$noteLink->evaluation = $mention;

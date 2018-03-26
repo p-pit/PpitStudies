@@ -42,7 +42,7 @@
 <?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
 	<?php 
 	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
-	if ($property['definition'] != 'inline') $property = $context->getConfig('definition');
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	?>
 
 	<?php if ($rendering != 'select') $label = $property['labels'][$context->getLocale()]; ?>
@@ -50,14 +50,13 @@
 	<?php if ($rendering == 'select') : ?>
 
 		<?php
-		if ($propertyId == 'place_id') $property = $context->getConfig('student/property/place');
+/*		if ($propertyId == 'place_id') $property = $context->getConfig('student/property/place');
 		elseif ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
 		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
 		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
 		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
 		elseif ($propertyId == 'property_7') $property = $context->getConfig('student/property/class');
-		else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
-
+		else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];*/
 		$label = $property['labels'][$context->getLocale()];
 		
 		$modalities = array();

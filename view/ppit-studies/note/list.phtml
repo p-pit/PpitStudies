@@ -9,7 +9,7 @@
 	elseif ($propertyId == 'place_id') $label = $context->getConfig('note')['properties']['place_id']['labels'][$context->getLocale()];
 	elseif ($propertyId == 'school_period') $label = $context->getConfig('student/property/school_period')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
-	elseif ($type == 'note' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
+	elseif ($type != 'report' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
 	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'weight') $label = $this->translate('Weight', 'ppit-studies', $context->getLocale());
@@ -61,7 +61,7 @@
 		<?php elseif ($propertyId == 'class') : ?>
 		<td><?php echo $context->getConfig('student/property/class')['modalities'][$note->class][$context->getLocale()] ?></td>
 
-		<?php elseif ($type == 'note' && $propertyId == 'level') : ?>
+		<?php elseif ($type != 'report' && $propertyId == 'level') : ?>
 			<?php if (!$note->level)  : ?>
 		<td style="color: red;">A compléter</td>
 			<?php else : ?>
@@ -72,7 +72,7 @@
 			<?php if (!$note->subject)  : ?>
 		<td style="color: red;">A compléter</td>
 			<?php else : ?>
-		<td><?php echo ($note->subject == 'global') ? $this->translate('Staff meeting', 'ppit-studies', $context->getLocale()) : $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
+		<td><?php echo ($note->subject == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
 			<?php endif;?>
 
 		<?php elseif ($propertyId == 'date') : ?>
@@ -119,7 +119,7 @@
 	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 		<?php if ($propertyId == 'average_note') : ?>
 		<th><?php echo $context->formatFloat($average*20, 2) ?></th>
-		<?php elseif ($type == 'note' || $propertyId != 'level') : ?>
+		<?php elseif ($type != 'report' || $propertyId != 'level') : ?>
 		<th>&nbsp;</th>
 		<?php endif;?>
 	<?php endforeach;?>

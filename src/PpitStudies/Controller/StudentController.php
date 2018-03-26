@@ -705,11 +705,13 @@ class StudentController extends AbstractActionController
     			if ($type == 'report') {
     				$computedAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
     			}
+    		    elseif ($type == 'exam') {
+    				$examAverages = Note::computeExamAverages($data['place_id'], $data['school_year'], $data['class'], $data['level']);
+    			}
     			$nbAccount = $request->getPost('nb-account');
     			for ($i = 0; $i < $nbAccount; $i++) {
     				$account = $accounts[$request->getPost('account_'.$i)];
 	    			$noteLink = NoteLink::instanciate($account->id, null);
-    				// Global mention to move to another property
     				$value = $request->getPost('value_'.$account->id);
     				if ($value == '') $value = null;
     				$mention = $request->getPost('mention_'.$account->id);
@@ -722,6 +724,14 @@ class StudentController extends AbstractActionController
     					elseif (array_key_exists($account->id, $computedAverages)) {
 							$value = $computedAverages[$account->id]['global']['note'];
 							$audit = $computedAverages[$account->id]['global']['notes'];
+						}
+    			    	else $value = null;
+    			    	if ($value !== null) $value = $value * $data['reference_value'] / 20;
+    				}
+    			    elseif ($type == 'exam' && $value === null) {
+    					if (array_key_exists($account->id, $examAverages)) {
+							$value = $examAverages[$account->id]['global']['note'];
+							$audit = $examAverages[$account->id]['global']['notes'];
 						}
     			    	else $value = null;
     			    	if ($value !== null) $value = $value * $data['reference_value'] / 20;
@@ -1213,6 +1223,41 @@ class StudentController extends AbstractActionController
 		$view->setTerminal(true);
 		return $view;
 	}
+
+	public function examAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$contact_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($contact_id, 'contact_1_id');
+		$place = Place::get($account->place_id);
+	
+		$periods = array();
+		$notes = NoteLink::GetList('exam', ['account_id' => $account->id], 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			$key = $note->level;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $note;
+		}
+		krsort($periods);
+		foreach ($periods as $periodId => &$period) {
+			$notes = NoteLink::GetList('note', ['account_id' => $account->id, 'level' => $periodId], 'date', 'DESC', 'search');
+			foreach($notes as $note) {
+				$period[] = $note;
+			}
+		}
+
+		// Return the link list
+		$view = new ViewModel(array(
+			'context' => $context,
+			'config' => $context->getconfig(),
+			'account' => $account,
+			'periods' => $periods,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
 	
 	public function reportAction()
 	{
@@ -1312,6 +1357,49 @@ class StudentController extends AbstractActionController
     	return $this->response;
 	}
 
+	public function downloadExamAction()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+		$account_id = (int) $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+		$account->properties = $account->getProperties();
+		if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
+		elseif ($account->contact_3 && $account->contact_3->adr_street) $addressee = $account->contact_3;
+		elseif ($account->contact_4 && $account->contact_4->adr_street) $addressee = $account->contact_4;
+		elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
+		else $addressee = $account->contact_1;
+	
+		$school_year = $this->params()->fromRoute('school_year');
+		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
+		$place = Place::get($account->place_id);
+		$level = $this->params()->fromRoute('level');
+	
+		$date = null;
+	
+		$params = array('account_id' => $account_id, 'school_year' => $school_year, 'level' => $level);
+		$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+		if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
+
+		$classSize = null;
+		$averages = NoteLink::GetList('exam', array('account_id' => $account_id, 'school_year' => $school_year, 'level' => $level), 'date', 'DESC', 'search');
+		foreach ($averages as $average) if ($average->subject == 'global') {
+			$date = $average->date;
+			$classSize = count(NoteLink::GetList('exam', array('note_id' => $average->note_id), 'date', 'DESC', 'search'));
+			$notes[] = $average;
+		}
+	
+		// create new PDF document
+		$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+	
+		PdfReportViewHelper::render('exam', $pdf, $place, $school_year, $level, $date, $account, $addressee, $notes, $notes, 0, 0, 0, 0, [], [], $classSize, [], $level);
+		 
+		// Close and output PDF document
+		// This method has several options, check the source code documentation for more information.
+		$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->name.'.pdf', 'I');
+		return $this->response;
+	}
+	
 	public function dropboxLinkAction()
 	{
 		$context = Context::getCurrent();

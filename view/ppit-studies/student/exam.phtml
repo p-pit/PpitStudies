@@ -1,0 +1,129 @@
+<style>
+table.note-report {
+	font-size: 0.83em;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+}
+table.note-report caption { 
+	font-size:1.5em; 
+	padding:1em 0 0.5em 1em;
+}
+table.note-report th {
+	color: #666;
+//    font-size:0.83em;
+	text-align: center;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+	background-color:#DDD;
+}
+
+table.note-report td {
+	color: #666;
+//	font-size: 0.83em;
+	border-width:1px; 
+ 	border-style:solid; 
+	border-color:gray;
+}
+
+table.note-report td.subject {
+	font-weight: bold;
+}
+
+table.note-report tr.period {
+	background-color:#DDD;
+}
+</style>
+
+<?php foreach ($periods as $periodId => $period) : ?>
+	
+    <!--Card content-->
+<div class="card-block" style="color: #686868">
+    <!--Title-->
+    <h4 class="card-title" style="text-align: center">
+		<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$periodId][$context->getLocale()] ?>
+	</h4>
+	<!--Text-->
+	<?php 
+	$urlParams = array('account_id' => $account->id, 'school_year' => '2017-2018', 'level' => $periodId);
+	?>
+		<div><a href="<?php echo $this->url('student/downloadExam', $urlParams) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+		<table class="table note-report">
+			<tr>
+				<th rowspan="2"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Note', 'ppit-studies', $context->getLocale()) ?></th>
+				<th rowspan="2"><?php echo $this->translate('Weight', 'ppit-studies', $context->getLocale()) ?></th>
+				<th colspan="3"><?php echo $this->translate('Class', 'ppit-studies', $context->getLocale()) ?></th>
+			</tr>
+			<tr>
+				<th><?php echo $this->translate('Avg.', 'ppit-studies', $context->getLocale()) ?></th>
+				<th title="<?php echo $this->translate('Highest note', 'ppit-studies', $context->getLocale()) ?>">+</th>
+				<th title="<?php echo $this->translate('Lowest note', 'ppit-studies', $context->getLocale()) ?>">-</th>
+			</tr>
+	<?php $first=true; foreach ($period as $note) : ?>
+		<?php if ($note->type == 'note') : ?>
+			<tr>
+				<td class="subject">
+					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+				</td>
+				<td><?php echo $context->decodeDate($note->date) ?></td>
+				<td align="right">
+					<h5>
+						<?php
+						if ($note->value === null) echo $this->translate('Not eval.', 'ppit-studies', $context->getLocale());
+						else echo $context->formatFloat($note->value, 2).'&nbsp;/&nbsp;'.$context->formatFloat($note->reference_value, 0) 
+						?>
+					</h5>
+				</td>
+				<td align="right"><?php echo $context->formatFloat($note->weight, 1) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->average_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->higher_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->lower_note, 2) ?></td>
+			</tr>
+			
+			<?php if ($note->assessment || $note->observations) : ?>
+			<tr>
+				<td colspan="7">
+					<?php if ($note->assessment) echo $this->translate('Student', 'ppit-studies', $context->getLocale()).': '.$note->assessment ?>
+					<?php if ($note->assessment && $note->observations) echo '<br>' ?>
+					<?php if ($note->observations) echo $this->translate('Class', 'ppit-studies', $context->getLocale()).': '.$note->observations ?>
+				</td>
+			</tr>
+			<?php endif;?>
+		<?php else : $general = $note ?>
+		<?php endif;?>
+	<?php endforeach;?>
+	<?php $note = $general ?>
+			<tr>
+				<td class="subject">
+					<?php echo ($note->subject == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+				</td>
+				<td><?php echo $context->decodeDate($note->date) ?></td>
+				<td align="right">
+					<h5>
+						<?php
+						if ($note->value === null) echo $this->translate('Not eval.', 'ppit-studies', $context->getLocale());
+						else echo $context->formatFloat($note->value, 2).'&nbsp;/&nbsp;'.$context->formatFloat($note->reference_value, 0) 
+						?>
+					</h5>
+				</td>
+				<td align="right"><?php echo $context->formatFloat($note->weight, 1) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->average_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->higher_note, 2) ?></td>
+				<td align="right"><?php echo $context->formatFloat($note->lower_note, 2) ?></td>
+			</tr>
+			
+			<?php if ($note->assessment || $note->observations) : ?>
+			<tr>
+				<td colspan="7">
+					<?php if ($note->assessment) echo $this->translate('Student', 'ppit-studies', $context->getLocale()).': '.$note->assessment ?>
+					<?php if ($note->assessment && $note->observations) echo '<br>' ?>
+					<?php if ($note->observations) echo $this->translate('Class', 'ppit-studies', $context->getLocale()).': '.$note->observations ?>
+				</td>
+			</tr>
+			<?php endif;?>
+		</table>
+</div>
+<?php endforeach;?>

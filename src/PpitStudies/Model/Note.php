@@ -284,6 +284,45 @@ class Note implements InputFilterAwareInterface
     	return $categoryAverages;
     }
 
+    public static function computeExamAverages($place_id, $school_year, $class, $level)
+    {
+    	$context = Context::getCurrent();
+    	$select = NoteLink::getTable()->getSelect()
+	    	->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
+	    	->order(array('date DESC', 'subject ASC'));
+    	$where = new Where;
+    	$where->notEqualTo('student_note.status', 'deleted');
+    	$where->notEqualTo('student_note_link.status', 'deleted');
+    	$where->equalTo('category', 'evaluation');
+    	$where->equalTo('type', 'note');
+    	$where->equalTo('place_id', $place_id);
+    	$where->equalTo('school_year', $school_year);
+    	$where->equalTo('class', $class);
+    	$where->equalTo('level', $level);
+    	$select->where($where);
+    	$cursor = NoteLink::getTable()->selectWith($select);
+    	$periodNotes = array();
+    	foreach ($cursor as $noteLink) {
+    		if ($noteLink->value !== null) {
+    			$periodNotes[$noteLink->account_id][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+    		}
+    	}
+    	$categoryAverages = array();
+    	foreach ($periodNotes as $account_id => $notes) {
+    		$average = 0;
+    		$globalWeight = 0;
+    		foreach ($notes as $note) {
+    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
+    			$globalWeight += $note['weight'];
+    		}
+    		if ($globalWeight != 0) {
+    			$average /= $globalWeight;
+    			$categoryAverages[$account_id]['global'] = array('note' => $average, 'notes' => $notes);
+    		}
+    	}
+    	return $categoryAverages;
+    }
+    
     public static function get($id, $column = 'id')
     {
     	$note = Note::getTable()->get($id, $column);
@@ -305,7 +344,7 @@ class Note implements InputFilterAwareInterface
     	$note->status = 'new';
 		$note->type = $type;
 		$note->class = $class;
-		if ($type == 'note' || $type == 'report') $note->category = 'evaluation';
+		if (in_array($type, ['note', 'report', 'exam'])) $note->category = 'evaluation';
 		elseif ($type == 'done-work' || $type == 'todo-work' || $type == 'event') $note->category = 'homework';
 		$note->teacher_n_fn = $context->getFormatedName();
 		$note->audit = array();

@@ -49,7 +49,6 @@ class PlanningController extends AbstractActionController
     			'place' => $place,
     			'community' => $community,
     			'active' => 'application',
-    			'app' => $app,
     			'applicationId' => $applicationId,
     			'applicationName' => $applicationName,
     			'currentEntry' => $currentEntry,

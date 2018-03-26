@@ -689,6 +689,18 @@ return array(
         										),
         								),
         						),
+	       						'exam' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/exam[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'exam',
+        										),
+        								),
+        						),
 	       						'report' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -713,7 +725,19 @@ return array(
 		        								),
 		        						),
 		        				),
-        						'dropboxLink' => array(
+	       						'downloadExam' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/download-exam[/:account_id][/:school_year][/:level]',
+		        								'constraints' => array(
+		        										'account_id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'downloadExam',
+		        								),
+		        						),
+		        				),
+	       						'dropboxLink' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/dropbox-link[/:document]',
@@ -868,9 +892,11 @@ return array(
 				array('route' => 'student/absence', 'roles' => array('guest')),
 				array('route' => 'student/homework', 'roles' => array('guest')),
 				array('route' => 'student/evaluation', 'roles' => array('guest')),
+				array('route' => 'student/exam', 'roles' => array('guest')),
 				array('route' => 'student/report', 'roles' => array('guest')),
 				array('route' => 'student/download', 'roles' => array('guest')),
-            	array('route' => 'student/dropboxLink', 'roles' => array('guest')),
+				array('route' => 'student/downloadExam', 'roles' => array('guest')),
+				array('route' => 'student/dropboxLink', 'roles' => array('guest')),
 				array('route' => 'student/letter', 'roles' => array('manager')),
 				array('route' => 'student/confirmation', 'roles' => array('manager')),
 				array('route' => 'student/attestation', 'roles' => array('manager')),
@@ -981,7 +1007,7 @@ return array(
 							'glyphicon' => 'glyphicon-dashboard',
 							'label' => array(
 									'en_US' => 'Evaluations',
-									'fr_FR' => 'Evaluations',
+									'fr_FR' => 'Relevés de notes',
 							),
 					),
 					'report' => array(
@@ -992,6 +1018,16 @@ return array(
 							'label' => array(
 									'en_US' => 'School reports',
 									'fr_FR' => 'Bulletins',
+							),
+					),
+					'exam' => array(
+							'route' => 'note/index',
+							'params' => array('app' => 'p-pit-studies', 'category' => 'evaluation', 'type' => 'exam'),
+							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-education',
+							'label' => array(
+									'en_US' => 'Mock exams',
+									'fr_FR' => 'Examens blancs',
 							),
 					),
 /*					'event' => array(
@@ -1338,6 +1374,7 @@ return array(
 							'params' => array('account_name'),
 					),
 			),
+			'terms' => true,
 	),
 	
 	// Account p-pit-studies
@@ -2084,6 +2121,7 @@ return array(
 					'callback_date' => [],
 					'property_8' => [],
 					'property_13' => [],
+					'property_2' => [],
 					'origine' => [],
 					'property_7' => [],
 					'property_15' => [],
@@ -2614,6 +2652,7 @@ table.note-report td {
 					'2ndeProCommerce' => array('fr_FR' => '2nde Pro Commerce'),
 					'1ereProCommerce' => array('fr_FR' => '1ère Pro Commerce'),
 					'termProCommerce' => array('fr_FR' => 'Term. Pro Commerce'),
+					'1ereProGa' => array('fr_FR' => '1ère Pro GA'),
 					'1ereProVente' => array('fr_FR' => '1ère Pro Vente'),
 					'termProVente' => array('fr_FR' => 'Term. Pro Vente'),
 					'fle' => array('fr_FR' => 'FLE', 'level' => 'FLE'),
@@ -2714,6 +2753,25 @@ table.note-report td {
 			),
 	),
 
+	'student/property/exam' => array(
+		'type' => 'select',
+		'modalities' => array(
+			'mock-exam' => [],
+			'mock-exam_2' => [],
+			'mock-exam_3' => [],
+			'mock-bac' => [],
+			'mock-bac_2' => [],
+			'mock-bac_3' => [],
+			'mock-bts' => [],
+			'mock-bts_2' => [],
+			'mock-bts_3' => [],
+		),
+		'labels' => array(
+			'en_US' => 'Mock exam',
+			'fr_FR' => 'Examen blanc',
+		),
+	),
+	
 	'student/property/reportMention' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -2751,6 +2809,7 @@ table.note-report td {
 					'fle' => array('en_US' => 'French', 'fr_FR' => 'FLE'),
 					'italien' => array('en_US' => 'Italian', 'fr_FR' => 'Italien'),
 					'portuguese' => array('en_US' => 'Portuguese', 'fr_FR' => 'Portugais'),
+					'chinese' => array('en_US' => 'Chinese', 'fr_FR' => 'Chinois'),
 					'technology' => array('en_US' => 'Technology', 'fr_FR' => 'Technologie'),
 					'computing' => array('en_US' => 'Computing', 'fr_FR' => 'Informatique'),
 					'management-sciences' => array('en_US' => 'Management sciences', 'fr_FR' => 'Science de la gestion'),
@@ -2836,6 +2895,7 @@ table.note-report td {
 			'todoTitle' => array('en_US' => 'registered', 'fr_FR' => 'inscrits'),
 			'main' => array(
 					'place_id' => 'select',
+					'property_16' => 'select',
 					'property_1' => 'select',
 					'property_7' => 'select',
 					'property_6' => 'select',
@@ -3009,6 +3069,15 @@ table.note-report td {
     <tr>
     	<td style="width: 70%%">%s</td>
     	<td style="width: 30%%">%s</td>
+	</tr>
+</table>',
+			),
+
+			'withoutMentionFrame' => array(
+				'html' => '
+<table class="table note-report">
+    <tr>
+    	<td style="width: 100%%">%s</td>
 	</tr>
 </table>',
 			),
@@ -3652,7 +3721,7 @@ table.note-report tr.period {
 	),
 
 	'note/search/evaluation/note' => array(
-			'title' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
+			'title' => array('en_US' => 'Evaluations', 'fr_FR' => 'Relevés de notes'),
 	),
 
 	'note/search/evaluation/report' => array(
@@ -4033,7 +4102,7 @@ table.note-report tr.period {
 											'level' => 'subject',
 											'route' => 'student/evaluation',
 											'filter' => 'evaluation_category',
-											'label' => array('en_US' => 'Evaluations', 'fr_FR' => 'Evaluations'),
+											'label' => array('en_US' => 'Evaluations', 'fr_FR' => 'Relevés de notes'),
 									),
 									'schooling' => array(
 											'type' => 'static',
@@ -4044,9 +4113,9 @@ table.note-report tr.period {
 									'mock_evaluation' => array(
 											'type' => 'static',
 											'level' => 'subject',
-											'route' => 'student/evaluation',
+											'route' => 'student/exam',
 											'params' => ['mock' => 'mock'],
-											'label' => array('en_US' => 'Mock evaluations', 'fr_FR' => 'Epreuves blanches'),
+											'label' => array('en_US' => 'Mock exams', 'fr_FR' => 'Examens blancs'),
 									),
 							),
 					),
