@@ -259,6 +259,15 @@ return array(
         										),
         								),
         						),
+        						'exportCsv' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/export-csv[/:category][/:type]',
+        										'defaults' => array(
+        												'action' => 'exportCsv',
+        										),
+        								),
+        						),
 	       						'detail' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -846,6 +855,7 @@ return array(
 				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
             	array('route' => 'note/list', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/export', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/exportCsv', 'roles' => array('admin')),
 				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
@@ -2848,6 +2858,7 @@ table.note-report td {
 
 					'study-period' => array('en_US' => 'Study period', 'fr_FR' => 'Etude surveillée'),
 
+					'school_life' => array('en_US' => 'School life', 'fr_FR' => 'Vie scolaire'),
 					'sport' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
 			),
 			'labels' => array(

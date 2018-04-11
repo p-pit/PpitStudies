@@ -24,7 +24,12 @@
 		</div>
 		
 <?php foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) : ?>
-	
+	<?php 
+	$property = $context->getConfig('note')['properties'][$propertyId];
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+	$label = $property['labels'][$context->getLocale()];
+	?>
+
 	<?php if ($propertyId == 'type') : ?>
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $this->translate('Type', 'ppit-core', $context->getLocale()) ?></label>
@@ -53,13 +58,22 @@
 	    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
 		</div>
+	
+	<?php elseif ($propertyId == 'subject') : ?>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<select id="search_<?php echo $propertyId ?>" class="form-control">
+					<option value=""></option>
+		<?php foreach ($property['modalities'] as $modalityId => $modality) : ?>
+		    		<option value="<?php echo $modalityId ?>"><?php echo $modality[$context->getLocale()] ?></option>
+		<?php endforeach;?>
+					<option value="global"><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></option>
+		    	</select>
+			</div>
+		</div>
 
 	<?php else : ?>
-		<?php 
-		$property = $context->getConfig('note')['properties'][$propertyId];
-		if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
-		$label = $property['labels'][$context->getLocale()];
-		?>
 			
 		<?php if ($propertyId == 'place_id') : ?>
 		<div class="form-group">
@@ -123,6 +137,12 @@
 					<span class="glyphicon glyphicon-cloud-download"></span>
 					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
 				</button>
+<?php if ($category == 'evaluation' && $context->hasRole('admin')) : ?>
+				<button type="button" class="btn btn-default" title="<?php echo $this->translate('CSV export', 'ppit-core', $context->getLocale()) ?>" id="csv-button">
+					<span class="glyphicon glyphicon-cloud-download"></span>
+					<span><?php echo $this->translate('CSV export', 'ppit-core', $context->getLocale())?></span>
+				</button>
+<?php endif;?>
 	    </div>
 	    </div>
 	    

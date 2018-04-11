@@ -222,8 +222,11 @@ class PdfReportViewHelper
 				);
 			}
 			elseif ($category == 'exam') {
+	    		$pdf->SetFont('', '', 10);
 				$text .= sprintf(
 					$context->getConfig('student/report')['withoutMentionFrame']['html'],
+					'<em>'.$translator->translate('Opinion of the jury', 'ppit-studies', $context->getLocale()).'</em><br>'.
+					(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
 					'<br><br><br><br><br><br><br><br>'
 				);				
 			}
@@ -246,7 +249,8 @@ class PdfReportViewHelper
 			$text = PdfAbsenceTableViewHelper::render($absLates);
 			$pdf->writeHTML($text, true, 0, true, 0);
 	    }
-		$pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
+	    $pdf->SetFont('', '', 8);
+	    $pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.

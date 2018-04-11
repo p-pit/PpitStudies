@@ -89,6 +89,20 @@ foreach ($absences as $absence) : ?>
 	<tr class="invisible"><td colspan="99"></td></tr>
 	
 <?php $i++; endforeach; ?>
+
+	<tr>
+
+<?php if ($mode == 'todo' && count($absences) == '50') : ?>
+		<td style="text-align: center">
+			<button type="button" class="btn btn-default index-btn" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="more-anchor">
+				<span class="glyphicon glyphicon-option-horizontal" id="more-glyphicon"></span>
+			</button>
+		</td>
+<?php else : ?>
+		<td>&nbsp;</td>
+<?php endif;?>
+		<td colspan="<?php echo count($context->getConfig('absence/list')) ?>">&nbsp;</td>
+	</tr>
 	
 	<tr>
 		<td colspan="<?php echo count($context->getConfig('absence/list')) ?>" style="font-weight: bold; text-align:right"><?php echo $this->translate('Total duration', 'ppit-studies', $context->getLocale()) ?></td>

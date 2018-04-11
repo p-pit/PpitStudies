@@ -186,7 +186,52 @@ class NoteController extends AbstractActionController
 		$writer->save('php://output');
 		return $this->response;
     }
+
+    public function exportCsvAction()
+    {
+    	$context = Context::getCurrent();
+		$category = $this->params()->fromRoute('category');
+		$type = $this->params()->fromRoute('type');
+		$params = $this->getFilters($category, $this->params());
     
+    	$major = ($this->params()->fromQuery('major', 'date'));
+    	$dir = ($this->params()->fromQuery('dir', 'DESC'));
+    
+    	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
+    
+    	// Retrieve the list
+    	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
+    	
+    	header('Content-Type: text/csv; charset=utf-8');
+    	header("Content-disposition: filename=contact-".date('Y-m-d').".csv");
+    	echo "\xEF\xBB\xBF";
+    
+		foreach($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['properties'] as $propertyId => $column) {
+			$property = $context->getConfig('note')['properties'][$propertyId];
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+    		print_r($property['labels'][$context->getLocale()].';');
+    	}
+    	print_r("\n");
+    
+    	foreach ($noteLinks as $noteLink) {
+    		$noteLink->properties = $noteLink->getProperties();
+			foreach($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['properties'] as $propertyId => $column) {
+				$property = $context->getConfig('note')['properties'][$propertyId];
+				if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+    			if ($noteLink->properties[$propertyId]) {
+    				if ($propertyId == 'place_id') print_r($account->place_caption);
+    				elseif ($property['type'] == 'date') print_r($context->decodeDate($noteLink->properties[$propertyId]));
+    				elseif ($property['type'] == 'number') print_r($context->formatFloat($noteLink->properties[$propertyId], 2));
+    				elseif ($property['type'] == 'select')  print_r((array_key_exists($noteLink->properties[$propertyId], $property['modalities'])) ? $property['modalities'][$noteLink->properties[$propertyId]][$context->getLocale()] : $noteLink->properties[$propertyId]);
+    				else print_r($noteLink->properties[$propertyId]);
+    			}
+    			print_r(';');
+    		}
+    		print_r("\n");
+    	}
+    	return $this->response;
+    }
+
     public function updateAction()
     {
     	// Retrieve the context

@@ -105,6 +105,7 @@
 		'Observations' => 'Observations',
 		'Observations for the class' => 'Observations pour la classe',
 		'Opinion of staff meeting' => 'Avis du conseil de classe',
+		'Opinion of the jury' => 'Avis du jury',
 		'on period' => 'sur la période',
 		'Other' => 'Autre',
 		'Oro-dental checkup' => 'Bilan ORL',

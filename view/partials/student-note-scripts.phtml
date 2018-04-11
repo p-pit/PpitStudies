@@ -56,6 +56,13 @@ function exportNoteList() {
 	document.location.href = '<?php echo $this->url('note/export', array('category' => $category, 'type' => $type)) ?>' + params;
 }
 
+// Export the list
+function csvNoteList() {
+
+	var params = getParams();
+	document.location.href = '<?php echo $this->url('note/exportCsv', array('category' => $category, 'type' => $type)) ?>' + params;
+}
+
 function eraseNoteSearch() {
 
 <?php foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) : ?>
@@ -109,6 +116,7 @@ function filterNoteList() {
 function connectNoteSearchInputs() {
 
 	$('#export-button').click(function () { exportNoteList(); });
+	$('#csv-button').click(function () { csvNoteList(); });
 	
 	$('#erase-button').unbind();
 	$('#erase-button').click(function () { eraseNoteSearch(); });

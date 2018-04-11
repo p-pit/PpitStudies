@@ -106,7 +106,7 @@ class Absence implements InputFilterAwareInterface
 		return $data;
     }
     
-    public static function getList($type, $params, $major, $dir, $mode = 'todo')
+    public static function getList($type, $params, $major, $dir, $mode = 'todo', $limit = 50)
     {
     	$context = Context::getCurrent();
     	$select = Absence::getTable()->getSelect()
@@ -137,6 +137,7 @@ class Absence implements InputFilterAwareInterface
 		$cursor = Absence::getTable()->selectWith($select);
 		$absences = array();
 		$currentRoles = $context->getRoles();
+		$i = 0;
 		foreach ($cursor as $absence) {
 			$absence->properties['place_id'] = $absence->place_id;
 			$absence->properties['property_1'] = $absence->sport;
@@ -170,7 +171,9 @@ class Absence implements InputFilterAwareInterface
 				||	$absence->type == 'sport' && array_key_exists('coach', $currentRoles)
 				||	$absence->type == 'boarding_school' && array_key_exists('boarding_school_headmaster', $currentRoles))
 				{*/
+					$i++;
 					$absence->properties = $absence->toArray();
+					if ($limit && $i > $limit) break;
 					$absences[] = $absence;
 //				}
 			}

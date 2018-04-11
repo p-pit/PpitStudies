@@ -94,14 +94,14 @@ class AbsenceController extends AbstractActionController
     	$context = Context::getCurrent();
     
     	$params = $this->getFilters($this->params());
-    
+		$limit = $this->params()->fromQuery('limit');
     	$major = ($this->params()->fromQuery('major', 'begin_date'));
     	$dir = ($this->params()->fromQuery('dir', 'DESC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     
     	// Retrieve the list
-    	$absences = Absence::getList(null, $params, $major, $dir, $mode);
+    	$absences = Absence::getList(null, $params, $major, $dir, $mode, $limit);
 
     	// Return the link list
     	$view = new ViewModel(array(

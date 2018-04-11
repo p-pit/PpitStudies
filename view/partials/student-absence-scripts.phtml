@@ -43,6 +43,7 @@ function getParams() {
 	$searchTitle = (isset ($context->getConfig('absence/search')['searchTitle']) ? $context->getConfig('absence/search')['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
 	?>
 	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
+	if (!todo) $('#limit').val('');
 
 	return params;
 }
@@ -86,6 +87,7 @@ function eraseAbsenceSearch() {
 
 <?php endforeach;?>
 
+	$('#limit').val('50');
 	getAbsenceList(getParams(), 'name', 'ASC');
 }
 
@@ -191,7 +193,7 @@ function connectAbsenceSearchInputs() {
 function getAbsenceList(params, major, dir) {		
 
 	// Execute the ajax request
-	route = '<?php echo $this->url('absence/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	route = '<?php echo $this->url('absence/list') ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
@@ -211,7 +213,13 @@ function getAbsenceList(params, major, dir) {
 					sortAbsenceList($(this).attr('id').split('-')[0]);
 				});
 			});
-			
+
+			// Connect the more anchor
+			$('#more-anchor').click(function () {
+				$('#limit').val('');
+				filterAbsenceList();
+			});
+
 			// Connect the detail anchors
 			$('.absence-detail-anchor').each(function () {
 				$(this).click(function () {
