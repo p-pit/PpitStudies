@@ -5,7 +5,7 @@
 
 <?php $first=true; foreach ($context->getConfig('student/list') as $propertyId => $rendering) : ?>
 	<?php 
-	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	?>
 
@@ -84,7 +84,7 @@
 
 	<?php foreach ($context->getConfig('student/list') as $propertyId => $rendering) : ?>
 		<?php 
-		$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+		$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 		if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 		?>
 	

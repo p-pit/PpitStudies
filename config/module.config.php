@@ -1388,712 +1388,791 @@ return array(
 	),
 	
 	// Account p-pit-studies
+	
 	'core_account/p-pit-studies/property/status' => array(
-			'type' => 'select',
-			'modalities' => array(
-					'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
-					'interested' => array('en_US' => 'Intéressé', 'fr_FR' => 'A relancer'),
-					'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
-					'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
-					'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
-					'committed' => array('en_US' => 'Committed', 'fr_FR' => 'Engagé'),
-					'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
-					'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
-			),
-			'labels' => array(
-					'en_US' => 'Status',
-					'fr_FR' => 'Statut',
-			),
-			'perspectives' => array(
-					'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
-					'account' => array('committed', 'active'),
-			),
-			'mandatory' => true,
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+				'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+				'interested' => array('en_US' => 'Intéressé', 'fr_FR' => 'A relancer'),
+				'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
+				'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
+				'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
+				'committed' => array('en_US' => 'Committed', 'fr_FR' => 'Engagé'),
+				'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
+				'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
+		),
+		'labels' => array(
+				'en_US' => 'Status',
+				'fr_FR' => 'Statut',
+		),
+		'perspectives' => array(
+				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
+				'account' => array('committed', 'active'),
+		),
+		'mandatory' => true,
+	),
+
+	'core_account/p-pit-studies/property/place_id' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
+		),
+		'labels' => array(
+			'en_US' => 'Center',
+			'fr_FR' => 'Centre',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/identifier' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Identifier',
+			'fr_FR' => 'Identifiant',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/name' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Name',
+			'fr_FR' => 'Dénomination',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/photo_link_id' => array(
+		'definition' => 'inline',
+		'type' => 'photo',
+		'labels' => array(
+			'en_US' => '',
+			'fr_FR' => '',
+		),
 	),
 
 	'core_account/p-pit-studies/property/basket' => array(
-			'type' => 'select',
-			'modalities' => array(
-					'p1' => array('en_US' => 'P1', 'fr_FR' => 'P1'),
-					'p2' => array('en_US' => 'P2', 'fr_FR' => 'P2'),
-					'p3' => array('en_US' => 'P3', 'fr_FR' => 'P3'),
-			),
-			'labels' => array(
-					'en_US' => 'Priority',
-					'fr_FR' => 'Priorité',
-			),
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'p1' => array('en_US' => 'P1', 'fr_FR' => 'P1'),
+			'p2' => array('en_US' => 'P2', 'fr_FR' => 'P2'),
+			'p3' => array('en_US' => 'P3', 'fr_FR' => 'P3'),
+		),
+		'labels' => array(
+			'en_US' => 'Priority',
+			'fr_FR' => 'Priorité',
+		),
+	),
+
+	'core_account/p-pit-studies/property/contact_id' => array(
+		'definition' => 'inline',
+		'type' => 'photo',
+		'labels' => array(
+			'en_US' => '',
+			'fr_FR' => '',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/n_title' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Title',
+			'fr_FR' => 'Titre',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/title_1' => array(
+		'definition' => 'inline',
+		'definition' => 'inline',
+		'type' => 'title',
+		'labels' => array(
+			'en_US' => 'PERSONAL DATA',
+			'fr_FR' => 'DONNEES PERSONNELLES',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/n_first' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'First name',
+			'fr_FR' => 'Prénom',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/n_last' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Last name',
+			'fr_FR' => 'Nom',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/n_fn' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Name',
+			'fr_FR' => 'Nom',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/email' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'Email',
+			'fr_FR' => 'Email',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/tel_work' => array(
+		'definition' => 'inline',
+		'type' => 'phone',
+		'labels' => array(
+			'en_US' => 'Phone',
+			'fr_FR' => 'Téléphone',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/tel_cell' => array(
+		'definition' => 'inline',
+		'type' => 'phone',
+		'labels' => array(
+			'en_US' => 'Cellular',
+			'fr_FR' => 'Mobile',
+		),
+	),
+
+	'core_account/p-pit-studies/property/adr_street' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Address',
+			'fr_FR' => 'Adresse',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/adr_extended' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Complement',
+			'fr_FR' => 'Complément',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/adr_post_office_box' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Post office box',
+			'fr_FR' => 'Boîte postale',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/adr_zip' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Zip code',
+			'fr_FR' => 'Code postal',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/adr_city' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'City',
+			'fr_FR' => 'Ville',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/adr_state' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'State',
+			'fr_FR' => 'Etat',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/adr_country' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Country',
+			'fr_FR' => 'Pays',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/address' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Address',
+			'fr_FR' => 'Adresse',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/birth_date' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'en_US' => 'Birth date',
+			'fr_FR' => 'Date de naissance',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/gender' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'f' => array('en_US' => 'Female', 'fr_FR' => 'Femme'),
+			'm' => array('en_US' => 'Male', 'fr_FR' => 'Homme'),
+		),
+		'labels' => array(
+			'en_US' => 'Gender',
+			'fr_FR' => 'Genre',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/nationality' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Nationality',
+			'fr_FR' => 'Nationalité',
+		),
+	),
+
+	'core_account/p-pit-studies/property/n_title_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Father title',
+			'fr_FR' => 'Titre père',
+		),
+	),
+	'core_account/p-pit-studies/property/n_first_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Father first name',
+			'fr_FR' => 'Prénom père',
+		),
+	),
+	'core_account/p-pit-studies/property/n_last_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Father last name',
+			'fr_FR' => 'Nom famille père',
+		),
+	),
+	'core_account/p-pit-studies/property/n_fn_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Father name',
+			'fr_FR' => 'Nom père',
+		),
+	),
+	'core_account/p-pit-studies/property/email_2' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'Father email',
+			'fr_FR' => 'Email père',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_work_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Father phone',
+			'fr_FR' => 'Téléphone père',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_cell_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Father cell',
+			'fr_FR' => 'Portable père',
+		),
+	),
+	'core_account/p-pit-studies/property/address_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Father address',
+			'fr_FR' => 'Adresse père',
+		),
+	),
+	'core_account/p-pit-studies/property/n_title_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Mother title',
+			'fr_FR' => 'Titre mère',
+		),
+	),
+	'core_account/p-pit-studies/property/n_first_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Mother first name',
+			'fr_FR' => 'Prénom mère',
+		),
+	),
+	'core_account/p-pit-studies/property/n_last_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Mother last name',
+			'fr_FR' => 'Nom famille mère',
+		),
+	),
+	'core_account/p-pit-studies/property/n_fn_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Mother name',
+			'fr_FR' => 'Nom mère',
+		),
+	),
+	'core_account/p-pit-studies/property/email_3' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'Mother email',
+			'fr_FR' => 'Email mère',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_work_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Mother phone',
+			'fr_FR' => 'Téléphone mère',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_cell_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Mother cell',
+			'fr_FR' => 'Portable mère',
+		),
+	),
+	'core_account/p-pit-studies/property/address_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Mother address',
+			'fr_FR' => 'Adresse mère',
+		),
+	),
+	'core_account/p-pit-studies/property/n_title_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Legal repr. title',
+			'fr_FR' => 'Titre repr. légal',
+		),
+	),
+	'core_account/p-pit-studies/property/n_first_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Legal repr. first name',
+			'fr_FR' => 'Prénom repr. légal',
+		),
+	),
+	'core_account/p-pit-studies/property/n_last_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Legal repr. last name',
+			'fr_FR' => 'Nom famille repr. légal',
+		),
+	),
+	'core_account/p-pit-studies/property/n_fn_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Legal repr. name',
+			'fr_FR' => 'Nom repr. légal',
+		),
+	),
+	'core_account/p-pit-studies/property/email_4' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'Legal repr. email',
+			'fr_FR' => 'Email repr. légal',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_work_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Legal repr. phone',
+			'fr_FR' => 'Téléphone repr. légal',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_cell_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Legal repr. cell',
+			'fr_FR' => 'Portable repr. légal',
+		),
+	),
+	'core_account/p-pit-studies/property/address_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Legal repr. address',
+			'fr_FR' => 'Adresse repr. légal',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/opening_date' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'en_US' => '1st contact date',
+			'fr_FR' => 'Date 1er contact',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/closing_date' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'en_US' => 'Closing date',
+			'fr_FR' => 'Date de fermeture',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/callback_date' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'en_US' => 'Callback date',
+			'fr_FR' => 'Date de rappel',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/priority' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'p1' => array('en_US' => 'Priority 1', 'fr_FR' => 'Priorité 1'),
+			'p2' => array('en_US' => 'Priority 2', 'fr_FR' => 'Priorité 2'),
+			'p3' => array('en_US' => 'Priority 3', 'fr_FR' => 'Priorité 3'),
+		),
+		'labels' => array(
+			'en_US' => 'Priority',
+			'fr_FR' => 'Priorité',
+		),
 	),
 
 	'core_account/p-pit-studies/property/origine' => array(
-			'type' => 'select',
-			'modalities' => array(
-					'web' => array('en_US' => 'Web site', 'fr_FR' => 'Site web'),
-					'inscription' => array('en_US' => 'Online subscription', 'fr_FR' => 'Inscription en ligne'),
-					'show' => array('en_US' => 'Show', 'fr_FR' => 'Salon'),
-					'cooptation' => array('en_US' => 'Cooptation', 'fr_FR' => 'Cooptation'),
-					'incoming' => array('en_US' => 'Incoming call', 'fr_FR' => 'Appel entrant'),
-					'outcoming' => array('en_US' => 'Outcoming call', 'fr_FR' => 'Appel sortant'),
-					'file' => array('en_US' => 'File', 'fr_FR' => 'Fichier'),
-					'agency' => array('en_US' => 'Agency', 'fr_FR' => 'Agence'),
-			),
-			'labels' => array(
-					'en_US' => 'Origine',
-					'fr_FR' => 'Origine',
-			),
-	),
-		
-	'core_account/p-pit-studies/property/study_choice' => array(
-			'type' => 'select',
-			'modalities' => array(
-					'initial' => array('en_US' => 'Initial training', 'fr_FR' => 'Formation initiale'),
-					'part_time' => array('en_US' => 'Part time training', 'fr_FR' => 'Formation en alternance'),
-					'part_time_initial' => array('en_US' => 'Part time/Initial training', 'fr_FR' => 'Formation initiale/en alternance'),
-			),
-			'labels' => array(
-					'en_US' => 'Study choice',
-					'fr_FR' => 'Choix d\'études',
-			),
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'web' => array('en_US' => 'Web site', 'fr_FR' => 'Site web'),
+			'inscription' => array('en_US' => 'Online subscription', 'fr_FR' => 'Inscription en ligne'),
+			'show' => array('en_US' => 'Show', 'fr_FR' => 'Salon'),
+			'cooptation' => array('en_US' => 'Cooptation', 'fr_FR' => 'Cooptation'),
+			'incoming' => array('en_US' => 'Incoming call', 'fr_FR' => 'Appel entrant'),
+			'outcoming' => array('en_US' => 'Outcoming call', 'fr_FR' => 'Appel sortant'),
+			'file' => array('en_US' => 'File', 'fr_FR' => 'Fichier'),
+			'agency' => array('en_US' => 'Agency', 'fr_FR' => 'Agence'),
+		),
+		'labels' => array(
+			'en_US' => 'Origine',
+			'fr_FR' => 'Origine',
+		),
 	),
 
+	'core_account/p-pit-studies/property/contact_history' => array(
+		'definition' => 'inline',
+		'type' => 'log',
+		'labels' => array(
+		'en_US' => 'Comment',
+		'fr_FR' => 'Commentaire',
+		),
+	),
+
+	'core_account/p-pit-studies/property/title_2' => array(
+		'definition' => 'inline',
+		'type' => 'title',
+		'labels' => array(
+			'en_US' => 'REGISTRATION DATA',
+			'fr_FR' => 'DONNEES D\'INSCRIPTION',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_1' => array('definition' => 'student/property/discipline'),
+	
+	'core_account/p-pit-studies/property/property_2' => array(
+		'definition' => 'inline',
+		'type' => 'time',
+		'labels' => array(
+			'en_US' => 'Next meeting time',
+			'fr_FR' => 'Heure prochain rendez-vous',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_3' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'student' => array('en_US' => 'Student', 'fr_FR' => 'Etudiant/Lycéen'),
+			'employee' => array('en_US' => 'Employee', 'fr_FR' => 'Salarié'),
+			'others' => array('en_US' => 'Others', 'fr_FR' => 'Autres'),
+		),
+		'labels' => array(
+			'en_US' => 'Current situation',
+			'fr_FR' => 'Situation actuelle',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Languages',
+			'fr_FR' => 'Langues',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Options',
+			'fr_FR' => 'Options',
+		),
+	),
+
+	'core_account/p-pit-studies/property/property_6' => array('definition' => 'student/property/boarding_school'),
+
+	'core_account/p-pit-studies/property/property_7' => array('definition' => 'student/property/class'),
+	
+	'core_account/p-pit-studies/property/property_8' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'en_US' => 'Next meeting date',
+			'fr_FR' => 'Date prochaine rencontre',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_9' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Sport referent',
+			'fr_FR' => 'Référent sportif',
+		),
+	),
+
+	'core_account/p-pit-studies/property/property_10' => array('definition' => 'student/property/level'),
+	
+	'core_account/p-pit-studies/property/property_11' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Sport level',
+			'fr_FR' => 'Niveau sportif',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_12' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'en_US' => 'Price communicated on',
+			'fr_FR' => 'Tarif communiqué le',
+		),
+	),
+
+	'core_account/p-pit-studies/property/property_13' => array('definition' => 'student/property/contact_meeting_context'),
+	
+	'core_account/p-pit-studies/property/property_14' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'6e' => array('fr_FR' => '6e'),
+			'5e' => array('fr_FR' => '5e'),
+			'4e' => array('fr_FR' => '4e'),
+			'3e' => array('fr_FR' => '3e'),
+			'2nde' => array('fr_FR' => '2nde'),
+			'1ère' => array('fr_FR' => '1ère'),
+			'Term.' => array('fr_FR' => 'Term.'),
+		),
+		'labels' => array(
+			'en_US' => 'School level at registration',
+			'fr_FR' => 'Niveau scolaire à l\'inscription',
+		),
+	),
+
+	'core_account/p-pit-studies/property/property_15' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'initial' => array('en_US' => 'Initial training', 'fr_FR' => 'Formation initiale'),
+			'part_time' => array('en_US' => 'Part time training', 'fr_FR' => 'Formation en alternance'),
+			'part_time_initial' => array('en_US' => 'Part time/Initial training', 'fr_FR' => 'Formation initiale/en alternance'),
+		),
+		'labels' => array(
+			'en_US' => 'Study choice',
+			'fr_FR' => 'Choix d\'études',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_16' => array('definition' => 'student/property/school_year'),
+	
+	'core_account/p-pit-studies/property/json_property_1' => array(
+		'definition' => 'inline',
+		'type' => 'key_value',
+		'labels' => array(
+			'en_US' => 'Collected informations',
+			'fr_FR' => 'Informations collectées',
+		),
+		'properties' => array(
+			'updatedAt' => null,
+			'type' => null,
+			'state' => null,
+			'levelOfEducation' => null,
+			'minor' => null,
+			'branch' => null,
+			'currentDegree' => null,
+			'birthDate' => null,
+			'sponsorName' => null,
+			'payForStudies' => null,
+			'appName' => null,
+			'createdAt' => null,
+			'emailResult' => null,
+			'emailSendex' => null,
+			'emailDeliverable' => null,
+			'emailOriginal' => null,
+			'phoneOriginal' => null,
+		),
+	),
+	
+	'core_account/p-pit-studies/property/json_property_2' => array(
+		'definition' => 'inline',
+		'type' => 'array',
+		'labels' => array(
+			'en_US' => 'Wished domains',
+			'fr_FR' => 'Domaines souhaités',
+		),
+		'properties' => array(
+			'name' => null,
+			'studyDomainOptions' => null,
+		),
+	),
+	
+	'core_account/p-pit-studies/property/json_property_3' => array(
+		'definition' => 'inline',
+		'type' => 'array',
+		'labels' => array(
+			'en_US' => 'Engagements',
+			'fr_FR' => 'Engagements',
+		),
+		'properties' => array(
+			'source' => null,
+			'contextModel' => null,
+			'contentModel' => null,
+			'mailSentToUser' => null,
+			'mailSentToSponsor' => null,
+		),
+	),
+	
+	'core_account/p-pit-studies/property/title_3' => array(
+		'definition' => 'inline',
+		'type' => 'title',
+		'labels' => array(
+			'en_US' => 'COMMENTS',
+			'fr_FR' => 'COMMENTAIRES',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/comment_1' => array(
+		'definition' => 'inline',
+		'type' => 'textarea',
+		'labels' => array(
+			'en_US' => 'Trainings comments',
+			'fr_FR' => 'Commentaires formations',
+		),
+		'max_length' => 65535,
+	),
+	
+	'core_account/p-pit-studies/property/comment_2' => array(
+		'definition' => 'inline',
+		'type' => 'textarea',
+		'labels' => array(
+			'en_US' => 'Competencies comments',
+			'fr_FR' => 'Commentaires compétences',
+		),
+		'max_length' => 65535,
+	),
+	
+	'core_account/p-pit-studies/property/comment_3' => array(
+		'definition' => 'inline',
+		'type' => 'textarea',
+		'labels' => array(
+			'en_US' => 'Experience comments',
+			'fr_FR' => 'Commentaire Expérience',
+		),
+		'max_length' => 65535,
+	),
+	
+	'core_account/p-pit-studies/property/comment_4' => array(
+		'definition' => 'inline',
+		'type' => 'textarea',
+		'labels' => array(
+			'en_US' => 'Motivations comments',
+			'fr_FR' => 'Commentaires motivations',
+		),
+		'max_length' => 65535,
+	),
+	
+	'core_account/p-pit-studies/property/update_time' => array(
+		'definition' => 'inline',
+		'type' => 'time',
+		'labels' => array(
+			'en_US' => 'Last update',
+			'fr_FR' => 'Dernière mise à jour',
+		),
+	),
+	
 	'core_account/p-pit-studies' => array(
-			'statuses' => array(),
-			'properties' => array(
-					'title_1' => array(
-							'definition' => 'inline',
-							'type' => 'title',
-							'labels' => array(
-									'en_US' => 'PERSONAL DATA',
-									'fr_FR' => 'DONNEES PERSONNELLES',
-							),
-					),
-					'title_2' => array(
-							'definition' => 'inline',
-							'type' => 'title',
-							'labels' => array(
-									'en_US' => 'REGISTRATION DATA',
-									'fr_FR' => 'DONNEES D\'INSCRIPTION',
-							),
-					),
-					'title_3' => array(
-							'definition' => 'inline',
-							'type' => 'title',
-							'labels' => array(
-									'en_US' => 'COMMENTS',
-									'fr_FR' => 'COMMENTAIRES',
-							),
-					),
-					'status' => array('definition' => 'core_account/p-pit-studies/property/status'),
-					'identifier' => array('definition' => 'core_account/generic/property/identifier'),
-					'name' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Denomination',
-									'fr_FR' => 'Dénomination',
-							),
-					),
-					'basket' => array('definition' => 'core_account/p-pit-studies/property/basket'),
-					'contact_1_id' => array(
-							'definition' => 'inline',
-							'type' => 'photo',
-							'labels' => array(
-									'en_US' => '',
-									'fr_FR' => '',
-							),
-					),
-					'n_first' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'First name',
-									'fr_FR' => 'Prénom',
-							),
-							'mandatory' => true,
-					),
-					'n_last' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Last name',
-									'fr_FR' => 'Nom',
-							),
-							'mandatory' => true,
-					),
-					'n_fn' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Name',
-									'fr_FR' => 'Nom',
-							),
-					),
-					'email' => array(
-							'definition' => 'inline',
-							'type' => 'email',
-							'labels' => array(
-									'en_US' => 'Email',
-									'fr_FR' => 'Email',
-							),
-					),
-					'tel_work' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father phone',
-									'fr_FR' => 'Téléphone père',
-							),
-					),
-					'tel_cell' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Cell',
-									'fr_FR' => 'Portable',
-							),
-					),
-					'adr_street' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Address - Street',
-									'fr_FR' => 'Adresse - Rue',
-							),
-					),
-					'adr_zip' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Address - ZIP',
-									'fr_FR' => 'Adresse - Code postal',
-							),
-					),
-					'adr_city' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Address - City',
-									'fr_FR' => 'Adresse - Ville',
-							),
-					),
-					'adr_country' => array('definition' => 'core_account/generic/property/adr_country'),
-					'address' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Address',
-									'fr_FR' => 'Adresse',
-							),
-					),
-					'birth_date' => array(
-							'definition' => 'inline',
-							'type' => 'date',
-							'labels' => array(
-									'en_US' => 'Birth date',
-									'fr_FR' => 'Date de naissance',
-							),
-					),
-					'gender' => array('definition' => 'core_account/generic/property/gender'),
-					'nationality' => array('definition' => 'core_account/generic/property/nationality'),
-					'photo_link_id' => array(
-							'definition' => 'inline',
-							'type' => 'photo',
-							'labels' => array(
-									'en_US' => '',
-									'fr_FR' => '',
-							),
-					),
-					'n_title_2' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father title',
-									'fr_FR' => 'Titre père',
-							),
-					),
-					'n_first_2' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father first name',
-									'fr_FR' => 'Prénom père',
-							),
-					),
-					'n_last_2' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father last name',
-									'fr_FR' => 'Nom famille père',
-							),
-					),
-					'n_fn_2' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father name',
-									'fr_FR' => 'Nom père',
-							),
-					),
-					'email_2' => array(
-							'definition' => 'inline',
-							'type' => 'email',
-							'labels' => array(
-									'en_US' => 'Father email',
-									'fr_FR' => 'Email père',
-							),
-					),
-					'tel_work_2' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father phone',
-									'fr_FR' => 'Téléphone père',
-							),
-					),
-					'tel_cell_2' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father cell',
-									'fr_FR' => 'Portable père',
-							),
-					),
-					'address_2' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Father address',
-									'fr_FR' => 'Adresse père',
-							),
-					),
-					'n_title_3' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Mother title',
-									'fr_FR' => 'Titre mère',
-							),
-					),
-					'n_first_3' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Mother first name',
-									'fr_FR' => 'Prénom mère',
-							),
-					),
-					'n_last_3' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Mother last name',
-									'fr_FR' => 'Nom famille mère',
-							),
-					),
-					'n_fn_3' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Mother name',
-									'fr_FR' => 'Nom mère',
-							),
-					),
-					'email_3' => array(
-							'definition' => 'inline',
-							'type' => 'email',
-							'labels' => array(
-									'en_US' => 'Mother email',
-									'fr_FR' => 'Email mère',
-							),
-					),
-					'tel_work_3' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Mother phone',
-									'fr_FR' => 'Téléphone mère',
-							),
-					),
-					'tel_cell_3' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Mother cell',
-									'fr_FR' => 'Portable mère',
-							),
-					),
-					'address_3' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Mother address',
-									'fr_FR' => 'Adresse mère',
-							),
-					),
-					'n_title_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Legal repr. title',
-									'fr_FR' => 'Titre repr. légal',
-							),
-					),
-					'n_first_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Legal repr. first name',
-									'fr_FR' => 'Prénom repr. légal',
-							),
-					),
-					'n_last_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Legal repr. last name',
-									'fr_FR' => 'Nom famille repr. légal',
-							),
-					),
-					'n_fn_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Legal repr. name',
-									'fr_FR' => 'Nom repr. légal',
-							),
-					),
-					'email_4' => array(
-							'definition' => 'inline',
-							'type' => 'email',
-							'labels' => array(
-									'en_US' => 'Legal repr. email',
-									'fr_FR' => 'Email repr. légal',
-							),
-					),
-					'tel_work_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Legal repr. phone',
-									'fr_FR' => 'Téléphone repr. légal',
-							),
-					),
-					'tel_cell_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Legal repr. cell',
-									'fr_FR' => 'Portable repr. légal',
-							),
-					),
-					'address_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Legal repr. address',
-									'fr_FR' => 'Adresse repr. légal',
-							),
-					),
-					'place_id' => array(
-							'type' => 'repository', // Deprecated
-							'definition' => 'student/property/place',
-							'labels' => array( // Deprecated
-									'en_US' => 'Center',
-									'fr_FR' => 'Centre',
-							),
-					),
-					'opening_date' => array(
-							'definition' => 'inline',
-							'type' => 'date',
-							'labels' => array(
-									'en_US' => '1st contact date',
-									'fr_FR' => 'Date 1er contact',
-							),
-					),
-					'closing_date' => array(
-							'definition' => 'inline',
-							'type' => 'date',
-							'labels' => array(
-									'en_US' => 'Account closing date',
-									'fr_FR' => 'Date fermeture compte',
-							),
-					),
-					'callback_date' => array(
-							'definition' => 'inline',
-							'type' => 'date',
-							'labels' => array(
-									'en_US' => 'Callback date',
-									'fr_FR' => 'Date de rappel',
-							),
-					),
-					'origine' => array(
-							'type' => 'repository', // Deprecated
-							'definition' => 'core_account/p-pit-studies/property/origine',
-					),
-					'property_1' => array(
-							'type' => 'repository', // Deprecated
-							'definition' => 'student/property/discipline',
-					),
-					'property_2' => array(
-							'definition' => 'inline',
-							'type' => 'time',
-							'labels' => array(
-									'en_US' => 'Next meeting time',
-									'fr_FR' => 'Heure prochain rendez-vous',
-							),
-					),
-					'property_3' => array(
-							'definition' => 'inline',
-							'type' => 'select',
-							'modalities' => array(
-								'student' => array('en_US' => 'Student', 'fr_FR' => 'Etudiant/Lycéen'),
-								'employee' => array('en_US' => 'Employee', 'fr_FR' => 'Salarié'),
-								'others' => array('en_US' => 'Others', 'fr_FR' => 'Autres'),
-							),
-							'labels' => array(
-									'en_US' => 'Current situation',
-									'fr_FR' => 'Situation actuelle',
-							),
-					),
-					'property_4' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Languages',
-									'fr_FR' => 'Langues',
-							),
-					),
-					'property_5' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Options',
-									'fr_FR' => 'Options',
-							),
-					),
-					'property_6' => array(
-							'type' => 'repository', // Deprecated
-							'definition' => 'student/property/boarding_school',
-							'labels' => array( //Deprecated
-									'en_US' => 'Boarding-school',
-									'fr_FR' => 'Internat',
-							),
-					),
-					'property_7' => array(
-							'type' => 'repository', // Deprecated
-							'definition' => 'student/property/class',
-							'labels' => array( // Deprecated
-									'en_US' => 'Class',
-									'fr_FR' => 'Classe',
-							),
-					),
-					'property_8' => array(
-							'definition' => 'inline',
-							'type' => 'date',
-							'labels' => array(
-									'en_US' => 'Next meeting date',
-									'fr_FR' => 'Date prochaine rencontre',
-							),
-					),
-					'property_9' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Sport referent',
-									'fr_FR' => 'Référent sportif',
-							),
-					),
-					'property_10' => array(
-							'type' => 'repository', // Deprecated
-							'definition' => 'student/property/level',
-					),
-					'property_11' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Sport level',
-									'fr_FR' => 'Niveau sportif',
-							),
-					),
-					'property_12' => array(
-							'definition' => 'inline',
-							'type' => 'date',
-							'labels' => array(
-									'en_US' => 'Price communicated on',
-									'fr_FR' => 'Tarif communiqué le',
-							),
-					),
-					'property_13' => array(
-							'type' => 'repository', // Deprecated
-							'definition' => 'student/property/contact_meeting_context',
-					),
-					'property_14' => array(
-							'definition' => 'inline',
-							'type' => 'select',
-							'modalities' => array(
-									'6e' => array('fr_FR' => '6e'),
-									'5e' => array('fr_FR' => '5e'),
-									'4e' => array('fr_FR' => '4e'),
-									'3e' => array('fr_FR' => '3e'),
-									'2nde' => array('fr_FR' => '2nde'),
-									'1ère' => array('fr_FR' => '1ère'),
-									'Term.' => array('fr_FR' => 'Term.'),
-							),
-							'labels' => array(
-									'en_US' => 'School level at registration',
-									'fr_FR' => 'Niveau scolaire à l\'inscription',
-							),
-					),
-					'property_15' => array('definition' => 'core_account/p-pit-studies/property/study_choice'),
-					'property_16' => array('definition' => 'student/property/school_year'),
-					'json_property_1' => array(
-							'definition' => 'inline',
-							'type' => 'key_value',
-							'labels' => array(
-									'en_US' => 'Collected informations',
-									'fr_FR' => 'Informations collectées',
-							),
-							'properties' => array(
-									'updatedAt' => null,
-									'type' => null,
-									'state' => null,
-									'levelOfEducation' => null,
-									'minor' => null,
-									'branch' => null,
-									'currentDegree' => null,
-									'birthDate' => null,
-									'sponsorName' => null,
-									'payForStudies' => null,
-									'appName' => null,
-									'createdAt' => null,
-									'emailResult' => null,
-									'emailSendex' => null,
-									'emailDeliverable' => null,
-									'emailOriginal' => null,
-									'phoneOriginal' => null,
-							),
-					),
-					'json_property_2' => array(
-							'definition' => 'inline',
-							'type' => 'array',
-							'labels' => array(
-									'en_US' => 'Wished domains',
-									'fr_FR' => 'Domaines souhaités',
-							),
-							'properties' => array(
-									'name' => null,
-									'studyDomainOptions' => null,
-							),
-					),
-					'json_property_3' => array(
-							'definition' => 'inline',
-							'type' => 'array',
-							'labels' => array(
-									'en_US' => 'Engagements',
-									'fr_FR' => 'Engagements',
-							),
-							'properties' => array(
-									'source' => null,
-									'contextModel' => null,
-									'contentModel' => null,
-									'mailSentToUser' => null,
-									'mailSentToSponsor' => null,
-							),
-					),
-/*					'json_property_1' => array(
-							'definition' => 'inline',
-							'type' => 'structured',
-							'labels' => array(
-									'en_US' => 'Origine Internet - Credentials',
-									'fr_FR' => 'Origine Internet - Diplômes',
-							),
-					),
-					'json_property_2' => array(
-							'definition' => 'inline',
-							'type' => 'structured',
-							'labels' => array(
-									'en_US' => 'Origine Internet - Foreign languages',
-									'fr_FR' => 'Origine Internet - Langues étrangères',
-							),
-					),
-					'json_property_3' => array(
-							'definition' => 'inline',
-							'type' => 'structured',
-							'labels' => array(
-									'en_US' => 'Origine Internet - Stays abroad',
-									'fr_FR' => 'Origine Internet - Séjours à l\'étranger',
-							),
-					),
-					'json_property_4' => array(
-							'definition' => 'inline',
-							'type' => 'structured',
-							'labels' => array(
-									'en_US' => 'Origine Internet - Experiences',
-									'fr_FR' => 'Origine Internet - Expériences',
-							),
-					),
-					'json_property_5' => array(
-							'definition' => 'inline',
-							'type' => 'structured',
-							'labels' => array(
-									'en_US' => 'Origine Internet - Motivations',
-									'fr_FR' => 'Origine Internet - Motivations',
-							),
-					),*/
-					'comment_1' => array(
-							'definition' => 'inline',
-							'type' => 'textarea',
-							'labels' => array(
-									'en_US' => 'Trainings comments',
-									'fr_FR' => 'Commentaires formations',
-							),
-							'max_length' => 65535,
-					),
-					'comment_2' => array(
-							'definition' => 'inline',
-							'type' => 'textarea',
-							'labels' => array(
-									'en_US' => 'Competencies comments',
-									'fr_FR' => 'Commentaires compétences',
-							),
-							'max_length' => 65535,
-					),
-					'comment_3' => array(
-							'definition' => 'inline',
-							'type' => 'textarea',
-							'labels' => array(
-									'en_US' => 'Experience comments',
-									'fr_FR' => 'Commentaire Expérience',
-							),
-							'max_length' => 65535,
-					),
-					'comment_4' => array(
-							'definition' => 'inline',
-							'type' => 'textarea',
-							'labels' => array(
-									'en_US' => 'Motivations comments',
-									'fr_FR' => 'Commentaires motivations',
-							),
-							'max_length' => 65535,
-					),
-					'contact_history' => array(
-							'definition' => 'inline',
-							'type' => 'log',
-							'labels' => array(
-									'en_US' => 'Comment',
-									'fr_FR' => 'Commentaire',
-							),
-					),
-					'update_time' => array(
-							'definition' => 'inline',
-							'type' => 'time',
-							'labels' => array(
-									'en_US' => 'Last update',
-									'fr_FR' => 'Dernière mise à jour',
-							),
-					),
-			),
-			'order' => 'n_fn',
+		'properties' => array(
+			'title_1', 'title_2', 'title_3', 'status', 'place_id', 'identifier', 'name', 'photo_link_id', 'basket',
+			'contact_1_id', 'n_title', 'n_first', 'n_last', 'n_fn', 'email', 'tel_work', 'tel_cell',
+			'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'birth_date', 'gender', 'nationality',
+			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
+			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',
+			'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4', 'email_4', 'tel_work_4', 'tel_cell_4', 'address_4',
+			'opening_date', 'closing_date', 'callback_date', 'priority', 'origine', 'contact_history',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
+			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16',
+			'json_property_1', 'json_property_2', 'json_property_3',
+			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time'
+		),
+		'order' => 'n_fn',
 	),
 
 	'core_account/index/p-pit-studies' => array(

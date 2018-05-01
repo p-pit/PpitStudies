@@ -148,7 +148,7 @@ function connectProgressSearchInputs() {
 
 <?php foreach ($context->getConfig('progress/search')['main'] as $propertyId => $rendering) : ?>
 	<?php 
-	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	?>
 	
@@ -183,7 +183,7 @@ function connectProgressSearchInputs() {
 
 <?php foreach ($context->getConfig('progress/search')['more'] as $propertyId => $rendering) : ?>
 	<?php 
-	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	?>
 	

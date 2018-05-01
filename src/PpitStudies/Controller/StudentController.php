@@ -35,7 +35,8 @@ class StudentController extends AbstractActionController
 	public function getConfigProperties($type) {
 		$context = Context::getCurrent();
 		$properties = array();
-		foreach($context->getConfig('core_account/'.$type)['properties'] as $propertyId => $property) {
+		foreach($context->getConfig('core_account/'.$type)['properties'] as $propertyId) {
+			$property = $context->getConfig('core_account/'.$type.'/property/'.$propertyId);
 			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 			$properties[$propertyId] = $property;
 		}
@@ -263,7 +264,7 @@ class StudentController extends AbstractActionController
 
        	$criteria = array();
        	foreach ($context->getConfig('core_account/search/p-pit-studies')['properties'] as $propertyId => $unused) {
-			$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+			$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 			if (in_array($property['type'], array('date', 'time', 'datetime', 'number'))) {
 				if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
@@ -2005,6 +2006,6 @@ class StudentController extends AbstractActionController
     	$place_identifier = $this->params()->fromRoute('place_identifier', '');
     	$limit = $this->params()->fromRoute('limit', 10);
     	echo date('Y-m-d')."\n";
-    	return $this->nomad($request, date('Y-m-d'), $place_identifier, $limit);
+    	return $this->nomad($request, date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')), $place_identifier, $limit);
     }
 }

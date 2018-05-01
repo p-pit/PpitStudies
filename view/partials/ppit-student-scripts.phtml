@@ -97,7 +97,7 @@ function connectStudentSearchInputs() {
 
 <?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
 	<?php 
-	$property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	?>
 

@@ -44,7 +44,7 @@
 	
 	<?php elseif ($rendering == 'contains') : ?>
 		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies')['properties'][($propertyId == 'name') ? 'name' : $propertyId]['labels'][$context->getLocale()] ?></label>
+			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies/property/'.(($propertyId == 'name') ? 'name' : $propertyId))['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
@@ -53,7 +53,7 @@
 	<?php elseif ($rendering == 'range') : ?>
 
 		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()] ?></label>
+			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies/property/'.$propertyId)['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 	    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
@@ -95,7 +95,7 @@
 	
 	<?php elseif ($rendering == 'contains') : ?>
 		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies')['properties'][($propertyId == 'name') ? 'name' : $propertyId]['labels'][$context->getLocale()] ?></label>
+			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies/property/'.(($propertyId == 'name') ? 'name' : $propertyId))['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
@@ -104,7 +104,7 @@
 	<?php elseif ($rendering == 'range') : ?>
 
 		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()] ?></label>
+			<label class="col-sm-5 control-label"><?php echo $context->getConfig('core_account/p-pit-studies/property/'.$propertyId)['labels'][$context->getLocale()] ?></label>
 			<div class="col-sm-7">
 	    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
 			</div>

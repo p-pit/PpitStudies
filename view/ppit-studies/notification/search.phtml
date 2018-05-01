@@ -44,7 +44,7 @@
 		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
 		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
 		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
-		else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+		else $property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 		?>
 
 		<div class="form-group">
@@ -101,7 +101,7 @@
 	
 	<?php elseif ($rendering == 'range') : ?>
 		
-		<?php echo $label = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()]; ?>
+		<?php echo $label = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId)['labels'][$context->getLocale()]; ?>
 
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>
@@ -146,7 +146,7 @@
 		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
 		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
 		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
-		else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+		else $property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 		?>
 
 		<div class="form-group">
@@ -203,7 +203,7 @@
 	
 	<?php elseif ($rendering == 'range') : ?>
 		
-		<?php echo $label = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId]['labels'][$context->getLocale()]; ?>
+		<?php echo $label = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId)['labels'][$context->getLocale()]; ?>
 
 		<div class="form-group">
 			<label class="col-sm-5 control-label"><?php echo $label ?></label>

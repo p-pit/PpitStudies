@@ -81,7 +81,7 @@
 		<?php 
 		if ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
 		elseif ($rendering == 'select') $property = $context->getConfig('student/property/'.$propertyId);
-		else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+		else $property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 		$label = $property['labels'][$context->getLocale()];
 		?>
 	
@@ -203,7 +203,7 @@
 		<?php 
 		if ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
 		elseif ($rendering == 'select') $property = $context->getConfig('student/property/'.$propertyId);
-		else $property = $context->getConfig('core_account/p-pit-studies')['properties'][$propertyId];
+		else $property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 		$label = $property['labels'][$context->getLocale()];
 		?>
 	
