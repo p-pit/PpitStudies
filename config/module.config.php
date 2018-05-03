@@ -1413,68 +1413,13 @@ return array(
 		'mandatory' => true,
 	),
 
-	'core_account/p-pit-studies/property/place_id' => array(
-		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => array(
-			'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
-		),
-		'labels' => array(
-			'en_US' => 'Center',
-			'fr_FR' => 'Centre',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/identifier' => array(
-		'definition' => 'inline',
-		'type' => 'input',
-		'labels' => array(
-			'en_US' => 'Identifier',
-			'fr_FR' => 'Identifiant',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/name' => array(
-		'definition' => 'inline',
-		'type' => 'input',
-		'labels' => array(
-			'en_US' => 'Name',
-			'fr_FR' => 'Dénomination',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/photo_link_id' => array(
-		'definition' => 'inline',
-		'type' => 'photo',
-		'labels' => array(
-			'en_US' => '',
-			'fr_FR' => '',
-		),
-	),
+	'core_account/p-pit-studies/property/place_id' => array('definition' => 'core_account/generic/property/place_id'),
+	'core_account/p-pit-studies/property/identifier' => array('definition' => 'core_account/generic/property/identifier'),
+	'core_account/p-pit-studies/property/name' => array('definition' => 'core_account/generic/property/name'),
+	'core_account/p-pit-studies/property/photo_link_id' => array('definition' => 'core_account/generic/property/photo_link_id'),
+	'core_account/p-pit-studies/property/basket' => array('definition' => 'core_account/generic/property/basket'),
+	'core_account/p-pit-studies/property/contact_id' => array('definition' => 'contact_id'),
 
-	'core_account/p-pit-studies/property/basket' => array(
-		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => array(
-			'p1' => array('en_US' => 'P1', 'fr_FR' => 'P1'),
-			'p2' => array('en_US' => 'P2', 'fr_FR' => 'P2'),
-			'p3' => array('en_US' => 'P3', 'fr_FR' => 'P3'),
-		),
-		'labels' => array(
-			'en_US' => 'Priority',
-			'fr_FR' => 'Priorité',
-		),
-	),
-
-	'core_account/p-pit-studies/property/contact_id' => array(
-		'definition' => 'inline',
-		'type' => 'photo',
-		'labels' => array(
-			'en_US' => '',
-			'fr_FR' => '',
-		),
-	),
-	
 	'core_account/p-pit-studies/property/n_title' => array(
 		'definition' => 'inline',
 		'type' => 'input',
@@ -1620,36 +1565,9 @@ return array(
 		),
 	),
 	
-	'core_account/p-pit-studies/property/birth_date' => array(
-		'definition' => 'inline',
-		'type' => 'date',
-		'labels' => array(
-			'en_US' => 'Birth date',
-			'fr_FR' => 'Date de naissance',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/gender' => array(
-		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => array(
-			'f' => array('en_US' => 'Female', 'fr_FR' => 'Femme'),
-			'm' => array('en_US' => 'Male', 'fr_FR' => 'Homme'),
-		),
-		'labels' => array(
-			'en_US' => 'Gender',
-			'fr_FR' => 'Genre',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/nationality' => array(
-		'definition' => 'inline',
-		'type' => 'input',
-		'labels' => array(
-			'en_US' => 'Nationality',
-			'fr_FR' => 'Nationalité',
-		),
-	),
+	'core_account/p-pit-studies/property/birth_date' => array('definition' => 'core_account/generic/property/birth_date'),	
+	'core_account/p-pit-studies/property/gender' => array('definition' => 'core_account/generic/property/gender'),
+	'core_account/p-pit-studies/property/nationality' => array('definition' => 'nationality'),
 
 	'core_account/p-pit-studies/property/n_title_2' => array(
 		'definition' => 'inline',
@@ -1704,7 +1622,7 @@ return array(
 		'type' => 'input',
 		'labels' => array(
 			'en_US' => 'Father cell',
-			'fr_FR' => 'Portable père',
+			'fr_FR' => 'Mobile père',
 		),
 	),
 	'core_account/p-pit-studies/property/address_2' => array(
@@ -1768,7 +1686,7 @@ return array(
 		'type' => 'input',
 		'labels' => array(
 			'en_US' => 'Mother cell',
-			'fr_FR' => 'Portable mère',
+			'fr_FR' => 'Mobile mère',
 		),
 	),
 	'core_account/p-pit-studies/property/address_3' => array(
@@ -1844,74 +1762,31 @@ return array(
 		),
 	),
 	
-	'core_account/p-pit-studies/property/opening_date' => array(
-		'definition' => 'inline',
-		'type' => 'date',
-		'labels' => array(
-			'en_US' => '1st contact date',
-			'fr_FR' => 'Date 1er contact',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/closing_date' => array(
-		'definition' => 'inline',
-		'type' => 'date',
-		'labels' => array(
-			'en_US' => 'Closing date',
-			'fr_FR' => 'Date de fermeture',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/callback_date' => array(
-		'definition' => 'inline',
-		'type' => 'date',
-		'labels' => array(
-			'en_US' => 'Callback date',
-			'fr_FR' => 'Date de rappel',
-		),
-	),
-	
-	'core_account/p-pit-studies/property/priority' => array(
-		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => array(
-			'p1' => array('en_US' => 'Priority 1', 'fr_FR' => 'Priorité 1'),
-			'p2' => array('en_US' => 'Priority 2', 'fr_FR' => 'Priorité 2'),
-			'p3' => array('en_US' => 'Priority 3', 'fr_FR' => 'Priorité 3'),
-		),
-		'labels' => array(
-			'en_US' => 'Priority',
-			'fr_FR' => 'Priorité',
-		),
-	),
+	'core_account/p-pit-studies/property/opening_date' => array('definition' => 'core_account/generic/property/opening_date'),
+	'core_account/p-pit-studies/property/closing_date' => array('definition' => 'core_account/generic/property/closing_date'),
+	'core_account/p-pit-studies/property/callback_date' => array('definition' => 'core_account/generic/property/callback_date'),
 
-	'core_account/p-pit-studies/property/origine' => array(
+	'core_account/p-pit-studies/property/next_meeting_date' => array(
 		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => array(
-			'web' => array('en_US' => 'Web site', 'fr_FR' => 'Site web'),
-			'inscription' => array('en_US' => 'Online subscription', 'fr_FR' => 'Inscription en ligne'),
-			'show' => array('en_US' => 'Show', 'fr_FR' => 'Salon'),
-			'cooptation' => array('en_US' => 'Cooptation', 'fr_FR' => 'Cooptation'),
-			'incoming' => array('en_US' => 'Incoming call', 'fr_FR' => 'Appel entrant'),
-			'outcoming' => array('en_US' => 'Outcoming call', 'fr_FR' => 'Appel sortant'),
-			'file' => array('en_US' => 'File', 'fr_FR' => 'Fichier'),
-			'agency' => array('en_US' => 'Agency', 'fr_FR' => 'Agence'),
-		),
+		'type' => 'datetime',
 		'labels' => array(
-			'en_US' => 'Origine',
-			'fr_FR' => 'Origine',
+			'en_US' => 'Subscription meeting_date',
+			'fr_FR' => 'Date de RDV d\'inscription',
 		),
 	),
-
-	'core_account/p-pit-studies/property/contact_history' => array(
+	
+	'core_account/p-pit-studies/property/next_meeting_confirmed' => array(
 		'definition' => 'inline',
-		'type' => 'log',
+		'type' => 'datetime',
 		'labels' => array(
-		'en_US' => 'Comment',
-		'fr_FR' => 'Commentaire',
+			'en_US' => 'Subscription meeting confirmed',
+			'fr_FR' => 'RDV d\'inscription confirmé',
 		),
 	),
+	
+	'core_account/p-pit-studies/property/priority' => array('definition' => 'core_account/generic/property/priority'),
+	'core_account/p-pit-studies/property/origine' => array('definition' => 'core_account/generic/property/origine'),
+	'core_account/p-pit-studies/property/contact_history' => array('definition' => 'core_account/generic/property/contact_history'),
 
 	'core_account/p-pit-studies/property/title_2' => array(
 		'definition' => 'inline',
@@ -1928,8 +1803,8 @@ return array(
 		'definition' => 'inline',
 		'type' => 'time',
 		'labels' => array(
-			'en_US' => 'Next meeting time',
-			'fr_FR' => 'Heure prochain rendez-vous',
+			'en_US' => 'Admission meeting time',
+			'fr_FR' => 'Heure RDV d\'admission',
 		),
 	),
 	
@@ -1973,8 +1848,8 @@ return array(
 		'definition' => 'inline',
 		'type' => 'date',
 		'labels' => array(
-			'en_US' => 'Next meeting date',
-			'fr_FR' => 'Date prochaine rencontre',
+			'en_US' => 'Admission meeting date',
+			'fr_FR' => 'Date RDV d\'admission',
 		),
 	),
 	
@@ -2166,7 +2041,7 @@ return array(
 			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
 			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',
 			'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4', 'email_4', 'tel_work_4', 'tel_cell_4', 'address_4',
-			'opening_date', 'closing_date', 'callback_date', 'priority', 'origine', 'contact_history',
+			'opening_date', 'closing_date', 'callback_date', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'contact_history',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16',
 			'json_property_1', 'json_property_2', 'json_property_3',
@@ -2190,6 +2065,8 @@ return array(
 					'callback_date' => [],
 					'property_8' => [],
 					'property_13' => ['multiple' => true],
+					'next_meeting_date' => [],
+					'next_meeting_confirmed' => ['type' => 'boolean'],
 					'origine' => ['multiple' => true],
 					'property_1' => ['multiple' => true],
 					'property_7' => ['multiple' => true],
@@ -2210,6 +2087,7 @@ return array(
 					'callback_date' => [],
 					'property_8' => [],
 					'property_13' => [],
+					'next_meeting_date' => [],
 					'property_2' => [],
 					'origine' => [],
 					'property_7' => [],
@@ -2269,6 +2147,8 @@ return array(
 			'photo_link_id' => array('mandatory' => false),
 			'email' => array('mandatory' => false),
 			'tel_cell' => array('mandatory' => false),
+			'tel_cell_2' => array('mandatory' => false),
+			'tel_cell_3' => array('mandatory' => false),
 			'adr_street' => array('mandatory' => false),
 			'adr_zip' => array('mandatory' => false),
 			'adr_city' => array('mandatory' => false),
@@ -2276,6 +2156,8 @@ return array(
 			'property_8' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
 			'property_13' => array('mandatory' => false),
+			'next_meeting_date' => array('mandatory' => false),
+			'next_meeting_confirmed' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
 			'title_2' => null,
 			'property_15' => array('mandatory' => false),
@@ -2652,8 +2534,8 @@ table.note-report td {
 					'appointment-confirmed' => array('en_US' => 'Appointment', 'fr_FR' => 'Rendez-vous confirmé'),
 			),
 			'labels' => array(
-					'en_US' => 'Next meeting context',
-					'fr_FR' => 'Cadre prochaine rencontre',
+					'en_US' => 'Admission meeting context',
+					'fr_FR' => 'Cadre RDV d\'admission',
 			),
 	),
 		
