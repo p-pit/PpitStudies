@@ -1244,7 +1244,7 @@ return array(
 					'account_property_12' => array('definition' => 'core_account/generic/property/property_12'),
 					'account_property_13' => array('definition' => 'student/property/contact_meeting_context'),
 					'account_property_14' => array('definition' => 'core_account/generic/property/property_14'),
-					'account_property_15' => array('definition' => 'core_account/p-pit-studies/property/study_choice'),
+					'account_property_15' => array('definition' => 'core_account/p-pit-studies/property/property_15'),
 					'account_property_16' => array('definition' => 'student/property/school_year'),
 					'update_time' => array('definition' => 'commitment/property/update_time'),
 			),
@@ -1418,7 +1418,7 @@ return array(
 	'core_account/p-pit-studies/property/name' => array('definition' => 'core_account/generic/property/name'),
 	'core_account/p-pit-studies/property/photo_link_id' => array('definition' => 'core_account/generic/property/photo_link_id'),
 	'core_account/p-pit-studies/property/basket' => array('definition' => 'core_account/generic/property/basket'),
-	'core_account/p-pit-studies/property/contact_id' => array('definition' => 'contact_id'),
+	'core_account/p-pit-studies/property/contact_1_id' => array('definition' => 'core_account/generic/property/contact_1_id'),
 
 	'core_account/p-pit-studies/property/n_title' => array(
 		'definition' => 'inline',
@@ -1787,7 +1787,10 @@ return array(
 	'core_account/p-pit-studies/property/priority' => array('definition' => 'core_account/generic/property/priority'),
 	'core_account/p-pit-studies/property/origine' => array('definition' => 'core_account/generic/property/origine'),
 	'core_account/p-pit-studies/property/contact_history' => array('definition' => 'core_account/generic/property/contact_history'),
-
+	'core_account/p-pit-studies/property/transfer_order_id' => array('definition' => 'core_account/generic/property/transfer_order_id'),
+	'core_account/p-pit-studies/property/transfer_order_date' => array('definition' => 'core_account/generic/property/transfer_order_date'),
+	'core_account/p-pit-studies/property/bank_identifier' => array('definition' => 'core_account/generic/property/bank_identifier'),
+	
 	'core_account/p-pit-studies/property/title_2' => array(
 		'definition' => 'inline',
 		'type' => 'title',
@@ -2042,6 +2045,7 @@ return array(
 			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',
 			'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4', 'email_4', 'tel_work_4', 'tel_cell_4', 'address_4',
 			'opening_date', 'closing_date', 'callback_date', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'contact_history',
+			'transfer_order_id', 'transfer_order_date', 'bank_identifier',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16',
 			'json_property_1', 'json_property_2', 'json_property_3',
@@ -2088,6 +2092,7 @@ return array(
 					'property_8' => [],
 					'property_13' => [],
 					'next_meeting_date' => [],
+					'next_meeting_confirmed' => [],
 					'property_2' => [],
 					'origine' => [],
 					'property_7' => [],
@@ -2159,6 +2164,9 @@ return array(
 			'next_meeting_date' => array('mandatory' => false),
 			'next_meeting_confirmed' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
+			'transfer_order_id' => array('mandatory' => false), 
+			'transfer_order_date' => array('mandatory' => false), 
+			'bank_identifier' => array('mandatory' => false),
 			'title_2' => null,
 			'property_15' => array('mandatory' => false),
 			'property_1' => array('mandatory' => false),
@@ -2904,6 +2912,11 @@ table.note-report td {
 	),
 
 	'student/attestation' => array(
+			'address1' => array('text' => '%s %s %s', 'params' => array('invoicing_n_title', 'invoicing_n_last', 'invoicing_n_first')),
+			'address2' => array('text' => '%s', 'params' => array('invoicing_adr_street')),
+			'address3' => array('text' => '%s %s', 'params' => array('invoicing_adr_zip', 'invoicing_adr_city')),
+			'address4' => array('text' => '%s', 'params' => array('invoicing_adr_country')),
+			'address6' => array('text' => '%s, le %s', 'params' => array('place', 'date')),
 			'title' => array('text' => 'ATTESTATION SCOLAIRE', 'params' => array()),
 			'paragraph1a' => array('text' => 'Notre Sports Etudes propose aux élèves de la classe de 6ème à la Terminale de suivre les cours du Centre National d’Etudes à Distance (CNED). Le CNED est un collège et lycée public (mêmes assurances scolaires, mêmes équivalences pour réintégrer un établissement réglementé classique). Nous apportons en complément un corps enseignant qui utilise les cours du CNED, qui supervise les études de chaque élève et qui vérifie que les devoirs sont réalisés en fonction du calendrier fourni par le CNED.', 'params' => array()),
 			'paragraph3a' => array('text' => 'CNED de Rouen (collège public)', 'params' => array()),
@@ -2922,7 +2935,11 @@ table.note-report td {
 	),
 
 	'student/commitment' => array(
-			'address1' => array('text' => 'Boulogne Billancourt, le %s', 'params' => array('date')),
+			'address1' => array('text' => '%s %s %s', 'params' => array('invoicing_n_title', 'invoicing_n_last', 'invoicing_n_first')),
+			'address2' => array('text' => '%s', 'params' => array('invoicing_adr_street')),
+			'address3' => array('text' => '%s %s', 'params' => array('invoicing_adr_zip', 'invoicing_adr_city')),
+			'address4' => array('text' => '%s', 'params' => array('invoicing_adr_country')),
+			'address6' => array('text' => '%s, le %s', 'params' => array('place', 'date')),
 			'title' => array('text' => 'ENGAGEMENT DE PRISE EN CHARGE', 'params' => array()),
 			'paragraph1a' => array('text' => 'Je soussigné,', 'params' => array()),
 			'paragraph2a' => array('text' => 'Monsieur Thierry DERKX, Directeur de F.M. SPORTS ETUDES', 'params' => array()),
@@ -2939,9 +2956,13 @@ table.note-report td {
 	),
 		
 	'student/confirmation' => array(
-			'address1' => array('text' => 'Boulogne Billancourt, le %s', 'params' => array('date')),
+			'address1' => array('text' => '%s %s %s', 'params' => array('invoicing_n_title', 'invoicing_n_last', 'invoicing_n_first')),
+			'address2' => array('text' => '%s', 'params' => array('invoicing_adr_street')),
+			'address3' => array('text' => '%s %s', 'params' => array('invoicing_adr_zip', 'invoicing_adr_city')),
+			'address4' => array('text' => '%s', 'params' => array('invoicing_adr_country')),
+			'address6' => array('text' => '%s, le %s', 'params' => array('place', 'date')),
 			'title' => array('text' => 'CONFIRMATION D\'INSCRIPTION', 'params' => array()),
-			'paragraph1a' => array('text' => 'FM SPORTS ET ETUDES certifie que l’élève dont les coordonnées figurent ci-dessous :', 'params' => array()),
+			'paragraph1a' => array('text' => 'SPORTS ETUDES ACADEMY certifie que l’élève dont les coordonnées figurent ci-dessous :', 'params' => array()),
 			'paragraph4a' => array('text' => 'Nom :', 'params' => array()),
 			'paragraph4b' => array('text' => '%s', 'params' => array('n_last')),
 			'paragraph6a' => array('text' => 'Prénom :', 'params' => array()),

@@ -1758,8 +1758,18 @@ class StudentController extends AbstractActionController
     	$commitment = Commitment::get($id);
     	
     	$template = $context->getConfig('student/confirmation');
-
+    	if ($commitment->account->contact_2) $invoicing_contact = $commitment->account->contact_2;
+    	elseif ($commitment->account->contact_3) $invoicing_contact = $commitment->account->contact_3;
+    	else $invoicing_contact = Vcard::instanciate();
+    	
     	$data = array(
+    		'invoicing_n_title' => $invoicing_contact->n_title,
+    		'invoicing_n_last' => $invoicing_contact->n_last,
+    		'invoicing_n_first' => $invoicing_contact->n_first,
+    		'invoicing_adr_street' => $invoicing_contact->adr_street,
+    		'invoicing_adr_zip' => $invoicing_contact->adr_zip,
+    		'invoicing_adr_city' => $invoicing_contact->adr_city,
+    		'invoicing_adr_country' => $invoicing_contact->adr_country,
     		'date' => date('d/m/Y'),
     		'n_last' => $commitment->account->contact_1->n_last,
     		'n_first' => $commitment->account->contact_1->n_first,
@@ -1767,7 +1777,7 @@ class StudentController extends AbstractActionController
     		'adr_zip' => $commitment->account->contact_1->adr_zip,
     		'adr_city' => $commitment->account->contact_1->adr_city,
     		'adr_country' => $commitment->account->contact_1->adr_country,
-    		'birth_date' => $commitment->account->contact_1->birth_date,
+    		'birth_date' => $context->decodeDate($commitment->account->contact_1->birth_date),
     		'caption' => $commitment->caption,
     		'sport' => $commitment->account->property_1,
     		'class' => $commitment->property_1.' '.$commitment->property_2,
@@ -1777,13 +1787,13 @@ class StudentController extends AbstractActionController
 		$place = Place::get($commitment->account->place_id);
 		if ($place && $place->logo_src) {
 			$logo_src = $place->logo_src;
-			$logo_width = $place->logo_width*2/3;
-			$logo_height = $place->logo_height*2/3;
+			$logo_width = $place->logo_width*1/3;
+			$logo_height = $place->logo_height*1/3;
 		}
     	else {
     		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
-			$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
-			$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+			$logo_width = $context->getConfig('headerParams')['logo-width']*1/3;
+			$logo_height = $context->getConfig('headerParams')['logo-height']*1/3;
     	}
 		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
     	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
@@ -1832,7 +1842,11 @@ class StudentController extends AbstractActionController
     			'invoicing_n_title' => $invoicing_contact->n_title,
     			'invoicing_n_last' => $invoicing_contact->n_last,
     			'invoicing_n_first' => $invoicing_contact->n_first,
-    			'adr_street' => $invoicing_contact->adr_street,
+	    		'invoicing_adr_street' => $invoicing_contact->adr_street,
+	    		'invoicing_adr_zip' => $invoicing_contact->adr_zip,
+	    		'invoicing_adr_city' => $invoicing_contact->adr_city,
+	    		'invoicing_adr_country' => $invoicing_contact->adr_country,
+	    		'adr_street' => $invoicing_contact->adr_street,
     			'adr_zip' => $invoicing_contact->adr_zip,
     			'adr_city' => $invoicing_contact->adr_city,
     			'adr_country' => $invoicing_contact->adr_country,
@@ -1851,8 +1865,8 @@ class StudentController extends AbstractActionController
     	}
     	else {
     		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
-    		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
-    		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+    		$logo_width = $context->getConfig('headerParams')['logo-width']*1/3;
+    		$logo_height = $context->getConfig('headerParams')['logo-height']*1/3;
     	}
 		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
     	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
@@ -1868,9 +1882,20 @@ class StudentController extends AbstractActionController
     	$commitment = Commitment::get($id);
     
     	$template = $context->getConfig('student/attestation');
-    
+    	if ($commitment->account->contact_2) $invoicing_contact = $commitment->account->contact_2;
+    	elseif ($commitment->account->contact_3) $invoicing_contact = $commitment->account->contact_3;
+    	else $invoicing_contact = Vcard::instanciate();
+    	
     	$data = array(
-    			'n_first' => $commitment->account->contact_1->n_first,
+    		'invoicing_n_title' => $invoicing_contact->n_title,
+    		'invoicing_n_last' => $invoicing_contact->n_last,
+    		'invoicing_n_first' => $invoicing_contact->n_first,
+    		'invoicing_adr_street' => $invoicing_contact->adr_street,
+    		'invoicing_adr_zip' => $invoicing_contact->adr_zip,
+    		'invoicing_adr_city' => $invoicing_contact->adr_city,
+    		'invoicing_adr_country' => $invoicing_contact->adr_country,
+    		'place' => $commitment->account->place_caption,
+    		'n_first' => $commitment->account->contact_1->n_first,
     			'n_last' => $commitment->account->contact_1->n_last,
     			'school_level' => $commitment->property_1,
     			'date' => date('d/m/Y'),
@@ -1884,8 +1909,8 @@ class StudentController extends AbstractActionController
     	}
     	else {
     		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
-    		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
-    		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+    		$logo_width = $context->getConfig('headerParams')['logo-width']*1/3;
+    		$logo_height = $context->getConfig('headerParams')['logo-height']*1/3;
     	}
 		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
     	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
@@ -1901,15 +1926,26 @@ class StudentController extends AbstractActionController
     	$commitment = Commitment::get($id);
     	
     	$template = $context->getConfig('student/commitment');
+    	if ($commitment->account->contact_2) $invoicing_contact = $commitment->account->contact_2;
+    	elseif ($commitment->account->contact_3) $invoicing_contact = $commitment->account->contact_3;
+    	else $invoicing_contact = Vcard::instanciate();
     	
     	$data = array(
-    			'date' => date('d/m/Y'),
+	    		'invoicing_n_title' => $invoicing_contact->n_title,
+	    		'invoicing_n_last' => $invoicing_contact->n_last,
+	    		'invoicing_n_first' => $invoicing_contact->n_first,
+	    		'invoicing_adr_street' => $invoicing_contact->adr_street,
+	    		'invoicing_adr_zip' => $invoicing_contact->adr_zip,
+	    		'invoicing_adr_city' => $invoicing_contact->adr_city,
+	    		'invoicing_adr_country' => $invoicing_contact->adr_country,
+	    		'date' => date('d/m/Y'),
     			'n_first' => $commitment->account->contact_1->n_first,
     			'n_last' => $commitment->account->contact_1->n_last,
     			'birth_date' => $context->decodeDate($commitment->account->contact_1->birth_date),
     			'sport' => $commitment->account->property_1,
     			'school_year' => $commitment->caption,
     			'school_level' => $commitment->property_1,
+    			'place' => $commitment->account->place_caption,
     	);
 
     	$place = Place::get($commitment->account->place_id);
@@ -1920,8 +1956,8 @@ class StudentController extends AbstractActionController
     	}
     	else {
     		$logo_src = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
-    		$logo_width = $context->getConfig('headerParams')['logo-width']*2/3;
-    		$logo_height = $context->getConfig('headerParams')['logo-height']*2/3;
+    		$logo_width = $context->getConfig('headerParams')['logo-width']*1/3;
+    		$logo_height = $context->getConfig('headerParams')['logo-height']*1/3;
     	}
 		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
     	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
