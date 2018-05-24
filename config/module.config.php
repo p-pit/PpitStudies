@@ -3248,6 +3248,7 @@ table.note-report tr.period {
 					'update_time' => array('type' => 'specific', 'definition' => 'event/update_time'),
 			),
 			'indicators' => array(),
+			'options' => ['calendar' => true],
 	),
 	'event/index/calendar'=> array(
 			'title'=> array(

@@ -261,7 +261,9 @@ class StudentController extends AbstractActionController
        		$account = Account::get($request->getPost('account_'.$i));
        		$accounts[] = $account;
        	}
-
+       	$place = Place::get($account->place_id);
+       	$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+       	
        	$criteria = array();
        	foreach ($context->getConfig('core_account/search/p-pit-studies')['properties'] as $propertyId => $unused) {
 			$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
@@ -282,6 +284,7 @@ class StudentController extends AbstractActionController
     			'criteria' => $criteria,
     			'accounts' => $accounts,
     			'places' => Place::getList(array()),
+    			'school_period' => $school_period,
     	));
     	$view->setTerminal(true);
     	return $view;
