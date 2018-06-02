@@ -16,7 +16,6 @@ use PpitCore\Model\Instance;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
 use PpitCommitment\ViewHelper\PpitPDF;
-use PpitMasterData\Model\Product;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
@@ -2012,7 +2011,8 @@ class StudentController extends AbstractActionController
     		}
     		$data['json_property_1'] = $lead;
    			$data['contact_history'] = 'P-Pit -> Nomad connector';
-			print_r(Account::addOrUpdate($context, 'p-pit-studies', 'contact', $data));
+   			$account = Account::instanciate($type);
+			print_r($account->loadAndAdd($data));
 /*    		$url = $context->getConfig()['ppitStudies']['flow_er']['url'];
    			$target = $url.'account/v1/p-pit-studies/contact/'.$lead['id'];
    			$client2 = new Client(

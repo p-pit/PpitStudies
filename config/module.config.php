@@ -2379,6 +2379,34 @@ table.note-report td {
 			),
 	),
 
+	// Product
+
+	'core_product/p-pit-studies/property/status' => ['definition' => 'core_product/generic/property/status'],
+	'core_product/p-pit-studies/property/place_id' => ['definition' => 'core_product/generic/property/place_id'],
+	'core_product/p-pit-studies/property/identifier' => ['definition' => 'core_product/generic/property/place_id'],
+	'core_product/p-pit-studies/property/caption' => ['definition' => 'core_product/generic/property/place_id'],
+
+	'core_product/search/p-pit-studies' => array(
+		'title' => array('en_US' => 'Products', 'fr_FR' => 'Produits'),
+		'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
+		'properties' => array(
+			'place_id' => [],
+			'status' => [],
+			'identifier' => [],
+			'caption' => [],
+		),
+	),
+	
+	'core_product/export/p-pit-studies' => array(
+		'title' => array('en_US' => 'Products', 'fr_FR' => 'Produits'),
+		'properties' => array(
+//			'place_id' => 'A',
+			'status' => 'B',
+			'identifier' => 'C',
+			'caption' => 'D',
+		),
+	),
+	
 	'commitmentAccount/contactForm/p-pit-studies' => array('definition' => 'customization/esi/commitmentAccount/contactForm/p-pit-studies'),
 
 	'commitment/accountList/p-pit-studies' => array(

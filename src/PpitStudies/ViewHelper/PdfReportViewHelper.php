@@ -7,8 +7,6 @@ use PpitCommitment\Model\Term;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
-use PpitMasterData\Model\Product;
-use PpitMasterData\Model\ProductOption;
 
 require_once('vendor/TCPDF-master/tcpdf.php');
 
