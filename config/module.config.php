@@ -2383,9 +2383,14 @@ table.note-report td {
 
 	'core_product/p-pit-studies/property/status' => ['definition' => 'core_product/generic/property/status'],
 	'core_product/p-pit-studies/property/place_id' => ['definition' => 'core_product/generic/property/place_id'],
-	'core_product/p-pit-studies/property/identifier' => ['definition' => 'core_product/generic/property/place_id'],
-	'core_product/p-pit-studies/property/caption' => ['definition' => 'core_product/generic/property/place_id'],
-
+	'core_product/p-pit-studies/property/identifier' => ['definition' => 'core_product/generic/property/identifier'],
+	'core_product/p-pit-studies/property/caption' => ['definition' => 'core_product/generic/property/caption'],
+	'core_product/p-pit-studies/property/description' => ['definition' => 'core_product/generic/property/description'],
+	'core_product/p-pit-studies/property/variants' => ['definition' => 'core_product/generic/property/variants'],
+	'core_product/p-pit-studies/property/tax_1_share' => ['definition' => 'core_product/generic/property/tax_1_share'],
+	'core_product/p-pit-studies/property/tax_2_share' => ['definition' => 'core_product/generic/property/tax_2_share'],
+	'core_product/p-pit-studies/property/tax_3_share' => ['definition' => 'core_product/generic/property/tax_3_share'],
+	
 	'core_product/search/p-pit-studies' => array(
 		'title' => array('en_US' => 'Products', 'fr_FR' => 'Produits'),
 		'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
@@ -2404,6 +2409,11 @@ table.note-report td {
 			'status' => 'B',
 			'identifier' => 'C',
 			'caption' => 'D',
+			'description' => 'E',
+			'variants' => 'F',
+			'tax_1_share' => 'G',
+			'tax_2_share' => 'H',
+			'tax_3_share' => 'I',
 		),
 	),
 	
