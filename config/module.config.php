@@ -3278,6 +3278,7 @@ table.note-report tr.period {
 					'end_date' => array('type' => 'specific', 'definition' => 'event/end_date'),
 					'begin_time' => array('type' => 'specific', 'definition' => 'event/begin_time'),
 					'end_time' => array('type' => 'specific', 'definition' => 'event/end_time'),
+					'value' => array('type' => 'specific', 'definition' => 'event/value'),
 					'exception_1' => array('type' => 'specific', 'definition' => 'event/exception_1'),
 					'exception_2' => array('type' => 'specific', 'definition' => 'event/exception_2'),
 					'exception_3' => array('type' => 'specific', 'definition' => 'event/exception_3'),
@@ -3309,6 +3310,7 @@ table.note-report tr.period {
 			),
 			'main'=> array(
 					'place_id' => 'select',
+					'status' => 'select',
 					'property_1' => 'select',
 					'property_2' => 'select',
 					'n_fn' => 'select',
@@ -3317,7 +3319,7 @@ table.note-report tr.period {
 					'day_of_week' => 'select',
 					'begin_date' => 'range',
 					'begin_time' => 'range',
-					'location' => 'contains',
+//					'location' => 'contains',
 			)
 	),
 	'event/list/calendar'=> array(
@@ -3329,9 +3331,8 @@ table.note-report tr.period {
 			'caption' => array('rendering' => 'text'),
 			'day_of_week' => array('rendering' => 'select'),
 			'begin_date' => array('rendering' => 'date'),
-			'begin_time' => array('rendering' => 'text'),
 			'end_date' => array('rendering' => 'date'),
-			'end_time' => array('rendering' => 'text'),
+			'value' => array('rendering' => 'number'),
 			'location' => array('rendering' => 'text'),
 	),
 	'event/masked/calendar'=> array(
@@ -3345,6 +3346,7 @@ table.note-report tr.period {
 	),
 	'event/update/calendar'=> array(
 			'place_id' => array('mandatory' => true, 'autofocus' => true),
+			'status' => array('mandatory' => true),
 			'property_1' => array('mandatory' => true),
 			'property_2' => array('mandatory' => false),
 			'n_fn' => array('mandatory' => false),
@@ -3363,18 +3365,19 @@ table.note-report tr.period {
 	),
 	
 	'event/export/calendar'=> array(
-			'place_id'=> 'A',
-			'property_1'=> 'B',
-			'property_2'=> 'C',
-			'n_fn'=> 'D',
-			'property_3'=> 'E',
-			'caption'=> 'F',
-			'day_of_week'=> 'G',
-			'begin_date'=> 'H',
-			'begin_time'=> 'I',
-			'end_date'=> 'J',
-			'end_time'=> 'K',
-			'location'=> 'L',
+			'place_id' => 'A',
+			'status' => 'B',
+			'property_1'=> 'C',
+			'property_2'=> 'D',
+			'n_fn'=> 'E',
+			'property_3'=> 'F',
+			'caption'=> 'G',
+			'day_of_week'=> 'H',
+			'begin_date'=> 'I',
+			'begin_time'=> 'J',
+			'end_date'=> 'K',
+			'end_time'=> 'L',
+			'location'=> 'M',
 	),
 
 	'absence' => array(

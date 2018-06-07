@@ -34,7 +34,7 @@ class PlanningController extends AbstractActionController
 
     	// Retrieve parameters
     	$type = $this->params()->fromRoute('type', $context->getConfig('event/type')['default']);
-    	
+    	 
     	$personnalize = ($this->params()->fromQuery('personnalize'));
     	$place = Place::get($context->getPlaceId());
     	$community = Community::get($context->getCommunityId());
@@ -45,7 +45,8 @@ class PlanningController extends AbstractActionController
 		return new ViewModel(array(
     			'context' => $context,
     			'type' => $type,
-    			'config' => $context->getConfig(),
+    			'params' => [],
+				'config' => $context->getConfig(),
     			'place' => $place,
     			'community' => $community,
     			'active' => 'application',
