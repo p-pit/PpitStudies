@@ -42,6 +42,7 @@ class PlanningController extends AbstractActionController
 		$applicationId = 'p-pit-studies';
 		$applicationName = 'P-Pit Studies';
 		$currentEntry = $this->params()->fromQuery('entry', 'place');
+		$configProperties = Event::getConfigProperties($type);
 		return new ViewModel(array(
     			'context' => $context,
     			'type' => $type,
@@ -54,6 +55,10 @@ class PlanningController extends AbstractActionController
     			'applicationName' => $applicationName,
     			'currentEntry' => $currentEntry,
 				'personnalize' => $personnalize,
+				'configProperties' => $configProperties,
+				'configList' => Event::getConfigList($type, $configProperties),
+				'configUpdate' => Event::getConfigUpdate($type, $configProperties),
+				'configUpdate' => Event::getConfigUpdate($type, $configProperties),
 		));
     }
  }

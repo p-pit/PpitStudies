@@ -3256,130 +3256,109 @@ table.note-report tr.period {
 			),
 			'column' => 'type',
 	),
+
+	// Calendar event
+
+	'event/calendar/property/property_1' => array('definition' => 'student/property/school_year'),
+	'event/calendar/property/property_2' => array('definition' => 'student/property/class'),
+	'event/calendar/property/property_3' => array('definition' => 'student/property/school_subject'),
 	
 	'event/calendar' => array(
-			'dimensions' => array(),
-			'properties' => array(
-					'status' => array('type' => 'specific', 'definition' => 'event/status'),
-					'type' => array('type' => 'specific', 'definition' => 'event/type'),
-					'identifier' => array('type' => 'specific', 'definition' => 'event/identifier/personal_data'),
-					'place_id' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
-					'n_fn' => array('type' => 'specific', 'definition' => 'event/n_fn'),
-					'vcard_id' => array('type' => 'specific', 'definition' => 'event/n_fn'),
-					'place_identifier' => array('type' => 'specific', 'definition' => 'event/place_identifier'),
-					'place_caption' => array('type' => 'specific', 'definition' => 'event/place_caption'),
-					'caption' => array('type' => 'specific', 'definition' => 'event/caption'),
-					'description' => array('type' => 'specific', 'definition' => 'event/description'),
-					'property_1' => array('type' => 'specific', 'definition' => 'student/property/school_year'),
-					'property_2' => array('type' => 'specific', 'definition' => 'student/property/class'),
-					'property_3' => array('type' => 'specific', 'definition' => 'student/property/school_subject'),
-					'day_of_week' => array('type' => 'specific', 'definition' => 'event/day_of_week'),
-					'begin_date' => array('type' => 'specific', 'definition' => 'event/begin_date'),
-					'end_date' => array('type' => 'specific', 'definition' => 'event/end_date'),
-					'begin_time' => array('type' => 'specific', 'definition' => 'event/begin_time'),
-					'end_time' => array('type' => 'specific', 'definition' => 'event/end_time'),
-					'value' => array('type' => 'specific', 'definition' => 'event/value'),
-					'exception_1' => array('type' => 'specific', 'definition' => 'event/exception_1'),
-					'exception_2' => array('type' => 'specific', 'definition' => 'event/exception_2'),
-					'exception_3' => array('type' => 'specific', 'definition' => 'event/exception_3'),
-					'exception_4' => array('type' => 'specific', 'definition' => 'event/exception_4'),
-					'location' => array('type' => 'specific', 'definition' => 'event/location'),
-					'update_time' => array('type' => 'specific', 'definition' => 'event/update_time'),
-			),
-			'indicators' => array(),
-			'options' => ['calendar' => true, 'account_type' => 'teacher'],
-	),
-	'event/index/calendar'=> array(
-			'title'=> array(
-					'en_US' => 'Planning',
-					'fr_FR' => 'Planning'
-			)
-	),
-	'event/search/calendar'=> array(
-			'title'=> array(
-					'en_US' => 'Planning',
-					'fr_FR' => 'Planning'
-			),
-			'todoTitle'=> array(
-					'en_US' => 'active',
-					'fr_FR' => 'actif'
-			),
-			'searchTitle'=> array(
-					'en_US' => 'search',
-					'fr_FR' => 'recherche'
-			),
-			'main'=> array(
-					'place_id' => 'select',
-					'status' => 'select',
-					'property_1' => 'select',
-					'property_2' => 'select',
-					'n_fn' => 'select',
-					'property_3' => 'select',
-					'caption' => 'contains',
-					'day_of_week' => 'select',
-					'begin_date' => 'range',
-					'begin_time' => 'range',
-//					'location' => 'contains',
-			)
-	),
-	'event/list/calendar'=> array(
-			'place_caption' => array('rendering' => 'text'),
-			'property_1' => array('rendering' => 'select'),
-			'property_2' => array('rendering' => 'select'),
-			'n_fn' => array('rendering' => 'text'),
-			'property_3' => array('rendering' => 'select'),
-			'caption' => array('rendering' => 'text'),
-			'day_of_week' => array('rendering' => 'select'),
-			'begin_date' => array('rendering' => 'date'),
-			'end_date' => array('rendering' => 'date'),
-			'value' => array('rendering' => 'number'),
-			'location' => array('rendering' => 'text'),
-	),
-	'event/masked/calendar'=> array(
-	),
-	'event/detail/calendar'=> array(
-			'title'=> array(
-					'en_US' => 'Zoom',
-					'fr_FR' => 'Zoom'
-			),
-			'displayAudit' => true
-	),
-	'event/update/calendar'=> array(
-			'place_id' => array('mandatory' => true, 'autofocus' => true),
-			'status' => array('mandatory' => true),
-			'property_1' => array('mandatory' => true),
-			'property_2' => array('mandatory' => false),
-			'n_fn' => array('mandatory' => false),
-			'property_3' => array('mandatory' => false),
-			'caption' => array('mandatory' => false),
-			'day_of_week' => array('mandatory' => false),
-			'begin_date' => array('mandatory' => false),
-			'begin_time' => array('mandatory' => false),
-			'end_date' => array('mandatory' => false),
-			'end_time' => array('mandatory' => false),
-			'exception_1' => array('mandatory' => false),
-			'exception_2' => array('mandatory' => false),
-			'exception_3' => array('mandatory' => false),
-			'exception_4' => array('mandatory' => false),
-			'location' => array('mandatory' => false),
+		'statuses' => array(),
+		'dimensions' => array(),
+		'indicators' => array(),
+		'properties' => array(
+			'status', 'type', 'place_id', 'place_caption', 'n_fn', 'category', 'subcategory', 'identifier', 'caption', 'description',
+			'begin_date', 'end_date', 'day_of_week', 'day_of_month', 'exception_1', 'exception_2', 'exception_3', 'exception_4', 'begin_time', 'end_time', 'time_zone', 'location', 'latitude', 'longitude',
+			'value', 'comments',
+			'property_1', 'property_2', 'property_3', 
+			'update_time',
+		),
+		'options' => ['calendar' => true, 'account_type' => 'teacher'],
 	),
 	
-	'event/export/calendar'=> array(
-			'place_id' => 'A',
-			'status' => 'B',
-			'property_1'=> 'C',
-			'property_2'=> 'D',
-			'n_fn'=> 'E',
-			'property_3'=> 'F',
-			'caption'=> 'G',
-			'day_of_week'=> 'H',
-			'begin_date'=> 'I',
-			'begin_time'=> 'J',
-			'end_date'=> 'K',
-			'end_time'=> 'L',
-			'location'=> 'M',
+	'event/index/calendar' => array(
+		'title' => array('default' => 'Planning', 'fr_FR' => 'Planning'),
 	),
-
+	
+	'event/search/calendar' => array(
+		'title' => array('default' => 'Planning', 'fr_FR' => 'Planning'),
+		'todoTitle' => array('default' => 'recent', 'fr_FR' => 'récents'),
+		'searchTitle' => array('default' => 'search', 'fr_FR' => 'recherche'),
+		'properties' => array(
+			'place_id' => [],
+			'identifier' => [],
+			'value' => [],
+			'property_1' => [],
+			'property_2' => [],
+			'n_fn' => [],
+			'property_3' => [],
+			'update_time' => [],
+		),
+	),
+	
+	'event/list/calendar' => array(
+		'place_id' => [],
+		'property_1' => [],
+		'n_fn' => [],
+		'property_2' => [],
+		'property_3' => [],
+		'category' => [],
+		'subcategory' => [],
+		'identifier' => [],
+		'caption' => [],
+		'value' => [],
+		'begin_date' => [],
+		'end_date' => [],
+		'day_of_week' => [],
+		'day_of_month' => [],
+		'begin_time' => [],
+		'end_time' => [],
+		'time_zone' => [],
+		'location' => [],
+		'latitude' => [],
+		'longitude' => [],
+		'comments' => [],
+		'update_time' => [],
+	),
+	
+	'event/detail/calendar' => array(
+		'title' => array('default' => 'Event detail', 'fr_FR' => 'Détail de l\'évènement'),
+		'displayAudit' => true,
+	),
+	
+	'event/update/calendar' => array(
+		'status' => ['mandatory' => true],
+		'place_id' => [],
+		'property_1' => [],
+		'n_fn' => [],
+		'property_2' => [],
+		'property_3' => [],
+		'category' => [],
+		'subcategory' => [],
+		'identifier' => [],
+		'caption' => [],
+		'description' => [],
+		'value' => [],
+	),
+	
+	'event/export/calendar' => array(
+		'status' => 'A',
+		'type' => 'B',
+		'place_id' => 'C',
+		'property_1' => 'D',
+		'n_fn' => 'E',
+		'property_2' => 'F',
+		'property_3' => 'G',
+		'category' => 'H',
+		'subcategory' => 'I',
+		'place_caption' => 'J',
+		'identifier' => 'K',
+		'caption' => 'L',
+		'description' => 'M',
+		'value' => 'N',
+	),
+	
 	'absence' => array(
 			'types' => array(
 					'sport' => array(

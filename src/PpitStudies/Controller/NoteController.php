@@ -581,8 +581,10 @@ class NoteController extends AbstractActionController
 	    	$context = Context::getCurrent();
 	    	$place_identifier = $this->params()->fromRoute('place_identifier');
 	    	$place = Place::get($place_identifier, 'identifier');
+	    	$school_period = $this->params()->fromQuery('school_period');
 	    	$where = array();
 	    	if ($place_identifier) $where['place_id'] = $place->id;
+	    	if ($school_period) $where['school_period'] = $school_period;
 	    	foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
 //		    	$note->links = array();
 		    	$select = NoteLink::getTable()->getSelect()
@@ -611,7 +613,7 @@ class NoteController extends AbstractActionController
 		    		}
 		    	}
 		    	else {
-/*		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
+		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
 			    	foreach($cursor as $noteLink) {
 //						$note->links[] = $noteLink;
 						$audit = array();
@@ -634,7 +636,7 @@ class NoteController extends AbstractActionController
 								$noteLink->update(null);
 							}
 						}
-					}*/
+					}
 		    	}
 	    	}
 	    	return $this->response;
