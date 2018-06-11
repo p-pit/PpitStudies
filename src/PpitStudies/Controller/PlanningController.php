@@ -34,7 +34,8 @@ class PlanningController extends AbstractActionController
 
     	// Retrieve parameters
     	$type = $this->params()->fromRoute('type', $context->getConfig('event/type')['default']);
-    	 
+    	$description = Event::getDescription($type);
+
     	$personnalize = ($this->params()->fromQuery('personnalize'));
     	$place = Place::get($context->getPlaceId());
     	$community = Community::get($context->getCommunityId());
@@ -55,10 +56,7 @@ class PlanningController extends AbstractActionController
     			'applicationName' => $applicationName,
     			'currentEntry' => $currentEntry,
 				'personnalize' => $personnalize,
-				'configProperties' => $configProperties,
-				'configList' => Event::getConfigList($type, $configProperties),
-				'configUpdate' => Event::getConfigUpdate($type, $configProperties),
-				'configUpdate' => Event::getConfigUpdate($type, $configProperties),
-		));
+				'content_description' => $description,
+			));
     }
  }

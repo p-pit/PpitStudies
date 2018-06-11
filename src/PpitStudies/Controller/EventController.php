@@ -116,7 +116,7 @@ class EventController extends AbstractActionController
     public function planningAction()
     {
     	$context = Context::getCurrent();
-    	$description = Event::getDescription('p-pit-studies');
+    	$description = \PpitCore\Model\Event::getDescription('p-pit-studies');
     	$viewBeginDate = $this->params()->fromQuery('begin', date('Y-m-d'));
     	$id = $this->params()->fromRoute('id');
     	$account = Account::get($id);
@@ -128,7 +128,7 @@ class EventController extends AbstractActionController
 	    					'place_id' => $account->place_id,
 	    					'property_1' => $context->getConfig('student/property/school_year/default'),
 	    					'property_2' => $account->property_7,
-	    			), null, null);
+	    			), '-update_time', null);
     	
     	// Retrieve contact level events
     	$contact = \PpitCore\Model\Event::getList(
@@ -137,7 +137,7 @@ class EventController extends AbstractActionController
 	    					'place_id' => $account->place_id,
 	    					'property_1' => $context->getConfig('student/property/school_year/default'),
 	    					'vcard_id' => $account->contact_1->id,
-	    			), null, null);
+	    			), '-update_time', null);
     	$result = array(
 	    	'planning' => EventPlanningViewHelper::format($description, array_merge($class, $contact), $viewBeginDate),
 //    		'events' => $this->getList()->events,
