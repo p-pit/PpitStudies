@@ -144,7 +144,7 @@
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
 			</button>
 <?php endif;?>
-			<button type="button" class="btn btn-default action-btn" <?php if (!$school_period) echo 'disabled' ?> id="evaluation-add-anchor">
+			<button type="button" class="btn btn-default action-btn" <?php if (!$context->hasRole('admin') && !$school_period) echo 'disabled' ?> id="evaluation-add-anchor">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale()) ?>
 			</button>
 			<button type="button" class="btn btn-default action-btn" id="report-add-anchor">

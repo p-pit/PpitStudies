@@ -1412,7 +1412,7 @@ return array(
 		),
 		'mandatory' => true,
 	),
-
+	
 	'core_account/p-pit-studies/property/place_id' => array('definition' => 'core_account/generic/property/place_id'),
 	'core_account/p-pit-studies/property/identifier' => array('definition' => 'core_account/generic/property/identifier'),
 	'core_account/p-pit-studies/property/name' => array('definition' => 'core_account/generic/property/name'),
@@ -2080,6 +2080,7 @@ return array(
 					'email' => [],
 			),
 	),
+
 	'core_account/list/p-pit-studies' => array(
 			'properties' => array(
 					'status' => ['color' => ['new' => 'LightGreen', 'interested' => 'LightSalmon', 'candidate' => 'LightBlue', 'answer' => 'LightSalmon', 'gone' => 'LightGrey']],
@@ -2088,6 +2089,7 @@ return array(
 					'property_16' => [],
 					'basket' => [],
 					'property_1' => ['rendering' => 'image'],
+					'opening_date' => [],
 					'callback_date' => [],
 					'property_8' => [],
 					'property_13' => [],
@@ -2100,6 +2102,14 @@ return array(
 					'place_id' => [],
 			),
 	),
+
+	'core_account/todo/p-pit-studies/contact' => array(
+		'filters' => array(
+			'status' => ['new', 'interested'],
+		),
+		'order' => ['status' => 'DESC', 'opening_date' => 'ASC'],
+	),
+	
 	'core_account/detail/p-pit-studies' => array(
 			'title' => array('en_US' => 'Student sheet:', 'fr_FR' => 'FICHE ELEVE'),
 			'displayAudit' => false,
@@ -3268,7 +3278,7 @@ table.note-report tr.period {
 		'dimensions' => array(),
 		'indicators' => array(),
 		'properties' => array(
-			'status', 'type', 'place_id', 'place_caption', 'vcard_id', 'n_fn', 'category', 'subcategory', 'identifier', 'caption', 'description',
+			'status', 'type', 'place_id', 'place_caption', /*'vcard_id',*/ 'n_fn', 'category', 'subcategory', 'identifier', 'caption', 'description',
 			'begin_date', 'end_date', 'day_of_week', 'day_of_month', 'exception_1', 'exception_2', 'exception_3', 'exception_4', 'begin_time', 'end_time', 'time_zone', 'location', 'latitude', 'longitude',
 			'value', 'comments',
 			'property_1', 'property_2', 'property_3', 

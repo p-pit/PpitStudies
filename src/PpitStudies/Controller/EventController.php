@@ -116,7 +116,7 @@ class EventController extends AbstractActionController
     public function planningAction()
     {
     	$context = Context::getCurrent();
-    	$description = \PpitCore\Model\Event::getDescription('p-pit-studies');
+    	$description = \PpitCore\Model\Event::getDescription('calendar');
     	$viewBeginDate = $this->params()->fromQuery('begin', date('Y-m-d'));
     	$id = $this->params()->fromRoute('id');
     	$account = Account::get($id);

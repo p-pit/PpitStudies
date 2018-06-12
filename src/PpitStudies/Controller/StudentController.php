@@ -552,7 +552,6 @@ class StudentController extends AbstractActionController
     			$data['observations'] = $request->getPost('observations');
     			$data['document'] = $request->getPost('document');
     			$data['comment'] = $request->getPost('comment');
-
     			$rc = $note->loadData($data);
 				if ($rc != 'OK') throw new \Exception('View error');
 
