@@ -138,6 +138,7 @@ class EventController extends AbstractActionController
 	    					'property_1' => $context->getConfig('student/property/school_year/default'),
 	    					'vcard_id' => $account->contact_1->id,
 	    			), '-update_time', null);
+    	
     	$result = array(
 	    	'planning' => EventPlanningViewHelper::format($description, array_merge($class, $contact), $viewBeginDate),
 //    		'events' => $this->getList()->events,

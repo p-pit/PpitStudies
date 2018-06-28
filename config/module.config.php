@@ -2052,6 +2052,7 @@ return array(
 			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time'
 		),
 		'order' => 'n_fn',
+		'options' => ['internal_identifier' => true],
 	),
 
 	'core_account/index/p-pit-studies' => array(
@@ -2078,12 +2079,15 @@ return array(
 					'property_15' => [],
 					'n_fn' => [],
 					'email' => [],
+					'gender' => [],
+					'property_14' => [],
 			),
 	),
 
 	'core_account/list/p-pit-studies' => array(
 			'properties' => array(
 					'status' => ['color' => ['new' => 'LightGreen', 'interested' => 'LightSalmon', 'candidate' => 'LightBlue', 'answer' => 'LightSalmon', 'gone' => 'LightGrey']],
+					'identifier' => [],
 					'n_fn' => [],
 					'tel_cell' => ['rendering' => 'phone'],
 					'property_16' => [],
@@ -2149,6 +2153,7 @@ return array(
 	'core_account/update/p-pit-studies' => array(
 			'place_id' => array('mandatory' => true),
 			'status' => array('mandatory' => true),
+			'identifier' => [],
 			'name' => array('mandatory' => false),
 			'property_16' => array('mandatory' => false),
 			'basket' => array('mandatory' => false),
@@ -2167,6 +2172,7 @@ return array(
 			'adr_street' => array('mandatory' => false),
 			'adr_zip' => array('mandatory' => false),
 			'adr_city' => array('mandatory' => false),
+			'gender' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
@@ -2281,6 +2287,7 @@ return array(
 					'n_last' => array('mandatory' => true),
 					'email' => array('mandatory' => false),
 					'tel_cell' => array('mandatory' => false),
+					'gender' => array('mandatory' => false),
 					'birth_date' => array('mandatory' => false),
 					'property_8' => array('mandatory' => false),
 					'property_2' => array('mandatory' => false),
@@ -2340,6 +2347,7 @@ table.note-report td {
 			'place_id' => array('mandatory' => true),
 			'email' => array('mandatory' => false),
 			'address' => array('mandatory' => false),
+			'gender' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
 			'tel_cell' => array('mandatory' => false),
 			'property_7' => array('mandatory' => true),
@@ -2668,11 +2676,13 @@ table.note-report td {
 					'2nde4' => array('fr_FR' => '2nde4'),
 					'2ndea' => array('fr_FR' => '2nde A'),
 					'2ndeb' => array('fr_FR' => '2nde B'),
+					'1ereL' => array('fr_FR' => '1ère L'),
 					'1ereS' => array('fr_FR' => '1ère S'),
 					'1ereES' => array('fr_FR' => '1ère ES'),
 					'1ereSTMG' => array('fr_FR' => '1ère STMG'),
 					'1ereSTMG1' => array('fr_FR' => '1ère STMG 1'),
 					'1ereSTMG2' => array('fr_FR' => '1ère STMG 2'),
+					'termL' => array('fr_FR' => 'Term. L'),
 					'termS' => array('fr_FR' => 'Term. S'),
 					'termES' => array('fr_FR' => 'Term. ES'),
 					'termSTMG' => array('fr_FR' => 'Term. STMG'),
@@ -3272,13 +3282,22 @@ table.note-report tr.period {
 	'event/calendar/property/property_1' => array('definition' => 'student/property/school_year'),
 	'event/calendar/property/property_2' => array('definition' => 'student/property/class'),
 	'event/calendar/property/property_3' => array('definition' => 'student/property/school_subject'),
+
+	'event/calendar/property/vcard_id' => array( // Deprecated
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Vcard',
+			'fr_FR' => 'Vcard',
+		),
+	),
 	
 	'event/calendar' => array(
 		'statuses' => array(),
 		'dimensions' => array(),
 		'indicators' => array(),
 		'properties' => array(
-			'status', 'type', 'place_id', 'place_caption', /*'vcard_id',*/ 'n_fn', 'category', 'subcategory', 'identifier', 'caption', 'description',
+			'status', 'type', 'place_id', 'place_caption', 'vcard_id', 'n_fn', 'category', 'subcategory', 'identifier', 'caption', 'description',
 			'begin_date', 'end_date', 'day_of_week', 'day_of_month', 'exception_1', 'exception_2', 'exception_3', 'exception_4', 'begin_time', 'end_time', 'time_zone', 'location', 'latitude', 'longitude',
 			'value', 'comments',
 			'property_1', 'property_2', 'property_3', 
@@ -4015,14 +4034,14 @@ table.note-report tr.period {
     				'labels' => array('fr_FR' => 'P-Pit Studies', 'en_US' => 'Studies by 2Pit'),
     				'default' => 'student',
 					'roles' => array(
-							'manager' => array(
+/*							'manager' => array(
 									'show' => true,
 									'default' => true,
 									'labels' => array(
 											'en_US' => 'Head of training',
 											'fr_FR' => 'Responsable pédagogique',
 									),
-							),
+							),*/
 							'coach' => array(
 									'show' => true,
 									'labels' => array(

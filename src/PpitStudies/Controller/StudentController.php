@@ -103,12 +103,11 @@ class StudentController extends AbstractActionController
     public function registrationIndexAction()
     {
     	$context = Context::getCurrent();
-		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
 		$place = Place::get($context->getPlaceId());
 		
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
-		$configProperties = $this->getConfigProperties($type);
-		$vcardProperties = $this->getVcardProperties();
+		$configProperties = Account::getConfig($type);
+		$vcardProperties = Vcard::getConfig();
 		
 		$menu = $context->getConfig('menus/'.$type)['entries'];
 		$currentEntry = $this->params()->fromQuery('entry');
@@ -129,12 +128,12 @@ class StudentController extends AbstractActionController
     			'type' => $type,
 				'page' => $context->getConfig('core_account/index/'.$type),
 				'indexPage' => $context->getConfig('core_account/index/'.$type),
-    			'searchPage' => $context->getConfig('core_account/search/'.$type),
-				'listPage' => $context->getConfig('core_account/list/'.$type),
+    			'searchPage' => Account::getConfigSearch($type, $configProperties),
+				'listPage' => Account::getConfigList($type, $configProperties),
 				'detailPage' => $context->getConfig('core_account/detail/'.$type),
-				'updatePage' => $context->getConfig('core_account/update/'.$type),
+				'updatePage' => Account::getConfigUpdate($type, $configProperties),
 				'updateContactPage' => $context->getConfig('core_account/updateContact/'.$type),
-    			'groupUpdatePage' => $context->getConfig('core_account/groupUpdate/'.$type),
+    			'groupUpdatePage' => Account::getConfigGroupUpdate($type, $configProperties),
     			'status' => 'active',
     	));
     }
@@ -211,12 +210,13 @@ class StudentController extends AbstractActionController
     public function exportAction()
     {
     	$view = $this->getList();
-
+    	$description = Account::getDescription($view->type);
+    	 
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
 		$workbook = new \PHPExcel;
-		(new SsmlAccountViewHelper)->formatXls($workbook, $view);		
+		(new SsmlAccountViewHelper)->formatXls($description, $workbook, $view);		
 		$writer = new \PHPExcel_Writer_Excel2007($workbook);
 		
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
