@@ -1370,7 +1370,7 @@ return array(
 			'description' => array(
 					array(
 							'left' => array('en_US' => 'Caption', 'fr_FR' => 'Libellé'),
-							'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Année scolaire %s %s'),
+							'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Scolarité %s %s'),
 							'params' => array('product_brand', 'caption'),
 					),
 					array(
@@ -1386,7 +1386,8 @@ return array(
 			),
 			'terms' => true,
 	),
-	
+	'commitment/invoice_tax_mention' => 'TVA non applicable ART293B du CGI.',
+
 	// Account p-pit-studies
 	
 	'core_account/p-pit-studies/property/status' => array(
@@ -1765,7 +1766,8 @@ return array(
 	'core_account/p-pit-studies/property/opening_date' => array('definition' => 'core_account/generic/property/opening_date'),
 	'core_account/p-pit-studies/property/closing_date' => array('definition' => 'core_account/generic/property/closing_date'),
 	'core_account/p-pit-studies/property/callback_date' => array('definition' => 'core_account/generic/property/callback_date'),
-
+	'core_account/p-pit-studies/property/first_activation_date' => array('definition' => 'core_account/generic/property/first_activation_date'),
+	
 	'core_account/p-pit-studies/property/next_meeting_date' => array(
 		'definition' => 'inline',
 		'type' => 'datetime',
@@ -2044,7 +2046,7 @@ return array(
 			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
 			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',
 			'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4', 'email_4', 'tel_work_4', 'tel_cell_4', 'address_4',
-			'opening_date', 'closing_date', 'callback_date', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'contact_history',
+			'opening_date', 'closing_date', 'callback_date', 'first_activation_date', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'contact_history',
 			'transfer_order_id', 'transfer_order_date', 'bank_identifier',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16',
@@ -2068,6 +2070,7 @@ return array(
 					'basket' => ['multiple' => true],
 					'opening_date' => [],
 					'callback_date' => [],
+					'first_activation_date' => [],
 					'property_8' => [],
 					'property_13' => ['multiple' => true],
 					'next_meeting_date' => [],
@@ -2095,6 +2098,7 @@ return array(
 					'property_1' => ['rendering' => 'image'],
 					'opening_date' => [],
 					'callback_date' => [],
+					'first_activation_date' => [],
 					'property_8' => [],
 					'property_13' => [],
 					'next_meeting_date' => [],
@@ -2159,6 +2163,7 @@ return array(
 			'basket' => array('mandatory' => false),
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
+			'first_activation_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
 			'property_12' => array('mandatory' => false),
 			'title_1' => null,
@@ -2228,6 +2233,7 @@ return array(
 	'core_account/groupUpdate/p-pit-studies' => array(
 			'status' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
+			'first_activation_date' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
 			'property_13' => array('mandatory' => false),
 			'property_16' => array('mandatory' => false),
@@ -2338,6 +2344,7 @@ table.note-report td {
 			'basket' => array('mandatory' => true),
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
+			'first_activation_date' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
