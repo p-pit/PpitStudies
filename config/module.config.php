@@ -1383,10 +1383,14 @@ return array(
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 							'params' => array('account_name'),
 					),
+					array(
+							'left' => array('en_US' => 'Place', 'fr_FR' => 'Centre'),
+							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+							'params' => array('place_caption'),
+					),
 			),
 			'terms' => true,
 	),
-	'commitment/invoice_tax_mention' => 'TVA non applicable ART293B du CGI.',
 
 	// Account p-pit-studies
 	
@@ -2090,7 +2094,6 @@ return array(
 	'core_account/list/p-pit-studies' => array(
 			'properties' => array(
 					'status' => ['color' => ['new' => 'LightGreen', 'interested' => 'LightSalmon', 'candidate' => 'LightBlue', 'answer' => 'LightSalmon', 'gone' => 'LightGrey']],
-					'identifier' => [],
 					'n_fn' => [],
 					'tel_cell' => ['rendering' => 'phone'],
 					'property_16' => [],
@@ -2107,6 +2110,7 @@ return array(
 					'origine' => [],
 					'property_7' => [],
 					'property_15' => [],
+					'identifier' => [],
 					'place_id' => [],
 			),
 	),
