@@ -9,6 +9,7 @@ use PpitCore\Model\Context;
 use PpitCore\Model\Place;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Absence;
+use PpitStudies\ViewHelper\SsmlAbsenceViewHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -137,26 +138,8 @@ class AbsenceController extends AbstractActionController
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition:inline;filename=Fichier.xlsx ');
 		$writer->save('php://output');
+		return $this->response;
     }
-/*
-    public function detailAction()
-    {
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-    
-    	$id = (int) $this->params()->fromRoute('id', 0);
-    	if ($id) $account= Account::get($id);
-    	else $account = Account::instanciate();
-    
-    	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'id' => $account->id,
-    			'account' => $account,
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-    }*/
     
     public function updateAction()
     {
@@ -236,66 +219,13 @@ class AbsenceController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
- /*   
-	public function deleteAction()
-    {
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-    
-    	// Retrieve the params
-    	$id = (int) $this->params()->fromRoute('id');
-    	$absence = Absence::get($id);
-    	
-    	// Instanciate the csrf form
-    	$csrfForm = new CsrfForm();
-    	$csrfForm->addCsrfElement('csrf');
-    	$error = null;
-    	$message = null;
-    	$request = $this->getRequest();
-    	if ($request->isPost()) {
-    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
-    		$csrfForm->setData($request->getPost());
-    		 
-    		if ($csrfForm->isValid()) { // CSRF check
-
-    			// Load the input data
-    			$data = array();
-    			$data['status'] = 'deleted';
-    			$data['update_time'] = $request->getPost('update_time');
-				$rc = $absence->loadData($data);
-				if ($rc != 'OK') throw new \Exception('View error');
-
-    			// Atomically save
-    			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
-    			$connection->beginTransaction();
-    			try {
-    				$rc = $absence->update($absence->update_time);
-    				if ($rc != 'OK') {
-    					$connection->rollback();
-    					$error = $rc;
-    				}
-    				else {
-    					$connection->commit();
-    					$message = 'OK';
-    				}
-    			}
-    			catch (\Exception $e) {
-    				$connection->rollback();
-    				throw $e;
-    			}
-    		}
-    	}
-    
-    	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'id' => $id,
-    			'absence' => $absence,
-    			'csrfForm' => $csrfForm,
-    			'error' => $error,
-    			'message' => $message
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-	}*/
+	    
+	public function repriseAction()
+	{
+	    $where = array();
+		foreach (Absence::getList('schooling', $where, 'begin_date', 'asc', 'search') as $absence) {
+	    	echo $absence->id.' '.$absence->n_fn.' '.$absence->begin_date.' '.$absence->subject."\n";
+	    }
+	    return $this->response;
+	}
 }

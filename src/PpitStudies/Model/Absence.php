@@ -83,6 +83,13 @@ class Absence implements InputFilterAwareInterface
         $this->specialty = (isset($data['specialty'])) ? $data['specialty'] : null;
         $this->photo = (isset($data['photo'])) ? $data['photo'] : null;
     }
+
+    public function getProperties()
+    {
+    	$data = $this->toArray();
+    	$data['n_fn'] = $this->n_fn;
+    	return $data;
+    }
     
     public function toArray()
     {
@@ -172,7 +179,7 @@ class Absence implements InputFilterAwareInterface
 				||	$absence->type == 'boarding_school' && array_key_exists('boarding_school_headmaster', $currentRoles))
 				{*/
 					$i++;
-					$absence->properties = $absence->toArray();
+					$absence->properties = $absence->getProperties();
 					if ($limit && $i > $limit) break;
 					$absences[] = $absence;
 //				}
@@ -274,7 +281,7 @@ class Absence implements InputFilterAwareInterface
 		}
 		if (array_key_exists('update_time', $data)) $this->update_time = $data['update_time'];
 
-    	$this->properties = $this->toArray();
+    	$this->properties = $this->getProperties();
     	
     	// Update the audit
     	$this->audit[] = array(

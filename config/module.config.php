@@ -103,6 +103,15 @@ return array(
 		        								),
 		        						),
 		        				),
+	       						'reprise' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/reprise',
+		        								'defaults' => array(
+		        										'action' => 'reprise',
+		        								),
+		        						),
+		        				),
 	       		),
             ),
         	'planning' => array(
@@ -840,7 +849,8 @@ return array(
 				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
 				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-
+				array('route' => 'absence/reprise', 'roles' => array('admin')),
+				
 				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
 				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
@@ -3580,6 +3590,23 @@ table.note-report tr.period {
 			'duration' => 'number',
 	),
 
+	'absence/export' => array(
+		'title' => ['default' => 'evaluations', 'fr_FR' => 'evaluations'],
+		'properties' => array(
+			'place_id' => 'A',
+			'type' => 'B',
+			'n_fn' => 'C',
+			'school_period' => 'D',
+			'category' => 'E',
+			'subject' => 'F',
+			'motive' => 'G',
+			'begin_date' => 'H',
+			'end_date' => 'I',
+			'duration' => 'J',
+			'observations' => 'K',
+		),
+	),
+	
 	// Note
 
 	'note/property/place_caption' => array(

@@ -53,8 +53,23 @@ function exportAbsenceList() {
 
 	$('.detail-row').hide();
 
+  var ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+  var descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+  if (ascCriterion) {
+    criterion = ascCriterion.split('-')[0];
+    dir = 'ASC';
+  }
+  else if (descCriterion) {
+    criterion = descCriterion.split('-')[0];
+    dir = 'DESC';
+  }
+  else {
+    criterion = 'begin_date';
+    dir = 'DESC';
+  }
+
 	var params = getParams();
-	document.location.href = '<?php echo $this->url('absence/export') ?>' + params;
+	document.location.href = '<?php echo $this->url('absence/export') ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 }
 
 function eraseAbsenceSearch() {
