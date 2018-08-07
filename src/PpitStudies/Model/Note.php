@@ -388,7 +388,7 @@ class Note implements InputFilterAwareInterface
 		}
 		if (array_key_exists('school_period', $data)) {
 	    	$this->school_period = trim(strip_tags($data['school_period']));
-		    if (!$this->school_period || strlen($this->school_period) > 255) return 'Integrity';
+		    if (strlen($this->school_period) > 255) return 'Integrity';
 		}
     	if (array_key_exists('subject', $data)) {
 		    $this->subject = trim(strip_tags($data['subject']));

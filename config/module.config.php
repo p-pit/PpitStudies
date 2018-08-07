@@ -842,23 +842,23 @@ return array(
 		'guards' => array(
 			'BjyAuthorize\Guard\Route' => array(
 
-				array('route' => 'absence', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'absence/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'absence/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-            	array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+				array('route' => 'absence', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/index', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/search', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/reprise', 'roles' => array('admin')),
 				
-				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-            	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
+				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher')),
             	array('route' => 'studentEvent/planning', 'roles' => array('user')),
-				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
-				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
+				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher')),
 
 				array('route' => 'note', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
@@ -871,13 +871,13 @@ return array(
 				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 						
-				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'studentNotification/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'studentNotification/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-            	array('route' => 'studentNotification/list', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'studentNotification/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'studentNotification/update', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentNotification/index', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentNotification/search', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'studentNotification/list', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentNotification/export', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentNotification/update', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher')),
 
 				array('route' => 'planning', 'roles' => array('manager')),
 				array('route' => 'planning/index', 'roles' => array('manager')),
@@ -891,20 +891,20 @@ return array(
 				array('route' => 'progress/delete', 'roles' => array('manager', 'coach')),
 
 
-				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
+				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
-				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
+				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/studentHome', 'roles' => array('user')),
-				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/export', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-            	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster', 'medical')),
-            	array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
-            	array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher', 'medical')),
+				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/export', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/addNote', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addEvaluation', 'roles' => array('manager', 'teacher')),
-				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher', 'boarding_school_headmaster')),
+				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
 				array('route' => 'student/planning', 'roles' => array('guest')),
@@ -4067,56 +4067,30 @@ table.note-report tr.period {
 			'period' => 'select',
 	),
 
-	'ppitApplications' => array(
-			'p-pit-studies' => array(
-    				'labels' => array('fr_FR' => 'P-Pit Studies', 'en_US' => 'Studies by 2Pit'),
-    				'default' => 'student',
-					'roles' => array(
-/*							'manager' => array(
-									'show' => true,
-									'default' => true,
-									'labels' => array(
-											'en_US' => 'Head of training',
-											'fr_FR' => 'Responsable pédagogique',
-									),
-							),*/
-							'coach' => array(
-									'show' => true,
-									'labels' => array(
-											'en_US' => 'Coach',
-											'fr_FR' => 'Coach',
-									),
-							),
-							'teacher' => array(
-									'show' => true,
-									'labels' => array(
-											'en_US' => 'Teacher',
-											'fr_FR' => 'Enseignant',
-									),
-							),
-							'boarding_school_headmaster' => array(
-									'labels' => array(
-									'show' => true,
-											'en_US' => 'Boarding school headmaster',
-											'fr_FR' => 'Maître d\'internat',
-									),
-							),
-							'medical' => array(
-									'labels' => array(
-									'show' => true,
-											'en_US' => 'Medical',
-											'fr_FR' => 'Médical',
-									),
-							),
-							'student' => array(
-									'labels' => array(
-									'show' => true,
-											'en_US' => 'Student',
-											'fr_FR' => 'Etudiant',
-									),
-							),
-					),
+	'ppit_roles' => array(
+		'coach' => array(
+			'show' => true,
+			'labels' => array(
+				'en_US' => 'Coach',
+				'fr_FR' => 'Coach',
 			),
+		),
+		'teacher' => array(
+			'show' => true,
+			'labels' => array(
+				'en_US' => 'Teacher',
+				'fr_FR' => 'Enseignant',
+			),
+		),
+	),
+
+	'manageable_roles' => ['coach', 'teacher'],
+	
+	'ppitApplications' => array(
+		'p-pit-studies' => array(
+			'labels' => array('fr_FR' => 'P-Pit Studies', 'en_US' => 'Studies by 2Pit'),
+			'default' => 'student',
+		),
 	),
 
 	// News

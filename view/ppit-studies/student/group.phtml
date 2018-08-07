@@ -77,14 +77,6 @@
 <?php if ($context->hasRole('manager') || $context->hasRole('teacher')) : ?>
 		  <li data-toggle="tab" class="group-tab active"><a id="schooling-tab"><?php echo $this->translate('Schooling', 'ppit-studies', $context->getLocale()) ?></a></li>
 <?php endif;?>
-
-<?php if ($context->hasRole('manager') || $context->hasRole('boarding_school_headmaster')) : ?>
-		  <li data-toggle="tab" class="group-tab"><a id="boarding_school-tab"><?php echo $this->translate('Boarding school', 'ppit-studies', $context->getLocale()) ?></a></li>
-<?php endif;?>
-
-<?php if ($context->hasRole('manager') || $context->hasRole('medical')) : ?>
-		  <li data-toggle="tab" class="group-tab"><a id="medical-tab"><?php echo $this->translate('Medical', 'ppit-studies', $context->getLocale()) ?></a></li>
-<?php endif;?>
 		</ul>
 	
 		<div>&nbsp;</div>

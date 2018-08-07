@@ -408,7 +408,7 @@ class NoteController extends AbstractActionController
     				$value = $request->getPost('value_'.$noteLink->account_id);
     				if ($value == '') $value = null;
     				$mention = $request->getPost('mention_'.$noteLink->account_id);
-    				if ($note->type == 'report' && $value === null) {
+    				if ($note->type == 'report'/* && $value === null*/) { // 2018-08 : Demande ESI de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     				    if ($data['subject'] == 'global') {
     			    		$value = $noteLink->computeStudentAverage($data['school_year'], $data['school_period']);
     			    	}
@@ -419,7 +419,7 @@ class NoteController extends AbstractActionController
     					else $value = null;
     			    	if ($value !== null) $value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
     				}
-    			    elseif ($note->type == 'exam' && $value === null) {
+    			    elseif ($note->type == 'exam'/* && $value === null*/) { // 2018-08 : Demande ESI de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     					if (array_key_exists($noteLink->account_id, $examAverages)) {
 							$value = $examAverages[$noteLink->account_id]['global']['note'];
 							$audit = $examAverages[$noteLink->account_id]['global']['notes'];

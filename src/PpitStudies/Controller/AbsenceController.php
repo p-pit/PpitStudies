@@ -223,9 +223,23 @@ class AbsenceController extends AbstractActionController
 	public function repriseAction()
 	{
 	    $where = array();
-		foreach (Absence::getList('schooling', $where, 'begin_date', 'asc', 'search') as $absence) {
-	    	echo $absence->id.' '.$absence->n_fn.' '.$absence->begin_date.' '.$absence->subject."\n";
-	    }
-	    return $this->response;
+	    $previous = null;
+		$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection->beginTransaction();
+		try {
+		    foreach (Absence::getList('schooling', $where, 'begin_date', 'asc', 'search', null) as $absence) {
+				if ($previous && $previous->n_fn == $absence->n_fn && $previous->begin_date == $absence->begin_date && $previous->end_date == $absence->end_date && $previous->duration == $absence->duration && $previous->subject == $absence->subject && $previous->update_time == $absence->update_time) {
+					echo $absence->id.' '.$absence->n_fn.' '.$absence->begin_date.' '.$absence->end_date.' '.$absence->duration.' '.$absence->subject.' '.$absence->motive.' '.$absence->observations.' '.$absence->update_time."\n";
+					$absence->delete(null);
+				}
+				else $previous = $absence;
+			}
+			$connection->commit();
+		}
+		catch (\Exception $e) {
+			$connection->rollback();
+			throw $e;
+		}
+		return $this->response;
 	}
 }

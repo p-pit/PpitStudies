@@ -492,7 +492,6 @@ class StudentController extends AbstractActionController
 
     	$note = Note::instanciate('homework', $class);
 		if (count($places) == 1) $note->place_id = current($places)->id;
-    	
     	$documentList = array();
     	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
     		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";

@@ -712,6 +712,8 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
 ?>
 
+var currentPlaceId = '', currentClass = '', currentPeriod = '', currentSubject = '', currentType = '';
+
 function connectAddNoteForm(classe)
 {
 	$('#input_date').datepicker();
@@ -751,6 +753,17 @@ function connectAddNoteForm(classe)
 	<?php else : ?>	
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
 	<?php endif;?>
+    <?php if ($propertyId == 'place_id') : ?>
+                currentPlaceId = $('#place_id').val();
+    <?php elseif ($propertyId == 'class') : ?>
+                currentClass = $('#class').val();
+    <?php elseif ($propertyId == 'school_period') : ?>
+                currentPeriod = $('#school_period').val();
+    <?php elseif ($propertyId == 'subject') : ?>
+                currentSubject = $('#subject').val();
+    <?php elseif ($propertyId == 'type') : ?>
+                currentType = $('#type').val();
+    <?php endif;?>
 <?php endforeach ?>
 
 			var xhttp = new XMLHttpRequest();
@@ -819,6 +832,12 @@ function getAddNote(classe) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
 			
+            $('#place_id').val(currentPlaceId);
+            $('#class').val(currentClass);
+            $('#school_period').val(currentPeriod);
+            $('#subject').val(currentSubject);
+            $('#type').val(currentType);
+            
 			$(function () {
 			    $('.tip').tooltip({
 			        content: function () {

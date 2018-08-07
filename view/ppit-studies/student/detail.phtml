@@ -17,18 +17,6 @@
 		  	<a class="student-tab nav-link" data-toggle="tab"><?php echo $this->translate('Schooling', 'ppit-studies', $context->getLocale()) ?></a>
 		  </li>
 <?php endif;?>
-<!--
-<?php if ($context->hasRole('manager') || $context->hasRole('boarding_school_headmaster')) : ?>
-		  <li class="nav-item" id="boarding-school-tab" href="#news_flash-panel">
-		  	<a class="student-tab nav-link" data-toggle="tab"><?php //echo $this->translate('Boarding school', 'ppit-studies', $context->getLocale()) ?></a>
-		  </li>
-<?php endif;?>
-
-<?php if ($context->hasRole('manager') || $context->hasRole('medical')) : ?>
-		  <li class="nav-item" id="medical-tab" href="#news_flash-panel">
-		  	<a class="student-tab nav-link" data-toggle="tab"><?php //echo $this->translate('Medical', 'ppit-studies', $context->getLocale()) ?></a>
-		 </li>
-<?php endif;?> -->
 
 <?php if ($context->hasRole('manager')) : ?>
 		  <li class="nav-item" id="file-tab" href="#news_flash-panel">

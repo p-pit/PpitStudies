@@ -119,7 +119,7 @@ class Absence implements InputFilterAwareInterface
     	$select = Absence::getTable()->getSelect()
     		->join('core_account', 'student_absence.account_id = core_account.id', array('sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
     		->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
-    		->order(array($major.' '.$dir, 'begin_date', 'subject', 'name'));
+    		->order(array($major.' '.$dir, 'begin_date', 'subject', 'n_fn'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');
 		if ($type) $where->equalTo('student_absence.type', $type);
@@ -173,16 +173,10 @@ class Absence implements InputFilterAwareInterface
 			}
 
 			if ($keep) {
-/*				if (array_key_exists('manager', $currentRoles)
-				||	$absence->type == 'schooling' && array_key_exists('teacher', $currentRoles)
-				||	$absence->type == 'sport' && array_key_exists('coach', $currentRoles)
-				||	$absence->type == 'boarding_school' && array_key_exists('boarding_school_headmaster', $currentRoles))
-				{*/
 					$i++;
 					$absence->properties = $absence->getProperties();
 					if ($limit && $i > $limit) break;
 					$absences[] = $absence;
-//				}
 			}
 		}
 		return $absences;
@@ -311,7 +305,7 @@ class Absence implements InputFilterAwareInterface
     	$absence = Absence::get($this->id);
 
     	// Isolation check
-    	if ($absence->update_time > $update_time) return 'Isolation';
+    	if ($update_time && $absence->update_time > $update_time) return 'Isolation';
     	 
     	Absence::getTable()->save($this);
     
@@ -337,7 +331,7 @@ class Absence implements InputFilterAwareInterface
     	$absence = Absence::get($this->id);
     
     	// Isolation check
-    	if ($absence->update_time > $update_time) return 'Isolation';
+    	if ($update_time && $absence->update_time > $update_time) return 'Isolation';
 
     	$this->status = 'deleted';
     	Absence::getTable()->save($this);
