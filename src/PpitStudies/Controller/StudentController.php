@@ -41,7 +41,7 @@ class StudentController extends AbstractActionController
 		}
 		return $properties;
 	}
-
+/*
 	public function getVcardProperties() {
 		$context = Context::getCurrent();
 		$properties = array();
@@ -50,7 +50,7 @@ class StudentController extends AbstractActionController
 			$properties[$propertyId] = $property;
 		}
 		return $properties;
-	}
+	}*/
 	
 	public function indexAction()
     {
