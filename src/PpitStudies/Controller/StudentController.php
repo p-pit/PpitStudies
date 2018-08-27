@@ -2011,18 +2011,6 @@ class StudentController extends AbstractActionController
    			$data['contact_history'] = 'P-Pit -> Nomad connector';
    			$account = Account::instanciate('p-pit-studies');
 			$account->loadAndAdd($data);
-/*    		$url = $context->getConfig()['ppitStudies']['flow_er']['url'];
-   			$target = $url.'account/v1/p-pit-studies/contact/'.$lead['id'];
-   			$client2 = new Client(
-	    			$target,
-	    			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
-	    	);
-			$client2->setAuth($context->getConfig()['ppitStudies']['flow_er']['userid'], $safe[$context->getInstance()->caption]['flow_er'], Client::AUTH_BASIC);
-	    	$client2->setMethod('PUT');
-			$client2->setEncType('application/json');
-	    	$client2->setRawBody(json_encode($data, JSON_PRETTY_PRINT));
-	    	$response = $client2->send();
-			echo $response->renderStatusLine()."\n";*/
     	}
     	return $this->response;
     }

@@ -1175,6 +1175,8 @@ return array(
 									'fr_FR' => 'Nom',
 							),
 					),
+					'invoice_n_fn' => array('definition' => 'commitment/property/invoice_n_fn'),
+					'year' => array('definition' => 'commitment/property/year'),
 					'caption' => array(
 							'type' => 'repository',
 							'definition' => 'student/property/school_year',
@@ -1183,6 +1185,7 @@ return array(
 									'fr_FR' => 'Année scolaire',
 							),
 					),
+					'product_caption' => array('definition' => 'commitment/property/product_caption'),
 					'account_id' => array('definition' => 'commitment/property/account_id'),
 					'description' => array(
 							'definition' => 'inline',
@@ -1192,6 +1195,9 @@ return array(
 									'fr_FR' => 'Description',
 							),
 					),
+					'quantity' => array('definition' => 'commitment/property/quantity'),
+					'unit_price' => array('definition' => 'commitment/property/unit_price'),
+					'amount' => array('definition' => 'commitment/property/amount'),
 					'product_brand' => array(
 							'definition' => 'inline',
 							'type' => 'input',
@@ -1232,14 +1238,12 @@ return array(
 									'fr_FR' => 'Montant',
 							),
 					),
-					'invoice_date' => array(
-							'definition' => 'inline',
-							'type' => 'date',
-							'labels' => array(
-									'en_US' => 'Invoice date',
-									'fr_FR' => 'Date de facture',
-							),
-					),
+					'invoice_identifier' => array('definition' => 'commitment/property/invoice_identifier'),
+					'invoice_date' => array('definition' => 'commitment/property/invoice_date'),
+					'tax_amount' => array('definition' => 'commitment/property/tax_amount'),
+					'tax_inclusive' => array('definition' => 'commitment/property/tax_inclusive'),
+					'default_means_of_payment' => array('definition' => 'commitment/property/default_means_of_payment'),
+
 					'account_property_1' => array('definition' => 'student/property/discipline'),
 					'account_property_2' => array('definition' => 'core_account/generic/property/property_2'),
 					'account_property_3' => array('definition' => 'core_account/generic/property/property_3'),
@@ -1374,7 +1378,28 @@ return array(
 			'caption' => [],
 			'description' => [],
 	),
-		
+
+	'commitment/export/p-pit-studies' => array(
+		'year' => 'A',
+		'invoice_identifier' => 'B',
+		'invoice_date' => 'C',
+		'account_name' => 'D',
+		'invoice_n_fn' => 'E',
+		'caption' => 'F',
+		'description' => 'G',
+		'property_1' => 'H',
+		'property_2' => 'I',
+		'property_3' => 'J',
+		'product_caption' => 'K',
+		'unit_price' => 'L',
+		'quantity' => 'M',
+		'amount' => 'N',
+		'including_options_amount' => 'O',
+		'tax_amount' => 'P',
+		'tax_inclusive' => 'Q',
+		'default_means_of_payment' => 'R',
+	),
+	
 	'commitment/invoice/p-pit-studies' => array(
 			'header' => array(),
 			'description' => array(
@@ -3570,6 +3595,7 @@ table.note-report tr.period {
 					'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
 					'transport' => array('en_US' => 'Transport', 'fr_FR' => 'Transport'),
 					'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
+					'repetition' => array('en_US' => 'Repetition', 'fr_FR' => 'Répétition'),
 					'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 			),
 			'labels' => array(

@@ -221,7 +221,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 		<div class="form-group" id="assessment_<?php echo $account->id ?>_group">
 			<label class="col-sm-5 control-label">&nbsp;</label>
 			<div class="col-sm-7">
-				<textarea class="form-control" id="assessment_<?php echo $account->id ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Assessment', 'ppit-studies', $context->getLocale()) ?>"><?php if ($message == 'OK') echo $note->results[$account->id]['assessment'] ?></textarea>
+				<textarea rows="6" class="form-control" id="assessment_<?php echo $account->id ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Assessment', 'ppit-studies', $context->getLocale()) ?>"><?php if ($message == 'OK') echo $note->results[$account->id]['assessment'] ?></textarea>
 			</div>
 			<div class="col-sm-12"><p class="help-block" id="assessment_<?php echo $account->id ?>_error"></p></div>
 		</div>
