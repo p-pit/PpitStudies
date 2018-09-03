@@ -832,8 +832,8 @@ function getAddNote(classe) {
 	<?php endif;?>
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
 			
-            $('#place_id').val(currentPlaceId);
-            $('#class').val(currentClass);
+            if (!$('#place_id').val()) $('#place_id').val(currentPlaceId);
+            if (!$('#class').val()) $('#class').val(currentClass);
             $('#school_period').val(currentPeriod);
             $('#subject').val(currentSubject);
             $('#type').val(currentType);

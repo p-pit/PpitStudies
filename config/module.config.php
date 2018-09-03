@@ -1143,7 +1143,24 @@ return array(
 	'ppitProduct/list/p-pit-studies' => array(),
 		
 	'ppitProduct/update/p-pit-studies' => array(),
-		
+
+	'commitment/p-pit-studies/property/account_status' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+			'suspect' => array('en_US' => 'Suspect (landing page)', 'fr_FR' => 'Suspect (landing page)'),
+			'interested' => array('en_US' => 'Interested', 'fr_FR' => 'Intéressé'),
+			'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
+			'active' => array('en_US' => 'Active', 'fr_FR' => 'Actif'),
+			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
+		),
+		'labels' => array(
+			'en_US' => 'Account status',
+			'fr_FR' => 'Statut du compte',
+		),
+	),
+	
 	'commitment/p-pit-studies' => array(
 			'tax' => 'including',
 			'currencySymbol' => '€',
@@ -1244,6 +1261,7 @@ return array(
 					'tax_inclusive' => array('definition' => 'commitment/property/tax_inclusive'),
 					'default_means_of_payment' => array('definition' => 'commitment/property/default_means_of_payment'),
 
+					'account_status' => array('definition' => 'commitment/property/account_status'),
 					'account_property_1' => array('definition' => 'student/property/discipline'),
 					'account_property_2' => array('definition' => 'core_account/generic/property/property_2'),
 					'account_property_3' => array('definition' => 'core_account/generic/property/property_3'),
@@ -1346,6 +1364,7 @@ return array(
 					'place_id' => ['multiple' => true],
 					'type' => ['multiple' => true],
 					'status' => ['multiple' => true],
+					'account_status' => [],
 					'including_options_amount' => [],
 					'account_name' => [],
 					'caption' => ['multiple' => true],
@@ -1362,6 +1381,7 @@ return array(
 			'property_3' => 'select',
 			'including_options_amount' => 'number',
 			'status' => 'select',
+			'account_status' => 'select',
 			'update_time' => 'datetime',
 	),
 		
@@ -2789,7 +2809,7 @@ table.note-report td {
 					'fr_FR' => 'Année scolaire',
 			),
 	),
-	'student/property/school_year/default' => '2017-2018',
+	'student/property/school_year/default' => '2018-2019',
 
 	'student/property/school_period' => array(
 			'type' => 'select',
@@ -4137,7 +4157,7 @@ table.note-report tr.period {
 									'type' => null,
 									'text' => array(
 											'en_US' => 'To be translated',
-											'fr_FR' => '<h2>Rentrée 2017-2018</h2><hr><p>En forme après les vacances ? L\'année sera bien remplie, promis !</p><p>D\'ailleurs, voici ton planning.',
+											'fr_FR' => '<h2>Rentrée 2018-2019</h2><hr><p>Prêt(e) à relever de nouveaux challenges ?',
 									),
 									'image' => array(
 											'src' => 'banner.jpg',
