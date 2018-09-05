@@ -1115,9 +1115,9 @@ return array(
 			'school_periods' => array(
 					'type' => 'periods',
 					'end_dates' => array(
-							'Q1' => '2017-12-10',
-							'Q2' => '2018-02-28',
-							'Q3' => '2018-06-30',
+							'Q1' => '2018-12-10',
+							'Q2' => '2019-02-28',
+							'Q3' => '2019-06-30',
 					),
 			),
 	),
@@ -1627,7 +1627,7 @@ return array(
 	
 	'core_account/p-pit-studies/property/birth_date' => array('definition' => 'core_account/generic/property/birth_date'),	
 	'core_account/p-pit-studies/property/gender' => array('definition' => 'core_account/generic/property/gender'),
-	'core_account/p-pit-studies/property/nationality' => array('definition' => 'nationality'),
+	'core_account/p-pit-studies/property/nationality' => array('definition' => 'core_account/generic/property/nationality'),
 
 	'core_account/p-pit-studies/property/n_title_2' => array(
 		'definition' => 'inline',
@@ -2153,7 +2153,7 @@ return array(
 					'n_fn' => [],
 					'tel_cell' => ['rendering' => 'phone'],
 					'property_16' => [],
-					'basket' => [],
+//					'basket' => [],
 					'property_1' => ['rendering' => 'image'],
 					'opening_date' => [],
 					'callback_date' => [],
@@ -2161,12 +2161,12 @@ return array(
 					'property_8' => [],
 					'property_13' => [],
 					'next_meeting_date' => [],
-					'next_meeting_confirmed' => [],
-					'property_2' => [],
+//					'next_meeting_confirmed' => [],
+//					'property_2' => [],
 					'origine' => [],
 					'property_7' => [],
-					'property_15' => [],
-					'identifier' => [],
+//					'property_15' => [],
+//					'identifier' => [],
 					'place_id' => [],
 			),
 	),
