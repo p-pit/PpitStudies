@@ -1103,7 +1103,7 @@ class StudentController extends AbstractActionController
 	
 		$contact_id = (int) $this->params()->fromRoute('id');
 		$account = Account::get($contact_id, 'contact_1_id');
-		$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'min_begin_date' => $context->getConfig('currentPeriodStart')), 'begin_date', 'DESC', 'search');
+		$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'begin_date', 'DESC', 'search');
 		$absences = array();
 		$absenceCount = 0;
 		$cumulativeAbsence = 0;
@@ -1124,7 +1124,7 @@ class StudentController extends AbstractActionController
 		}
 
 		$periods = array();
-		$absLates = Absence::GetList('schooling', array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/), 'date', 'DESC', 'search');
+		$absLates = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
 		foreach($absLates as $absLate) {
 			$key = $absLate->school_year.'.'.$absLate->school_period;
 			if (!array_key_exists($key, $periods)) $periods[$key] = array();
@@ -1157,7 +1157,7 @@ class StudentController extends AbstractActionController
 		$contact_id = (int) $this->params()->fromRoute('id');
 		$account = Account::get($contact_id, 'contact_1_id');
 	
-		$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account->id, 'min_date' => $context->getConfig('currentPeriodStart')), 'date', 'DESC', 'search');
+		$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
 	
 		// Return the link list
 		$view = new ViewModel(array(

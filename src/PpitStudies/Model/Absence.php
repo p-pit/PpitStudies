@@ -126,7 +126,8 @@ class Absence implements InputFilterAwareInterface
 
     	// Todo list vs search modes
     	if ($mode == 'todo') {
-    		$where->greaterThanOrEqualTo('begin_date', $context->getConfig('currentPeriodStart'));
+//    		$where->greaterThanOrEqualTo('begin_date', $context->getConfig('currentPeriodStart'));
+    		$where->greaterThanOrEqualTo('school_year', $context->getConfig('student/property/school_year/default'));
     	}
     	else {
 

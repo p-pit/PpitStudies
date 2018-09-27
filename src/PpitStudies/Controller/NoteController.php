@@ -239,6 +239,9 @@ class NoteController extends AbstractActionController
     
     	$id = (int) $this->params()->fromRoute('id', 0);
  		$note = Note::get($id);
+    	$place = Place::get($note->place_id);
+ 		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+		if (!$note->school_period) $note->school_period = $school_period;
  		$action = $this->params()->fromRoute('act', null);
 
  		$documentList = array();
@@ -379,7 +382,7 @@ class NoteController extends AbstractActionController
     			$data['place_id'] = $request->getPost('place_id');
     			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
     			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
-    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+//    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
     			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
     		    $teacher_id = $request->getPost('teacher_id');
@@ -396,10 +399,10 @@ class NoteController extends AbstractActionController
     			$data['comment'] = $request->getPost('comment');
     			$noteLinks = array();
     			if ($note->type == 'report') {
-    				$computedAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
+    				$computedAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class'], $data['school_period'], $data['subject']);
     			}
     		    elseif ($note->type == 'exam') {
-    				$examAverages = Note::computeExamAverages($data['place_id'], $data['school_year'], $data['class'], $data['level']);
+    				$examAverages = Note::computeExamAverages($data['place_id'], $note->school_year, $data['class'], $data['level']);
     			}
     			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
@@ -408,9 +411,9 @@ class NoteController extends AbstractActionController
     				$value = $request->getPost('value_'.$noteLink->account_id);
     				if ($value == '') $value = null;
     				$mention = $request->getPost('mention_'.$noteLink->account_id);
-    				if ($note->type == 'report'/* && $value === null*/) { // 2018-08 : Demande ESI de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
+    				if ($note->type == 'report' && $value === null) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     				    if ($data['subject'] == 'global') {
-    			    		$value = $noteLink->computeStudentAverage($data['school_year'], $data['school_period']);
+    			    		$value = $noteLink->computeStudentAverage($note->school_year, $data['school_period']);
     			    	}
     					elseif (array_key_exists($noteLink->account_id, $computedAverages)) {
     						$value = $computedAverages[$noteLink->account_id]['global']['note'];
@@ -419,7 +422,7 @@ class NoteController extends AbstractActionController
     					else $value = null;
     			    	if ($value !== null) $value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
     				}
-    			    elseif ($note->type == 'exam'/* && $value === null*/) { // 2018-08 : Demande ESI de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
+    			    elseif ($note->type == 'exam' && $value === null) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     					if (array_key_exists($noteLink->account_id, $examAverages)) {
 							$value = $examAverages[$noteLink->account_id]['global']['note'];
 							$audit = $examAverages[$noteLink->account_id]['global']['notes'];

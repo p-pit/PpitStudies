@@ -100,7 +100,7 @@
 		<?php elseif ($rendering == 'photo') : ?>
 		<td>
 			<span class="info">
-				<img height="40" src="<?php echo $this->basePath('photos/'.(($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/>
+				<img height="40" src="<?php echo $this->basePath('photos/'.((false /*$account->photo_link_id*/) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/>
 				<span><img height="150" src="<?php echo $this->basePath('photos/'.(($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/></span>
 			</span>
 		</td>
