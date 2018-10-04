@@ -159,7 +159,8 @@ class NoteController extends AbstractActionController
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
 		$params = $this->getFilters($category, $this->params());
-    
+  		if ($category) $params['category'] = $category;
+		
     	$major = ($this->params()->fromQuery('major', 'date'));
     	$dir = ($this->params()->fromQuery('dir', 'DESC'));
     

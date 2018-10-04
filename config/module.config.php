@@ -3734,7 +3734,14 @@ table.note-report tr.period {
 					'fr_FR' => 'Distribution',
 			),
 	),
-
+	'note/property/observations' => array(
+		'type' => 'textarea',
+		'labels' => array(
+			'en_US' => 'Observations',
+			'fr_FR' => 'Observations',
+		),
+	),
+	
 	'note' => array(
 			'types' => array(
 					'evaluation' => array(
@@ -3772,6 +3779,8 @@ table.note-report tr.period {
 							'modalities' => array(
 									'note' => array('en_US' => 'Note', 'fr_FR' => 'Note'),
 									'report' => array('en_US' => 'Report', 'fr_FR' => 'Bulletin'),
+									'done-work' => array('en_US' => 'Done work', 'fr_FR' => 'Travail réalisé'),
+									'todo-work' => array('en_US' => 'Todo work', 'fr_FR' => 'Travail à faire'),
 							),
 							'labels' => array(
 									'en_US' => 'Type',
@@ -3819,6 +3828,7 @@ table.note-report tr.period {
 					'distribution' => array('definition' => 'note/property/distribution'),
 					'assessment' => array('definition' => 'note/property/assessment'),
 					'evaluation' => array('definition' => 'student/property/reportMention'),
+					'observations' => array('definition' => 'note/property/observations'),
 			),
 	),
 
@@ -3894,8 +3904,8 @@ table.note-report tr.period {
 			'higher_note' => 'number',
 	),
 
-	'note/export/evaluation' => array(
-			'title' => ['default' => 'evaluations', 'fr_FR' => 'evaluations'],
+	'note/export/homework' => array(
+			'title' => ['default' => 'Homework', 'fr_FR' => 'Cahier de texte'],
 			'properties' => array(
 				'id' => 'A',
 				'type' => 'B',
@@ -3906,17 +3916,33 @@ table.note-report tr.period {
 				'subject' => 'G',
 				'name' => 'H',
 				'date' => 'I',
-				'reference_value' => 'J',
-				'weight' => 'K',
-				'value' => 'L',
-				'lower_note' => 'M',
-				'average_note' => 'N',
-				'higher_note' => 'O',
-				'assessment' => 'P',
-				'evaluation' => 'Q',
+				'observations' => 'J',
 			),
 	),
 
+	'note/export/evaluation' => array(
+		'title' => ['default' => 'evaluations', 'fr_FR' => 'evaluations'],
+		'properties' => array(
+			'id' => 'A',
+			'type' => 'B',
+			'place_caption' => 'C',
+			'school_period' => 'D',
+			'class' => 'E',
+			'level' => 'F',
+			'subject' => 'G',
+			'name' => 'H',
+			'date' => 'I',
+			'reference_value' => 'J',
+			'weight' => 'K',
+			'value' => 'L',
+			'lower_note' => 'M',
+			'average_note' => 'N',
+			'higher_note' => 'O',
+			'assessment' => 'P',
+			'evaluation' => 'Q',
+		),
+	),
+	
 	'progress/Basketball' => array(
 			'criteria' => array(
 					'modalities' => array(
