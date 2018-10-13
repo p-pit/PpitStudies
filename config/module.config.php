@@ -1269,7 +1269,7 @@ return array(
 					'account_property_1' => array('definition' => 'student/property/discipline'),
 					'account_property_2' => array('definition' => 'core_account/generic/property/property_2'),
 					'account_property_3' => array('definition' => 'core_account/generic/property/property_3'),
-					'account_property_4' => array('definition' => 'core_account/generic/property/property_4'),
+					'account_property_4' => array('definition' => 'core_account/p-pit-studies/property/property_4'),
 					'account_property_5' => array('definition' => 'core_account/generic/property/property_5'),
 					'account_property_6' => array('definition' => 'student/property/boarding_school'),
 					'account_property_7' => array('definition' => 'student/property/class'),
@@ -1372,7 +1372,6 @@ return array(
 					'including_options_amount' => [],
 					'account_name' => [],
 					'caption' => ['multiple' => true],
-					'account_property_15' => ['multiple' => true],
 			),
 	),
 
@@ -1912,8 +1911,21 @@ return array(
 		),
 	),
 
-	'core_account/p-pit-studies/property/property_6' => array('definition' => 'student/property/boarding_school'),
-
+	'core_account/p-pit-studies/property/property_6' => array(
+		'type' => 'select',
+		'modalities' => array(
+			'Externe' => array('fr_FR' => 'Externe', 'fr_FR' => 'Externe'),
+			'Interne' => array('fr_FR' => 'Internat', 'fr_FR' => 'Internat'),
+			'Weekend' => array('fr_FR' => 'Internat + WE', 'fr_FR' => 'Internat + WE'),
+			'Dimanche' => array('fr_FR' => 'Internat + dimanche', 'fr_FR' => 'Internat + dimanche'),
+			'annual' => array('fr_FR' => 'Internat annuel', 'fr_FR' => 'Internat annuel'),
+		),
+		'labels' => array(
+			'en_US' => 'Boarding-school',
+			'fr_FR' => 'Internat',
+		),
+	),
+	
 	'core_account/p-pit-studies/property/property_7' => array('definition' => 'student/property/class'),
 	
 	'core_account/p-pit-studies/property/property_8' => array(
@@ -1984,7 +1996,7 @@ return array(
 		),
 		'labels' => array(
 			'en_US' => 'Study choice',
-			'fr_FR' => 'Choix d\'études',
+			'fr_FR' => 'Rythme',
 		),
 	),
 	
@@ -2113,7 +2125,7 @@ return array(
 			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
 			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',
 			'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4', 'email_4', 'tel_work_4', 'tel_cell_4', 'address_4',
-			'opening_date', 'closing_date', 'callback_date', 'first_activation_date', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'contact_history',
+			'opening_date', 'closing_date', 'callback_date', 'first_activation_date', 'date_1', 'date_2', 'date_3', 'date_4', 'date_5', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'contact_history',
 			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16',
@@ -2712,6 +2724,8 @@ table.note-report td {
 					'cm2' => array('fr_FR' => 'CM2'),
 					'6e' => array('fr_FR' => '6e'),
 					'5e' => array('fr_FR' => '5e'),
+					'5e1' => array('fr_FR' => '5e1'),
+					'5e2' => array('fr_FR' => '5e2'),
 					'4e' => array('fr_FR' => '4e'),
 					'4e1' => array('fr_FR' => '4e1'),
 					'4e2' => array('fr_FR' => '4e2'),
@@ -2914,6 +2928,8 @@ table.note-report td {
 					'sales' => array('en_US' => 'Sales', 'fr_FR' => 'Vente'),
 					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
 					'communication' => array('en_US' => 'Communication', 'fr_FR' => 'Communication'),
+					'duc' => array('en_US' => 'Business unit development', 'fr_FR' => 'Développement de l’unité commerciale (DUC)'),
+
 // Demande M. Volle
 					'pfeg' => array('en_US' => 'PFEG', 'fr_FR' => 'PFEG'),
 //
@@ -3603,6 +3619,7 @@ table.note-report tr.period {
 					'transport' => array('en_US' => 'Transport', 'fr_FR' => 'Transport'),
 					'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
 					'repetition' => array('en_US' => 'Repetition', 'fr_FR' => 'Répétition'),
+					'exclusion' => array('en_US' => 'Exclusion', 'fr_FR' => 'Exclusion'),
 					'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 			),
 			'labels' => array(
