@@ -1552,7 +1552,7 @@ return array(
 	
 	'core_account/p-pit-studies/property/tel_cell' => array(
 		'definition' => 'inline',
-		'type' => 'phone',
+		'type' => 'input',
 		'labels' => array(
 			'en_US' => 'Cellular',
 			'fr_FR' => 'Mobile',
@@ -1912,6 +1912,7 @@ return array(
 	),
 
 	'core_account/p-pit-studies/property/property_6' => array(
+		'definition' => 'inline',
 		'type' => 'select',
 		'modalities' => array(
 			'Externe' => array('fr_FR' => 'Externe', 'fr_FR' => 'Externe'),
