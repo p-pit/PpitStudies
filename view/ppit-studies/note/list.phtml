@@ -56,7 +56,7 @@
 		<td><?php echo $places[$note->place_id]->caption ?></td>
 
 		<?php elseif ($propertyId == 'school_period') : ?>
-		<td><?php if ($note->school_period) $context->getConfig('student/property/school_period')['modalities'][$note->school_period][$context->getLocale()] ?></td>
+		<td><?php if ($note->school_period) echo $context->getConfig('student/property/school_period')['modalities'][$note->school_period][$context->getLocale()] ?></td>
 
 		<?php elseif ($propertyId == 'class') : ?>
 		<td><?php echo $context->getConfig('student/property/class')['modalities'][$note->class][$context->getLocale()] ?></td>

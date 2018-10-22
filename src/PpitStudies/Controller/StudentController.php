@@ -542,7 +542,7 @@ class StudentController extends AbstractActionController
     			$data['place_id'] = $request->getPost('place_id');
     			$data['category'] = 'homework';
     			$data['school_year'] = $context->getConfig('student/property/school_year/default');
-    			$data['school_period'] = $school_period;
+    			$data['school_period'] = $request->getPost('school_period');
     			$data['class'] = $request->getPost('class');
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
@@ -700,15 +700,29 @@ class StudentController extends AbstractActionController
     				$criterionValue = $request->getPost('criterion_'.$i);
     				$data['criteria'][$criterionId] = $criterionValue;
     			}
+    			
+    			// Retrieve the possibly existing evaluation (same year, class, period, subject, category and date)
+    			// So it is possible to add students to it, and recompute the class average
     			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
     			if ($previousNote) $note = $previousNote;
     			else $note->links = array();
-    			if ($type == 'report') {
+
+    			// In current evaluation mode, in the case where the 'global' subject is selected, compute the average of all the note of the period for each selected student
+    			if ($type == 'note' && $data['subject'] == 'global') {
     				$computedAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
     			}
-    		    elseif ($type == 'exam') {
+
+    			 // In report mode, compute the period average for the selected subject and for all the selected students
+    			elseif ($type == 'report') {
+    				$computedAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
+    			}
+
+    			// In the case of an exam, compute the average of all the note for the exam per class subjects and for all the selected students
+    			elseif ($type == 'exam') {
     				$examAverages = Note::computeExamAverages($data['place_id'], $data['school_year'], $data['class'], $data['level']);
     			}
+
+    			// Create or update the note link that handles the note or average for each selected student
     			$nbAccount = $request->getPost('nb-account');
     			for ($i = 0; $i < $nbAccount; $i++) {
     				$account = $accounts[$request->getPost('account_'.$i)];
@@ -718,7 +732,12 @@ class StudentController extends AbstractActionController
     				$mention = $request->getPost('mention_'.$account->id);
     				$assessment = $request->getPost('assessment_'.$account->id);
 	    			$audit = [];
-    				if ($type == 'report' && $value === null) {
+    			    if ($type == 'note' && $value === null) {
+    				    if ($data['subject'] == 'global') {
+							$value = $computedAverages[$account->id]['global']['note'];
+    				    }
+    				}
+	    			elseif ($type == 'report' && $value === null) {
     				    if ($data['subject'] == 'global') {
     			    		$value = $noteLink->computeStudentAverage($data['school_year'], $data['school_period']);
     			    	}

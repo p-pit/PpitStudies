@@ -1271,7 +1271,7 @@ return array(
 					'account_property_3' => array('definition' => 'core_account/generic/property/property_3'),
 					'account_property_4' => array('definition' => 'core_account/p-pit-studies/property/property_4'),
 					'account_property_5' => array('definition' => 'core_account/generic/property/property_5'),
-					'account_property_6' => array('definition' => 'student/property/boarding_school'),
+					'account_property_6' => array('definition' => 'core_account/p-pit-studies/property/property_6'),
 					'account_property_7' => array('definition' => 'student/property/class'),
 					'account_property_8' => array('definition' => 'core_account/generic/property/property_8'),
 					'account_property_9' => array('definition' => 'core_account/generic/property/property_9'),
@@ -2777,7 +2777,7 @@ table.note-report td {
 			),
 	),
 		
-	'student/property/boarding_school' => array(
+	'student/property/boarding_school' => array( // Deprecated
 			'type' => 'select',
 			'modalities' => array(
 					'Externe' => array('fr_FR' => 'Externe', 'fr_FR' => 'Externe'),
@@ -2792,6 +2792,22 @@ table.note-report td {
 			),
 	),
 
+	'core_account/p-pit-studies/property/property_6' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'Externe' => array('fr_FR' => 'Externe', 'fr_FR' => 'Externe'),
+			'Interne' => array('fr_FR' => 'Internat', 'fr_FR' => 'Internat'),
+			'Weekend' => array('fr_FR' => 'Internat + WE', 'fr_FR' => 'Internat + WE'),
+			'Dimanche' => array('fr_FR' => 'Internat + dimanche', 'fr_FR' => 'Internat + dimanche'),
+			'annual' => array('fr_FR' => 'Internat annuel', 'fr_FR' => 'Internat annuel'),
+		),
+		'labels' => array(
+			'en_US' => 'Boarding-school',
+			'fr_FR' => 'Internat',
+		),
+	),
+	
 	'student/property/school_year' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -3214,11 +3230,11 @@ table.note-report td {
 					'html' => '
 <table class="table note-report">
 	<tr>
-		<th rowspan="2" style="width: 22%%">%s</th>
-		<th rowspan="2" style="width: 16%%">%s</th>
-		<th rowspan="2" style="width: 16%%">%s</th>
+		<th rowspan="2" style="width: 36%%">%s</th>
+		<th rowspan="2" style="width: 10%%">%s</th>
+		<th rowspan="2" style="width: 12%%">%s</th>
 		<th colspan="3" style="width: 30%%">%s</th>
-		<th rowspan="2" style="width: 16%%">%s</th>
+		<th rowspan="2" style="width: 12%%">%s</th>
 <!--		<th rowspan="2" style="width: 31%%">s</th> -->
 	</tr>
     <tr>
@@ -3253,13 +3269,13 @@ table.note-report td {
 			'evaluationRow' => array(
 					'html' => '
 <tr %s>
-	<td style="width: 22%%">%s<br><span style="font-weight: normal">%s</span></td>
-	<td style="width: 16%%" align="right">%s</td>
-	<td style="width: 16%%; font-size: 1.2em; font-weight: bold" align="right">%s</td>
+	<td style="width: 36%%">%s</td>
+	<td style="width: 10%%" align="right">%s</td>
+	<td style="width: 12%%; font-size: 1.2em; font-weight: bold" align="right">%s</td>
 	<td style="width: 10%%" align="right">%s</td>
 	<td style="width: 10%%" align="right">%s</td>
 	<td style="width: 10%%" align="right">%s</td>
-	<td style="width: 16%%; font-size: 0.8em" align="right">%s</td>
+	<td style="width: 12%%; font-size: 0.8em" align="right">%s</td>
 <!--	<td style="width: 31%%">s</td> -->
 </tr>',
 					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution'/*, 'assessment'*/),

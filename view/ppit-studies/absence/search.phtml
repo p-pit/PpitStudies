@@ -2,7 +2,7 @@
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
 			<?php 
-			$title = $context->getConfig('absence/search')['title'][$context->getLocale()];
+			$title = $context->localize($context->getConfig('absence/search')['title']);
 			echo $title;
 			?>
 			(<span id="mode-text"></span>)
@@ -33,7 +33,7 @@
 			<select id="search_type" class="form-control">
 				<option value=""></option>
 		<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
-	    		<option value="<?php echo $typeId ?>"><?php echo $type['labels'][$context->getLocale()] ?></option>
+	    		<option value="<?php echo $typeId ?>"><?php echo $context->localize($type['labels']) ?></option>
 		<?php endforeach;?>
 	    	</select>
 		</div>
@@ -43,7 +43,7 @@
 		<?php
 		$property = $context->getConfig('absence')['properties'][$propertyId];
 		if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
-		$label = $property['labels'][$context->getLocale()];
+		$label = $context->localize($property['labels']);
 		?>
 	
 		<?php if ($propertyId == 'place_id') : ?>
@@ -89,12 +89,12 @@
 		$modalities = array();
 		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
 			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
-				$modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
+				$modalities[$modalityId] = $context->localize($property['modalities'][$modalityId]);
 			} 
 		}
 		else {
 			foreach ($property['modalities'] as $modalityId => $modality) {
-				$modalities[$modalityId] = $modality[$context->getLocale()];
+				$modalities[$modalityId] = $context->localize($modality);
 			} 
 		}
 		?>

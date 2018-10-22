@@ -244,8 +244,9 @@ class Note implements InputFilterAwareInterface
     	$where->equalTo('school_year', $school_year);
     	$where->equalTo('class', $class);
     	$where->equalTo('school_period', $period);
-    	$where->equalTo('subject', $subject);
-		$select->where($where);
+    	if ($subject == 'global') $where->notEqualTo('subject', 'global');
+    	else $where->equalTo('subject', $subject);
+    	$select->where($where);
     	$cursor = NoteLink::getTable()->selectWith($select);
     	$periodNotes = array();
     	$periodCategoryNotes = array();

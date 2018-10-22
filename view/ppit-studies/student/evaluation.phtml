@@ -74,7 +74,11 @@ table.note-report tr.period {
 		<?php if ($note->type == 'note') : ?>
 			<tr>
 				<td class="subject">
+          <?php if ($note->subject == 'global') : ?>
+                    <?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?>
+          <?php else : ?>
 					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+          <?php endif;?>
 		<?php if (array_key_exists($note->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) : ?>
 					<span style="font-weight: normal">(<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$note->level][$context->getLocale()] ?>)</span>
 		<?php endif;?>

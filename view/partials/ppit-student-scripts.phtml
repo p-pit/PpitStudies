@@ -712,7 +712,7 @@ $properties['update_time'] = array('type' => 'hidden');
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
 ?>
 
-var currentPlaceId = '', currentClass = '', currentPeriod = '', currentSubject = '', currentType = '';
+var currentPlaceId = '', currentClass = '', currentSubject = '', currentType = '';
 
 function connectAddNoteForm(classe)
 {
@@ -834,7 +834,6 @@ function getAddNote(classe) {
 			
             if (!$('#place_id').val()) $('#place_id').val(currentPlaceId);
             if (!$('#class').val()) $('#class').val(currentClass);
-            $('#school_period').val(currentPeriod);
             $('#subject').val(currentSubject);
             $('#type').val(currentType);
             

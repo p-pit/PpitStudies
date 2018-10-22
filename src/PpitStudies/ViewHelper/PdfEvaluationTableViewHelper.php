@@ -30,28 +30,56 @@ class PdfEvaluationTableViewHelper
 		$text = $context->getConfig('student/report')['pdfDetailStyle'];
 		$rows = '';
 	    $subject = null;
+	    $globalAverage = null;
 	    foreach ($evaluations as $evaluation) {
-	    	if ($evaluation->subject != $subject) {
-	    		$rows .= sprintf(
-	   					$context->getConfig('student/report')['evaluationSubject']['html'], 
-		   				'style="background-color: #EEE"',
-	    				(!$evaluation->subject) ? '' : ($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()]).' - '.$evaluation->n_fn);
+	    	if ($evaluation->subject == 'global') $globalAverage = $evaluation;
+	    	else {
+		    	if ($evaluation->subject != $subject) {
+		    		$rows .= sprintf(
+		   					$context->getConfig('student/report')['evaluationSubject']['html'], 
+			   				'style="background-color: #EEE"',
+		    				(!$evaluation->subject) ? '' : ($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()]).' - '.$evaluation->n_fn);
+		    	}
+		    	$subject = $evaluation->subject;
+		    	$caption = (array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()] : '';
+		    	if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
+		   		$rows.= sprintf(
+		   				$context->getConfig('student/report')['evaluationRow']['html'], 
+						'',
+		   				$caption,
+		   				$context->formatFloat($evaluation->weight, 1),
+		   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0),
+						$context->formatFloat($evaluation->lower_note, 2),
+		   				$context->formatFloat($evaluation->average_note, 2),
+						$context->formatFloat($evaluation->higher_note, 2),
+						$context->decodeDate($evaluation->date)/*,
+						$evaluation->assessment*/
+		   		);
 	    	}
-	    	$subject = $evaluation->subject;
-	   		$rows.= sprintf(
-	   				$context->getConfig('student/report')['evaluationRow']['html'], 
-	    			'',
-	   				'',
-					(array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()] : '',
-	   				$context->formatFloat($evaluation->weight, 1),
-	   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0),
-					$context->formatFloat($evaluation->lower_note, 2),
-	   				$context->formatFloat($evaluation->average_note, 2),
-					$context->formatFloat($evaluation->higher_note, 2),
-					$context->decodeDate($evaluation->date)/*,
-					$evaluation->assessment*/
-	   		);
 	    }
+
+	    if ($globalAverage) {
+	    	$evaluation = $globalAverage;
+	    	$subject = '<strong>'.$translator->translate('Global average', 'ppit-studies', $context->getLocale()).'</strong>';
+	    	if ($evaluation->value === null) $note = $translator->translate('Not eval.', 'ppit-studies', $context->getLocale());
+	    	else {
+	    		$note = $context->formatFloat($evaluation->value, 2);
+	    		if ($evaluation->reference_value != 20) $note .= '/'.$context->formatFloat($evaluation->reference_value, 0);
+	    	}
+	    	$caption = $subject;
+		    if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
+	    	$rows.= sprintf(
+	    		$context->getConfig('student/report')['evaluationRow']['html'],
+				'',
+	    		$caption,
+		   		$context->formatFloat($evaluation->weight, 1),
+		   		($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0),
+				$context->formatFloat($evaluation->lower_note, 2),
+		   		$context->formatFloat($evaluation->average_note, 2),
+				$context->formatFloat($evaluation->higher_note, 2),
+				$context->decodeDate($evaluation->date)
+	    	);
+	    };
 
 	   	$headerDef = $context->getConfig('student/report')['evaluationHeader'];
 	   	$params = $headerDef['params'];

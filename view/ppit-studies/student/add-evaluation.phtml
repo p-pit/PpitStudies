@@ -111,7 +111,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 		<?php $caption = $subject[$context->getLocale()] ?>
 	    			<option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
 	<?php endforeach;?>
-	<?php if ($type == 'report' && $context->hasRole('manager')) : ?>
+	<?php if (/*$type == 'report' &&*/ $context->hasRole('manager')) : ?>
 	    			<option value="global"><?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?></option>
 	<?php endif;?>
 	    		</select>

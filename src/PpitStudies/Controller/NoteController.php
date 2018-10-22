@@ -399,12 +399,22 @@ class NoteController extends AbstractActionController
     			$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
     			$noteLinks = array();
-    			if ($note->type == 'report') {
+
+    			// In current evaluation mode, in the case where the 'global' subject is selected, compute the average of all the note of the period for each selected student
+    			if ($note->type == 'note' && $data['subject'] == 'global') {
     				$computedAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class'], $data['school_period'], $data['subject']);
     			}
-    		    elseif ($note->type == 'exam') {
+    			 
+    			// In report mode, compute the period average for the selected subject and for all the selected students
+    			elseif ($note->type == 'report') {
+    				$computedAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class'], $data['school_period'], $data['subject']);
+    			}
+    		    
+    			// In the case of an exam, compute the average of all the note for the exam per class subjects and for all the selected students
+    			elseif ($note->type == 'exam') {
     				$examAverages = Note::computeExamAverages($data['place_id'], $note->school_year, $data['class'], $data['level']);
     			}
+    			
     			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
     				$noteLink->audit = array();
@@ -412,7 +422,12 @@ class NoteController extends AbstractActionController
     				$value = $request->getPost('value_'.$noteLink->account_id);
     				if ($value == '') $value = null;
     				$mention = $request->getPost('mention_'.$noteLink->account_id);
-    				if ($note->type == 'report' && $value === null) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
+    			    if ($note->type == 'note' && $value === null) {
+    				    if ($data['subject'] == 'global') {
+							$value = $computedAverages[$noteLink->account_id]['global']['note'];
+    				    }
+    				}
+    				elseif ($note->type == 'report' && $value === null) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     				    if ($data['subject'] == 'global') {
     			    		$value = $noteLink->computeStudentAverage($note->school_year, $data['school_period']);
     			    	}

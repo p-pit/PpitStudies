@@ -47,9 +47,9 @@ table.note-report tr.period {
 <div class="card-block" style="color: #686868">
     <!--Title-->
     <h4 class="card-title" style="text-align: center">
-		<?php echo $context->getConfig('student/property/school_year')['labels'][$context->getLocale()] ?>:
-		<?php echo $context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()] ?> &mdash;
-		<?php echo $context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()] ?>
+		<?php echo $context->localize($context->getConfig('student/property/school_year')['labels']) ?>:
+		<?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?> &mdash;
+		<?php echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
 	</h4>
 	<!--Text-->
 		<div><a href="<?php echo $this->url('student/download', array('category' => 'absence', 'account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
@@ -67,7 +67,7 @@ table.note-report tr.period {
 					<?php echo $this->translate((($absLate->category == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()) ?>
 				</td>
 				<td class="subject">
-					<?php echo ($absLate->subject) ? $context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()] : '' ?>
+					<?php echo ($absLate->subject) ? $context->localize($context->getConfig('student/property/school_subject')['modalities'][$absLate->subject]) : '' ?>
 				</td>
 		<?php if ($absLate->end_date > $absLate->begin_date) : ?>
 				<td><?php echo $this->translate('From the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($absLate->begin_date).'<br>'.$this->translate('to the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($absLate->end_date) ?></td>
@@ -110,7 +110,7 @@ table.note-report tr.period {
 	<?php endif;?>
 	<?php if ($absence->subject) : ?>
 		&mdash;
-		<?php echo $context->getConfig('student/property/school_subject')['modalities'][$absence->subject][$context->getLocale()] ?>
+		<?php echo $context->localize($context->getConfig('student/property/school_subject')['modalities'][$absence->subject]) ?>
 	<?php endif;?>
 	<?php if ($absence->duration) : ?>
 		&mdash;
@@ -123,7 +123,7 @@ table.note-report tr.period {
 	<?php if ($absence->motive) : ?>
 		&mdash;
 		<?php echo $this->translate('Motive', 'ppit-studies', $context->getLocale()) ?>:
-		<strong><?php echo $context->getConfig('absence/property/motive')['modalities'][$absence->motive][$context->getLocale()] ?></strong>
+		<strong><?php echo $context->localize($context->getConfig('absence/property/motive')['modalities'][$absence->motive]) ?></strong>
 	<?php endif;?>
 	<?php if ($absence->observations) : ?>
 		<br><?php echo $absence->observations ?>
@@ -156,7 +156,7 @@ table.note-report tr.period {
 		<strong><?php echo $context->decodeDate($lateness->begin_date) ?></strong>
 	<?php if ($lateness->subject) : ?>
 		&mdash;
-		<?php echo $context->getConfig('student/property/school_subject')['modalities'][$lateness->subject][$context->getLocale()] ?>
+		<?php echo $context->localize($context->getConfig('student/property/school_subject')['modalities'][$lateness->subject][$context->getLocale()]) ?>
 	<?php endif;?>
 	<?php if ($lateness->duration) : ?>
 		&mdash;
@@ -166,7 +166,7 @@ table.note-report tr.period {
 	<?php if ($lateness->motive) : ?>
 		&mdash;
 		<?php echo $this->translate('Motive', 'ppit-studies', $context->getLocale()) ?>:
-		<strong><?php echo $context->getConfig('absence/property/motive')['modalities'][$lateness->motive][$context->getLocale()] ?></strong>
+		<strong><?php echo $context->localize($context->getConfig('absence/property/motive')['modalities'][$lateness->motive]) ?></strong>
 	<?php endif;?>
 	<?php if ($lateness->observations) : ?>
 		<br><?php echo $lateness->observations ?>
