@@ -833,6 +833,15 @@ return array(
 		        								),
 		        						),
 		        				),
+	       						'cleanUserPerimeter' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/clean-user-perimeter',
+		        								'defaults' => array(
+		        										'action' => 'cleanUserPerimeter',
+		        								),
+		        						),
+		        				),
 	       		),
 	    	   	),
 	    ),
@@ -923,6 +932,7 @@ return array(
 				array('route' => 'student/acknowledgement', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/commitment', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/nomad', 'roles' => array('admin')),
+				array('route' => 'student/cleanUserPerimeter', 'roles' => array('admin')),
 			)
 		)
 	),
@@ -1266,6 +1276,11 @@ return array(
 					'default_means_of_payment' => array('definition' => 'commitment/property/default_means_of_payment'),
 
 					'account_status' => array('definition' => 'commitment/property/account_status'),
+					'account_date_1' => array('definition' => 'core_account/generic/property/date_1'),
+					'account_date_2' => array('definition' => 'core_account/generic/property/date_2'),
+					'account_date_3' => array('definition' => 'core_account/generic/property/date_3'),
+					'account_date_4' => array('definition' => 'core_account/generic/property/date_4'),
+					'account_date_5' => array('definition' => 'core_account/generic/property/date_5'),
 					'account_property_1' => array('definition' => 'student/property/discipline'),
 					'account_property_2' => array('definition' => 'core_account/generic/property/property_2'),
 					'account_property_3' => array('definition' => 'core_account/generic/property/property_3'),
@@ -1396,6 +1411,7 @@ return array(
 			'property_2' => array('mandatory' => false),
 			'property_3' => array('mandatory' => false),
 	),
+
 	'commitment/group/p-pit-studies' => array(
 			'status' => [],
 			'caption' => [],
@@ -1827,6 +1843,70 @@ return array(
 			'fr_FR' => 'Adresse repr. légal',
 		),
 	),
+	'core_account/p-pit-studies/property/n_title_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Contact abroad title',
+			'fr_FR' => 'Titre contact étranger',
+		),
+	),
+	'core_account/p-pit-studies/property/n_first_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Contact abroad first name',
+			'fr_FR' => 'Prénom contact étranger',
+		),
+	),
+	'core_account/p-pit-studies/property/n_last_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Contact abroad name',
+			'fr_FR' => 'Nom contact étranger',
+		),
+	),
+	'core_account/p-pit-studies/property/n_fn_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Contact abroad name',
+			'fr_FR' => 'Nom contact étranger',
+		),
+	),
+	'core_account/p-pit-studies/property/email_5' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'Contact abroad email',
+			'fr_FR' => 'Email contact étranger',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_work_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Contact abroad phone',
+			'fr_FR' => 'Téléphone contact étranger',
+		),
+	),
+	'core_account/p-pit-studies/property/tel_cell_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Contact abroad cell',
+			'fr_FR' => 'Portable contact étranger',
+		),
+	),
+	'core_account/p-pit-studies/property/address_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Contact abroad address',
+			'fr_FR' => 'Adresse contact étranger',
+		),
+	),
 	
 	'core_account/p-pit-studies/property/opening_date' => array('definition' => 'core_account/generic/property/opening_date'),
 	'core_account/p-pit-studies/property/closing_date' => array('definition' => 'core_account/generic/property/closing_date'),
@@ -2126,6 +2206,7 @@ return array(
 			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
 			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',
 			'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4', 'email_4', 'tel_work_4', 'tel_cell_4', 'address_4',
+			'n_title_5', 'n_first_5', 'n_last_5', 'n_fn_5', 'email_5', 'tel_work_5', 'tel_cell_5', 'address_5',
 			'opening_date', 'closing_date', 'callback_date', 'first_activation_date', 'date_1', 'date_2', 'date_3', 'date_4', 'date_5', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'contact_history',
 			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
@@ -2162,6 +2243,7 @@ return array(
 					'property_15' => [],
 					'n_fn' => [],
 					'email' => [],
+					'tel_cell' => [],
 					'gender' => [],
 					'property_14' => [],
 			),
@@ -2259,6 +2341,7 @@ return array(
 			'adr_city' => array('mandatory' => false),
 			'gender' => array('mandatory' => false),
 			'birth_date' => array('mandatory' => false),
+			'nationality' => array('mandatory' => false),
 			'property_8' => array('mandatory' => false),
 			'property_2' => array('mandatory' => false),
 			'property_13' => array('mandatory' => false),

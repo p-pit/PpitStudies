@@ -1368,7 +1368,6 @@ class StudentController extends AbstractActionController
 		
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
     	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize, $absLates, $level);
     	
     	// Close and output PDF document
@@ -2051,5 +2050,21 @@ class StudentController extends AbstractActionController
     	$limit = $this->params()->fromRoute('limit', 10);
     	echo date('Y-m-d')."\n";
     	return $this->nomad($request, date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')), $place_identifier, $limit);
+    }
+
+	public function cleanUserPerimeterAction()
+	{
+    	$select = Vcard::getTable()->getSelect();
+    	$where = new Where;
+    	$where->like('roles', '%manager%');
+    	$where->like('perimeters', '%property_7%');
+    	$select->where($where);
+    	$cursor = Vcard::getTable()->selectWith($select);
+    	foreach ($cursor as $vcard) {
+//    		unset($vcard->perimeters['p-pit-studies']['property_7']);
+    		echo $vcard->id.' '.$vcard->n_fn.' '.json_encode($vcard->roles, JSON_PRETTY_PRINT).' '.json_encode($vcard->perimeters, JSON_PRETTY_PRINT)."\n";
+//    		$vcard->update(null);
+    	}
+    	return $this->response;
     }
 }
