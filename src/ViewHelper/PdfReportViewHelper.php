@@ -16,7 +16,7 @@ class PdfReportViewHelper
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-		$translator = $context->getServiceManager()->get('translator');
+		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
     	$reportSpecs = $context->getConfig('student/report');
     	
     	// create new PDF document

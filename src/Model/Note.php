@@ -5,15 +5,13 @@ use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
 use PpitCore\Model\Vcard;
-use PpitStudies\Model\NoteLink;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Filter\StripTags;
 
-class Note implements InputFilterAwareInterface
+class Note
 {
     public $id;
     public $instance_id;
@@ -527,7 +525,7 @@ class Note implements InputFilterAwareInterface
     {
     	if (!Note::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		Note::$table = $sm->get('PpitStudies\Model\NoteTable');
+    		Note::$table = $sm->get(NoteTable::class);
     	}
     	return Note::$table;
     }

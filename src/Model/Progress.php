@@ -8,11 +8,10 @@ use PpitCore\Model\Generic;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Filter\StripTags;
 
-class Progress implements InputFilterAwareInterface
+class Progress
 {
     public $id;
     public $instance_id;
@@ -334,7 +333,7 @@ class Progress implements InputFilterAwareInterface
     {
     	if (!Progress::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		Progress::$table = $sm->get('PpitStudies\Model\ProgressTable');
+    		Progress::$table = $sm->get(ProgressTable::class);
     	}
     	return Progress::$table;
     }

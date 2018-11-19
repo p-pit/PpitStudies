@@ -25,7 +25,7 @@ class PdfAbsenceTableViewHelper
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-		$translator = $context->getServiceManager()->get('translator');
+		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 
 		$text = $context->getConfig('student/report')['pdfDetailStyle'];
 		$rows = '';

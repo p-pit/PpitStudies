@@ -9,11 +9,10 @@ use PpitCore\Model\Vcard;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Filter\StripTags;
 
-class Absence implements InputFilterAwareInterface
+class Absence
 {
     public $id;
     public $instance_id;
@@ -354,7 +353,7 @@ class Absence implements InputFilterAwareInterface
     {
     	if (!Absence::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		Absence::$table = $sm->get('PpitStudies\Model\AbsenceTable');
+    		Absence::$table = $sm->get(AbsenceTable::class);
     	}
     	return Absence::$table;
     }

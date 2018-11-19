@@ -16,7 +16,7 @@ class SsmlNoteViewHelper
 	public static function formatXls($workbook, $view)
 	{
 		$context = Context::getCurrent();
-		$translator = $context->getServiceManager()->get('translator');
+		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 		$category = $view->category;
 		
 		$title = $context->getConfig('note/export'.(($category) ? '/'.$category : ''))['title'][$context->getLocale()];

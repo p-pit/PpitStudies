@@ -2028,7 +2028,7 @@ class StudentController extends AbstractActionController
     		$data['json_property_1'] = $lead;
    			$data['contact_history'] = 'P-Pit -> Nomad connector';
    			$account = Account::instanciate('p-pit-studies');
-			$account->loadAndAdd($data);
+			$account->loadAndAdd($data, Account::getConfig('p-pit-studies'));
     	}
     	return $this->response;
     }

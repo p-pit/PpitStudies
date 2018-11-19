@@ -6,11 +6,10 @@ use PpitCore\Model\Generic;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Filter\StripTags;
 
-class NoteLink implements InputFilterAwareInterface
+class NoteLink
 {
     public $id;
     public $instance_id;
@@ -330,7 +329,7 @@ class NoteLink implements InputFilterAwareInterface
     {
     	if (!NoteLink::$table) {
     		$sm = Context::getCurrent()->getServiceManager();
-    		NoteLink::$table = $sm->get('PpitStudies\Model\NoteLinkTable');
+    		NoteLink::$table = $sm->get(NoteLinkTable::class);
     	}
     	return NoteLink::$table;
     }

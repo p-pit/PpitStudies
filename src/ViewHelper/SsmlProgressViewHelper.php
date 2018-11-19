@@ -10,7 +10,7 @@ class SsmlProgressViewHelper
 	{
 		$context = Context::getCurrent();
 		$tableColNames = $context->getConfig()['tableColNames'];
-		$translator = $context->getServiceManager()->get('translator');
+		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 
 		$title = $context->getConfig('progress/search')['title'];
 		
