@@ -1278,7 +1278,7 @@ return array(
 					'tax_inclusive' => array('definition' => 'commitment/property/tax_inclusive'),
 					'default_means_of_payment' => array('definition' => 'commitment/property/default_means_of_payment'),
 
-					'account_status' => array('definition' => 'commitment/property/account_status'),
+					'account_status' => array('definition' => 'commitment/p-pit-studies/property/account_status'),
 					'account_date_1' => array('definition' => 'core_account/generic/property/date_1'),
 					'account_date_2' => array('definition' => 'core_account/generic/property/date_2'),
 					'account_date_3' => array('definition' => 'core_account/generic/property/date_3'),
