@@ -1,6 +1,8 @@
 <?php
 namespace PpitStudies;
 
+use PpitCore\Model\GenericTable;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
@@ -22,7 +24,7 @@ class Module
             'factories' => array(
                 Model\AbsenceTable::class =>  function($sm) {
                     $tableGateway = $sm->get(Model\AbsenceTableGateway::class);
-                    return new Model\GenericTable($tableGateway);
+                    return new GenericTable($tableGateway);
                 },
                 Model\AbsenceTableGateway::class => function ($sm) {
                     $dbAdapter = $sm->get(AdapterInterface::class);
@@ -32,7 +34,7 @@ class Module
                 },
                 Model\NoteTable::class =>  function($sm) {
                     $tableGateway = $sm->get(Model\NoteTableGateway::class);
-                    return new Model\GenericTable($tableGateway);
+                    return new GenericTable($tableGateway);
                 },
                 Model\NoteTableGateway::class => function ($sm) {
                     $dbAdapter = $sm->get(AdapterInterface::class);
@@ -41,18 +43,18 @@ class Module
                     return new TableGateway('student_note', $dbAdapter, null, $resultSetPrototype);
                 },
                 Model\NoteLinkTable::class =>  function($sm) {
-                    $tableGateway = $sm->get(NoteLinkTableGateway::class);
-                    return new Model\GenericTable($tableGateway);
+                    $tableGateway = $sm->get(Model\NoteLinkTableGateway::class);
+                    return new GenericTable($tableGateway);
                 },
                 Model\NoteLinkTableGateway::class => function ($sm) {
                     $dbAdapter = $sm->get(AdapterInterface::class);
                 	$resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new ModelNoteLink());
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\NoteLink());
                     return new TableGateway('student_note_link', $dbAdapter, null, $resultSetPrototype);
                 },
                 Model\ProgressTable::class =>  function($sm) {
                     $tableGateway = $sm->get(Model\ProgressTableGateway::class);
-                    return new Model\GenericTable($tableGateway);
+                    return new GenericTable($tableGateway);
                 },
                 Model\ProgressTableGateway::class => function ($sm) {
                     $dbAdapter = $sm->get(AdapterInterface::class);
