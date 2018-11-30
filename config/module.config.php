@@ -1468,7 +1468,7 @@ return array(
 			),
 			'terms' => true,
 	),
-
+	
 	// Account p-pit-studies
 	
 	'core_account/p-pit-studies/property/status' => array(
@@ -2542,6 +2542,125 @@ table.note-report td {
 			),
 	),
 
+	// Terms
+	
+	'commitmentTerm/p-pit-studies/property/quantity' => array(
+		'definition' => 'inline',
+		'type' => 'number',
+		'minValue' => -99999999,
+		'maxValue' => 99999999,
+		'labels' => array(
+			'en_US' => 'Or number of hours',
+			'fr_FR' => 'Ou nombre d’heures',
+		),
+	),
+	
+	'commitmentTerm/p-pit-studies/property/unit_price' => array(
+		'definition' => 'inline',
+		'type' => 'number',
+		'minValue' => -99999999,
+		'maxValue' => 99999999,
+		'labels' => array(
+			'en_US' => 'Tax ecl. hourly rate',
+			'fr_FR' => 'Taux horaire HT',
+		),
+	),
+	
+	'commitmentTerm/search/p-pit-studies' => array(
+		'title' => array('en_US' => 'Terms', 'fr_FR' => 'Echéances'),
+		'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
+		'properties' => array(
+			'place_id' => ['multiple' => true],
+			'name' => [],
+			'invoice_account_id' => [],
+			'status' => ['multiple' => true],
+			'account_status' => ['multiple' => true],
+			'due_date' => [],
+			'collection_date' => [],
+			'means_of_payment' => [],
+			'amount' => [],
+			'reference' => [],
+			'comment' => [],
+		),
+	),
+	'commitmentTerm/list/p-pit-studies' => array(
+		'properties' => array(
+			'name' => [],
+			'status' => [],
+			'invoice_account_id' => [],
+			'due_date' => [],
+			'collection_date' => [],
+			'amount' => [],
+		),
+	),
+	'commitmentTerm/detail/p-pit-studies' => array(
+		'title' => array('en_US' => 'Term detail', 'fr_FR' => 'Détail de l\'échéance'),
+		'displayAudit' => true,
+	),
+	
+	'commitmentTerm/update/p-pit-studies' => array(
+		'invoice_account_id' => [],
+		'status' => ['mandatory' => true],
+		'caption' => ['mandatory' => true],
+		'due_date' => ['mandatory' => true],
+		'settlement_date' => [],
+		'collection_date' => [],
+		'amount' => ['mandatory' => false],
+		'quantity' => ['mandatory' => false],
+		'unit_price' => ['mandatory' => false],
+		'means_of_payment' => [],
+		'bank_name' => [],
+		'invoice_n_last' => [],
+		'reference' => [],
+		'comment' => [],
+		'document' => [],
+	),
+	
+	'commitmentTerm/export/p-pit-studies' => array(
+		'name' => 'A',
+		'invoice_account_id' => 'B',
+		'commitment_caption' => 'C',
+		'status' => 'D',
+		'caption' => 'E',
+		'due_date' => 'F',
+		'settlement_date' => 'G',
+		'collection_date' => 'H',
+		'amount' => 'I',
+		'means_of_payment' => 'J',
+		'bank_name' => 'K',
+		'invoice_n_last' => 'L',
+		'reference' => 'M',
+		'comment' => 'N',
+		'document' => 'O',
+	),
+
+	'commitmentTerm/invoice/p-pit-studies' => array(
+		'header' => array(),
+		'description' => array(
+			array(
+				'left' => array('en_US' => 'Caption', 'fr_FR' => 'Libellé'),
+				'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Scolarité %s %s'),
+				'params' => array('product_brand', 'caption'),
+			),
+			array(
+				'left' => array('en_US' => 'Invoice date', 'fr_FR' => 'Date de facture'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('date'),
+			),
+			array(
+				'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('name'),
+			),
+			array(
+				'left' => array('en_US' => 'Place', 'fr_FR' => 'Centre'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('place_caption'),
+			),
+		),
+		'terms' => true,
+	),
+	
 	// Product
 
 	'core_product/p-pit-studies/property/status' => ['definition' => 'core_product/generic/property/status'],
