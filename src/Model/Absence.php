@@ -35,6 +35,7 @@ class Absence
     // Joined properties
     public $n_fn;
     public $name; // Deprecated
+    public $email;
     public $sport;
     public $class;
     public $specialty;
@@ -77,6 +78,7 @@ class Absence
         // Joined properties
         $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
 //        $this->name = (isset($data['name'])) ? $data['name'] : null;
+        $this->email = (isset($data['email'])) ? $data['email'] : null;
         $this->sport = (isset($data['sport'])) ? $data['sport'] : null;
         $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->specialty = (isset($data['specialty'])) ? $data['specialty'] : null;
@@ -87,6 +89,8 @@ class Absence
     {
     	$data = $this->toArray();
     	$data['n_fn'] = $this->n_fn;
+    	$data['email'] = $this->email;
+    	$data['property_7'] = $this->class;
     	return $data;
     }
     
@@ -117,7 +121,7 @@ class Absence
     	$context = Context::getCurrent();
     	$select = Absence::getTable()->getSelect()
     		->join('core_account', 'student_absence.account_id = core_account.id', array('sport' => 'property_1', 'class' => 'property_7' /*, 'name', 'photo' => 'contact_1_id', 'specialty' => 'property_5'*/), 'left')
-    		->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
+    		->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn', 'email'), 'left')
     		->order(array($major.' '.$dir, 'begin_date', 'subject', 'n_fn'));
 		$where = new Where;
 		$where->notEqualTo('student_absence.status', 'deleted');
@@ -147,6 +151,7 @@ class Absence
 		$i = 0;
 		foreach ($cursor as $absence) {
 			$absence->properties['place_id'] = $absence->place_id;
+			$absence->properties['email'] = $absence->email;
 			$absence->properties['property_1'] = $absence->sport;
 			$absence->properties['property_7'] = $absence->class;
 			$absence->properties['school_subject'] = $absence->subject;

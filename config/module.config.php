@@ -1163,13 +1163,10 @@ return array(
 		'type' => 'select',
 		'modalities' => array(
 			'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
-			'interested' => array('en_US' => 'Intéressé', 'fr_FR' => 'A relancer'),
+			'suspect' => array('en_US' => 'Suspect (landing page)', 'fr_FR' => 'Suspect (landing page)'),
+			'interested' => array('en_US' => 'Interested', 'fr_FR' => 'Intéressé'),
 			'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
-			'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
-			'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
-			'committed' => array('en_US' => 'Committed', 'fr_FR' => 'Engagé'),
-			'visa' => array('en_US' => 'Waiting for a visa', 'fr_FR' => 'En attente de visa'),
-			'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
+			'active' => array('en_US' => 'Active', 'fr_FR' => 'Actif'),
 			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
 		'labels' => array(
@@ -1178,247 +1175,150 @@ return array(
 		),
 	),
 	
-	'commitment/p-pit-studies' => array(
-			'tax' => 'including',
-			'currencySymbol' => '€',
-			'properties' => array(
-					'type' => array(
-							'type' => 'repository',
-							'definition' => 'commitment/types',
-					),
-					'status' => array(
-							'definition' => 'inline',
-							'type' => 'select',
-							'modalities' => array(
-								'new' => array('en_US' => 'To be confirmed', 'fr_FR' => 'A confirmer'),
-								'confirmed' => array('en_US' => 'Confirmed', 'fr_FR' => 'Confirmé'),
-								'settled' => array('en_US' => 'Settled', 'fr_FR' => 'Réglé'),
-								'invoiced' => array('en_US' => 'Invoiced', 'fr_FR' => 'Facturé'),
-							),
-							'labels' => array(
-									'en_US' => 'Status',
-									'fr_FR' => 'Statut',
-							),
-					),
-					'place_id' => array('definition' => 'commitment/property/place_id'),
-					'account_name' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Name',
-									'fr_FR' => 'Nom',
-							),
-					),
-					'invoice_n_fn' => array('definition' => 'commitment/property/invoice_n_fn'),
-					'year' => array('definition' => 'commitment/property/year'),
-					'caption' => array(
-							'type' => 'repository',
-							'definition' => 'student/property/school_year',
-							'labels' => array(
-									'en_US' => 'School year',
-									'fr_FR' => 'Année scolaire',
-							),
-					),
-					'product_caption' => array('definition' => 'commitment/property/product_caption'),
-					'account_id' => array('definition' => 'commitment/property/account_id'),
-					'description' => array(
-							'definition' => 'inline',
-							'type' => 'textarea',
-							'labels' => array(
-									'en_US' => 'Description',
-									'fr_FR' => 'Description',
-							),
-					),
-					'quantity' => array('definition' => 'commitment/property/quantity'),
-					'unit_price' => array('definition' => 'commitment/property/unit_price'),
-					'amount' => array('definition' => 'commitment/property/amount'),
-					'product_brand' => array(
-							'definition' => 'inline',
-							'type' => 'input',
-							'labels' => array(
-									'en_US' => 'Brand',
-									'fr_FR' => 'Marque',
-							),
-					),
-					'property_1' => array(
-							'type' => 'repository',
-							'definition' => 'student/property/level',
-							'labels' => array(
-									'en_US' => 'Level',
-									'fr_FR' => 'Niveau',
-							),
-					),
-					'property_2' => array(
-							'type' => 'repository',
-							'definition' => 'student/property/specialty',
-							'labels' => array(
-									'en_US' => 'Specialty',
-									'fr_FR' => 'Spécialité',
-							),
-					),
-					'property_3' => array(
-							'type' => 'repository',
-							'definition' => 'student/property/boarding_school',
-							'labels' => array(
-									'en_US' => 'Boarding school',
-									'fr_FR' => 'Internat',
-							),
-					),
-					'including_options_amount' => array(
-							'definition' => 'inline',
-							'type' => 'number',
-							'labels' => array(
-									'en_US' => 'Amount',
-									'fr_FR' => 'Montant',
-							),
-					),
-					'invoice_identifier' => array('definition' => 'commitment/property/invoice_identifier'),
-					'invoice_date' => array('definition' => 'commitment/property/invoice_date'),
-					'tax_amount' => array('definition' => 'commitment/property/tax_amount'),
-					'tax_inclusive' => array('definition' => 'commitment/property/tax_inclusive'),
-					'default_means_of_payment' => array('definition' => 'commitment/property/default_means_of_payment'),
+	'commitment/p-pit-studies/property/caption' => ['definition' => 'student/property/school_year'],
+	'commitment/p-pit-studies/property/property_1' => ['definition' => 'student/property/level'],
+	'commitment/p-pit-studies/property/property_2' => ['definition' => 'student/property/specialty'],
+	'commitment/p-pit-studies/property/property_3' => ['definition' => 'student/property/boarding_school'],
+	'commitment/p-pit-studies/property/account_property_1' => ['definition' => 'student/property/discipline'],
+	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_4'],
+	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_6'],
+	'commitment/p-pit-studies/property/account_property_7' => ['definition' => 'student/property/class'],
+	'commitment/p-pit-studies/property/account_property_10' => ['definition' => 'student/property/level'],
+	'commitment/p-pit-studies/property/account_property_13' => ['definition' => 'student/property/contact_meeting_context'],
+	'commitment/p-pit-studies/property/account_property_15' => ['definition' => 'core_account/p-pit-studies/property/property_15'],
+	'commitment/p-pit-studies/property/account_property_16' => ['definition' => 'student/property/school_year'],
 
-					'account_status' => array('definition' => 'commitment/p-pit-studies/property/account_status'),
-					'account_date_1' => array('definition' => 'core_account/generic/property/date_1'),
-					'account_date_2' => array('definition' => 'core_account/generic/property/date_2'),
-					'account_date_3' => array('definition' => 'core_account/generic/property/date_3'),
-					'account_date_4' => array('definition' => 'core_account/generic/property/date_4'),
-					'account_date_5' => array('definition' => 'core_account/generic/property/date_5'),
-					'account_property_1' => array('definition' => 'student/property/discipline'),
-					'account_property_2' => array('definition' => 'core_account/generic/property/property_2'),
-					'account_property_3' => array('definition' => 'core_account/generic/property/property_3'),
-					'account_property_4' => array('definition' => 'core_account/p-pit-studies/property/property_4'),
-					'account_property_5' => array('definition' => 'core_account/generic/property/property_5'),
-					'account_property_6' => array('definition' => 'core_account/p-pit-studies/property/property_6'),
-					'account_property_7' => array('definition' => 'student/property/class'),
-					'account_property_8' => array('definition' => 'core_account/generic/property/property_8'),
-					'account_property_9' => array('definition' => 'core_account/generic/property/property_9'),
-					'account_property_10' => array('definition' => 'student/property/level'),
-					'account_property_11' => array('definition' => 'core_account/generic/property/property_11'),
-					'account_property_12' => array('definition' => 'core_account/generic/property/property_12'),
-					'account_property_13' => array('definition' => 'student/property/contact_meeting_context'),
-					'account_property_14' => array('definition' => 'core_account/generic/property/property_14'),
-					'account_property_15' => array('definition' => 'core_account/p-pit-studies/property/property_15'),
-					'account_property_16' => array('definition' => 'student/property/school_year'),
-					'update_time' => array('definition' => 'commitment/property/update_time'),
+	'commitment/p-pit-studies' => array(
+		'tax' => 'including',
+		'currencySymbol' => '€',
+		'properties' => array(
+			'status', 'place_id', 'account_name', 'invoice_n_fn', 'year',
+			'caption', 'product_caption','account_id', 'account_status', 'description',
+			'quantity', 'unit_price', 'amount', 'product_brand',
+			'property_1', 'property_2', 'property_3',
+			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
+			'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5',
+			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8',
+			'account_property_9', 'account_property_10', 'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16',
+			'default_means_of_payment', 'update_time',
+		),
+		'order' => 'school_year DESC',
+		'todo' => array(
+			'sales_manager' => array(
+				'status' => array('selector' => 'in', 'value' => array('new')),
 			),
-			'order' => 'school_year DESC',
-			'todo' => array(
-					'sales_manager' => array(
-							'status' => array('selector' => 'in', 'value' => array('new')),
-					),
+		),
+		'actions' => array(
+			'' => array(
+				'currentStatuses' => array(),
+				'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
+				'properties' => array(
+					'account_id' => 'update',
+					//								'subscription_id' => 'update',
+					'caption' => 'update',
+					'description' => 'update',
+					'quantity' => 'update',
+					'unit_price' => 'update',
+					'amount' => 'update',
+					'identifier' => 'update',
+					'comment' => 'update',
+					'product_identifier' => 'update',
+				),
 			),
-			'actions' => array(
-					'' => array(
-							'currentStatuses' => array(),
-							'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
-							'properties' => array(
-									'account_id' => 'update',
-	//								'subscription_id' => 'update',
-									'caption' => 'update',
-									'description' => 'update',
-									'quantity' => 'update',
-									'unit_price' => 'update',
-									'amount' => 'update',
-									'identifier' => 'update',
-									'comment' => 'update',
-									'product_identifier' => 'update',
-							),
-					),
-					'update' => array(
-							'currentStatuses' => array('new' => null),
-							'glyphicon' => 'glyphicon-edit',
-							'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
-							'properties' => array(
-									'status' => 'display',
-									'account_id' => 'update',
-									//								'subscription_id' => 'update',
-									'caption' => 'update',
-									'description' => 'update',
-									'quantity' => 'update',
-									'unit_price' => 'update',
-									'amount' => 'update',
-									'identifier' => 'update',
-									'comment' => 'update',
-									'product_identifier' => 'update',
-							),
-					),
-					'delete' => array(
-							'currentStatuses' => array('new' => null),
-							'targetStatus' => 'deleted',
-							'glyphicon' => 'glyphicon-trash',
-							'label' => array('en_US' => 'Delete', 'fr_FR' => 'Supprimer'),
-							'properties' => array(
-							),
-					),
-					'confirm' => array(
-							'currentStatuses' => array('new' => null),
-							'targetStatus' => 'confirmed',
-							'label' => array('en_US' => 'Confirm', 'fr_FR' => 'Confirmer'),
-							'properties' => array(
-							),
-					),
-					'reject' => array(
-							'currentStatuses' => array('new' => null),
-							'targetStatus' => 'rejected',
-							'label' => array('en_US' => 'Reject', 'fr_FR' => 'Rejeter'),
-							'properties' => array(
-							),
-					),
-					'settle' => array(
-							'currentStatuses' => array('approved' => null),
-							'targetStatus' => 'settled',
-							'label' => array('en_US' => 'Settle', 'fr_FR' => 'Régler'),
-							'properties' => array(
-							),
-					),
+			'update' => array(
+				'currentStatuses' => array('new' => null),
+				'glyphicon' => 'glyphicon-edit',
+				'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
+				'properties' => array(
+					'status' => 'display',
+					'account_id' => 'update',
+					//								'subscription_id' => 'update',
+					'caption' => 'update',
+					'description' => 'update',
+					'quantity' => 'update',
+					'unit_price' => 'update',
+					'amount' => 'update',
+					'identifier' => 'update',
+					'comment' => 'update',
+					'product_identifier' => 'update',
+				),
 			),
+			'delete' => array(
+				'currentStatuses' => array('new' => null),
+				'targetStatus' => 'deleted',
+				'glyphicon' => 'glyphicon-trash',
+				'label' => array('en_US' => 'Delete', 'fr_FR' => 'Supprimer'),
+				'properties' => array(
+				),
+			),
+			'confirm' => array(
+				'currentStatuses' => array('new' => null),
+				'targetStatus' => 'confirmed',
+				'label' => array('en_US' => 'Confirm', 'fr_FR' => 'Confirmer'),
+				'properties' => array(
+				),
+			),
+			'reject' => array(
+				'currentStatuses' => array('new' => null),
+				'targetStatus' => 'rejected',
+				'label' => array('en_US' => 'Reject', 'fr_FR' => 'Rejeter'),
+				'properties' => array(
+				),
+			),
+			'settle' => array(
+				'currentStatuses' => array('approved' => null),
+				'targetStatus' => 'settled',
+				'label' => array('en_US' => 'Settle', 'fr_FR' => 'Régler'),
+				'properties' => array(
+				),
+			),
+		),
 	),
-		
+
 	'commitment/index/p-pit-studies' => array(
-			'title' => array('en_US' => 'P-PIT Commitments', 'fr_FR' => 'P-PIT Engagements'),
+		'title' => array('en_US' => 'P-PIT Commitments', 'fr_FR' => 'P-PIT Engagements'),
 	),
 
 	'commitment/search/p-pit-studies' => array(
-			'title' => array('en_US' => 'Subscriptions', 'fr_FR' => 'Inscriptions'),
-			'todoTitle' => array('en_US' => 'active', 'fr_FR' => 'actifs'),
-			'main' => array(
-					'place_id' => ['multiple' => true],
-					'type' => ['multiple' => true],
-					'status' => ['multiple' => true],
-					'account_status' => [],
-					'including_options_amount' => [],
-					'account_name' => [],
-					'caption' => ['multiple' => true],
-			),
+		'title' => array('en_US' => 'Subscriptions', 'fr_FR' => 'Inscriptions'),
+		'todoTitle' => array('en_US' => 'active', 'fr_FR' => 'actifs'),
+		'properties' => array(
+			'place_id' => ['multiple' => true],
+			'status' => ['multiple' => true],
+			'account_status' => [],
+			'including_options_amount' => [],
+			'account_name' => [],
+			'caption' => ['multiple' => true],
+		),
 	),
 
 	'commitment/list/p-pit-studies' => array(
-			'place_id' => 'select',
-			'account_name' => 'text',
-			'caption' => 'text',
-			'property_1' => 'select',
-			'property_2' => 'select',
-			'property_3' => 'select',
-			'including_options_amount' => 'number',
-			'status' => 'select',
-			'account_status' => 'select',
-			'update_time' => 'datetime',
-	),
-		
-	'commitment/update/p-pit-studies' => array(
-			'caption' => array('mandatory' => true),
-			'account_id' => array('mandatory' => true),
-			'description' => array('mandatory' => false),
-			'property_1' => array('mandatory' => false),
-			'property_2' => array('mandatory' => false),
-			'property_3' => array('mandatory' => false),
+		'properties' => array(
+			'place_id' => [],
+			'account_name' => [],
+			'caption' => [],
+			'property_1' => [],
+			'property_2' => [],
+			'property_3' => [],
+			'including_options_amount' => [],
+			'status' => [],
+			'account_status' => [],
+			'update_time' => [],
+		),
 	),
 
+	'commitment/update/p-pit-studies' => array(
+		'caption' => array('mandatory' => true),
+		'account_id' => array('mandatory' => true),
+		'description' => array('mandatory' => false),
+		'property_1' => array('mandatory' => false),
+		'property_2' => array('mandatory' => false),
+		'property_3' => array('mandatory' => false),
+	),
 	'commitment/group/p-pit-studies' => array(
-			'status' => [],
-			'caption' => [],
-			'description' => [],
+		'status' => [],
+		'caption' => [],
+		'description' => [],
 	),
 
 	'commitment/export/p-pit-studies' => array(
@@ -1463,7 +1363,7 @@ return array(
 					array(
 							'left' => array('en_US' => 'Place', 'fr_FR' => 'Centre'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('place_caption'),
+							'params' => array('place_id'),
 					),
 			),
 			'terms' => true,
@@ -2565,6 +2465,42 @@ table.note-report td {
 			'fr_FR' => 'Taux horaire HT',
 		),
 	),
+
+	'commitmentTerm/p-pit-studies/property/tiny_2' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'File reference',
+			'fr_FR' => 'Référence du dossier',
+		),
+	),
+
+	'commitmentTerm/p-pit-studies/property/tiny_3' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Training name',
+			'fr_FR' => 'Nom de la formation',
+		),
+	),
+
+	'commitmentTerm/p-pit-studies/property/tiny_4' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'default' => 'Training start date',
+			'fr_FR' => 'Date de début de la formation',
+		),
+	),
+
+	'commitmentTerm/p-pit-studies/property/tiny_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Mentor name',
+			'fr_FR' => 'Nom du tuteur',
+		),
+	),
 	
 	'commitmentTerm/search/p-pit-studies' => array(
 		'title' => array('en_US' => 'Terms', 'fr_FR' => 'Echéances'),
@@ -2612,8 +2548,21 @@ table.note-report td {
 		'bank_name' => [],
 		'invoice_n_last' => [],
 		'reference' => [],
+		'tiny_1' => [],
+		'tiny_2' => [],
+		'tiny_3' => [],
+		'tiny_4' => [],
+		'tiny_5' => [],
 		'comment' => [],
 		'document' => [],
+	),
+
+	'commitmentTerm/generate/p-pit-studies' => array(
+		'tiny_1' => [],
+		'tiny_2' => [],
+		'tiny_3' => [],
+		'tiny_4' => [],
+		'tiny_5' => [],
 	),
 	
 	'commitmentTerm/export/p-pit-studies' => array(
@@ -2630,8 +2579,13 @@ table.note-report td {
 		'bank_name' => 'K',
 		'invoice_n_last' => 'L',
 		'reference' => 'M',
-		'comment' => 'N',
-		'document' => 'O',
+		'tiny_1' => 'N',
+		'tiny_2' => 'O',
+		'tiny_3' => 'P',
+		'tiny_4' => 'Q',
+		'tiny_5' => 'R',
+		'comment' => 'S',
+		'document' => 'T',
 	),
 
 	'commitmentTerm/invoice/p-pit-studies' => array(
@@ -2639,8 +2593,8 @@ table.note-report td {
 		'description' => array(
 			array(
 				'left' => array('en_US' => 'Caption', 'fr_FR' => 'Libellé'),
-				'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Scolarité %s %s'),
-				'params' => array('product_brand', 'caption'),
+				'right' => array('en_US' => 'school year %s', 'fr_FR' => 'Scolarité %s'),
+				'params' => array('caption'),
 			),
 			array(
 				'left' => array('en_US' => 'Invoice date', 'fr_FR' => 'Date de facture'),
@@ -2655,7 +2609,32 @@ table.note-report td {
 			array(
 				'left' => array('en_US' => 'Place', 'fr_FR' => 'Centre'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-				'params' => array('place_caption'),
+				'params' => array('place_id'),
+			),
+			array(
+				'left' => array('en_US' => 'Invoicing period', 'fr_FR' => 'Période de facturation'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('tiny_1'),
+			),
+			array(
+				'left' => array('en_US' => 'File reference', 'fr_FR' => 'Référence dossier'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('tiny_2'),
+			),
+			array(
+				'left' => array('en_US' => 'Training name', 'fr_FR' => 'Nom de la formation'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('tiny_3'),
+			),
+			array(
+				'left' => array('en_US' => 'Training start date', 'fr_FR' => 'Date de début de formation'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('tiny_4'),
+			),
+			array(
+				'left' => array('en_US' => 'Mentor name', 'fr_FR' => 'Nom du tuteur'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('tiny_5'),
 			),
 		),
 		'terms' => true,
@@ -3787,6 +3766,18 @@ table.note-report tr.period {
 									'fr_FR' => 'Nom',
 							),
 					),*/
+					'email' => array(
+							'definition' => 'inline',
+							'type' => 'input',
+							'labels' => array(
+									'en_US' => 'Email',
+									'fr_FR' => 'Email',
+							),
+					),
+					'property_7' => array(
+							'type' => 'repository', // Deprecated
+							'definition' => 'student/property/class',
+					),
 					'subject' => array(
 							'type' => 'repository', // Deprecated
 							'definition' => 'student/property/school_subject',
@@ -3875,14 +3866,16 @@ table.note-report tr.period {
 			'place_id' => 'A',
 			'type' => 'B',
 			'n_fn' => 'C',
-			'school_period' => 'D',
-			'category' => 'E',
-			'subject' => 'F',
-			'motive' => 'G',
-			'begin_date' => 'H',
-			'end_date' => 'I',
-			'duration' => 'J',
-			'observations' => 'K',
+			'email' => 'D',
+			'property_7' => 'E',
+			'school_period' => 'F',
+			'category' => 'G',
+			'subject' => 'H',
+			'motive' => 'I',
+			'begin_date' => 'J',
+			'end_date' => 'K',
+			'duration' => 'L',
+			'observations' => 'M',
 		),
 	),
 	

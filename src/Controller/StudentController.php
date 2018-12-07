@@ -108,6 +108,7 @@ class StudentController extends AbstractActionController
 		$type = $this->params()->fromRoute('type', 'p-pit-studies');
 		$configProperties = Account::getConfig($type);
 		$vcardProperties = Vcard::getConfig();
+		$commitmentProperties = \PpitCommitment\Model\Commitment::getDescription('p-pit-studies')['update'];
 		
 		$menu = $context->getConfig('menus/'.$type)['entries'];
 		$currentEntry = $this->params()->fromQuery('entry');
@@ -134,6 +135,7 @@ class StudentController extends AbstractActionController
 				'updatePage' => Account::getConfigUpdate($type, $configProperties),
 				'updateContactPage' => $context->getConfig('core_account/updateContact/'.$type),
     			'groupUpdatePage' => Account::getConfigGroupUpdate($type, $configProperties),
+    			'commitmentProperties' => $commitmentProperties,
     			'status' => 'active',
     	));
     }
@@ -182,7 +184,7 @@ class StudentController extends AbstractActionController
     	$limit = $this->params()->fromQuery('limit');
     	 
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-    	$params['status'] = 'active';
+    	$params['status'] = 'active,retention';
 
     	// Retrieve the list
     	$accounts = Account::getList('p-pit-studies', $params, (($dir == 'DESC') ? '-' : '+').$major, $limit);
@@ -453,7 +455,6 @@ class StudentController extends AbstractActionController
     				if ($rc != 'OK') {
     					$connection->rollback();
     					$error = $rc;
-    					break;
     				}
     				if (!$error) {
     					$connection->commit();
@@ -930,7 +931,6 @@ class StudentController extends AbstractActionController
     				if ($rc != 'OK') {
     					$connection->rollback();
     					$error = $rc;
-   						break;
    					}
     				if (!$error) {
     					// Write the loaded images
