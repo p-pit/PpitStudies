@@ -1181,7 +1181,7 @@ return array(
 	'commitment/p-pit-studies/property/property_3' => ['definition' => 'student/property/boarding_school'],
 	'commitment/p-pit-studies/property/account_property_1' => ['definition' => 'student/property/discipline'],
 	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_4'],
-	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_6'],
+	'commitment/p-pit-studies/property/account_property_6' => ['definition' => 'core_account/p-pit-studies/property/property_6'],
 	'commitment/p-pit-studies/property/account_property_7' => ['definition' => 'student/property/class'],
 	'commitment/p-pit-studies/property/account_property_10' => ['definition' => 'student/property/level'],
 	'commitment/p-pit-studies/property/account_property_13' => ['definition' => 'student/property/contact_meeting_context'],
