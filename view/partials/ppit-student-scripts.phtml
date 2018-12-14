@@ -1526,3 +1526,10 @@ function activateStudent() {
 	
 	getStudentList('?', 'n_fn', 'ASC');
 }
+
+// Session maintening
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open('GET', '<?php echo $this->url('user/maintainSession') ?>', true);
+  xhttp.send();
+}, 60000);
