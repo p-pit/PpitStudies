@@ -2064,12 +2064,12 @@ class StudentController extends AbstractActionController
     public function nomadFixAction()
     {
     	$context = Context::getCurrent();
-    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '+identifier', null);
+    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '+identifier', 1000);
     	foreach ($leads as $lead) {
     		if ($lead->json_property_1) {
     			echo $lead->identifier.', '.$lead->name.', ';
     			if (array_key_exists('levelOfEducation', $lead->json_property_1)) echo 'levelOfEducation: '.$lead->json_property_1['levelOfEducation'];
-    			if (array_key_exists('wishedDomain', $lead->json_property_1)) echo 'wishedDomain[name]: '.$lead->json_property_1['wishedDomain']['name'];
+    			if (is_array(current($lead->json_property_2)) && array_key_exists('name', current($lead->json_property_2))) echo 'wishedDomain[name]: '.current($lead->json_property_2)['name'];
     			echo "\n";
     		}
     	}
