@@ -2039,6 +2039,8 @@ class StudentController extends AbstractActionController
     
     public function nomadAction() {
     		
+    	$context = Context::getCurrent();
+    	
 		// Authentication
 		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
 			$this->getResponse()->setStatusCode('401');
