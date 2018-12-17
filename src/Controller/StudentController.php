@@ -2064,7 +2064,7 @@ class StudentController extends AbstractActionController
     public function nomadFixAction()
     {
     	$context = Context::getCurrent();
-    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '+identifier', 1000);
+    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '-id', 3000);
     	$levels = array();
     	$domains = array();
     	foreach ($leads as $lead) {
