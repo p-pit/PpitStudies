@@ -1985,7 +1985,7 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$safe = $context->getConfig()['ppitUserSettings']['safe'];
-    	$url = $context->getConfig()['ppitStudies']['nomadUrl'].$request.'?from='.$from.'&limit='.$limit;
+    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?from='.$from.'&limit='.$limit;
     	$client = new Client(
     			$url,
     			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
