@@ -833,6 +833,15 @@ return array(
 		        								),
 		        						),
 		        				),
+	       						'nomadFix' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/nomad-fix',
+		        								'defaults' => array(
+		        										'action' => 'nomadFix',
+		        								),
+		        						),
+		        				),
 	       						'cleanUserPerimeter' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -842,7 +851,7 @@ return array(
 		        								),
 		        						),
 		        				),
-	       		),
+	       				),
 	    	   	),
 	    ),
     ),
@@ -932,6 +941,7 @@ return array(
 				array('route' => 'student/acknowledgement', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/commitment', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/nomad', 'roles' => array('guest')),
+				array('route' => 'student/nomadFix', 'roles' => array('admin')),
 				array('route' => 'student/cleanUserPerimeter', 'roles' => array('admin')),
 			)
 		)

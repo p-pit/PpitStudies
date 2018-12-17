@@ -2048,7 +2048,7 @@ class StudentController extends AbstractActionController
     	return $this->nomad($request, $from, $place_identifier, $limit);
     }
     
-    public function batchNomadAction() {
+    public function batchNomadAction() { // Deprecated
     	$context = Context::getCurrent();
     	$instance_id = $this->params()->fromRoute('instance_id');
 		$context->updateFromInstanceId($instance_id);
@@ -2059,6 +2059,23 @@ class StudentController extends AbstractActionController
     	return $this->nomad($request, date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')), $place_identifier, $limit);
     }
 
+	// Reprise Nomad ESI (12/2018)
+
+    public function nomadFixAction()
+    {
+    	$context = Context::getCurrent();
+    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '+identifier', null);
+    	foreach ($leads as $lead) {
+    		if ($lead->json_property_1) {
+    			echo $lead->identifier.', '.$lead->name.', ';
+    			if (array_key_exists('levelOfEducation', $lead->json_property_1)) echo 'levelOfEducation: '.$lead->json_property_1['levelOfEducation'];
+    			if (array_key_exists('wishedDomain', $lead->json_property_1)) echo 'wishedDomain[name]: '.$lead->json_property_1['wishedDomain']['name'];
+    			echo "\n";
+    		}
+    	}
+    	return $this->response;
+    }
+    
 	public function cleanUserPerimeterAction()
 	{
     	$select = Vcard::getTable()->getSelect();
