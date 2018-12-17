@@ -2010,6 +2010,10 @@ class StudentController extends AbstractActionController
     		foreach ($context->getConfig('core_account/nomad/p-pit-studies')['properties'] as $propertyId => $property) {
     			if (array_key_exists($property, $lead)) $data[$propertyId] = $lead[$property];
     		}
+
+    		$levels = ['Terminale' => '1st', '1ère année' => '2nd', '2e année' => '3rd', '3e année' => '4th'];
+    		$data['property_1'] = (array_key_exists($lead['wishedDomain'], $levels)) ? $levels[$lead['wishedDomain']] : '';
+    		
     		$data['json_property_2'] = $lead['wishedDomain'];
     		unset($lead['wishedDomain']);
     		$data['json_property_3'] = $lead['engagements'];
@@ -2064,7 +2068,7 @@ class StudentController extends AbstractActionController
     public function nomadFixAction()
     {
     	$context = Context::getCurrent();
-    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '-id', 3000);
+    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '-id', 2000);
     	$levels = array();
     	$domains = array();
     	foreach ($leads as $lead) {
