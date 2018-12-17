@@ -931,7 +931,7 @@ return array(
 				array('route' => 'student/attestation', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/acknowledgement', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/commitment', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-				array('route' => 'student/nomad', 'roles' => array('admin')),
+				array('route' => 'student/nomad', 'roles' => array('guest')),
 				array('route' => 'student/cleanUserPerimeter', 'roles' => array('admin')),
 			)
 		)

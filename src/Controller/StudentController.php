@@ -2034,7 +2034,14 @@ class StudentController extends AbstractActionController
     }
     
     public function nomadAction() {
-    	$request = $this->params()->fromRoute('request');
+    		
+		// Authentication
+		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+    	
+		$request = $this->params()->fromRoute('request');
     	$from = $this->params()->fromRoute('from');
     	$place_identifier = $this->params()->fromQuery('place_identifier', '');
     	$limit = $this->params()->fromQuery('limit', 10);
