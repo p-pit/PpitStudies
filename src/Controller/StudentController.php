@@ -2065,14 +2065,16 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '+identifier', 1000);
+    	$levels = array();
+    	$domains = array();
     	foreach ($leads as $lead) {
     		if ($lead->json_property_1) {
-    			echo $lead->identifier.', '.$lead->name.', ';
-    			if (array_key_exists('levelOfEducation', $lead->json_property_1)) echo 'levelOfEducation: '.$lead->json_property_1['levelOfEducation'];
-    			if (is_array(current($lead->json_property_2)) && array_key_exists('name', current($lead->json_property_2))) echo 'wishedDomain[name]: '.current($lead->json_property_2)['name'];
-    			echo "\n";
+    			if (array_key_exists('levelOfEducation', $lead->json_property_1)) $levels[$lead->json_property_1['levelOfEducation']] = null;
+    			if (is_array(current($lead->json_property_2)) && array_key_exists('name', current($lead->json_property_2))) $domains[current($lead->json_property_2)['name']] = null;
     		}
     	}
+    	print_r($levels);
+    	print_r($domains);
     	return $this->response;
     }
     
