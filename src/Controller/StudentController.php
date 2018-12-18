@@ -2048,7 +2048,7 @@ class StudentController extends AbstractActionController
 		}
     	
 		$request = $this->params()->fromRoute('request');
-    	$from = $this->params()->fromRoute('from');
+    	$from = $this->params()->fromRoute('from', date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')));
     	$place_identifier = $this->params()->fromQuery('place_identifier', '');
     	$limit = $this->params()->fromQuery('limit', 10);
     	return $this->nomad($request, $from, $place_identifier, $limit);
