@@ -2012,7 +2012,7 @@ class StudentController extends AbstractActionController
     		}
 
     		$levels = ['Terminale' => '1st', '1ère année' => '2nd', '2ème année' => '3rd', '3ème année' => '4th'];
-    		$data['property_1'] = (array_key_exists($lead['levelOfEducation'], $levels)) ? $levels[$lead['levelOfEducation']] : '';
+    		$data['property_10'] = (array_key_exists($lead['levelOfEducation'], $levels)) ? $levels[$lead['levelOfEducation']] : '';
     		
     		$data['json_property_2'] = $lead['wishedDomain'];
     		unset($lead['wishedDomain']);

@@ -2859,6 +2859,7 @@ table.note-report td {
 	'student/property/discipline' => array(
 			'type' => 'select',
 			'modalities' => array(
+					'athletics' => array('en_US' => 'Athletics', 'fr_FR' => 'Athlétisme'),
 					'football' => array('en_US' => 'Football', 'fr_FR' => 'Football'),
 					'football-women' => array('en_US' => 'Women\'s Football', 'fr_FR' => 'Football féminin'),
 					'rugby' => array('en_US' => 'Rugby', 'fr_FR' => 'Rugby'),
@@ -2869,7 +2870,9 @@ table.note-report td {
 					'tennis' => array('en_US' => 'Tennis', 'fr_FR' => 'Tennis'),
 					'table-tennis' => array('en_US' => 'Table tennis', 'fr_FR' => 'Tennis de table'),
 					'danse' => array('en_US' => 'Danse', 'fr_FR' => 'Danse'),
+					'music' => array('en_US' => 'Music', 'fr_FR' => 'Musique'),
 					'figure-skating' => array('en_US' => 'Figure skating', 'fr_FR' => 'Patinage artistique'),
+					'ice_sport' => array('en_US' => 'Ice sports', 'fr_FR' => 'Sports de glace'),
 					'multisport' => array('en_US' => 'Multisport', 'fr_FR' => 'Multisport'),
 					'car-racing' => array('en_US' => 'Car racing', 'fr_FR' => 'Sport automobile'),
 					'cycling' => array('en_US' => 'Cycling', 'fr_FR' => 'Cyclisme'),
