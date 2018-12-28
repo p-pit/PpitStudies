@@ -600,9 +600,11 @@ class NoteController extends AbstractActionController
 	    	$context = Context::getCurrent();
 	    	$place_identifier = $this->params()->fromRoute('place_identifier');
 	    	$place = Place::get($place_identifier, 'identifier');
+	    	$school_year = $this->params()->fromQuery('school_year');
 	    	$school_period = $this->params()->fromQuery('school_period');
 	    	$where = array();
 	    	if ($place_identifier) $where['place_id'] = $place->id;
+	    	if ($school_year) $where['school_year'] = $school_year;
 	    	if ($school_period) $where['school_period'] = $school_period;
 	    	foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
 //		    	$note->links = array();
@@ -620,7 +622,7 @@ class NoteController extends AbstractActionController
 							print_r('New: '.$value."\n");
 							print_r('Old: '.$noteLink->value."\n");
 							$noteLink->value = $value;
-							$noteLink->update(null);
+//							$noteLink->update(null);
 			    		}
 /*						if ($noteLink->value) {
 							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
@@ -652,7 +654,7 @@ class NoteController extends AbstractActionController
 								$noteLink->value = $value;
 								$noteLink->distribution = $distribution;
 								$noteLink->audit = $audit;
-								$noteLink->update(null);
+//								$noteLink->update(null);
 							}
 						}
 					}
