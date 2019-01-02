@@ -2048,8 +2048,9 @@ class StudentController extends AbstractActionController
 		}
     	
 		$request = $this->params()->fromRoute('request');
-		$date = $this->params()->fromQuery('date', date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')));
-		echo 'Extraction date: ' . $date;
+		$date = $this->params()->fromQuery('date');
+		if (!$date) $date = date('Y-m-d', strtotime(date('Y-m-d').' - 1 days'));
+		echo 'Extraction date: ' . $date . "\n";
 		$from = $this->params()->fromRoute('from', $date);
     	$place_identifier = $this->params()->fromQuery('place_identifier', '');
     	$limit = $this->params()->fromQuery('limit', 10);
