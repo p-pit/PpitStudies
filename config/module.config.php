@@ -1173,10 +1173,13 @@ return array(
 		'type' => 'select',
 		'modalities' => array(
 			'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
-			'suspect' => array('en_US' => 'Suspect (landing page)', 'fr_FR' => 'Suspect (landing page)'),
-			'interested' => array('en_US' => 'Interested', 'fr_FR' => 'Intéressé'),
+			'interested' => array('en_US' => 'Intéressé', 'fr_FR' => 'A relancer'),
 			'candidate' => array('en_US' => 'Condidate', 'fr_FR' => 'Candidat'),
-			'active' => array('en_US' => 'Active', 'fr_FR' => 'Actif'),
+			'answer' => array('en_US' => 'Answer to give', 'fr_FR' => 'Réponse à donner'),
+			'conversion' => array('en_US' => 'To be converted', 'fr_FR' => 'A convertir'),
+			'committed' => array('en_US' => 'Committed', 'fr_FR' => 'Engagé'),
+			'visa' => array('en_US' => 'Waiting for a visa', 'fr_FR' => 'En attente de visa'),
+			'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
 			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
 		'labels' => array(
@@ -3174,9 +3177,12 @@ table.note-report td {
 					'nutrition' => array('en_US' => 'Biologics and nutrition', 'fr_FR' => 'Biologie et nutrition'),
 					'sanitary-social' => array('en_US' => 'Sanitary and social', 'fr_FR' => 'Sanitaire et sociales'),
 					'customer-relationship' => array('en_US' => 'Customer and user relationship', 'fr_FR' => 'Relation aux clients et aux usagers'),
+
+					'pro_skills' => array('en_US' => 'Professional skills', 'fr_FR' => 'Techniques pros / Techniques d’entretien'),
 				
 					'study-period' => array('en_US' => 'Study period', 'fr_FR' => 'Etude surveillée'),
-
+					'tpe' => array('en_US' => 'TPE', 'fr_FR' => 'TPE'),
+				
 					'school_life' => array('en_US' => 'School life', 'fr_FR' => 'Vie scolaire'),
 					'sport' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
 			),
