@@ -1192,6 +1192,52 @@ return array(
 	'commitment/p-pit-studies/property/property_1' => ['definition' => 'student/property/level'],
 	'commitment/p-pit-studies/property/property_2' => ['definition' => 'student/property/specialty'],
 	'commitment/p-pit-studies/property/property_3' => ['definition' => 'student/property/boarding_school'],
+	
+	'commitment/p-pit-studies/property/property_4' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'File reference',
+			'fr_FR' => 'Référence dossier',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Training name',
+			'fr_FR' => 'Référence de la formation',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_6' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'default' => 'Training start date',
+			'fr_FR' => 'Date de début de la formation',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_7' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'default' => 'Training end date',
+			'fr_FR' => 'Date de fin de la formation',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_8' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Coach name',
+			'fr_FR' => 'Nom du tuteur',
+		),
+	),
+	
 	'commitment/p-pit-studies/property/account_property_1' => ['definition' => 'student/property/discipline'],
 	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_4'],
 	'commitment/p-pit-studies/property/account_property_6' => ['definition' => 'core_account/p-pit-studies/property/property_6'],
@@ -1208,7 +1254,7 @@ return array(
 			'status', 'place_id', 'account_name', 'invoice_n_fn', 'year',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
-			'property_1', 'property_2', 'property_3',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
 			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8',
@@ -1227,7 +1273,7 @@ return array(
 				'label' => array('en_US' => 'Update', 'fr_FR' => 'Modifier'),
 				'properties' => array(
 					'account_id' => 'update',
-					//								'subscription_id' => 'update',
+//								'subscription_id' => 'update',
 					'caption' => 'update',
 					'description' => 'update',
 					'quantity' => 'update',
@@ -1245,7 +1291,7 @@ return array(
 				'properties' => array(
 					'status' => 'display',
 					'account_id' => 'update',
-					//								'subscription_id' => 'update',
+//								'subscription_id' => 'update',
 					'caption' => 'update',
 					'description' => 'update',
 					'quantity' => 'update',
@@ -1327,6 +1373,11 @@ return array(
 		'property_1' => array('mandatory' => false),
 		'property_2' => array('mandatory' => false),
 		'property_3' => array('mandatory' => false),
+		'property_4' => array('mandatory' => false),
+		'property_5' => array('mandatory' => false),
+		'property_6' => array('mandatory' => false),
+		'property_7' => array('mandatory' => false),
+		'property_8' => array('mandatory' => false),
 	),
 	'commitment/group/p-pit-studies' => array(
 		'status' => [],
@@ -1353,6 +1404,11 @@ return array(
 		'tax_amount' => 'P',
 		'tax_inclusive' => 'Q',
 		'default_means_of_payment' => 'R',
+		'property_4' => 'S',
+		'property_5' => 'T',
+		'property_6' => 'U',
+		'property_7' => 'V',
+		'property_8' => 'W',
 	),
 	
 	'commitment/invoice/p-pit-studies' => array(
@@ -1428,7 +1484,6 @@ return array(
 	),
 	
 	'core_account/p-pit-studies/property/title_1' => array(
-		'definition' => 'inline',
 		'definition' => 'inline',
 		'type' => 'title',
 		'labels' => array(
@@ -2514,6 +2569,12 @@ table.note-report td {
 			'fr_FR' => 'Nom du tuteur',
 		),
 	),
+
+	'commitmentTerm/p-pit-studies/property/commitment_property_4' => ['definition' => 'commitment/p-pit-studies/property/property_4'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_5' => ['definition' => 'commitment/p-pit-studies/property/property_5'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_6' => ['definition' => 'commitment/p-pit-studies/property/property_6'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_7' => ['definition' => 'commitment/p-pit-studies/property/property_7'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_8' => ['definition' => 'commitment/p-pit-studies/property/property_8'],
 	
 	'commitmentTerm/search/p-pit-studies' => array(
 		'title' => array('en_US' => 'Terms', 'fr_FR' => 'Echéances'),
@@ -2562,20 +2623,25 @@ table.note-report td {
 		'invoice_n_last' => [],
 		'reference' => [],
 		'tiny_1' => [],
-		'tiny_2' => [],
+/*		'tiny_2' => [],
 		'tiny_3' => [],
 		'tiny_4' => [],
-		'tiny_5' => [],
+		'tiny_5' => [],*/
+		'commitment_property_4' => ['readonly' => true],
+		'commitment_property_5' => ['readonly' => true],
+		'commitment_property_6' => ['readonly' => true],
+		'commitment_property_7' => ['readonly' => true],
+		'commitment_property_8' => ['readonly' => true],
 		'comment' => [],
 		'document' => [],
 	),
 
 	'commitmentTerm/generate/p-pit-studies' => array(
 		'tiny_1' => [],
-		'tiny_2' => [],
+/*		'tiny_2' => [],
 		'tiny_3' => [],
 		'tiny_4' => [],
-		'tiny_5' => [],
+		'tiny_5' => [],*/
 	),
 	
 	'commitmentTerm/export/p-pit-studies' => array(
@@ -2593,10 +2659,15 @@ table.note-report td {
 		'invoice_n_last' => 'L',
 		'reference' => 'M',
 		'tiny_1' => 'N',
-		'tiny_2' => 'O',
+/*		'tiny_2' => 'O',
 		'tiny_3' => 'P',
 		'tiny_4' => 'Q',
-		'tiny_5' => 'R',
+		'tiny_5' => 'R',*/
+		'commitment_property_4',
+		'commitment_property_5',
+		'commitment_property_6',
+		'commitment_property_7',
+		'commitment_property_8',
 		'comment' => 'S',
 		'document' => 'T',
 	),
@@ -2609,11 +2680,11 @@ table.note-report td {
 				'right' => array('en_US' => 'school year %s', 'fr_FR' => 'Scolarité %s'),
 				'params' => array('caption'),
 			),
-			array(
+/*			array(
 				'left' => array('en_US' => 'Invoice date', 'fr_FR' => 'Date de facture'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 				'params' => array('date'),
-			),
+			),*/
 			array(
 				'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
@@ -2632,22 +2703,27 @@ table.note-report td {
 			array(
 				'left' => array('en_US' => 'File reference', 'fr_FR' => 'Référence dossier'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-				'params' => array('tiny_2'),
+				'params' => array('commitment_property_4'),
 			),
 			array(
 				'left' => array('en_US' => 'Training name', 'fr_FR' => 'Nom de la formation'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-				'params' => array('tiny_3'),
+				'params' => array('commitment_property_5'),
 			),
 			array(
 				'left' => array('en_US' => 'Training start date', 'fr_FR' => 'Date de début de formation'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-				'params' => array('tiny_4'),
+				'params' => array('commitment_property_6'),
+			),
+			array(
+				'left' => array('en_US' => 'Training end date', 'fr_FR' => 'Date de fin de formation'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('commitment_property_7'),
 			),
 			array(
 				'left' => array('en_US' => 'Mentor name', 'fr_FR' => 'Nom du tuteur'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-				'params' => array('tiny_5'),
+				'params' => array('commitment_property_8'),
 			),
 		),
 		'terms' => true,
