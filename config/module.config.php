@@ -1168,6 +1168,29 @@ return array(
 		
 	'ppitProduct/update/p-pit-studies' => array(),
 
+	// Product option
+	
+	'productOption/p-pit-studies/property/category' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'' => ['default' => 'Undefined option', 'fr_FR' => 'Option indéfinie'],
+			'deplacement' => ['default' => 'Deplacement', 'fr_FR' => 'Déplacement'],
+			'distance-learning' => ['default' => 'Distance learning', 'fr_FR' => 'CNED'],
+			'insurance' => ['default' => 'Insurance', 'fr_FR' => 'Assurance'],
+			'licence' => ['default' => 'Licence', 'fr_FR' => 'Licence'],
+			'medical' => ['default' => 'Medical expenses', 'fr_FR' => 'Frais médicaux'],
+			'registration_fees' => ['default' => 'Registration fees', 'fr_FR' => 'Droits d’inscription'],
+			'scholarship' => ['default' => 'Scholarship', 'fr_FR' => 'Bourse'],
+			'sunday_hosting' => ['default' => 'Sunday hosting', 'fr_FR' => 'Accueil dimanche'],
+			'trousseau' => ['default' => 'Trousseau', 'fr_FR' => 'Trousseau'],
+			'weekend_hosting' => ['default' => 'Weekend hosting', 'fr_FR' => 'Accueil week-end'],
+			'other' => ['default' => 'Other option', 'fr_FR' => 'Option autre'],
+		),
+	),
+	
+	// Commitment
+	
 	'commitment/p-pit-studies/property/account_status' => array(
 		'definition' => 'inline',
 		'type' => 'select',
