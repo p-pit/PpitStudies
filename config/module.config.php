@@ -1174,7 +1174,6 @@ return array(
 		'definition' => 'inline',
 		'type' => 'select',
 		'modalities' => array(
-			'' => ['default' => 'Undefined option', 'fr_FR' => 'Option indéfinie'],
 			'deplacement' => ['default' => 'Deplacement', 'fr_FR' => 'Déplacement'],
 			'distance-learning' => ['default' => 'Distance learning', 'fr_FR' => 'CNED'],
 			'insurance' => ['default' => 'Insurance', 'fr_FR' => 'Assurance'],
@@ -1186,6 +1185,7 @@ return array(
 			'trousseau' => ['default' => 'Trousseau', 'fr_FR' => 'Trousseau'],
 			'weekend_hosting' => ['default' => 'Weekend hosting', 'fr_FR' => 'Accueil week-end'],
 			'other' => ['default' => 'Other option', 'fr_FR' => 'Option autre'],
+			'' => ['default' => 'Undefined option', 'fr_FR' => 'Option indéfinie'],
 		),
 	),
 	
