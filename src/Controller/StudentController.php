@@ -1986,6 +1986,7 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
     	$safe = $context->getConfig()['ppitUserSettings']['safe'];
     	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?from='.$from.'&limit='.$limit;
+//    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?where={"updatedAt":{"gte":"'.$from.'"},"schoolContactAcceptance":true}&limit='.$limit;
     	$client = new Client(
     			$url,
     			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
@@ -2001,6 +2002,14 @@ class StudentController extends AbstractActionController
     	$leads = json_decode($body, true);
     	foreach ($leads as $lead) {
     		echo $lead['id']."\n";
+    		
+    		// If the account exists, update it if the contact is a prospect (new status) and the exsting account is a suspect
+    		$account = Account::get($lead['id'], 'identifier');
+    		if ($account && $account->status == 'suspect' && $lead['type'] == 'registration') {
+    			$account->status = 'new';
+    			$account->update(null);
+    		}
+    		
     		$data = [];
     		if ($place_identifier) $data['place_id'] = Place::get($place_identifier, 'identifier')->id;
     		$data['identifier'] = $lead['id'];
