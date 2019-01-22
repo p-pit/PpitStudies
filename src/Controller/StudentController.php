@@ -2008,6 +2008,7 @@ class StudentController extends AbstractActionController
     		if ($account && $account->status == 'suspect' && $lead['type'] == 'registration') {
     			$account->status = 'new';
     			$account->update(null);
+    			break;
     		}
     		
     		$data = [];
