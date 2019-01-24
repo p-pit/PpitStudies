@@ -1810,7 +1810,7 @@ class NoteController extends AbstractActionController
 		foreach ($cursor as $id) {
 			$note = Note::get($id);
 			$note->place_id = 72;
-			Note::update(null);
+			$note->update(null);
 		}
 		echo "Done";
 		return $this->response;
