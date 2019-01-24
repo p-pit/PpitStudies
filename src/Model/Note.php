@@ -326,6 +326,7 @@ class Note
     public static function get($id, $column = 'id')
     {
     	$note = Note::getTable()->get($id, $column);
+    	if (!$note) return null;
     	if ($note->teacher_id) $note->teacher_n_fn = Vcard::get($note->teacher_id)->n_fn;
     	$note->links = array();
     	$select = NoteLink::getTable()->getSelect()
