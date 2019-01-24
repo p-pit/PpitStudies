@@ -1808,7 +1808,8 @@ class NoteController extends AbstractActionController
 			"47685"
 		);
 		foreach ($cursor as $id) {
-			$note = Note::get($id);
+			$note = Note::get( (int) $id);
+			echo $id . '\n';
 			$note->place_id = 72;
 			$note->update(null);
 		}
