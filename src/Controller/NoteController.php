@@ -631,7 +631,7 @@ class NoteController extends AbstractActionController
 							$noteLink->value = null;
 							$noteLink->update(null);
 			    		}*/
-		    		}
+/*		    		}
 		    	}
 		    	else {
 		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
