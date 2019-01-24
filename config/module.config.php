@@ -2247,7 +2247,15 @@ return array(
 
 	'core_account/list/p-pit-studies' => array(
 			'properties' => array(
-					'status' => ['color' => ['new' => 'LightGreen', 'interested' => 'LightSalmon', 'candidate' => 'LightBlue', 'answer' => 'LightSalmon', 'gone' => 'LightGrey']],
+					'status' => array(
+						'background-color' => array(
+							'LightGreen' => ['status' => 'new'],
+							'LightSalmon' => ['status' => 'interested'],
+							'LightBlue' => ['status' => 'candidate'],
+							'LightSalmon' => ['status' => 'answer'],
+							'LightGrey' => ['status' => 'gone'],
+						),
+					),
 					'n_fn' => [],
 					'tel_cell' => ['rendering' => 'phone'],
 					'property_16' => [],
