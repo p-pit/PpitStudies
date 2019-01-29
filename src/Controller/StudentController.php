@@ -1985,11 +1985,11 @@ class StudentController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$safe = $context->getConfig()['ppitUserSettings']['safe'];
-    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?from='.$from.'&limit='.$limit;
-//    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?where={"updatedAt":{"gte":"'.$from.'"},"schoolContactAcceptance":true}&limit='.$limit;
+//    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?from='.$from.'&limit='.$limit;
+    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?where={"updatedAt":{"gte":"'.$from.'"},"schoolContactAcceptance":true}';
     	$client = new Client(
-    			$url,
-    			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
+    		$url,
+    		array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
     	);
     	
 		$client->setHeaders(array(
@@ -2003,10 +2003,15 @@ class StudentController extends AbstractActionController
     	foreach ($leads as $lead) {
     		echo $lead['id']."\n";
     		
-    		// If the account exists, update it if the contact is a prospect (new status) and the exsting account is a suspect
+    		// If the account exists, update it if the contact is a prospect (new status) and the existing account is a suspect
     		$account = Account::get($lead['id'], 'identifier');
-    		if ($account && $account->status == 'suspect' && $lead['type'] == 'registration') {
+    		if (!$account) {
+	    		$vcard = Vcard::get($lead['email'], 'email');
+	    		if ($vcard) $account = Account::get($vcard_id, 'contact_1_id');
+    		}
+    		if ($account && in_array($account->status, ['suspect', 'gone']) && $lead['type'] == 'registration') {
     			$account->status = 'new';
+    			$account->callback_date = date('Y-m-d');
     			$account->update(null);
     			break;
     		}
