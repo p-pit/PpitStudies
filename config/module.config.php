@@ -1258,8 +1258,8 @@ return array(
 		'definition' => 'inline',
 		'type' => 'input',
 		'labels' => array(
-			'default' => 'Coach name',
-			'fr_FR' => 'Nom du tuteur',
+			'default' => 'Enterprise name',
+			'fr_FR' => 'Nom de l’entreprise',
 		),
 	),
 	
@@ -2598,8 +2598,8 @@ table.note-report td {
 		'definition' => 'inline',
 		'type' => 'input',
 		'labels' => array(
-			'default' => 'Mentor name',
-			'fr_FR' => 'Nom du tuteur',
+			'default' => 'Enterprise name',
+			'fr_FR' => 'Nom de l’entreprise',
 		),
 	),
 
@@ -2754,7 +2754,7 @@ table.note-report td {
 				'params' => array('commitment_property_7'),
 			),
 			array(
-				'left' => array('en_US' => 'Mentor name', 'fr_FR' => 'Nom du tuteur'),
+				'left' => array('en_US' => 'Mentor name', 'fr_FR' => 'Nom de l’entreprise'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 				'params' => array('commitment_property_8'),
 			),
