@@ -3203,6 +3203,10 @@ table.note-report td {
 			'mock-bts' => [],
 			'mock-bts_2' => [],
 			'mock-bts_3' => [],
+			'mock-lv1' => [],
+			'mock-lv2' => [],
+			'mock-specialty' => [],
+			'mock-mngt-science' => [],
 		),
 		'labels' => array(
 			'en_US' => 'Mock exam',
