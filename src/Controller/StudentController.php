@@ -2009,7 +2009,7 @@ class StudentController extends AbstractActionController
 	    		$vcard = Vcard::get($lead['email'], 'email');
 	    		if ($vcard) $account = Account::get($vcard->id, 'contact_1_id');
     		}
-    		if ($account && in_array($account->status, ['suspect', 'gone']) && $lead['type'] == 'registration') {
+    		if ($account && in_array($account->status, ['suspect', 'gone']) && $lead['type'] == 'sponsor') {
     			$account->status = 'new';
     			$account->callback_date = date('Y-m-d');
     			$account->update(null);
