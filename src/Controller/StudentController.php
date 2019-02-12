@@ -1262,7 +1262,7 @@ class StudentController extends AbstractActionController
 		}
 		krsort($periods);
 		foreach ($periods as $periodId => &$period) {
-			$level = substr($periodId, 11);
+			$level = substr($periodId, 10);
 			$notes = NoteLink::GetList('note', ['account_id' => $account->id, 'level' => $level], 'date', 'DESC', 'search');
 			foreach($notes as $note) {
 				$period[] = $note;
