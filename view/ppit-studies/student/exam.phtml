@@ -37,16 +37,19 @@ table.note-report tr.period {
 </style>
 
 <?php foreach ($periods as $periodId => $period) : ?>
-	
+	<?php 
+	$school_year = substr($periodId, 0, 10);
+	$level = substr($periodId, 11);
+	?>
     <!--Card content-->
 <div class="card-block" style="color: #686868">
     <!--Title-->
     <h4 class="card-title" style="text-align: center">
-		<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$periodId][$context->getLocale()] ?>
+		<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$level][$context->getLocale()] ?>
 	</h4>
 	<!--Text-->
 	<?php 
-	$urlParams = array('account_id' => $account->id, 'school_year' => '2017-2018', 'level' => $periodId);
+	$urlParams = array('account_id' => $account->id, 'school_year' => $school_year, 'level' => $level);
 	?>
 		<div><a href="<?php echo $this->url('student/downloadExam', $urlParams) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
 		<table class="table note-report">
