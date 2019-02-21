@@ -1459,6 +1459,11 @@ return array(
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 							'params' => array('place_id'),
 					),
+					array(
+						'left' => array('en_US' => 'Description', 'fr_FR' => 'Description'),
+						'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+						'params' => array('description'),
+					),
 			),
 			'terms' => true,
 	),
