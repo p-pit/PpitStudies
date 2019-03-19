@@ -218,7 +218,7 @@ class StudentController extends AbstractActionController
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
 		$workbook = new \PHPExcel;
-		(new SsmlAccountViewHelper)->formatXls($description, $workbook, $view);		
+		(new SsmlAccountViewHelper)->formatXls($description, $workbook, $view->accounts);		
 		$writer = new \PHPExcel_Writer_Excel2007($workbook);
 		
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -268,6 +268,7 @@ class StudentController extends AbstractActionController
        	$criteria = array();
        	foreach ($context->getConfig('core_account/search/p-pit-studies')['properties'] as $propertyId => $unused) {
 			$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
+			if (!$property) $property = $context->getConfig('core_account/generic/property/'.$propertyId);
 			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 			if (in_array($property['type'], array('date', 'time', 'datetime', 'number'))) {
 				if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);

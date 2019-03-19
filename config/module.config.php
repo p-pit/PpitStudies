@@ -1289,7 +1289,7 @@ return array(
 		'order' => 'school_year DESC',
 		'todo' => array(
 			'sales_manager' => array(
-				'status' => array('selector' => 'in', 'value' => array('new')),
+				'status' => array('selector' => 'in', 'value' => array('new', 'approved')),
 			),
 		),
 		'actions' => array(
@@ -2627,6 +2627,7 @@ table.note-report td {
 			'collection_date' => [],
 			'means_of_payment' => [],
 			'amount' => [],
+			'invoice_identifier' => [],
 			'reference' => [],
 			'comment' => [],
 		),
@@ -2659,6 +2660,7 @@ table.note-report td {
 		'means_of_payment' => [],
 		'bank_name' => [],
 		'invoice_n_last' => [],
+		'invoice_identifier' => ['readonly' => true],
 		'reference' => [],
 		'tiny_1' => [],
 /*		'tiny_2' => [],
@@ -2701,13 +2703,14 @@ table.note-report td {
 		'tiny_3' => 'P',
 		'tiny_4' => 'Q',
 		'tiny_5' => 'R',*/
-		'commitment_property_4',
-		'commitment_property_5',
-		'commitment_property_6',
-		'commitment_property_7',
-		'commitment_property_8',
-		'comment' => 'S',
-		'document' => 'T',
+		'commitment_property_4' => 'O',
+		'commitment_property_5' => 'P',
+		'commitment_property_6' => 'Q',
+		'commitment_property_7' => 'R',
+		'commitment_property_8' => 'S',
+		'comment' => 'T',
+		'document' => 'U',
+		'invoice_identifier' => 'V',
 	),
 
 	'commitmentTerm/invoice/p-pit-studies' => array(
