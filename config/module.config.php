@@ -3166,6 +3166,7 @@ table.note-report td {
 					'oral-test' => array('en_US' => 'Oral test', 'fr_FR' => 'Interrogation orale'),
 					'written-test' => array('en_US' => 'Written test', 'fr_FR' => 'Interrogation écrite'),
 					'participation' => array('en_US' => 'Participation', 'fr_FR' => 'Participation'),
+					'involvement' => array('en_US' => 'Involvement', 'fr_FR' => 'Investissement'),
 					'mock-exam' => array('en_US' => '1st Mock exam', 'fr_FR' => '1er brevet blanc'),
 					'mock-exam_2' => array('en_US' => '2nd Mock exam', 'fr_FR' => '2nd brevet blanc'),
 					'mock-exam_3' => array('en_US' => '3rd Mock exam', 'fr_FR' => '3e brevet blanc'),
