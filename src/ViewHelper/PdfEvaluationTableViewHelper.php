@@ -27,7 +27,7 @@ class PdfEvaluationTableViewHelper
     	$context = Context::getCurrent();
 		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 
-		$text = $context->getConfig('student/report')['pdfDetailStyle'];
+		$text = $context->getConfig('student/report/pdfDetailStyle');
 		$rows = '';
 	    $subject = null;
 	    $globalAverage = null;
@@ -36,7 +36,7 @@ class PdfEvaluationTableViewHelper
 	    	else {
 		    	if ($evaluation->subject != $subject) {
 		    		$rows .= sprintf(
-		   					$context->getConfig('student/report')['evaluationSubject']['html'], 
+		   					$context->getConfig('student/report/evaluationSubject')['html'], 
 			   				'style="background-color: #EEE"',
 		    				(!$evaluation->subject) ? '' : ($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()]).' - '.$evaluation->n_fn);
 		    	}
@@ -44,7 +44,7 @@ class PdfEvaluationTableViewHelper
 		    	$caption = (array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()] : '';
 		    	if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
 		   		$rows.= sprintf(
-		   				$context->getConfig('student/report')['evaluationRow']['html'], 
+		   				$context->getConfig('student/report/evaluationRow')['html'], 
 						'',
 		   				$caption,
 		   				$context->formatFloat($evaluation->weight, 1),
@@ -69,7 +69,7 @@ class PdfEvaluationTableViewHelper
 	    	$caption = $subject;
 		    if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
 	    	$rows.= sprintf(
-	    		$context->getConfig('student/report')['evaluationRow']['html'],
+	    		$context->getConfig('student/report/evaluationRow')['html'],
 				'',
 	    		$caption,
 		   		$context->formatFloat($evaluation->weight, 1),
@@ -81,7 +81,7 @@ class PdfEvaluationTableViewHelper
 	    	);
 	    };
 
-	   	$headerDef = $context->getConfig('student/report')['evaluationHeader'];
+	   	$headerDef = $context->getConfig('student/report/evaluationHeader');
 	   	$params = $headerDef['params'];
 		$params['rows'] = $rows;
 		$header = PdfEvaluationTableViewHelper::mapArgs($headerDef, $params, $context->getLocale());

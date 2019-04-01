@@ -3468,40 +3468,38 @@ table.note-report td {
 			'signature3' => array('text' => 'Directeur', 'params' => array()),
 	),
 
-	'student/report' => array(
+	'student/report/header' => array(
+		array(
+			'format' => array('en_US' => '%s', 'fr_FR' => '%s'),
+			'params' => array('name'),
+		),
+	),
 			
-			'header' => array(
-					array(
-							'format' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('name'),
-					),
-			),
-			
-			'description' => array(
-					array(
-							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
-							'right' => array('en_US' => '%s - %s - %s', 'fr_FR' => '%s - %s - %s'),
-							'params' => array('n_fn', 'property_1', 'property_6'),
-					),
-					array(
-							'left' => array('en_US' => 'Class', 'fr_FR' => 'Classe'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('property_7'),
-					),
-					array(
-							'left' => array('en_US' => 'Birth date', 'fr_FR' => 'Date de naissance'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('birth_date'),
-					),
-					array(
-							'left' => array('en_US' => 'Class size', 'fr_FR' => 'Effectif'),
-							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
-							'params' => array('class_size'),
-					),
-			),
+	'student/report/description' => array(
+		array(
+			'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
+			'right' => array('en_US' => '%s - %s - %s', 'fr_FR' => '%s - %s - %s'),
+			'params' => array('n_fn', 'property_1', 'property_6'),
+		),
+		array(
+			'left' => array('en_US' => 'Class', 'fr_FR' => 'Classe'),
+			'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+			'params' => array('property_7'),
+		),
+		array(
+			'left' => array('en_US' => 'Birth date', 'fr_FR' => 'Date de naissance'),
+			'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+			'params' => array('birth_date'),
+		),
+		array(
+			'left' => array('en_US' => 'Class size', 'fr_FR' => 'Effectif'),
+			'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+			'params' => array('class_size'),
+		),
+	),
 
-			'detailHeader' => array(
-					'html' => '
+	'student/report/detailHeader' => array(
+		'html' => '
 <table class="table note-report">
 	<tr>
 		<th rowspan="2" style="width: 15%%">%s</th>
@@ -3517,21 +3515,21 @@ table.note-report td {
     </tr>
 %s
 </table>',
-					'params' => array(
-							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
-							array('en_US' => 'Weight', 'fr_FR' => 'Coef. / Crédits'),
-							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
-							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
-							array('en_US' => 'Assessments', 'fr_FR' => 'Appréciations'),
-							array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
-							array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
-							array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
-							'rows' => null,
-					),
-			),
+		'params' => array(
+			array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
+			array('en_US' => 'Weight', 'fr_FR' => 'Coef. / Crédits'),
+			array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
+			array('en_US' => 'Class', 'fr_FR' => 'Classe'),
+			array('en_US' => 'Assessments', 'fr_FR' => 'Appréciations'),
+			array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
+			array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
+			array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
+			'rows' => null,
+		),
+	),
 
-			'detailRow' => array(
-					'html' => '
+	'student/report/detailRow' => array(
+		'html' => '
 <tr %s>
 	<td style="width: 15%%">%s<br><span style="font-weight: normal">%s</span></td>
 	<td style="width: 10%%" align="right">%s</td>
@@ -3541,30 +3539,30 @@ table.note-report td {
 	<td style="width: 8%%" align="right">%s</td>
 	<td style="width: 41%%">%s</td>
 </tr>',
-					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'assessment'),
-			),
+		'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'assessment'),
+	),
 
-			'signatureFrame' => array(
-					'html' => '
+	'student/report/signatureFrame' => array(
+		'html' => '
 <table class="table note-report">
     <tr>
     	<td style="width: 70%%">%s</td>
     	<td style="width: 30%%">%s</td>
 	</tr>
 </table>',
-			),
+	),
 
-			'withoutMentionFrame' => array(
-				'html' => '
+	'student/report/withoutMentionFrame' => array(
+		'html' => '
 <table class="table note-report">
     <tr>
     	<td style="width: 100%%">%s</td>
 	</tr>
 </table>',
-			),
+	),
 
-			'evaluationHeader' => array(
-					'html' => '
+	'student/report/evaluationHeader' => array(
+		'html' => '
 <table class="table note-report">
 	<tr>
 		<th rowspan="2" style="width: 36%%">%s</th>
@@ -3581,30 +3579,30 @@ table.note-report td {
 	</tr>
 %s
 </table>',
-					'params' => array(
-							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
-							array('en_US' => 'Weight', 'fr_FR' => 'Coef.'),
-							array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
-							array('en_US' => 'Class', 'fr_FR' => 'Classe'),
-							array('en_US' => 'Date', 'fr_FR' => 'Date'),
-//							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
-							array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
-							array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
-							array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
-							'rows' => null,
-					),
-			),
+		'params' => array(
+			array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
+			array('en_US' => 'Weight', 'fr_FR' => 'Coef.'),
+			array('en_US' => 'Student', 'fr_FR' => 'Elève.'),
+			array('en_US' => 'Class', 'fr_FR' => 'Classe'),
+			array('en_US' => 'Date', 'fr_FR' => 'Date'),
+//			array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
+			array('en_US' => 'Min.', 'fr_FR' => 'Min.'),
+			array('en_US' => 'Avg.', 'fr_FR' => 'Moy.'),
+			array('en_US' => 'Max.', 'fr_FR' => 'Max.'),
+			'rows' => null,
+		),
+	),
 
-			'evaluationSubject' => array(
-					'html' => '
+	'student/report/evaluationSubject' => array(
+		'html' => '
 <tr %s>
 	<td colspan="8" style="font-weight: bold">%s</td>
 </tr>',
-					'params' => array('color', 'subject'),
-			),
+		'params' => array('color', 'subject'),
+	),
 
-			'evaluationRow' => array(
-					'html' => '
+	'student/report/evaluationRow' => array(
+		'html' => '
 <tr %s>
 	<td style="width: 36%%">%s</td>
 	<td style="width: 10%%" align="right">%s</td>
@@ -3615,11 +3613,11 @@ table.note-report td {
 	<td style="width: 12%%; font-size: 0.8em" align="right">%s</td>
 <!--	<td style="width: 31%%">s</td> -->
 </tr>',
-					'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution'/*, 'assessment'*/),
-			),
+		'params' => array('color', 'subject', 'n_fn', 'weight', 'value', 'lower_note', 'average_note', 'higher_note', 'distribution'/*, 'assessment'*/),
+	),
 
-			'absenceHeader' => array(
-					'html' => '
+	'student/report/absenceHeader' => array(
+		'html' => '
 <table class="table note-report">
 	<tr>
 		<th style="width: 10%%">%s</th>
@@ -3631,19 +3629,19 @@ table.note-report td {
 	</tr>
 %s
 </table>',
-					'params' => array(
-							array('en_US' => 'Type', 'fr_FR' => 'Type'),
-							array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
-							array('en_US' => 'Period', 'fr_FR' => 'Période'),
-							array('en_US' => 'Duration', 'fr_FR' => 'Durée'),
-							array('en_US' => 'Motive', 'fr_FR' => 'Motif'),
-							array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
-							'rows' => null,
-					),
-			),
+		'params' => array(
+			array('en_US' => 'Type', 'fr_FR' => 'Type'),
+			array('en_US' => 'Subject', 'fr_FR' => 'Matière'),
+			array('en_US' => 'Period', 'fr_FR' => 'Période'),
+			array('en_US' => 'Duration', 'fr_FR' => 'Durée'),
+			array('en_US' => 'Motive', 'fr_FR' => 'Motif'),
+			array('en_US' => 'Observations', 'fr_FR' => 'Observations'),
+			'rows' => null,
+		),
+	),
 			
-			'absenceRow' => array(
-					'html' => '
+	'student/report/absenceRow' => array(
+		'html' => '
 <tr %s>
 	<td style="width: 10%%">%s</td>
 	<td style="width: 15%%">%s</td>
@@ -3652,10 +3650,10 @@ table.note-report td {
 	<td style="width: 15%%">%s</td>
 	<td style="width: 30%%">%s</td>
 </tr>',
-					'params' => array('color', 'subject', 'period', 'motive', 'observations'),
-			),
+		'params' => array('color', 'subject', 'period', 'motive', 'observations'),
+	),
 
-			'pdfDetailStyle' => '
+	'student/report/pdfDetailStyle' => '
 <style>
 table.note-report {
 	font-size: 1em;
@@ -3685,14 +3683,13 @@ table.note-report tr.period {
 </style>
 ',
 
-			'evaluationSignatureFrame' => array(
-					'html' => '
+	'student/report/evaluationSignatureFrame' => array(
+		'html' => '
 <table class="table note-report">
     <tr>
     	<td style="width: 100%%">%s</td>
 	</tr>
 </table>',
-					),
 	),
 
 	'event/type' => array(

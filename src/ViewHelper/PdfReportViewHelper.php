@@ -17,7 +17,6 @@ class PdfReportViewHelper
     	// Retrieve the context
     	$context = Context::getCurrent();
 		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
-    	$reportSpecs = $context->getConfig('student/report');
     	
     	// create new PDF document
     	$pdf->footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
@@ -136,7 +135,7 @@ class PdfReportViewHelper
 //    	$pdf->SetDrawColor(128, 0, 0);
     	$pdf->SetLineWidth(0.2);
     	$pdf->SetFont('', '', 9);
-    	foreach($reportSpecs['description'] as $line) {
+    	foreach($context->getConfig('student/report/description') as $line) {
     		$arguments = array();
     		foreach($line['params'] as $propertyId) {
     			if ($propertyId == 'date') $arguments[] = $context->decodeDate(date('Y-m-d'));
@@ -193,7 +192,7 @@ class PdfReportViewHelper
 			$globalEvaluation = '';
 			foreach ($averages as $evaluation) if ($evaluation->subject == 'global') $globalEvaluation = $evaluation;
 			
-			$text = $context->getConfig('student/report')['pdfDetailStyle'];
+			$text = $context->getConfig('student/report/pdfDetailStyle');
 			$mention = '';
 			if ($globalEvaluation) {
 				if ($globalEvaluation->evaluation) {
@@ -211,7 +210,7 @@ class PdfReportViewHelper
 			}
 			if ($category == 'report') {
 				$text .= sprintf(
-					$context->getConfig('student/report')['signatureFrame']['html'],
+					$context->getConfig('student/report/signatureFrame')['html'],
 					'<em>'.$translator->translate('Staff meeting opinion', 'ppit-studies', $context->getLocale()).'</em><br>'.
 					(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
 					'<br><br><br><br><br><br><br><br>'.
@@ -222,7 +221,7 @@ class PdfReportViewHelper
 			elseif ($category == 'exam') {
 	    		$pdf->SetFont('', '', 10);
 				$text .= sprintf(
-					$context->getConfig('student/report')['withoutMentionFrame']['html'],
+					$context->getConfig('student/report/withoutMentionFrame')['html'],
 					'<em>'.$translator->translate('Opinion of the jury', 'ppit-studies', $context->getLocale()).'</em><br>'.
 					(($globalEvaluation) ? $globalEvaluation->assessment : '<br><br><br><br>').
 					'<br><br><br><br><br><br><br><br>'
@@ -235,7 +234,7 @@ class PdfReportViewHelper
 	    	$pdf->SetFont('', '', 8);
 			$text = PdfEvaluationTableViewHelper::render($notes, $category);
 /*			$text .= sprintf(
-					'<div><br></div>'.$context->getConfig('student/report')['evaluationSignatureFrame']['html'],
+					'<div><br></div>'.$context->getConfig('student/report/evaluationSignatureFrame')['html'],
 					'<br><br><br><br><br><br><br><br>',
 					''
 			);*/

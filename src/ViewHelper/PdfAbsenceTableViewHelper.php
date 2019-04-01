@@ -27,7 +27,7 @@ class PdfAbsenceTableViewHelper
     	$context = Context::getCurrent();
 		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 
-		$text = $context->getConfig('student/report')['pdfDetailStyle'];
+		$text = $context->getConfig('student/report/pdfDetailStyle');
 		$rows = '';
 	    $subject = null;
 	    foreach ($absLates as $absLate) {
@@ -47,7 +47,7 @@ class PdfAbsenceTableViewHelper
 				if ($absLate->duration%60) $duration .= sprintf('%02u', $absLate->duration%60).'mn';
 			}
 	    	$rows.= sprintf(
-	   				$context->getConfig('student/report')['absenceRow']['html'], 
+	   				$context->getConfig('student/report/absenceRow')['html'], 
 	    			'',
 					$translator->translate((($absLate->category == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()),
 	    			($absLate->subject) ? $context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()] : '',
@@ -58,7 +58,7 @@ class PdfAbsenceTableViewHelper
 	   		);
 	    }
 
-	   	$headerDef = $context->getConfig('student/report')['absenceHeader'];
+	   	$headerDef = $context->getConfig('student/report/absenceHeader');
 	   	$params = $headerDef['params'];
 		$params['rows'] = $rows;
 		$header = PdfAbsenceTableViewHelper::mapArgs($headerDef, $params, $context->getLocale());

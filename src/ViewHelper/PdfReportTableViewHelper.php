@@ -16,8 +16,10 @@ class PdfReportTableViewHelper
 	public static function mapArgs($headerDef, $params, $locale)
 	{
 		$arguments = array($headerDef['html']);
-		foreach ($params as $param) if (is_array($param)) $arguments[] = $param[$locale];
-		else $arguments[] = $param;
+		foreach ($params as $param) {
+			if (is_array($param)) $arguments[] = $param[$locale];
+			else $arguments[] = $param;
+		}
 		return call_user_func_array('sprintf', $arguments);
 	}
 
@@ -27,7 +29,7 @@ class PdfReportTableViewHelper
     	$context = Context::getCurrent();
 		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 
-		$text = $context->getConfig('student/report')['pdfDetailStyle'];
+		$text = $context->getConfig('student/report/pdfDetailStyle');
 		$rows = '';
 	    $color = 0;
 	    $globalEvaluation = '';
@@ -56,10 +58,10 @@ class PdfReportTableViewHelper
 		    		}
 	    			$note = $context->formatFloat($evaluation->value, 2);
 		    		if ($evaluation->reference_value != 20) $note .= '/'.$context->formatFloat($evaluation->reference_value, 0);
-	    			if ($score) $note = $score; //.' ('.$note.')';
+	    			if ($score) $note = $score .' ('.$note.')';
 	    		}
 		   		$rows.= sprintf(
-		   				$context->getConfig('student/report')['detailRow']['html'], 
+		   				$context->getConfig('student/report/detailRow')['html'], 
 		   				(($color) ? 'style="background-color: #EEE"' : ''),
 		   				$subject,
 						$evaluation->n_fn,
@@ -89,7 +91,7 @@ class PdfReportTableViewHelper
 //    			if ($score) $note = $score.' ('.$note.')';
 		    }
 		    $rows.= sprintf(
-		    		$context->getConfig('student/report')['detailRow']['html'],
+		    		$context->getConfig('student/report/detailRow')['html'],
 		    		(($color) ? 'style="background-color: #EEE"' : ''),
 		    		$subject,
 		    		$evaluation->n_fn,
@@ -102,7 +104,7 @@ class PdfReportTableViewHelper
 		    );
 	    };
 
-	   	$headerDef = $context->getConfig('student/report')['detailHeader'];
+	   	$headerDef = $context->getConfig('student/report/detailHeader');
 	   	$params = $headerDef['params'];
 		$params['rows'] = $rows;
 		$header = PdfReportTableViewHelper::mapArgs($headerDef, $params, $context->getLocale());
