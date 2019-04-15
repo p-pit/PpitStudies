@@ -1144,7 +1144,7 @@ class StudentController extends AbstractActionController
 		}
 
 		$periods = array();
-		$absLates = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
+		$absLates = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
 		foreach($absLates as $absLate) {
 			$key = $absLate->school_year.'.'.$absLate->school_period;
 			if (!array_key_exists($key, $periods)) $periods[$key] = array();
