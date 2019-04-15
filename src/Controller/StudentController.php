@@ -1334,7 +1334,7 @@ class StudentController extends AbstractActionController
 		}
 		$level = $this->params()->fromRoute('level');
 
-		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
+		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search', null);
 		$absences = array();
 		$latenesss = array();
 		$cumulativeAbsence = 0;
