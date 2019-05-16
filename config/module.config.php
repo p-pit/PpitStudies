@@ -1919,7 +1919,7 @@ return array(
 		'type' => 'datetime',
 		'labels' => array(
 			'en_US' => 'Subscription meeting_date',
-			'fr_FR' => 'Date de RDV d\'inscription',
+			'fr_FR' => 'Date de RDV d’inscription',
 		),
 	),
 	
@@ -1928,7 +1928,7 @@ return array(
 		'type' => 'datetime',
 		'labels' => array(
 			'en_US' => 'Subscription meeting confirmed',
-			'fr_FR' => 'RDV d\'inscription confirmé',
+			'fr_FR' => 'RDV d’inscription confirmé',
 		),
 	),
 	
@@ -1945,7 +1945,7 @@ return array(
 		'type' => 'title',
 		'labels' => array(
 			'en_US' => 'REGISTRATION DATA',
-			'fr_FR' => 'DONNEES D\'INSCRIPTION',
+			'fr_FR' => 'DONNEES D’INSCRIPTION',
 		),
 	),
 	
@@ -1956,7 +1956,7 @@ return array(
 		'type' => 'time',
 		'labels' => array(
 			'en_US' => 'Admission meeting time',
-			'fr_FR' => 'Heure RDV d\'admission',
+			'fr_FR' => 'Heure RDV d’admission',
 		),
 	),
 	
@@ -2015,7 +2015,7 @@ return array(
 		'type' => 'date',
 		'labels' => array(
 			'en_US' => 'Admission meeting date',
-			'fr_FR' => 'Date RDV d\'admission',
+			'fr_FR' => 'Date RDV d’admission',
 		),
 	),
 	
@@ -2064,7 +2064,7 @@ return array(
 		),
 		'labels' => array(
 			'en_US' => 'School level at registration',
-			'fr_FR' => 'Niveau scolaire à l\'inscription',
+			'fr_FR' => 'Niveau scolaire à l’inscription',
 		),
 	),
 
@@ -2608,6 +2608,7 @@ table.note-report td {
 		),
 	),
 
+	'commitmentTerm/p-pit-studies/property/commitment_caption' => ['definition' => 'student/property/school_year'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_4' => ['definition' => 'commitment/p-pit-studies/property/property_4'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_5' => ['definition' => 'commitment/p-pit-studies/property/property_5'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_6' => ['definition' => 'commitment/p-pit-studies/property/property_6'],
@@ -2619,6 +2620,7 @@ table.note-report td {
 		'todoTitle' => array('en_US' => 'todo list', 'fr_FR' => 'todo list'),
 		'properties' => array(
 			'place_id' => ['multiple' => true],
+			'commitment_caption' => ['multiple' => true],
 			'name' => [],
 			'invoice_account_id' => [],
 			'status' => ['multiple' => true],
@@ -2634,6 +2636,7 @@ table.note-report td {
 	),
 	'commitmentTerm/list/p-pit-studies' => array(
 		'properties' => array(
+			'commitment_caption' => [],
 			'name' => [],
 			'status' => [],
 			'invoice_account_id' => [],
@@ -2650,6 +2653,7 @@ table.note-report td {
 	'commitmentTerm/update/p-pit-studies' => array(
 		'invoice_account_id' => [],
 		'status' => ['mandatory' => true],
+		'commitment_caption' => ['readonly' => true],
 		'caption' => ['mandatory' => true],
 		'due_date' => ['mandatory' => true],
 		'settlement_date' => [],
@@ -2972,7 +2976,7 @@ table.note-report td {
 			),
 			'labels' => array(
 					'en_US' => 'Admission meeting context',
-					'fr_FR' => 'Cadre RDV d\'admission',
+					'fr_FR' => 'Cadre RDV d’admission',
 			),
 	),
 		
@@ -2981,7 +2985,7 @@ table.note-report td {
 			'modalities' => array(
 					'athletics' => array('en_US' => 'Athletics', 'fr_FR' => 'Athlétisme'),
 					'football' => array('en_US' => 'Football', 'fr_FR' => 'Football'),
-					'football-women' => array('en_US' => 'Women\'s Football', 'fr_FR' => 'Football féminin'),
+					'football-women' => array('en_US' => 'Women’s Football', 'fr_FR' => 'Football féminin'),
 					'rugby' => array('en_US' => 'Rugby', 'fr_FR' => 'Rugby'),
 					'basketball' => array('en_US' => 'Basketball', 'fr_FR' => 'Basketball'),
 					'handball' => array('en_US' => 'Handball', 'fr_FR' => 'Handball'),
@@ -3706,6 +3710,16 @@ table.note-report tr.period {
 
 	// Calendar event
 
+	'event/planning/property/account_id' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'account_type' => 'teacher',
+		'labels' => array(
+			'en_US' => 'Teacher',
+			'fr_FR' => 'Professeur',
+		),
+	),
+	
 	'event/calendar/property/property_1' => array('definition' => 'student/property/school_year'),
 	'event/calendar/property/property_2' => array('definition' => 'student/property/class'),
 	'event/calendar/property/property_3' => array('definition' => 'student/property/school_subject'),
