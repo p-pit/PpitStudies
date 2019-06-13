@@ -1000,26 +1000,6 @@ return array(
 									'fr_FR' => 'Planning',
 							),
 					),
-/*					'notification' => array(
-							'route' => 'studentNotification',
-							'params' => array('type' => ''),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-edit',
-							'label' => array(
-									'en_US' => 'Notifications',
-									'fr_FR' => 'Notifications',
-							),
-					),
-					'progress' => array(
-							'route' => 'progress/index',
-							'params' => array('app' => 'p-pit-studies'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-edit',
-							'label' => array(
-									'en_US' => 'Sport progress',
-									'fr_FR' => 'Suivi sportif',
-							),
-					),*/
 					'absence' => array(
 							'route' => 'absence/index',
 							'params' => array('app' => 'p-pit-studies', 'type' => ''),
@@ -1070,16 +1050,6 @@ return array(
 									'fr_FR' => 'Examens blancs',
 							),
 					),
-/*					'event' => array(
-							'route' => 'studentEvent',
-							'params' => array('type' => ''),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-edit',
-							'label' => array(
-									'en_US' => 'Appointments',
-									'fr_FR' => 'Rendez-vous',
-							),
-					),*/
 					'account' => array(
 							'route' => 'student/registrationIndex',
 							'params' => array('app' => 'p-pit-studies', 'type' => 'p-pit-studies'),
@@ -1110,6 +1080,24 @@ return array(
 									'fr_FR' => 'Admin',
 							),
 					),
+/*				'group' => array(
+					'route' => 'account/indexAlt',
+					'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-studies'),
+					'label' => array(
+						'en_US' => 'Groups',
+						'fr_FR' => 'Groupes (V2)',
+					),
+				),*/
+				'calendar_2019_2020' => array(
+					'route' => 'event/calendar',
+					'params' => array('type' => 'calendar', 'category' => '2019_2020', 'app' => 'p-pit-studies'),
+					'urlParams' => '?status=new',
+					'glyphicon' => 'glyphicon-calendar',
+					'label' => array(
+						'en_US' => 'Planning',
+						'fr_FR' => 'Planning 2019/2020',
+					),
+				),
 		),
 		'labels' => array(
 			'default' => '2pit Studies',
@@ -2054,6 +2042,7 @@ return array(
 		'definition' => 'inline',
 		'type' => 'select',
 		'modalities' => array(
+			'cm2' => array('fr_FR' => 'CM2'),
 			'6e' => array('fr_FR' => '6e'),
 			'5e' => array('fr_FR' => '5e'),
 			'4e' => array('fr_FR' => '4e'),
@@ -3012,6 +3001,7 @@ table.note-report td {
 	'student/property/level' => array(
 			'type' => 'select',
 			'modalities' => array(
+					'cm2' => array('fr_FR' => 'CM2'),
 					'6e' => array('fr_FR' => '6e'),
 					'5e' => array('fr_FR' => '5e'),
 					'4e' => array('fr_FR' => '4e'),
@@ -3812,7 +3802,7 @@ table.note-report tr.period {
 		'place_id' => [],
 		'property_1' => [],
 		'n_fn' => [],
-		'property_2' => [],
+//		'property_2' => [],
 		'property_3' => [],
 		'property_4' => [],
 		'caption' => array('mandatory' => false),

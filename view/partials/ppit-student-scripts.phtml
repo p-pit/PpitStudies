@@ -26,7 +26,7 @@ function getParams() {
 
 	<?php elseif ($rendering == 'select') : ?>
 
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
+	var <?php echo $propertyId ?> = $('#search_<?php echo $propertyId ?>').val();
 	if (<?php echo $propertyId ?>) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
 
 	<?php else : ?>
@@ -46,24 +46,6 @@ function getParams() {
 	if (!todo) $('#limit').val('');
 
 	return params;
-}
-
-function eraseStudentSearch() {
-
-<?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
-
-	<?php if ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').val('');
-	$('#search_max_<?php echo $propertyId ?>').val('');
-
-	<?php else : ?>
-	$('#search_<?php echo $propertyId ?>').val('');
-	
-	<?php endif;?>
-
-<?php endforeach;?>
-
-	getStudentList(getParams(), 'n_fn', 'ASC');
 }
 
 function sortStudentList(criterion) {
@@ -91,19 +73,43 @@ function filterStudentList() {
 }
 
 function connectStudentSearchInputs() {
-	
-	$('#erase-button').unbind();
-	$('#erase-button').click(function () { eraseStudentSearch(); });
+
+  $('#erase-button').click(function () {
+    $('.search_input').val('');
+    $('.selectpicker').selectpicker('deselectAll');
+    $('.search_check').attr('checked', false);
+    getStudentList(getParams(), 'n_fn', 'ASC');
+  });
 
 <?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
-	<?php 
-	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
-	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-	?>
+  <?php 
+  $property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
+  if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+  ?>
 
-	<?php if ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
+  <?php if ($rendering == 'range') : ?>
+
+  $('#search_check_min_<?php echo $propertyId ?>').change(function () {
+    if (!document.getElementById('search_check_min_<?php echo $propertyId ?>').checked) {
+      $('#search_min_<?php echo $propertyId ?>').val('');
+      filterStudentList(); 
+    }
+  });
+  $('#search_min_<?php echo $propertyId ?>').keyup(function () { 
+    document.getElementById('search_check_min_<?php echo $propertyId ?>').checked = true; 
+    filterStudentList(); 
+  });
+  
+  $('#search_check_max_<?php echo $propertyId ?>').change(function () {
+    if (!document.getElementById('search_check_max_<?php echo $propertyId ?>').checked) {
+      $('#search_max_<?php echo $propertyId ?>').val('');
+      filterStudentList(); 
+    }
+  });
+  $('#search_max_<?php echo $propertyId ?>').keyup(function () { 
+    document.getElementById('search_check_max_<?php echo $propertyId ?>').checked = true; 
+    filterStudentList(); 
+  });
 
 		<?php if ($property['type'] == 'date') : ?>
 	$("#search_min_<?php echo $propertyId ?>").datepicker();
@@ -113,10 +119,29 @@ function connectStudentSearchInputs() {
 		<?php endif;?>
 	
 	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterStudentList(); });
+  $('#search_check_<?php echo $propertyId ?>').change(function () {
+    if (!document.getElementById('search_check_<?php echo $propertyId ?>').checked) {
+      $('#search_<?php echo $propertyId ?>').val('');
+      $('#search_<?php echo $propertyId ?>').selectpicker('deselectAll');
+      filterStudentList(); 
+    }
+  });
+  $('#search_<?php echo $propertyId ?>').change(function () { 
+    document.getElementById('search_check_<?php echo $propertyId ?>').checked = true; 
+    filterStudentList(); 
+  });
 	
 	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterStudentList(); });
+  $('#search_check_<?php echo $propertyId ?>').change(function () {
+    if (!document.getElementById('search_check_<?php echo $propertyId ?>').checked) {
+      $('#search_<?php echo $propertyId ?>').val('');
+      filterStudentList(); 
+    }
+  });
+  $('#search_<?php echo $propertyId ?>').keyup(function () { 
+    document.getElementById('search_check_<?php echo $propertyId ?>').checked = true; 
+    filterStudentList(); 
+  });
 
 		<?php if ($property['type'] == 'date') : ?>
 	$("#search_<?php echo $propertyId ?>").datepicker();

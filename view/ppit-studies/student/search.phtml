@@ -21,24 +21,6 @@
 
 <!-- Filters -->
 
-		<div class="form-group">
-			<label class="col-sm-4 control-label">
-				<span class="glyphicon glyphicon-search"></span>
-			</label>
-			<div class="col-sm-1 control-label">
-<?php if ($context->isDemoModeActive()) : ?>
-				<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/x'][$context->getLocale()] ?>">
-				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-				</a>
-<?php endif;?>
-			</div>
-			<div class="col-sm-7">
-	    		<button type="button" class="form-control btn btn-default btn-xs" title="<?php echo $this->translate('Erase', 'ppit-core', $context->getLocale()) ?>" id="erase-button">
-					<span class="glyphicon glyphicon-remove"></span>
-				</button>
-			</div>
-		</div>
-
 <?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
 	<?php 
 	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
@@ -50,13 +32,6 @@
 	<?php if ($rendering == 'select') : ?>
 
 		<?php
-/*		if ($propertyId == 'place_id') $property = $context->getConfig('student/property/place');
-		elseif ($propertyId == 'property_1') $property = $context->getConfig('student/property/discipline');
-		elseif ($propertyId == 'property_4') $property = $context->getConfig('student/property/level');
-		elseif ($propertyId == 'property_5') $property = $context->getConfig('student/property/specialty');
-		elseif ($propertyId == 'property_6') $property = $context->getConfig('student/property/boarding_school');
-		elseif ($propertyId == 'property_7') $property = $context->getConfig('student/property/class');
-		else $property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);*/
 		$label = $property['labels'][$context->getLocale()];
 		
 		$modalities = array();
@@ -75,46 +50,63 @@
 			} 
 		}
 		?>
-		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $label ?></label>
-			<div class="col-sm-7">
-				<select id="search_<?php echo $propertyId ?>" class="form-control">
+			<label class="col-sm-6 control-label"><?php echo $label ?></label>
+			<div class="input-group search">
+			    <span class="input-group-addon">
+					<input type="checkbox" class="search_check" id="search_check_<?php echo $propertyId ?>">
+				</span>
+				<select id="search_<?php echo $propertyId ?>" class="selectpicker search_input" multiple>
 					<option value=""></option>
 		<?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
 		    		<option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
 		<?php endforeach;?>
 		    	</select>
 			</div>
-		</div>
 	
 	<?php elseif ($rendering == 'contains') : ?>
-		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $label ?></label>
-			<div class="col-sm-7">
-				<input class="form-control" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			<label class="col-sm-6 control-label"><?php echo $label ?></label>
+			<div class="input-group search">
+              <span class="input-group-addon">
+                <input type="checkbox" class="search_check" id="search_check_<?php echo $propertyId ?>">
+              </span>
+              <input class="form-control search_input" type="text" id="search_<?php echo $propertyId ?>" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
-		</div>
 
 	<?php elseif ($rendering == 'range') : ?>
 
-		<div class="form-group">
-			<label class="col-sm-5 control-label"><?php echo $label ?></label>
-			<div class="col-sm-7">
-	    		<input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			<label class="col-sm-6 control-label"><?php echo $label ?></label>
+			<div class="input-group search">
+              <span class="input-group-addon">
+                <input type="checkbox" class="search_check" id="search_check_<?php echo $propertyId ?>">
+              </span>
+              <input class="form-control" type="text" id="search_min_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
-		</div>
 
-		<div class="form-group">
-			<label class="col-sm-5 control-label">&nbsp;</label>
-			<div class="col-sm-7">
-	    		<input class="form-control" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			<label class="col-sm-6 control-label">&nbsp;</label>
+			<div class="input-group search">
+              <span class="input-group-addon">
+                <input type="checkbox" class="search_check" id="search_check_<?php echo $propertyId ?>">
+              </span>
+              <input class="form-control search_input" type="text" id="search_max_<?php echo $propertyId ?>" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
 			</div>
-		</div>
 
 	<?php endif;?>
 <?php endforeach;?>
 
-	    <div>&nbsp;</div>
+      <div class="col-sm-6">&nbsp;</div>
+       <div class="col-sm-6 search">
+          <button type="button" class="form-control btn btn-default btn-xs" title="<?php echo $this->translate('Erase', 'ppit-core', $context->getLocale()) ?>" id="erase-button">
+          <span class="glyphicon glyphicon-remove"></span>
+        </button>
+<?php if ($context->isDemoModeActive()) : ?>
+        <a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/x'][$context->getLocale()] ?>">
+            <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+        </a>
+<?php endif;?>
+      </div>
+
+      <div class="col-sm-6">&nbsp;</div>
+
 		</div>
 
 <!-- Add or update section -->
