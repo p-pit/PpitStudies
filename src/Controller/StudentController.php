@@ -275,10 +275,10 @@ class StudentController extends AbstractActionController
        			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
        		}
        		else {
-       			if ($request->getPost($propertyId)) $criteria[$propertyId] = $request->getPost($propertyId);
+				$value = ($request->getPost($propertyId) == 'null') ? null : $request->getPost($propertyId) == 'null'; // JS returns the string 'null' for multiple select input without selection
+       			if ($value) $criteria[$propertyId] = $value;
        		}
        	}
-       	
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),

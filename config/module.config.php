@@ -2627,6 +2627,8 @@ table.note-report td {
 		'properties' => array(
 			'commitment_caption' => [],
 			'name' => [],
+			'email' => [],
+			'tel_cell' => [],
 			'status' => [],
 			'invoice_account_id' => [],
 			'due_date' => [],
