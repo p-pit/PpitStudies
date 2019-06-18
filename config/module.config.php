@@ -3804,7 +3804,7 @@ table.note-report tr.period {
 		'place_id' => [],
 		'property_1' => [],
 		'n_fn' => [],
-//		'property_2' => [],
+		'property_2' => [],
 		'property_3' => [],
 		'property_4' => [],
 		'caption' => array('mandatory' => false),
