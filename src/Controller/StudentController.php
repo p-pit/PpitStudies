@@ -748,7 +748,7 @@ class StudentController extends AbstractActionController
 							$audit = $computedAverages[$account->id]['global']['notes'];
 						}
     			    	else $value = null;
-    			    	if ($value !== null) $value = $value * $data['reference_value'] / 20;
+    			    	if ($value !== null) $value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
     				}
     			    elseif ($type == 'exam' && $value === null) {
     					if (array_key_exists($account->id, $examAverages)) {
