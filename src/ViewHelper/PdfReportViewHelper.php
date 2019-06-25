@@ -110,20 +110,20 @@ class PdfReportViewHelper
 //	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
 	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire';
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-	    	$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+	    	$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]).'</strong></div>';
     	}
 		elseif ($category == 'exam') {
-    		$text = '<div style="text-align: center"><strong>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/evaluationCategory')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    		$text = '<div style="text-align: center"><strong>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$school_period]).'</strong></div>';
     	}
     	elseif ($category == 'absence') {
     		$text = '<div style="text-align: center"><strong>Relevé d\'absences au '.$context->decodeDate(date('Y-m-d'));
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-    		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    		$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]).'</strong></div>';
     	}
     	else {
     		$text = '<div style="text-align: center"><strong>'.(($mock) ? 'Epreuve blanche' : 'Relevé de notes').' au '.$context->decodeDate(date('Y-m-d'));
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-    		$text .= '<br>Année '.$context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()].' - '.$context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()].'</strong></div>';
+    		$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]).'</strong></div>';
     	}
     	$pdf->writeHTML($text, true, 0, true, 0);
     	$pdf->Ln(4);
@@ -145,15 +145,16 @@ class PdfReportViewHelper
 					$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 					if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 					if ($propertyId == 'name') $arguments[] = $account->name;
+					elseif ($propertyId == 'property_7') $arguments[] = $context->localize($property['modalities'][current(($averages) ? $averages : $notes)->class]);
 					elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
-	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $property['modalities'][$account->properties[$propertyId]][$context->getLocale()];
+	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $context->localize($property['modalities'][$account->properties[$propertyId]]);
 	    			else $arguments[] = $account->properties[$propertyId];
     			}
     		}
-    		$value = vsprintf($line['right'][$context->getLocale()], $arguments);
+    		$value = vsprintf($context->localize($line['right']), $arguments);
     		if ($value) {
-	    		$pdf->MultiCell(30, 5, '<strong>'.$line['left'][$context->getLocale()].'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
+	    		$pdf->MultiCell(30, 5, '<strong>'.$context->localize($line['left']).'</strong>', 1, 'L', 1, 0, '', '', true, 0, true);
 	    		$pdf->MultiCell(5, 5, ':', 1, 'L', 1, 0, '', '', true);
 	    		$pdf->MultiCell(145, 5, $value, 1, 'L', 0, 1, '' ,'', true);
     		}
@@ -201,7 +202,7 @@ class PdfReportViewHelper
 						if (!$first) $mention .= '<br>';
 						if ($globalEvaluation->evaluation == $modalityId) $mention .= '<strong>';
 						else $mention .= '<span style="font-style: italic; color: lightgray">';
-						$mention .= $context->getConfig('student/property/reportMention')['modalities'][$modalityId][$context->getLocale()];
+						$mention .= $context->localize($context->getConfig('student/property/reportMention')['modalities'][$modalityId]);
 						if ($globalEvaluation->evaluation == $modalityId) $mention .= '</strong>';
 						else $mention .= '</span>';
 						$first = false;
