@@ -1050,7 +1050,7 @@ return array(
 									'fr_FR' => 'Examens blancs',
 							),
 					),
-					'account' => array(
+					'subscriptions' => array(
 							'route' => 'student/registrationIndex',
 							'params' => array('app' => 'p-pit-studies', 'type' => 'p-pit-studies'),
 							'urlParams' => array(),
