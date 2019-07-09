@@ -1381,6 +1381,7 @@ return array(
 	),
 
 	'commitment/update/p-pit-studies' => array(
+		'status' => array('mandatory' => true),
 		'caption' => array('mandatory' => true),
 		'account_id' => array('mandatory' => true),
 		'description' => array('mandatory' => false),
