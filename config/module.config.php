@@ -3731,16 +3731,6 @@ table.note-report tr.period {
 	),
 
 	// Calendar event
-
-	'event/planning/property/account_id' => array(
-		'definition' => 'inline',
-		'type' => 'select',
-		'account_type' => 'teacher',
-		'labels' => array(
-			'en_US' => 'Teacher',
-			'fr_FR' => 'Professeur',
-		),
-	),
 	
 	'event/calendar/property/property_1' => array('definition' => 'student/property/school_year'),
 	'event/calendar/property/property_2' => array('definition' => 'student/property/class'),
