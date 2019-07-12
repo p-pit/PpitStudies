@@ -1060,6 +1060,14 @@ return array(
 									'fr_FR' => 'Inscriptions',
 							),
 					),
+					'group' => array(
+						'route' => 'account/indexAlt',
+						'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-learning', 'entryId' => 'group'),
+						'label' => array(
+							'en_US' => 'Groups',
+							'fr_FR' => 'Groupes',
+						),
+					),
 					'user' => array(
 							'route' => 'user/index',
 							'params' => array('app' => 'p-pit-studies'),
