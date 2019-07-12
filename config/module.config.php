@@ -1265,7 +1265,7 @@ return array(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'place_id', 'account_name', 'invoice_n_fn', 'year',
+			'status', 'place_id', 'account_name', 'email', 'invoice_n_fn', 'year',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
@@ -1405,6 +1405,7 @@ return array(
 		'invoice_identifier' => 'B',
 		'invoice_date' => 'C',
 		'account_name' => 'D',
+		'contact_email' => 'X',
 		'invoice_n_fn' => 'E',
 		'caption' => 'F',
 		'description' => 'G',
