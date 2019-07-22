@@ -1202,6 +1202,7 @@ return array(
 			'visa' => array('en_US' => 'Waiting for a visa', 'fr_FR' => 'En attente de visa'),
 			'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
 			'retention' => array('en_US' => 'Retention', 'fr_FR' => 'Ré-inscrit'),
+			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
 			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
 		'labels' => array(
@@ -1482,6 +1483,7 @@ return array(
 				'visa' => array('en_US' => 'Waiting for a visa', 'fr_FR' => 'En attente de visa'),
 				'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
 				'retention' => array('en_US' => 'Retention', 'fr_FR' => 'Ré-inscrit'),
+				'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
 				'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
 		'labels' => array(
@@ -1490,7 +1492,7 @@ return array(
 		),
 		'perspectives' => array(
 				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
-				'account' => array('committed', 'visa', 'active', 'retention'),
+				'account' => array('committed', 'visa', 'active', 'retention', 'canceled'),
 		),
 		'mandatory' => true,
 	),
