@@ -59,7 +59,7 @@
 				<select class="form-control" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 					<option />
 	<?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $modalityId => $modality) : ?>
-					<option value="<?php echo $modalityId ?>" <?php if ($modalityId == $note->school_period) echo 'selected="selected"' ?>><?php echo $modality[$context->getLocale()] ?></option>
+					<option value="<?php echo $modalityId ?>" <?php if ($modalityId == $note->school_period) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
 	<?php endforeach;?>
 				</select>
 			</div>

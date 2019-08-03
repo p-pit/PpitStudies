@@ -241,8 +241,9 @@ class NoteController extends AbstractActionController
     	$id = (int) $this->params()->fromRoute('id', 0);
  		$note = Note::get($id);
     	$place = Place::get($note->place_id);
- 		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-		if (!$note->school_period) $note->school_period = $school_period;
+       	$school_periods = $place->getConfig('school_periods');
+       	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	if (!$note->school_period) $note->school_period = $current_school_period;
  		$action = $this->params()->fromRoute('act', null);
 
  		$documentList = array();
@@ -322,6 +323,7 @@ class NoteController extends AbstractActionController
     			'id' => $id,
     			'action' => $action,
     			'note' => $note,
+    			'school_periods' => $school_periods,
     			'dropboxClient' => $dropboxClient,
     			'documentList' => $documentList,
     			'csrfForm' => $csrfForm,

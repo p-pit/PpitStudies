@@ -136,15 +136,17 @@
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
 			</button>
 <?php endif;?>
-			<button type="button" class="btn btn-default action-btn" <?php if (!$context->hasRole('admin') && !$school_period) echo 'disabled' ?> id="evaluation-add-anchor">
+			<button type="button" class="btn btn-default action-btn" <?php if (!$context->hasRole('admin') && !$current_school_period) echo 'disabled' ?> id="evaluation-add-anchor">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale()) ?>
 			</button>
 			<button type="button" class="btn btn-default action-btn" id="report-add-anchor">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Report', 'ppit-studies', $context->getLocale()) ?>
 			</button>
+<?php if ($context->hasRole('manager')) : ?>
 			<button type="button" class="btn btn-default action-btn" id="exam-add-anchor">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Mock exam', 'ppit-studies', $context->getLocale()) ?>
 			</button>
+<?php endif;?>
 <?php if (array_key_exists('schooling', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>
 			<button type="button" class="btn btn-default action-btn" id="schooling-event-add-anchor">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Appointment', 'ppit-studies', $context->getLocale()) ?>

@@ -45,7 +45,7 @@ table.note-report tr.period {
 <div class="card-block" style="color: #686868">
     <!--Title-->
     <h4 class="card-title" style="text-align: center">
-		<?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$level][$context->getLocale()] ?>
+		<?php echo $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$level]) ?>
 	</h4>
 	<!--Text-->
 	<?php 

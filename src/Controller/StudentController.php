@@ -263,7 +263,8 @@ class StudentController extends AbstractActionController
        		$accounts[] = $account;
        	}
        	$place = Place::get($account->place_id);
-       	$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+       	$school_periods = $place->getConfig('school_periods');
+       	$current_school_period = $context->getCurrentPeriod($school_periods);
        	
        	$criteria = array();
        	foreach ($context->getConfig('core_account/search/p-pit-studies')['properties'] as $propertyId => $unused) {
@@ -286,7 +287,8 @@ class StudentController extends AbstractActionController
     			'criteria' => $criteria,
     			'accounts' => $accounts,
     			'places' => Place::getList(array()),
-    			'school_period' => $school_period,
+    			'school_periods' => $school_periods,
+    			'current_school_period' => $current_school_period,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -319,8 +321,9 @@ class StudentController extends AbstractActionController
     		$accounts[] = $account;
     	}
     	$place = Place::get($account->place_id);
-    	$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-    	$absence->school_period = $school_period;
+       	$school_periods = $place->getConfig('school_periods');
+       	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$absence->school_period = $current_school_period;
     	 
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -521,8 +524,9 @@ class StudentController extends AbstractActionController
     		$accounts[$account->id] = $account;
     	}
     	$place = Place::get($account->place_id);
-		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-		$note->school_period = $school_period;
+       	$school_periods = $place->getConfig('school_periods');
+       	$current_school_period = $context->getCurrentPeriod($school_periods);
+		$note->school_period = $current_school_period;
 		
     	$nbCriteria = $request->getPost('nb-criteria');
     	$criteria = array();
@@ -656,8 +660,9 @@ class StudentController extends AbstractActionController
     	$error = null;
     	$message = null;
     
-		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-    	$note->school_period = $school_period;
+       	$school_periods = $place->getConfig('school_periods');
+       	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$note->school_period = $current_school_period;
 
     	$nbCriteria = $request->getPost('nb-criteria');
     	$criteria = array();

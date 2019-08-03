@@ -151,7 +151,7 @@ class AbsenceController extends AbstractActionController
  		if ($id) $absence = Absence::get($id);
  		else $absence = Absence::instanciate();
  		$action = $this->params()->fromRoute('act', null);
-
+ 		
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');

@@ -7,7 +7,6 @@ use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
 use PpitCore\Form\CsrfForm;
-use PpitCore\Model\Document;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
