@@ -1108,23 +1108,13 @@ return array(
 	'menus/p-pit-studies' => array(
 		'entries' => array(
 					'student' => array(
-							'route' => 'student/index',
-							'params' => array('app' => 'p-pit-studies', 'type' => ''),
+							'route' => 'student/indexV2',
+							'params' => array('app' => 'p-pit-studies', 'type' => '', 'entryId' => 'student'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-list-alt',
 							'label' => array(
 									'en_US' => 'Students/Classes',
 									'fr_FR' => 'Elèves/Classes',
-							),
-					),
-					'studentV2' => array(
-							'route' => 'student/indexV2',
-							'params' => array('app' => 'p-pit-studies', 'type' => '', 'entryId' => 'studentV2'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-list-alt',
-							'label' => array(
-									'en_US' => 'Students/Classes V2',
-									'fr_FR' => 'Elèves/Classes V2',
 							),
 					),
 					'planning' => array(
@@ -1196,14 +1186,6 @@ return array(
 									'fr_FR' => 'Inscriptions',
 							),
 					),
-					'group' => array(
-						'route' => 'account/indexAlt',
-						'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-learning', 'entryId' => 'group'),
-						'label' => array(
-							'en_US' => 'Groups',
-							'fr_FR' => 'Groupes',
-						),
-					),
 					'user' => array(
 							'route' => 'user/index',
 							'params' => array('app' => 'p-pit-studies'),
@@ -1214,15 +1196,15 @@ return array(
 									'fr_FR' => 'Professeurs',
 							),
 					),
-/*				'group' => array(
+				'group' => array(
 					'route' => 'account/indexAlt',
 					'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-studies'),
 					'label' => array(
 						'en_US' => 'Groups',
-						'fr_FR' => 'Groupes (V2)',
+						'fr_FR' => 'Groupes',
 					),
-				),*/
-				'calendar_2019_2020' => array(
+				),
+/*				'calendar_2019_2020' => array(
 					'route' => 'event/calendar',
 					'params' => array('type' => 'calendar', 'category' => '2019_2020', 'app' => 'p-pit-studies'),
 					'urlParams' => '?status=new',
@@ -1231,7 +1213,7 @@ return array(
 						'en_US' => 'Planning',
 						'fr_FR' => 'Planning 2019/2020',
 					),
-				),
+				),*/
 		),
 		'labels' => array(
 			'default' => '2pit Studies',
