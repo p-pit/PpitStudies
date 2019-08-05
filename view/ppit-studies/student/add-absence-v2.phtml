@@ -1,0 +1,178 @@
+<?php if ($message == 'OK') : ?>
+
+<!-- Global message -->
+<div id="message">
+  <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
+</div>
+
+<?php endif;?>
+
+<?php if ($error == 'Duplicate') : ?>
+
+<!-- Duplicate error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('This record already exist', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Isolation') : ?>
+
+<!-- Isolation error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The database has evolved in the meantime, please input again', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Consistency') : ?>
+
+<!-- Consistency error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The data are not consistent', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<!-- CSRF -->
+<?php $element = $csrfForm->get('csrf') ?>
+<div class="form-group">
+  <?php echo $this->formElement($element) ?>
+<?php if ($this->formElementErrors($element)) : ?>
+  <h5 class="alert alert-danger my-3 text-center"><?php echo $this->translate('The form has expired, please input again', 'ppit-core', $context->getLocale()) ?></h5>
+<?php endif;?>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="up-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Category -->
+<div class="form-group row" id="category_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="category" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option/>
+      <option value="absence" <?php if ($absence->category == 'absence') echo 'selected="selected"' ?>><?php echo $this->translate('Absence', 'ppit-studies', $context->getLocale()) ?></option>
+      <option value="lateness" <?php if ($absence->category == 'lateness') echo 'selected="selected"' ?>><?php echo $this->translate('Lateness', 'ppit-studies', $context->getLocale()) ?></option>
+    </select>
+    <div class="invalid-feedback" id="category_error"></div>
+  </div>
+</div>
+
+<!-- Evaluation period -->
+<div class="form-group row" id="school_period_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->localize($context->getConfig('student/property/school_period')['labels']) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+  <?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $modalityId => $modality) : ?>
+      <option value="<?php echo $modalityId ?>" <?php if ($modalityId == $absence->school_period) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
+  <?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="school_period_error"></div>
+  </div>
+</div>
+
+<!-- Absence begin date -->
+<?php $absenceBeginDate = ($absence->begin_date) ? $absence->begin_date : Date('Y-m-d') ?>
+<input type="hidden" id="begin_date" />
+<div class="form-group row" id="input_begin_date_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_begin_date" value="<?php echo $context->decodeDate($absenceBeginDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_begin_date_error"></div>
+  </div>
+</div>
+
+<!-- Absence end date -->
+<input type="hidden" id="end_date" />
+<div class="form-group row" id="input_end_date_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('End date', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_end_date" placeholder="<?php echo $this->translate('In entire days if given', 'ppit-studies', $context->getLocale()) ?>" value="<?php echo $context->decodeDate($absence->end_date) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_end_date_error"></div>
+  </div>
+</div>
+
+<!-- Duration -->
+<input type="hidden" id="duration" />
+<div class="form-group row" id="input_duration_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Duration', 'ppit-studies', $context->getLocale()) ?> (mn)</label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_duration" value="<?php echo $absence->duration ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_duration_error"></div>
+  </div>
+</div>
+
+<!-- Subject -->
+<?php 
+$subject = $context->getConfig('absence')['types'][$type]['subject'];
+if ($type == 'schooling') {
+	if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('school_subject', $context->getPerimeters()['p-pit-studies'])) {
+		$modalities = array();
+		foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $modalityId) {
+			$modalities[$modalityId] = $context->getConfig('student/property/school_subject')['modalities'][$modalityId];	
+		}
+	}
+	else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
+}
+else $modalities = $subject['modalities'];
+?>
+<div class="form-group row" id="subject_group">
+  <label class="col-sm-5 col-form-label"><?php echo $context->localize($subject['labels']) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option value="" />
+<?php foreach ($modalities as $modalityId => $modality) : ?>
+	<?php $caption = $context->localize($modality) ?>
+      <option value="<?php echo $modalityId ?>" <?php if ($absence->subject == $modalityId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="subject_error"></div>
+  </div>
+</div>
+
+<!-- Motive -->
+<?php $motive = $context->getConfig('absence/property/motive') ?>
+<div class="form-group row" id="motive_group">
+  <label class="col-sm-5 col-form-label"><?php echo $context->localize($motive['labels']) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="motive" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option value="" />
+<?php foreach ($motive['modalities'] as $modalityId => $modality) : ?>
+	<?php $caption = $context->localize($modality); ?>
+      <option value="<?php echo $modalityId ?>" <?php if ($absence->motive == $modalityId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="motive_error"></div>
+  </div>
+</div>
+
+<!-- Observations -->
+<div class="form-group row" id="observations_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Observations', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $absence->observations ?></textarea>
+    <div class="invalid-feedback" id="observations_error"></div>
+  </div>
+</div>
+
+<!-- Comment -->
+<div class="form-group row" id="comment_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Internal comment (non visible to the parents)', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+    <div class="invalid-feedback" id="comment_error"></div>
+  </div>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="down-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>

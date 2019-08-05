@@ -1,0 +1,313 @@
+<?php if ($message == 'OK') : ?>
+
+<!-- Global message -->
+<div id="message">
+  <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
+</div>
+
+<?php endif;?>
+
+<?php if ($error == 'Duplicate') : ?>
+
+<!-- Duplicate error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('This record already exist', 'ppit-core', $context->getLocale()) ?></div>
+<div class="alert alert-danger text-center"><?php echo $this->translate('You can modify it from the <em>Evaluations</em> main menu entry', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Isolation') : ?>
+
+<!-- Isolation error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The database has evolved in the meantime, please input again', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Consistency') : ?>
+
+<!-- Consistency error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The data are not consistent', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<!-- CSRF -->
+<?php $element = $csrfForm->get('csrf') ?>
+<div class="form-group">
+  <?php echo $this->formElement($element) ?>
+<?php if ($this->formElementErrors($element)) : ?>
+  <h5 class="alert alert-danger my-3 text-center"><?php echo $this->translate('The form has expired, please input again', 'ppit-core', $context->getLocale()) ?></h5>
+<?php endif;?>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="up-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Place -->
+<div class="form-group row" id="place_id_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/place')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="place_id" <?php if ($isDisabled || $note->place_id) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($places as $place) : ?>
+      <option value="<?php echo $place->id ?>" <?php if ($note->place_id == $place->id) echo 'selected="selected"' ?>><?php echo $place->caption ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="place_id_error"></div>
+  </div>
+</div>
+
+<!-- Class filtered on the user's accessibility perimeter -->
+<?php 
+$classes = array();
+if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('property_7', $context->getPerimeters()['p-pit-studies'])) {
+  foreach ($context->getPerimeters()['p-pit-studies']['property_7'] as $classId) {
+    $classes[$classId] = $context->getConfig('student/property/class')['modalities'][$classId];
+  }
+}
+else {
+  foreach ($context->getConfig('student/property/class')['modalities'] as $classId => $class) {
+    $classes[$classId] = $class;
+  }
+}
+?>
+<div class="form-group row" id="class_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/class')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($classes as $classId => $class) : ?>
+      <option value="<?php echo $classId ?>" <?php if ($classId == $note->class) echo 'selected="selected"' ?>><?php echo $class[$context->getLocale()] ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="class_error"></div>
+  </div>
+</div>
+
+<!-- Evaluation period -->
+<div class="form-group row" id="school_period_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/school_period')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $modalityId => $modality) : ?>
+      <option value="<?php echo $modalityId ?>" <?php if ($modalityId == $note->school_period) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="school_period_error"></div>
+  </div>
+</div>
+
+<!-- Teacher name -->
+<div class="form-group row" id="teacher_id_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $this->translate('Teacher', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="teacher_id" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($teachers as $teacher_id => $teacher) : ?>
+      <option value="<?php echo $teacher_id ?>" <?php if ($teacher_id == $note->teacher_id) echo 'selected="selected"' ?>><?php echo $teacher->n_fn ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="teacher_id_error"></div>
+  </div>
+</div>
+
+<!-- Subject -->
+<?php 
+if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('school_subject', $context->getPerimeters()['p-pit-studies'])) {
+  $modalities = array();
+  foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $modalityId) {
+    $modalities[$modalityId] = $context->getConfig('student/property/school_subject')['modalities'][$modalityId];	
+  }
+}
+else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
+?>
+<div class="form-group row" id="subject_group">
+<?php if ($type != 'exam') : ?>
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+  <?php foreach ($modalities as $subjectId => $subject) : ?>
+    <?php $caption = $subject[$context->getLocale()] ?>
+      <option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+  <?php endforeach;?>
+  <?php if (/*$type == 'report' &&*/ $context->hasRole('manager')) : ?>
+      <option value="global"><?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?></option>
+  <?php endif;?>
+    </select>
+    <div class="invalid-feedback" id="subject_error"></div>
+  </div>
+<?php else : ?>
+  <input type="hidden" id="subject" value="global" />
+<?php endif;?>
+</div>
+
+<!-- Evaluation category -->
+<?php if ($type != 'exam') : ?>
+
+<div class="form-group row" id="level_group">
+  <?php if ($type != 'report') : ?>
+  <label class="col-sm-5 col-form-label"><?php echo $context->getConfig('student/property/evaluationCategory')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="level" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+    <?php foreach ($places[$note->place_id]->getConfig('student/property/evaluationCategory')['modalities'] as $categoryId => $category) : ?>
+      <?php $caption = $context->localize($category) ?>
+      <option value="<?php echo $categoryId ?>" <?php if ($note->level == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+	<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="level_error"></div>
+  </div>
+  <?php else : ?>
+  <input type="hidden" id="level" />
+  <?php endif;?>
+</div>
+
+<?php else : ?>
+
+<!-- Exam -->
+<div class="form-group row" id="level_group">
+  <label class="col-sm-5 col-form-label"><?php echo $context->getConfig('student/property/exam')['labels'][$context->getLocale()] ?></label>
+    <div class="col-sm-7">
+      <select class="form-control" id="level" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+        <option />
+  <?php foreach ($context->getConfig('student/property/exam')['modalities'] as $categoryId => $unused) : ?>
+    <?php $caption = $context->getConfig('student/property/evaluationCategory')['modalities'][$categoryId][$context->getLocale()]; ?>
+        <option value="<?php echo $categoryId ?>" <?php if ($note->level == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+  <?php endforeach;?>
+      </select>
+      <div class="invalid-feedback" id="level_error"></div>
+  </div>
+</div>
+
+<?php endif;?>
+
+<!-- Note date -->
+<?php $noteDate = ($note->date) ? $note->date : Date('Y-m-d') ?>
+<input type="hidden" id="date" />
+<div class="form-group row" id="input_date_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_date" value="<?php echo $context->decodeDate($noteDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_date_error"></div>
+  </div>
+</div>
+
+<!-- Reference value -->
+<?php $reference_value = ($note->reference_value) ? $note->reference_value : (($note->type == 'report') ? $context->getConfig('student/parameter/average_computation')['reference_value'] : 20 ) ?>
+<input type="hidden" id="reference_value" />
+<div class="form-group row" id="input_reference_value_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Reference value', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_reference_value_error"></div>
+  </div>
+</div>
+
+<!-- Weight -->
+<?php $weight = ($note->weight) ? $note->weight : '1' ?>
+<input type="hidden" id="weight" />
+<div class="form-group row" id="input_weight_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Weight', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_weight" value="<?php echo $context->formatFloat($weight, 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_weight_error"></div>
+  </div>
+</div>
+
+<?php foreach ($accounts as $account) : ?>
+
+<!-- Value -->
+<input type="hidden" id="value_<?php echo $account->id ?>" />
+<div class="form-group row" id="input_value_<?php echo $account->id ?>_group">
+  <label class="col-sm-5 col-form-label">
+    <?php echo $account->name ?>
+  <?php if ($type == 'report') : ?>
+    <a class="report-attachment glyphicon glyphicon-paperclip" href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'school_period' => $context->getConfig('student/property/school_year/default'))) ?>" title="<?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?>"></a>
+  <?php endif;?>
+  </label>
+  <div class="col-sm-7">
+  <?php if ($type == 'report') : ?>
+    <select class="form-control select_value" id="select_value_<?php echo $account->id ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+    <?php foreach ($context->getConfig('student/property/reportMention')['modalities'] as $categoryId => $category) : ?>
+      <?php $caption = $category[$context->getLocale()]; ?>
+      <option value="<?php echo $categoryId ?>" <?php if ($note->results[$account->id]['note'] == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+    <?php endforeach;?>
+    </select>
+  <?php endif?>
+    <input class="form-control input_value" id="input_value_<?php echo $account->id ?>" placeholder="<?php echo $this->translate((in_array($type, ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($message == 'OK' && $note->links[$account->id]->value !== null) echo 'value="'.$context->formatFloat($note->links[$account->id]->value, 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
+    <div class="invalid-feedback" id="input_value_<?php echo $account->id ?>_error"></div>
+  </div>
+</div>
+
+<!-- Assessment -->
+<div class="form-group row" id="assessment_<?php echo $account->id ?>_group">
+  <label class="col-sm-5 col-form-label">&nbsp;</label>
+  <div class="col-sm-7">
+    <textarea rows="6" class="form-control" id="assessment_<?php echo $account->id ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Assessment', 'ppit-studies', $context->getLocale()) ?>"><?php if ($message == 'OK') echo $note->results[$account->id]['assessment'] ?></textarea>
+    <div class="invalid-feedback" id="assessment_<?php echo $account->id ?>_error"></div>
+  </div>
+</div>
+
+<?php endforeach;?>
+
+<?php if ($message == 'OK') : ?>
+<!-- Class average -->
+<div class="form-group row">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Class average', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" value="<?php echo $context->formatFloat($note->average_note, 2) ?>" disabled="disabled" />
+  </div>
+</div>
+
+<!-- Highest note -->
+<div class="form-group row">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Highest note', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" value="<?php echo $context->formatFloat($note->higher_note, 2) ?>" disabled="disabled" />
+  </div>
+</div>
+
+<!-- Lowest note -->
+<div class="form-group row">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Lowest note', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" value="<?php echo $context->formatFloat($note->lower_note, 2) ?>" disabled="disabled" />
+  </div>
+</div>
+<?php endif;?>
+
+<!-- Class observations -->
+<div class="form-group row" id="observations_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Observations', 'ppit-core', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Observations for the class', 'ppit-studies', $context->getLocale()) ?>"></textarea>
+    <div class="invalid-feedback" id="observations_error"></div>
+  </div>
+</div>
+
+<!-- Comment -->
+<div class="form-group row" id="comment_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Internal comment (non visible to the parents)', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+    <div class="invalid-feedback" id="comment_error"></div>
+  </div>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="down-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>

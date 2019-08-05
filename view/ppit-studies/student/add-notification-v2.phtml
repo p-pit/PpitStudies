@@ -1,0 +1,241 @@
+<?php if ($message == 'OK') : ?>
+
+<!-- Global message -->
+<div id="message">
+  <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
+</div>
+
+<?php endif;?>
+
+<?php if ($error == 'Duplicate') : ?>
+
+<!-- Duplicate error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('This record already exist', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Isolation') : ?>
+
+<!-- Isolation error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The database has evolved in the meantime, please input again', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Consistency') : ?>
+
+<!-- Consistency error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The data are not consistent', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<!-- CSRF -->
+<?php $element = $csrfForm->get('csrf') ?>
+<div class="form-group">
+  <?php echo $this->formElement($element) ?>
+<?php if ($this->formElementErrors($element)) : ?>
+  <h5 class="alert alert-danger my-3 text-center"><?php echo $this->translate('The form has expired, please input again', 'ppit-core', $context->getLocale()) ?></h5>
+<?php endif;?>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="up-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Title -->
+<div class="form-group row" id="title_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $this->translate('Title', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="title" value="<?php echo $notification->title ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="title_error"></div>
+  </div>
+</div>
+		
+<!-- Begin date -->
+<?php $beginDate = ($notification->begin_date) ? $notification->begin_date : Date('Y-m-d') ?>
+<input type="hidden" id="begin_date" />
+<div class="form-group row" id="input_begin_date_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Display start', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_begin_date" value="<?php echo $context->decodeDate($beginDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_begin_date_error"></div>
+  </div>
+</div>
+
+<!-- End date -->
+<?php $endDate = ($notification->end_date) ? $notification->end_date : null ?>
+<input type="hidden" id="end_date" />
+<div class="form-group row" id="input_end_date_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Display end', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_end_date" value="<?php echo $context->decodeDate($endDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_end_date_error"></div>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="form-group row" id="content_group">
+  <div class="col-sm-12">
+    <textarea class="form-control" rows="8" id="content" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $notification->content ?></textarea>
+    <div class="invalid-feedback" id="content_error"></div>
+  </div>
+</div>
+
+<!-- Preview -->	
+<div class="form-group row">
+  <label class="col-sm-5 col-form-label">&nbsp;</label>
+  <div class="col-sm-7"><?php echo $this->translate('Preview', 'ppit-core', $context->getLocale()) ?> (<a id="content-label"><?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?></a>)</div>
+</div>
+<div id="content-panel" class="panel panel-default">
+  <div class="panel-body">
+		
+<?php if ($notification->image) : ?>
+    <div align="center">
+  <?php if (array_key_exists('href', $notification->image)) : ?>
+      <a href="<?php echo $notification->image['href'] ?>" target="<?php echo (array_key_exists('target', $notification->image)) ? $notification->image['target'] : '_blank' ?>">
+  <?php endif;?>
+        <img 
+  <?php foreach ($notification->image as $attr => $value) : ?>
+    <?php if ($attr == 'src') : ?>
+          src="<?php echo $this->basePath($value) ?>"
+    <?php elseif ($attr != 'href' && $attr != 'target') : ?>
+          <?php echo $attr ?>="<?php echo $value ?>"
+    <?php endif;?>
+  <?php endforeach;?>
+        />
+  <?php if (array_key_exists('href', $notification->image)) : ?>
+      </a>
+  <?php endif;?>
+    </div>
+<?php endif;?>
+			
+    <div><?php echo $notification->content ?></div>
+  </div>
+</div>
+
+<?php if (!$isDisabled) : ?>
+<!-- Image -->
+  <?php
+  $images = array();
+  $dir = './public/img/'.$context->getInstance()->caption;
+  if ($dh = opendir($dir)) {
+    while (($file = readdir($dh)) !== false) {
+      if (substr($file, 0, 1) != '.' && preg_match('#\.(jpe?g|gif|png)$#i', $file)) $images[$file] = '/img/'.$context->getInstance()->caption.'/'.$file;
+    }
+    closedir($dh);
+  }
+  ?>
+<input type="hidden" id="image_src"  <?php if (array_key_exists('src', $notification->image)) echo ' value="'.$notification->image['src'].'"' ?>/>
+		
+<div style="text-align: center" id="image-preview">
+  <button type="button" id="image-delete-btn" class="btn btn-default" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale())?>">
+    <span class="glyphicon glyphicon-remove" id="group-glyphicon"></span>
+  </button>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+		
+  <?php foreach ($images as $name => $path) : ?>
+  <input type="hidden" id="image_<?php echo substr($name, 0, strpos($name, '.')) ?>" value="<?php echo $path?>" />
+    <a class="image-select" id="image-select_<?php echo substr($name, 0, strpos($name, '.')) ?>" <?php if (array_key_exists('src', $notification->image) && $notification->image['src'] == $path) echo 'style="border-style: solid"' ?>>
+      <img width="30" src="<?php echo $this->basePath($path) ?>"/>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <?php endforeach;?>
+</div>
+<div>&nbsp;</div>
+
+<div class="form-group row">
+  <label class="col-sm-5 col-form-label">&nbsp;</label>
+  <div class="col-sm-5">
+    <input type="file" id="image-upload" class="form-control" />
+  </div>
+  <div class="col-sm-2">
+    <button type="button" id="image-upload-btn" class="btn btn-warning" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale())?>">
+      <span class="glyphicon glyphicon-cloud-upload" id="group-glyphicon"></span>
+    </button>
+  </div>
+</div>
+<div>&nbsp;</div>
+
+<div class="form-group row" id="image_style_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Positioning', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="image_style" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option value="float:none" <?php if (array_key_exists('style', $notification->image) && $notification->image['style'] == 'float:none') echo ' selected="selected"' ?>><?php echo $this->translate('Default', 'ppit-commitment', $context->getLocale()) ?></option>
+      <option value="float:left" <?php if (array_key_exists('style', $notification->image) && $notification->image['style'] == 'float:left') echo ' selected="selected"' ?>><?php echo $this->translate('Left', 'ppit-commitment', $context->getLocale()) ?></option>
+      <option value="float:right" <?php if (array_key_exists('style', $notification->image) && $notification->image['style'] == 'float:right') echo ' selected="selected"' ?>><?php echo $this->translate('Right', 'ppit-commitment', $context->getLocale()) ?></option>
+    </select>
+    <div class="invalid-feedback" id="image_style_error"></div>
+  </div>
+</div>
+
+<div class="form-group row" id="image_width_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Width in pixels', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="image_width" value="<?php echo (array_key_exists('width', $notification->image)) ? $notification->image['width'] : '30' ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="image_width_error"></div>
+  </div>
+</div>
+
+<div class="form-group row" id="image_href_group">
+  <label class="col-sm-5 control-label"><?php echo $this->translate('Linked URL', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="image_href" <?php if (array_key_exists('href', $notification->image)) echo 'value="'.$notification->image['href'].'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="image_href_error"></div>
+  </div>
+</div>
+
+<hr/>
+<?php endif;?>
+
+<div class="form-group row">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">&nbsp;</div>
+</div>
+
+<div class="form-group row" id="attachment_label_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Caption', 'ppit-core', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="attachment_label" value="<?php echo $notification->attachment_label ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="attachment_label_error"></div>
+  </div>
+</div>
+
+<div class="form-group row" id="attachment_path_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('File name', 'ppit-commitment', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="attachment_path" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($documentList as $document) : ?>
+      <option value="<?php echo $document ?>" <?php if ($notification->attachment_path == $document) echo 'selected="selected"' ?>><?php echo $document ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="attachment_path_error"></div>
+  </div>
+</div>
+
+<hr/>
+
+<!-- Comment -->
+<?php if (!$isDisabled) : ?>
+<div class="form-group row" id="comment_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Comment (non visible to the student)', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <textarea class="form-control" id="comment"></textarea>
+  </div>
+  <div class="invalid-feedback" id="comment_error"></div>
+</div>
+<?php endif;?>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="down-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>

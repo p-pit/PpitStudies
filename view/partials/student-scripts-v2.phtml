@@ -1,0 +1,1344 @@
+<?php echo $this->partial('/partials/search-scripts-v2') ?>
+
+<script>
+
+var criterion = 'n_fn', dir = 'ASC';
+
+function getStudentSearch()
+{
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET", '<?php echo $this->url('student/searchV2') ?>', false);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      document.getElementById('index_panel').innerHTML = xhttp.responseText;
+      <?php
+      $todoTitle = $this->translate('todo list', 'ppit-core', $context->getLocale());
+      ?>
+      $('#mode-text').text('<?php echo $todoTitle ?>');
+          
+      // Connect the erase button that reset all the search engine inputs and checks and refresh the list
+      $('#erase-button').click(function() {
+        $('.search_input').val('');
+        $('.search_selectpicker').selectpicker('refresh');
+        $('.search_check_value').val('0');
+        $('.search_check').removeClass('btn-secondary').addClass('btn-default').removeClass('active');
+        $('#erase-button').removeClass('btn-success').addClass('btn-default');
+        $('#erase-button').attr('disabled', 'disabled');
+        getStudentList(getSearchParams(''));
+      });
+       
+      $('.search_selectpicker').selectpicker('refresh');
+            
+      // Connect the date picker on date inputs
+      $('.search_input_date').datepicker();
+       
+      // Trigger the change event on search inputs and refresh the list
+      $('.search_input').change(function () {
+        if ($(this).attr('id')) {
+          var propertyId = $(this).attr('id').split('-')[1];
+          $('#erase-button').removeClass('btn-default').addClass('btn-success');
+          $('#erase-button').attr('disabled', false);
+          $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
+          $('#search_check_value-' + propertyId).val('1');
+        getStudentList(getSearchParams(''));
+        }
+      }); 
+
+      // Trigger the keyup event on search inputs and refresh the list
+      $('.search_input').keyup(function () {
+        if ($(this).attr('id')) {
+          if ($(this).val().length > 2) {
+            var propertyId = $(this).attr('id').split('-')[1];
+            $('#erase-button').removeClass('btn-default').addClass('btn-success');
+            $('#erase-button').attr('disabled', false);
+            $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
+            $('#search_check_value-' + propertyId).val('1');
+            getStudentList(getSearchParams(''));
+          }
+        }
+      });
+
+      // Trigger the click event on per-property checks (allowing to search on empty values) and refresh the list
+      $('.search_check').click(function() {
+        $('#erase-button').removeClass('btn-default').addClass('btn-success');
+        $('#erase-button').attr('disabled', false);
+        var propertyId = $(this).attr('id').split('-')[1], check = 'search_check_value-' + propertyId;
+        if ($('#' + check).val() == '1') {
+          $(this).removeClass('btn-secondary').addClass('btn-default').removeClass('active');
+          $('#' + check).val('0');
+          $('#search-' + propertyId).val('');
+          $('#search_min-' + propertyId).val('');
+          $('#search_max-' + propertyId).val('');
+          $('#search-' + propertyId).selectpicker('refresh');
+        }
+        else {
+          $(this).removeClass('btn-default').addClass('btn-secondary').addClass('active');
+          $('#' + check).val('1');
+        }
+        getStudentList(getSearchParams(''));
+      });
+
+      getStudentList(getSearchParams(''));
+    }
+  }
+  xhttp.send();
+}
+
+// Load the list
+function getStudentList(params) {		
+
+	// Execute the ajax request
+	route = '<?php echo $this->url('student/listV2') ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('account-list-panel').innerHTML = xhttp.responseText;
+          
+          // Connect the sort anchors
+          $('.sort_anchor').click(function () {
+            criterion = $(this).attr('id').split('-')[0];
+            ascCriterion = $('.sort_anchor_up').attr('id');
+            descCriterion = $('.sort_anchor_down').attr('id');
+            if (criterion + '-anchor' == ascCriterion) dir = 'DESC';
+            else if (criterion + '-anchor' == descCriterion) dir = 'ASC';
+            else dir = 'ASC';
+            getStudentList(getSearchParams(''));
+          });
+          
+          // Able the group action button
+          $('.account-group-anchor').prop('disabled', true);
+          $('.account-checkbox').click(function () {
+            $('.account-group-anchor').prop('disabled', false);
+          });
+
+          // Connect the check all checkbox
+          $('#account-checkbox').click(function () {
+            let current = $('#account-checkbox').prop('checked');
+            $('.account-checkbox').prop('checked', (current) ? true : false);
+          });
+          $('#down-account-checkbox').click(function () {
+            let current = $('#down-account-checkbox').prop('checked');
+            $('.account-checkbox').prop('checked', (current) ? true : false);
+          });
+          
+          // Connect the grouped actions anchors
+          $('.account-group-anchor').click(function () {
+            getStudentGroup();
+          });
+
+          // Connect the detail anchors
+          $('.account-detail-anchor').click(function () {
+            var id = $(this).attr('id').split('_')[1];
+            getStudentHome(id);
+            $(this).removeClass("btn-outline-primary").addClass("btn-primary");
+          });
+		}
+
+        // Refresh the list on modal close
+		$("#modalForm").on("hidden.bs.modal", function () {
+			$('.account-detail-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
+            $('.account-group-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
+		});
+
+        $('[data-toggle="tooltip"]').tooltip();
+	}
+	xhttp.send();
+}
+
+// Retrieve the events
+function getEvents(id) {
+
+	// Execute the ajax request
+	route = '<?php echo $this->url('studentEvent/planning') ?>?account_id=' + id;
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+		    $('#calendar').fullCalendar({
+		    	lang: '<?php echo substr($context->getLocale(), 0, 2) ?>',
+		        defaultView: 'agendaWeek',
+		        minTime: '08:00:00'
+		    });
+			obj = jQuery.parseJSON(xhttp.responseText);
+
+			jQuery.each(obj.planning, function (name, value) {
+				var color = 'lightBlue', textColor = 'black';			
+<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+	<?php foreach ($category['color'] as $color => $unused) : ?>
+				if (value.properties['category'] == '<?php echo $categoryId ?>') {
+					color = '<?php echo $color ?>';
+					textColor = 'white';
+				}
+	<?php endforeach;?>
+<?php endforeach;?>
+
+				var title = '';
+				if (value.properties['property_3']) title += value.properties['property_3'];
+				if (value.properties['property_3'] && value.properties['caption']) title += ' - ';
+				if (value.properties['caption']) title += value.properties['caption'];
+				if (value.properties['location']) title += ' (' + value.properties['location'] + ')';
+				var event={
+					id:value.id,
+					title: title,
+					color: color,
+					textColor: textColor,
+					start:  $.fullCalendar.moment(value.properties['begin_date'] + ' ' + value.properties['begin_time']), 
+					end:  $.fullCalendar.moment(value.properties['begin_date'] + ' ' + value.properties['end_time'])
+				};
+				$('#calendar').fullCalendar('renderEvent', event, true);
+			});
+
+			jQuery.each(obj.events, function (name, value) {
+				var color = 'lightBlue', textColor = 'black';			
+<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+	<?php foreach ($category['color'] as $color => $unused) : ?>
+				if (value.category == '<?php echo $categoryId ?>') {
+					color = '<?php echo $color ?>';
+					textColor = 'white';
+				}
+	<?php endforeach;?>
+<?php endforeach;?>
+
+				var event={
+					id:value.id,
+					title: value.title + ' (' + value.location + ')',
+					color: color,
+					textColor: textColor,
+					start:  $.fullCalendar.moment(value.begin_time), 
+					end:  $.fullCalendar.moment(value.end_time)
+				};
+				$('#calendar').fullCalendar('renderEvent', event, true);
+			});
+		}
+	}
+	xhttp.send();
+}
+
+// Load the detail panel
+function connectNewsFlashTab(route, id) {
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
+			getEvents(id);
+		}
+	}
+	xhttp.send();
+}
+
+// Load the detail panel
+function connectStudentTab(route) {
+	var isAbsenceOpen = false, isLatenessOpen = false, isEventOpen = true, isHomeworkOpen = true, isEvaluationOpen = true;
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
+			
+			$('#absence-panel').hide(); 
+			$('#absence-button').click(function() { 
+				if (isAbsenceOpen) {
+					$('#absence-panel').hide(); 
+					$('#absence-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isAbsenceOpen = false;
+				}
+				else {
+					$('#absence-panel').show(); 
+					$('#absence-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isAbsenceOpen = true;
+				}
+			});
+
+			$('#lateness-panel').hide(); 
+			$('#lateness-button').click(function() { 
+				if (isLatenessOpen) {
+					$('#lateness-panel').hide(); 
+					$('#lateness-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isLatenessOpen = false;
+				}
+				else {
+					$('#lateness-panel').show(); 
+					$('#lateness-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isLatenessOpen = true;
+				}
+			});
+
+			$('#event-button').click(function() { 
+				if (isEventOpen) {
+					$('#event-panel').hide(); 
+					$('#event-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isEventOpen = false;
+				}
+				else {
+					$('#event-panel').show(); 
+					$('#event-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isEventOpen = true;
+				}
+			});
+
+			$('#homework-button').click(function() { 
+				if (isHomeworkOpen) {
+					$('#homework-panel').hide(); 
+					$('#homework-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isHomeworkOpen = false;
+				}
+				else {
+					$('#homework-panel').show(); 
+					$('#homework-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isHomeworkOpen = true;
+				}
+			});
+
+			$('#evaluation-button').click(function() { 
+				if (isEvaluationOpen) {
+					$('#evaluation-panel').hide(); 
+					$('#evaluation-button').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					isEvaluationOpen = false;
+				}
+				else {
+					$('#evaluation-panel').show(); 
+					$('#evaluation-button').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					isEvaluationOpen = true;
+				}
+			});
+
+			$('.report-button').click(function() { 
+				id = $(this).attr('id').split('_')[1];
+				if ($('#is-report-open_' + id).val() == 1) {
+					$('#report-panel_' + id).hide(); 
+					$('#report-button_' + id).removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+					$('#is-report-open_' + id).val(0);
+				}
+				else {
+					$('#report-panel_' + id).show(); 
+					$('#report-button_' + id).removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
+					$('#is-report-open_' + id).val(1);
+				}
+			});
+		}
+	}
+	xhttp.send();
+}
+
+// Load the detail panel
+function getStudentHome(id) {
+
+	var route = '<?php echo $this->url('student/studentHomeV2') ?>/' + id;
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+		  $('#modalForm').html(xhttp.responseText);
+
+          $('#modalForm').modal('toggle');
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#account-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
+}
+
+/////////////////////////
+// student/addAbsence //
+/////////////////////////
+
+<?php 
+$properties = array();
+$properties['category'] = array('type' => 'select', 'mandatory' => true);
+$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
+$properties['motive'] = array('type' => 'select', 'mandatory' => false);
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => true);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['duration'] = array('type' => 'number', 'mandatory' => false, 'minValue' => 0, 'maxValue' => 999);
+$properties['subject'] = array('type' => 'select', 'mandatory' => false);
+$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['update_time'] = array('type' => 'hidden');
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Absence', 'context' => $context, 'properties' => $properties)) 
+?>
+
+<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
+
+function connectAdd<?php echo $typeId ?>AbsenceForm()
+{
+		// Check validity
+		var validity = checkAbsenceUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (i = 0; i < accountNumber; i++) {
+				formData.append('account_' + i, $('#group-account_' + i).val());
+			}
+			formData.append('nb-account', i);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', $('#<?php echo $propertyId ?>').val());
+<?php endforeach ?>
+			formData.append('duration', $('#duration').val());
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addAbsenceV2', array('type' => $typeId)) ?>';
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 && xhttp.status == 200) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+}
+
+function getAdd<?php echo $typeId?>Absence() {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addAbsenceV2', array('type' => $typeId)) ?>';
+	var formData = new FormData();
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('POST', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
+
+			$('#input_begin_date').datepicker();
+            $('#input_end_date').datepicker();
+
+			if ($('#category').val() != 'absence') $('#input_end_date_group').hide();
+			$('#category').change(function () {
+				if ($('#category').val() == 'absence') $('#input_end_date_group').show();
+				else $('#input_end_date_group').hide();
+			});
+			$('#category').focus();
+
+          $('#up-submit-button').click(function () { connectAdd<?php echo $typeId ?>AbsenceForm(); });
+          $('#down-submit-button').click(function () { connectAdd<?php echo $typeId ?>AbsenceForm(); });
+		}
+	}
+	xhttp.send(formData);
+
+  // Highlight the clicked button (and only it in its class)
+  $('.action-btn').removeClass('active');
+  $('#<?php echo $typeId ?>-absence-add-anchor').addClass('active');
+}
+
+<?php endforeach;?>
+
+//////////////////////
+// student/addEvent //
+//////////////////////
+
+<?php 
+$properties = array();
+
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['begin_h'] = array('type' => 'select', 'mandatory' => false);
+$properties['begin_m'] = array('type' => 'select', 'mandatory' => false);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['end_h'] = array('type' => 'select', 'mandatory' => false);
+$properties['end_m'] = array('type' => 'select', 'mandatory' => false);
+$properties['location'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
+$properties['title'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Event', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function postAddEventForm(category)
+{
+		// Check validity
+		var validity = checkEventUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+			}
+			formData.append('nb-account', accountNumber);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addEventV2') ?>/' + category;
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeAttr('primary');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+}
+
+function getAddEvent(category) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addEventV2') ?>/' + category;
+	var formData = new FormData();
+
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+
+			$('#input_begin_date').datepicker();
+            $('#input_end_date').datepicker();
+
+			$('#subject').focus();
+
+            $('#up-submit-button').click(function () { postAddEventForm(category); });
+            $('#down-submit-button').click(function () { postAddEventForm(category); });
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass('active');
+	$('#' + category + '-event-add-anchor').addClass('active');
+}
+
+/////////////////////
+// student/addNote //
+/////////////////////
+
+<?php 
+$properties = array();
+$properties['place_id'] = array('type' => 'select', 'mandatory' => true);
+$properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
+$properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['date'] = array('type' => 'date', 'mandatory' => true);
+$properties['type'] = array('type' => 'select', 'mandatory' => true);
+$properties['target_date'] = array('type' => 'date', 'mandatory' => true);
+$properties['observations'] = array('type' => 'ckeditor', 'mandatory' => true, 'maxSize' => 2047);
+$properties['document'] = array('type' => 'dropbox', 'mandatory' => false);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
+?>
+
+var currentPlaceId = '', currentClass = '', currentSubject = '', currentType = '';
+
+function postAddNoteForm(classe)
+{
+		// Check validity
+		var validity = checkNoteUpdateProperties();
+
+		if (validity) {
+
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+			}
+			formData.append('nb-account', accountNumber);
+
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+	<?php if ($property['type'] == 'ckeditor') : ?>
+			formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
+	<?php else : ?>	
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+	<?php endif;?>
+    <?php if ($propertyId == 'place_id') : ?>
+                currentPlaceId = $('#place_id').val();
+    <?php elseif ($propertyId == 'class') : ?>
+                currentClass = $('#class').val();
+    <?php elseif ($propertyId == 'school_period') : ?>
+                currentPeriod = $('#school_period').val();
+    <?php elseif ($propertyId == 'subject') : ?>
+                currentSubject = $('#subject').val();
+    <?php elseif ($propertyId == 'type') : ?>
+                currentType = $('#type').val();
+    <?php endif;?>
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addNoteV2', array('type' => 'homework')) ?>';
+			if (classe) route += '/' + classe;
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('active');
+
+					CKEDITOR.replace('observations');
+			
+					if ($('#type').val() == 'done-work') {
+						$('#input_target_date_group').hide();
+						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['done-work'] ?>');
+					}
+					else if ($('#type').val() == 'todo-work') {
+						$('#input_target_date_group').show();
+						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['todo-work'] ?>');
+					}
+					else {
+						$('#input_target_date_group').show();
+						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['event'] ?>');
+					}
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+}
+
+function getAddNote(classe) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addNoteV2', array('type' => 'homework')) ?>';
+	if (classe) route += '/' + classe;
+	var formData = new FormData();
+
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('POST', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+			
+            if (!$('#place_id').val()) $('#place_id').val(currentPlaceId);
+            if (!$('#class').val()) $('#class').val(currentClass);
+            $('#subject').val(currentSubject);
+            $('#type').val(currentType);
+
+            $('#input_date').datepicker();
+            $('#input_target_date').datepicker();
+
+			$('#school_year').focus();
+			
+			CKEDITOR.replace('observations');
+
+			$('#input_target_date_group').hide();
+			$('#type').change(function () { 
+				if ($('#type').val() == 'done-work') {
+					$('#input_target_date_group').hide();
+					$('#observations_group').css('background-color', 'LightGreen');
+				}
+				else if ($('#type').val() == 'todo-work') {
+					$('#input_target_date_group').show();
+					$('#observations_group').css('background-color', 'LightSalmon');
+				}
+				else {
+					$('#input_target_date_group').show();
+					$('#observations_group').css('background-color', 'LightBlue');
+				}
+			});
+
+	        $('#up-submit-button').click(function () { postAddNoteForm(); });
+	        $('#down-submit-button').click(function () { postAddNoteForm(); });
+		}
+	}
+	xhttp.send(formData);
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass('active');
+	$('#note-add-anchor').addClass('active');
+}
+
+///////////////////////////
+// student/addEvaluation //
+///////////////////////////
+
+<?php 
+$properties = array();
+$properties['place_id'] = array('type' => 'select', 'mandatory' => true);
+$properties['class'] = array('type' => 'select', 'mandatory' => true);
+$properties['level'] = array('type' => 'select', 'mandatory' => false);
+$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
+//$properties['teacher_n_fn'] = array('type' => 'text', 'mandatory' => true);
+$properties['teacher_id'] = array('type' => 'select', 'mandatory' => true);
+$properties['subject'] = array('type' => 'select', 'mandatory' => true);
+$properties['date'] = array('type' => 'date', 'mandatory' => true);
+$properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
+$properties['weight'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
+$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Evaluation', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function postAddEvaluationForm(type, classe)
+{
+		// Check validity
+		var validity = checkEvaluationUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+
+				value = $('#input_value_' + account_id).val();
+				if (value != '') {
+					error = checkNumber(value, 0, 100);
+					if (error) {
+						renderElement('input_value_' + account_id, error);
+						validity = false;
+					}
+				    else { 
+						renderElement('input_value_' + account_id, null);
+						value = getNumber(value, 2);
+						$('#value_' + account_id).val(value);
+					}
+				}
+				
+				formData.append('value_' + account_id, value);
+
+				mention = $('#select_value_' + account_id).val();
+				formData.append('mention_' + account_id, mention);
+
+				formData.append('assessment_' + account_id, $('#assessment_' + account_id).val());
+			}
+			formData.append('nb-account', accountNumber);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addEvaluationV2') ?>/' + type;
+			if (classe) route += '/' + classe;
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('active');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+}
+
+function getAddEvaluation(type, classe) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addEvaluationV2') ?>/' + type;
+	if (classe) route += '/' + classe;
+	var formData = new FormData();
+
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('POST', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+            $('#input_date').datepicker();
+			$('.report-attachment').hide();
+			$('#subject').change(function () {
+				if ($('#subject').val() == 'global') $('.report-attachment').show();
+				else $('.report-attachment').hide();
+			});
+
+			if (type == 'report') {
+				$('.select_value').hide();
+				$('#subject').change(function () { 
+					if ($('#subject').val() == 'global') {
+						$('.select_value').show();
+					}
+					else {
+						$('.select_value').hide();
+					}
+				});
+			}
+
+			$('#subject').focus();
+
+          $('#up-submit-button').click(function () { postAddEvaluationForm(type, classe); });
+          $('#down-submit-button').click(function () { postAddEvaluationForm(type, classe); });
+		}
+	}
+	xhttp.send(formData);
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass('active');
+	if (type == 'note') $('#evaluation-add-anchor').addClass('active');
+	else if (type == 'report') $('#report-add-anchor').addClass('active');
+	else if (type == 'exam') $('#exam-add-anchor').addClass('active');
+}
+
+/////////////////////////////
+// student/addNotification //
+/////////////////////////////
+
+function connectContentPanel()
+{
+	$('#content-panel').hide();
+	$('#content-label').click(function () {
+		if ($('#content-label').text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#content-panel').show();
+			$('#content-label').text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+		}
+		else {
+			$('#content-panel').hide();
+			$('#content-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+		}
+	});
+}
+
+function uploadImage()
+{
+	// Create a new FormData object.
+	var formData = new FormData();
+
+	// Get the uploaded images
+	var fileSelect = document.getElementById('image-upload');
+	if (fileSelect) {
+		var files = fileSelect.files;
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			formData.append('order_form', file, file.name);
+		}
+	}
+
+	var xhttp = new XMLHttpRequest();
+	var route, target;
+	route = '<?php echo $this->url('instance/addImage') ?>';
+	xhttp.open('POST', route, true);
+	// Set up a handler for when the request finishes.
+	xhttp.onload = function () {
+		if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('image-preview').innerHTML = xhttp.responseText;
+			$('.image-select').each(function () {
+				$(this).click(function () {
+					$('.image-select').css('border-style', 'none');
+					$(this).css('border-style', 'solid');
+					$('#image_src').val($('#image_' + $(this).attr('id').split('_')[1]).val());
+				});
+			});
+			
+			$('#image-delete-btn').click(function () {
+				$('.image-select').css('border-style', 'none');
+				$('#image_src').val('');
+			});
+		}
+	};
+	xhttp.send(formData);
+}
+
+<?php 
+$properties = array();
+
+$properties['title'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 255);
+$properties['content'] = array('type' => 'ckeditor', 'mandatory' => false, 'maxSize' => 16777215);
+$properties['image_src'] = array('type' => 'select', 'mandatory' => false);
+$properties['image_style'] = array('type' => 'select', 'mandatory' => false);
+$properties['image_width'] = array('type' => 'input', 'mandatory' => false, 'maxSize' => 255);
+$properties['image_href'] = array('type' => 'input', 'mandatory' => false, 'maxSize' => 255);
+$properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
+$properties['attachment_label'] = array('type' => 'input', 'mandatory' => false, 'maxSize' => 255);
+$properties['attachment_path'] = array('type' => 'select', 'mandatory' => false);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Notification', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function postAddNotificationForm(category)
+{
+		// Check validity
+		var validity = checkNotificationUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (var i = 0; i < accountNumber; i++) {
+				account_id = $('#group-account_' + i).val();
+				formData.append('account_' + i, account_id);
+			}
+			formData.append('nb-account', accountNumber);
+
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+	<?php if ($property['type'] == 'ckeditor') : ?>
+			formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
+	<?php else : ?>	
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+	<?php endif;?>
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addNotificationV2') ?>/' + category;
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+					$('.action-btn').removeClass('active');
+					CKEDITOR.replace('content');
+					connectContentPanel();
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+}
+
+function getAddNotification(category) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addNotificationV2') ?>/' + category;
+	var formData = new FormData();
+
+	var criteriaNumber = $('#group-nb-criteria').val();
+	for (i = 0; i < criteriaNumber; i++) {
+		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+	}
+	formData.append('nb-criteria', i);
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+
+			$('#input_begin_date').datepicker();
+            $('#input_end_date').datepicker();
+
+			CKEDITOR.replace('content');
+			connectContentPanel();
+      
+			$('#image-upload-btn').click(uploadImage);
+			$('#subject').focus();
+			$('.image-select').each(function () {
+				$(this).click(function () {
+					$('.image-select').css('border-style', 'none');
+					$(this).css('border-style', 'solid');
+					$('#image_src').val($('#image_' + $(this).attr('id').split('_')[1]).val());
+				});
+			});
+			
+			$('#image-delete-btn').click(function () {
+				$('.image-select').css('border-style', 'none');
+				$('#image_src').val('');
+			});
+
+            $('#up-submit-button').click(function () { postAddNotificationForm(category); });
+            $('#down-submit-button').click(function () { postAddNotificationForm(category); });
+		}
+	}
+	xhttp.send();
+
+  // Highlight the clicked button (and only it in its class)
+  $('.action-btn').removeClass('active');
+  $('#' + category + '-notification-add-anchor').addClass('active');
+}
+
+/////////////////////////
+// student/addProgress //
+/////////////////////////
+
+<?php 
+$properties = array();
+$properties['school_year'] = array('type' => 'select', 'mandatory' => true);
+$properties['period'] = array('type' => 'select', 'mandatory' => true);
+$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Progress', 'context' => $context, 'properties' => $properties)) 
+?>
+
+function postAddProgressForm(sport)
+{
+		// Check validity
+		var validity = checkProgressUpdateProperties();
+
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+
+			var criteriaNumber = $('#group-nb-criteria').val();
+			for (i = 0; i < criteriaNumber; i++) {
+				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+			}
+			formData.append('nb-criteria', i);
+
+			var accountNumber = $('#group-nb-account').val();
+			for (i = 0; i < accountNumber; i++) {
+				formData.append('account_' + i, $('#group-account_' + i).val());
+			}
+			formData.append('nb-account', i);
+			
+			// Get the properties values
+<?php foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+<?php endforeach ?>
+
+			var xhttp = new XMLHttpRequest();
+			var route, target;
+			route = '<?php echo $this->url('student/addProgressV2') ?>/' + sport;
+			target = 'grouped-action-panel';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 && xhttp.status == 200) {
+					document.getElementById(target).innerHTML = xhttp.responseText;
+//					filterProgressList();
+					$('.index-btn').removeClass('btn-primary').addClass('btn-default');
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+}
+
+function getAddProgress(sport) {
+	
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('student/addProgressV2') ?>/' + sport;
+
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;			
+            $('#input_date').datepicker();
+			
+            $('#up-submit-button').click(function () { postAddProgressForm(sport); });
+            $('#down-submit-button').click(function () { postAddProgressForm(sport); });
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.action-btn').removeClass('active');
+	$('#progress-add-anchor').addClass('active');
+}
+
+function getStudentGroup() {
+
+	var route = '<?php echo $this->url('student/groupV2') ?>';
+	var formData = new FormData();
+
+	var accountNumber = $('#account-number').val();
+	for (i = 0, j = 0; i < accountNumber; i++) {
+		if (document.getElementById('account-checkbox_' + i).checked) {
+			formData.append('account_' + j, $('#account_' + i).val());
+			j++;
+		}
+	}
+	formData.append('nb-account', j);
+
+	var sport;
+
+    $('.search_input_text').each(function () {
+      let propertyId = $(this).attr('id').split('-')[1];
+      formData.append(propertyId, $(this).val());
+    });
+
+    $('.search_input_select').each(function () {
+      let propertyId = $(this).attr('id').split('-')[1];
+      formData.append(propertyId, $(this).val());
+    });
+
+    $('.search_input_text_min').each(function () {
+      let propertyId = $(this).attr('id').split('-')[1];
+      formData.append('min_' + propertyId, $(this).val());
+    });
+
+    $('.search_input_text_max').each(function () {
+      let propertyId = $(this).attr('id').split('-')[1];
+      formData.append('max_' + propertyId, $(this).val());
+    });
+
+    $('.search_input_date_min').each(function () {
+      let propertyId = $(this).attr('id').split('-')[1];
+      formData.append('min_' + propertyId, $(this).val());
+    });
+
+    $('.search_input_date_max').each(function () {
+      let propertyId = $(this).attr('id').split('-')[1];
+      formData.append('max_' + propertyId, $(this).val());
+    });
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	xhttp.open("POST", route, true);
+	xhttp.onreadystatechange = function() {
+      if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+
+		    $('#modalForm').html(xhttp.responseText);
+	
+			$('.group-panel').hide();
+			$('#schooling-tab').addClass('active');
+			$('#schooling-panel').show();
+			
+			$('#news_flash-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('active');
+				$('.group-tab').removeClass('active');
+				$('#news_flash-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#news_flash-panel').show();
+			});
+
+			$('#sport-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('active');
+				$('.group-tab').removeClass('active');
+				$('#sport-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#sport-panel').show();
+			});
+
+			$('#schooling-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('active');
+				$('.group-tab').removeClass('active');
+				$('#schooling-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#schooling-panel').show();
+			});
+
+			$('#boarding_school-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('active');
+				$('.group-tab').removeClass('active');
+				$('#boarding_school-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#boarding_school-panel').show();
+			});
+
+			$('#medical-tab').click(function () {
+				$('#grouped-action-panel').hide();
+				$('.action-btn').removeClass('active');
+				$('.group-tab').removeClass('active');
+				$('#medical-tab').addClass('active');
+				$('.group-panel').hide();
+				$('#medical-panel').show();
+			});
+
+<?php foreach ($context->getConfig('absence')['types'] as $typeId => $type) : ?>
+			$('#<?php echo $typeId ?>-absence-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAdd<?php echo $typeId ?>Absence(); 
+			});
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentNotification/p-pit-studies')['category'] as $categoryId => $category) : ?>
+			$('#<?php echo $categoryId ?>-notification-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddNotification('<?php echo $categoryId ?>'); 
+			});
+<?php endforeach;?>
+
+<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+			$('#<?php echo $categoryId ?>-event-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddEvent('<?php echo $categoryId ?>'); 
+			});
+<?php endforeach;?>
+
+			$('#note-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddNote($('#search_property_7').val()); // Class
+			});
+
+			$('#evaluation-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddEvaluation('note', $('#search_property_7').val()); // Class
+			});
+
+			$('#report-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddEvaluation('report', $('#search_property_7').val()); // Class
+			});
+
+			$('#exam-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddEvaluation('exam', $('#search_property_7').val()); // Class
+			});
+
+			$('#progress-add-anchor').click(function () { 
+				$('#grouped-action-panel').show();
+				getAddProgress(sport); 
+			});
+
+            $('#modalForm').modal('toggle');
+
+            $('[data-toggle="tooltip"]').tooltip();
+		}
+	}
+	xhttp.send(formData);
+
+	// Highlight the clicked button (and only it in its class)
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+    $('.account-group-anchor').removeClass("btn-outline-primary").addClass("btn-primary");
+}
+
+// Session maintening
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open('GET', '<?php echo $this->url('user/maintainSession') ?>', true);
+  xhttp.send();
+}, 60000);
+
+getStudentSearch();
+
+$('#demo-student-menu').hide();
+
+// Transient
+function loadPanel(target, route)
+{
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET", route, false);
+  xhttp.send();
+  document.getElementById(target).innerHTML = xhttp.responseText;
+}
+
+</script>

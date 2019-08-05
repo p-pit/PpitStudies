@@ -1,0 +1,94 @@
+<?php if ($message == 'OK') : ?>
+
+<!-- Global message -->
+<div id="message">
+  <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
+</div>
+
+<?php endif;?>
+
+<?php if ($error == 'Duplicate') : ?>
+
+<!-- Duplicate error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('This record already exist', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Isolation') : ?>
+
+<!-- Isolation error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The database has evolved in the meantime, please input again', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Consistency') : ?>
+
+<!-- Consistency error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The data are not consistent', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<!-- CSRF -->
+<?php $element = $csrfForm->get('csrf') ?>
+<div class="form-group">
+  <?php echo $this->formElement($element) ?>
+<?php if ($this->formElementErrors($element)) : ?>
+  <h5 class="alert alert-danger my-3 text-center"><?php echo $this->translate('The form has expired, please input again', 'ppit-core', $context->getLocale()) ?></h5>
+<?php endif;?>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="up-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- School year -->
+<div class="form-group row" id="school_year_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="school_year" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+<?php foreach ($context->getConfig('student/property/school_year')['modalities'] as $schoolYearId => $schoolYear) : ?>
+      <option value="<?php echo $schoolYearId ?>"><?php echo $schoolYear[$context->getLocale()] ?></option>
+<?php endforeach;?>
+    </select>
+   <div class="invalid-feedback" id="school_year_error"></div>
+  </div>
+</div>
+
+<!-- Period -->
+<div class="form-group row" id="period_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Period', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($context->getConfig('student/property/discipline_period')['modalities'] as $periodId => $period) : ?>
+      <option value="<?php echo $periodId ?>"><?php echo $period[$context->getLocale()] ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="period_error"></div>
+  </div>
+</div>
+
+<!-- Comment -->
+<div class="form-group row" id="comment_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Comment', 'ppit-core', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+    <div class="invalid-feedback" id="comment_error"></div>
+  </div>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="down-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>

@@ -512,7 +512,16 @@ return array(
         										),
         								),
         						),
-        						'studentHome' => array(
+        						'indexV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index-v2[/:app][/:entryId]',
+        										'defaults' => array(
+        												'action' => 'indexV2',
+        										),
+        								),
+        						),
+	       						'studentHome' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/student-home[/:account_id]',
@@ -521,6 +530,18 @@ return array(
 		        								),
         										'defaults' => array(
         												'action' => 'studentHome',
+        										),
+        								),
+        						),
+	       						'studentHomeV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/student-home-v2[/:account_id]',
+		        								'constraints' => array(
+		        										'account_id'     => '[0-9]*',
+		        								),
+        										'defaults' => array(
+        												'action' => 'studentHomeV2',
         										),
         								),
         						),
@@ -542,7 +563,16 @@ return array(
         										),
         								),
         						),
-        						'list' => array(
+	       						'searchV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search-v2',
+        										'defaults' => array(
+        												'action' => 'searchV2',
+        										),
+        								),
+        						),
+	       						'list' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/list',
@@ -551,7 +581,16 @@ return array(
         										),
         								),
         						),
-        						'export' => array(
+	       						'listV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list-v2',
+        										'defaults' => array(
+        												'action' => 'listV2',
+        										),
+        								),
+        						),
+	       						'export' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/export',
@@ -572,12 +611,33 @@ return array(
 		        								),
 		        						),
 		        				),
+	       						'detailV2' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/detail-v2[/:id]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'detailV2',
+		        								),
+		        						),
+		        				),
 	       						'group' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/group[:type]',
         										'defaults' => array(
         												'action' => 'group',
+        										),
+        								),
+        						),
+	       						'groupV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/group-v2[:type]',
+        										'defaults' => array(
+        												'action' => 'groupV2',
         										),
         								),
         						),
@@ -590,12 +650,30 @@ return array(
         										),
         								),
         						),
+	       						'addAbsenceV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-absence-v2[/:type]',
+        										'defaults' => array(
+        												'action' => 'addAbsenceV2',
+        										),
+        								),
+        						),
 	       						'addEvent' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-event[/:category]',
         										'defaults' => array(
         												'action' => 'addEvent',
+        										),
+        								),
+        						),
+	       						'addEventV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-event-v2[/:category]',
+        										'defaults' => array(
+        												'action' => 'addEventV2',
         										),
         								),
         						),
@@ -608,12 +686,30 @@ return array(
         										),
         								),
         						),
+	       						'addNoteV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-note-v2[/:type][/:class]',
+        										'defaults' => array(
+        												'action' => 'addNoteV2',
+        										),
+        								),
+        						),
 	       						'addEvaluation' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-evaluation[/:type][/:class]',
         										'defaults' => array(
         												'action' => 'addEvaluation',
+        										),
+        								),
+        						),
+	       						'addEvaluationV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-evaluation-v2[/:type][/:class]',
+        										'defaults' => array(
+        												'action' => 'addEvaluationV2',
         										),
         								),
         						),
@@ -626,12 +722,30 @@ return array(
         										),
         								),
         						),
-	       						'addProgress' => array(
+	       						'addNotificationV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-notification-v2[/:category]',
+        										'defaults' => array(
+        												'action' => 'addNotificationV2',
+        										),
+        								),
+        						),
+				       			'addProgress' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-progress[/:type]',
         										'defaults' => array(
         												'action' => 'addProgress',
+        										),
+        								),
+        						),
+				       			'addProgressV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/add-progress-v2[/:type]',
+        										'defaults' => array(
+        												'action' => 'addProgressV2',
         										),
         								),
         						),
@@ -912,18 +1026,30 @@ return array(
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
 				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/studentHome', 'roles' => array('user')),
+				array('route' => 'student/studentHomeV2', 'roles' => array('user')),
 				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/searchV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/export', 'roles' => array('manager', 'coach', 'teacher')),
             	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'student/listV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/detailV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/groupV2', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/addAbsenceV2', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/addEventV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/addNote', 'roles' => array('manager', 'teacher')),
+				array('route' => 'student/addNoteV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addEvaluation', 'roles' => array('manager', 'teacher')),
+				array('route' => 'student/addEvaluationV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/addNotificationV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
+				array('route' => 'student/addProgressV2', 'roles' => array('manager', 'coach')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
 				array('route' => 'student/planning', 'roles' => array('guest')),
 				array('route' => 'student/file', 'roles' => array('guest')),
@@ -989,6 +1115,16 @@ return array(
 							'label' => array(
 									'en_US' => 'Students/Classes',
 									'fr_FR' => 'Elèves/Classes',
+							),
+					),
+					'studentV2' => array(
+							'route' => 'student/indexV2',
+							'params' => array('app' => 'p-pit-studies', 'type' => '', 'entryId' => 'studentV2'),
+							'urlParams' => array(),
+							'glyphicon' => 'glyphicon-list-alt',
+							'label' => array(
+									'en_US' => 'Students/Classes V2',
+									'fr_FR' => 'Elèves/Classes V2',
 							),
 					),
 					'planning' => array(

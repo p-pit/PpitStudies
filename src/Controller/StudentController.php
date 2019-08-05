@@ -83,6 +83,44 @@ class StudentController extends AbstractActionController
     	));
     }
 
+    public function indexV2Action()
+    {
+    	$context = Context::getCurrent();
+    	$config = $context->getConfig();
+    	$place = Place::get($context->getPlaceId());
+
+    	// Transient: Serialize a list of the entries from all menus
+    	$menuEntries = [];
+    	foreach ($context->getApplications() as $applicationId => $application) {
+    		if ($context->getConfig('menus/'.$applicationId)) {
+    			foreach ($context->getConfig('menus/' . $applicationId)['entries'] as $entryId => $entryDef) {
+    				$menuEntries[$entryId] = ['menuId' => $applicationId, 'menu' => $application, 'definition' => $entryDef];
+    			}
+    		}
+    	}
+    	$tab = $this->params()->fromRoute('entryId', 'student');
+
+    	// Retrieve the application
+    	$app = $menuEntries[$tab]['menuId'];
+    	$applicationName = $context->localize($menuEntries[$tab]['menu']['labels']);
+
+    	// Feed the layout
+    	$this->layout('/layout/core-layout');
+    	$this->layout()->setVariables(array(
+    		'context' => Context::getCurrent(),
+    		'title' => ['default' => 'Elèves/classes'],
+    		'place' => $place,
+    		'tab' => $tab,
+    		'app' => $app,
+    		'active' => 'application',
+    		'applicationName' => $applicationName,
+			'pageScripts' => '/partials/student-scripts-v2',
+    	));
+    	
+		$view = $this->indexAction();
+    	return $view;
+    }
+    
 	public function studentHomeAction()
     {
     	$context = Context::getCurrent();
@@ -100,6 +138,11 @@ class StudentController extends AbstractActionController
     	return $view;
 	}
 
+	public function studentHomeV2Action()
+	{
+		return $this->studentHomeAction();
+	}
+	
     public function registrationIndexAction()
     {
     	$context = Context::getCurrent();
@@ -173,6 +216,11 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+    
+    public function searchV2action()
+    {
+    	return $this->searchAction();
+    }
 
     public function getList()
     {
@@ -205,6 +253,11 @@ class StudentController extends AbstractActionController
     }
     
     public function listAction()
+    {
+    	return $this->getList();
+    }
+
+    public function listV2Action()
     {
     	return $this->getList();
     }
@@ -245,6 +298,11 @@ class StudentController extends AbstractActionController
     	return $view;
     }
     
+    public function detailV2Action()
+    {
+    	return $this->detailAction();
+    }
+    
     public function groupAction()
     {
     	// Retrieve the context
@@ -276,7 +334,7 @@ class StudentController extends AbstractActionController
        			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
        		}
        		else {
-				$value = ($request->getPost($propertyId) == 'null') ? null : $request->getPost($propertyId) == 'null'; // JS returns the string 'null' for multiple select input without selection
+				$value = ($request->getPost($propertyId) == 'null') ? null : $request->getPost($propertyId); // JS returns the string 'null' for multiple select input without selection
        			if ($value) $criteria[$propertyId] = $value;
        		}
        	}
@@ -292,6 +350,11 @@ class StudentController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
+    }
+    
+    public function groupV2Action()
+    {
+    	return $this->groupAction();
     }
 
     public function addAbsenceAction() {
@@ -399,6 +462,11 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+    
+    public function addAbsenceV2Action()
+    {
+    	return $this->addAbsenceAction();
+    }
 
     public function addEventAction() {
     
@@ -483,6 +551,11 @@ class StudentController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
+    }
+    
+    public function addEventV2Action()
+    {
+    	return $this->addEventAction();
     }
     
     public function addNoteAction() {
@@ -606,6 +679,11 @@ class StudentController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
+    }
+    
+    public function addNoteV2Action()
+    {
+    	return $this->addNoteAction();
     }
 
     public function addEvaluationAction() {
@@ -852,6 +930,11 @@ class StudentController extends AbstractActionController
     	return $view;
     }
     
+    public function addEvaluationV2Action()
+    {
+    	return $this->addEvaluationAction();
+    }
+    
     public function addNotificationAction() {
     
     	// Retrieve the context
@@ -968,6 +1051,11 @@ class StudentController extends AbstractActionController
     	return $view;
     }
     
+    public function addNotificationV2Action()
+    {
+    	return $this->addNotificationAction();
+    }
+    
 	public function addProgressAction() {
     	 
     	// Retrieve the context
@@ -1060,6 +1148,11 @@ class StudentController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
+    }
+    
+    public function addProgressV2Action()
+    {
+    	return $this->addProgressAction();
     }
 
 	public function planningAction()

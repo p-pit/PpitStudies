@@ -1,0 +1,210 @@
+<?php if ($message == 'OK') : ?>
+
+<!-- Global message -->
+<div id="message">
+  <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
+</div>
+
+<?php endif;?>
+
+<?php if ($error == 'Duplicate') : ?>
+
+<!-- Duplicate error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('This record already exist', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Isolation') : ?>
+
+<!-- Isolation error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The database has evolved in the meantime, please input again', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<?php if ($error == 'Consistency') : ?>
+
+<!-- Consistency error -->
+<div class="alert alert-danger my-3 text-center"><?php echo $this->translate('The data are not consistent', 'ppit-core', $context->getLocale()) ?></div>
+
+<?php endif;?>
+
+<!-- CSRF -->
+<?php $element = $csrfForm->get('csrf') ?>
+<div class="form-group">
+  <?php echo $this->formElement($element) ?>
+<?php if ($this->formElementErrors($element)) : ?>
+  <h5 class="alert alert-danger my-3 text-center"><?php echo $this->translate('The form has expired, please input again', 'ppit-core', $context->getLocale()) ?></h5>
+<?php endif;?>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="up-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<!-- Place -->
+<div class="form-group row" id="place_id_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/place')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="place_id" <?php if ($isDisabled || $note->place_id) echo 'disabled="disabled"'?>>
+      <option />
+  <?php foreach ($places as $place) : ?>
+      <option value="<?php echo $place->id ?>" <?php if ($note->place_id == $place->id) echo 'selected="selected"' ?>><?php echo $place->caption ?></option>
+  <?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="place_id_error"></div>
+  </div>
+</div>
+
+<!-- Class filtered on the user's accessibility perimeter -->
+<?php 
+$classes = array();
+if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('property_7', $context->getPerimeters()['p-pit-studies'])) {
+  foreach ($context->getPerimeters()['p-pit-studies']['property_7'] as $classId) {
+    $classes[$classId] = $context->getConfig('student/property/class')['modalities'][$classId];
+  }
+}
+else {
+  foreach ($context->getConfig('student/property/class')['modalities'] as $classId => $class) {
+    $classes[$classId] = $class;
+  }
+}
+?>
+
+<div class="form-group row" id="class_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/class')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
+      <option />
+  <?php foreach ($classes as $classId => $class) : ?>
+      <option value="<?php echo $classId ?>" <?php if ($classId == $note->class) echo 'selected="selected"' ?>><?php echo $class[$context->getLocale()] ?></option>
+  <?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="class_error"></div>
+  </div>
+</div>
+
+<!-- Evaluation period -->
+<div class="form-group row" id="school_period_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/school_period')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+  <?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $modalityId => $modality) : ?>
+      <option value="<?php echo $modalityId ?>" <?php if ($modalityId == $note->school_period) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
+  <?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="school_period_error"></div>
+  </div>
+</div>
+
+<!-- Subject -->
+<?php 
+if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('school_subject', $context->getPerimeters()['p-pit-studies'])) {
+  $modalities = array();
+  foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $modalityId) {
+    $modalities[$modalityId] = $context->getConfig('student/property/school_subject')['modalities'][$modalityId];	
+  }
+}
+else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
+?>
+<div class="form-group row" id="subject_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()] ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($modalities as $subjectId => $subject) : ?>
+  <?php $caption = $subject[$context->getLocale()] ?>
+      <option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="subject_error"></div>
+  </div>
+</div>
+
+<!-- Note date -->
+<?php $noteDate = ($note->date) ? $note->date : Date('Y-m-d') ?>
+<input type="hidden" id="date" />
+<div class="form-group row" id="input_date_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Notification date', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_date" value="<?php echo $context->decodeDate($noteDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_date_error"></div>
+  </div>
+</div>
+
+<!-- Type -->
+<div class="form-group row" id="type_group">
+  <label class="col-sm-5 col-form-label">* <?php echo $this->translate('Notification type', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <select class="form-control" id="type" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option value=""/>
+      <option value="done-work" <?php if ($note->type == 'done-work') echo 'selected="selected"' ?>><?php echo $this->translate('Done work', 'ppit-studies', $context->getLocale()) ?></option>
+      <option value="todo-work" <?php if ($note->type == 'todo-work') echo 'selected="selected"' ?>><?php echo $this->translate('Work to do', 'ppit-studies', $context->getLocale()) ?></option>
+      <option value="event" <?php if ($note->type == 'event') echo 'selected="selected"' ?>><?php echo $this->translate('Event', 'ppit-studies', $context->getLocale()) ?></option>
+    </select>
+    <div class="invalid-feedback" id="school_year_error"></div>
+  </div>
+</div>
+
+<!-- Target date -->
+<input type="hidden" id="target_date" />
+<?php $targetDate = ($note->target_date) ? $note->target_date : Date('Y-m-d') ?>
+<div class="form-group row" id="input_target_date_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Target date', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <input class="form-control" id="input_target_date" value="<?php echo $context->decodeDate($targetDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
+    <div class="invalid-feedback" id="input_target_date_error"></div>
+  </div>
+</div>
+
+<!-- Text -->
+<div class="form-group row" id="observations_group">
+  <div class="col-sm-12">
+    <textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
+    <div class="invalid-feedback" id="observations_error"></div>
+  </div>
+</div>
+		
+<!-- Document -->
+<div class="form-group row" id="document_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>
+<?php if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) : ?>
+  <?php $dropbox = $context->getConfig('ppitDocument')['dropbox'] ?>
+    <a class="glyphicon glyphicon-paperclip" href="<?php echo $dropbox['root'].$dropbox['folders']['schooling'].'/'.$note->document ?>" title="<?php echo $this->translate('Attachment', 'ppit-document', $context->getLocale()) ?>" target=".blank"></a>
+<?php endif;?>
+  </label>
+  <div class="col-sm-7">
+    <select class="form-control" id="document" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+      <option />
+<?php foreach ($documentList as $document) : ?>
+      <option value="<?php echo $document ?>" <?php if ($note->document == $document) echo 'selected="selected"' ?>><?php echo $document ?></option>
+<?php endforeach;?>
+    </select>
+    <div class="invalid-feedback" id="document_error"></div>
+  </div>
+</div>
+
+<!-- Comment -->
+<div class="form-group row" id="comment_group">
+  <label class="col-sm-5 col-form-label"><?php echo $this->translate('Internal comment (non visible to the parents)', 'ppit-studies', $context->getLocale()) ?></label>
+  <div class="col-sm-7">
+    <textarea class="form-control" id="comment" <?php if ($isDisabled) echo 'disabled="disabled"'?>></textarea>
+    <div class="invalid-feedback" id="comment_error"></div>
+  </div>
+</div>
+
+<?php if ($message != 'OK') : ?>
+<div class="form-group row">
+  <div class="col-sm-5">&nbsp;</div>
+  <div class="col-sm-7">
+    <input name="submit" id="down-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+  </div>
+</div>
+<?php endif;?>

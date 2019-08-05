@@ -1,0 +1,138 @@
+<!-- 
+/**
+ * PpitAccounting V1.0 (https://github.com/p-pit/PpitAccounting)
+ *
+ * @link      https://github.com/p-pit/PpitAccounting
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitAccounting/blob/master/license.txt GNU-GPL license
+ */
+-->
+
+<style>
+table td { 
+  font-size: 0.9rem;
+}
+</style>
+
+<div class="col-md-12">
+  
+  <input type="hidden" id="account-number" value="<?php echo count($accounts) ?>" />
+
+  <table class="table table-sm table-hover">
+    <tr class="table-info">
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+	
+<?php foreach ($context->getConfig('student/list') as $propertyId => $rendering) : ?>
+	<?php 
+	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+	?>
+
+      <th align="center">
+        <a type="button" class="btn btn-sm sort_anchor <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
+          <span><?php echo $context->localize($property['labels']) ?></span>
+  <?php if ($major == $propertyId) : ?>
+          <i class="fas fa-caret-<?php echo ($dir == 'ASC') ? 'up' : 'down' ?>"></i>
+  <?php endif ?>
+        </a>
+      </th>
+<?php endforeach;?>
+	</tr>
+
+    <tr>
+      <td>
+        <input type="checkbox" class="account-checkbox" id="account-checkbox" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+      </td>
+
+      <td class="text-center">
+        <div class="input-group input-group-sm">
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn account-group-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-group-anchor" disabled="disabled">
+            <span class="fas fa-list" id="group-glyphicon"></span>
+          </button>
+        </div>
+      </td>
+	</tr>
+
+<?php $i = 0; foreach ($accounts as $account) : ?>
+
+    <tr class="account">
+      <td>
+        <input type="checkbox" class="account-checkbox" id="account-checkbox_<?php echo $i ?>"></input>
+      </td>
+
+      <td style="text-align: center">
+        <input type="hidden"  id="account_<?php echo $i ?>" value="<?php echo $account->id ?>" />
+        <div class="input-group input-group-sm">
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn account-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account-detail-anchor_<?php echo $account->id ?>">
+            <i class="fas fa-search" id="group-glyphicon"></i>
+          </button>
+        </div>
+      </td>
+
+  <?php foreach ($context->getConfig('student/list') as $propertyId => $rendering) : ?>
+    <?php 
+    $property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
+    if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+    ?>
+	
+    <?php if ($propertyId == 'n_fn') : ?>
+      <td><?php echo $account->n_fn ?></td>
+	
+    <?php elseif ($rendering == 'select' && $account->properties[$propertyId]) : ?>
+      <td><?php echo $property['modalities'][$account->properties[$propertyId]][$context->getLocale()] ?></td>
+	
+    <?php elseif ($rendering == 'text') : ?>
+      <td><?php echo $account->properties[$propertyId] ?></td>
+	
+    <?php elseif ($rendering == 'photo') : ?>
+      <td>
+        <span class="info">
+          <img height="40" src="<?php echo $this->basePath('photos/' . $account->contact_1_id.'.jpg') ?>"/>
+          <span><img height="150" src="<?php echo $this->basePath('photos/'. $account->contact_1_id.'.jpg') ?>"/></span>
+        </span>
+      </td>
+
+    <?php elseif ($rendering == 'image') : ?>
+	  <td class="text-center">
+        <?php $label = (array_key_exists($account->properties[$propertyId], $property['modalities'])) ? $property['modalities'][$account->properties[$propertyId]][$context->getLocale()] : $account->properties[$propertyId] ?>
+        <img height="20" src="<?php echo $this->basePath('/img'.(($account->type) ? '/'.$account->type : '').'/'.$account->properties[$propertyId].'.png') ?>" title="<?php echo $label ?>" alt="<?php echo $label ?>" /><br>
+      </td>
+
+    <?php elseif ($rendering == 'phone') : ?>
+      <td>
+        <a href="tel:<?php echo $account->properties[$propertyId] ?>"><?php echo $account->properties[$propertyId] ?></a>
+      </td>
+
+    <?php elseif ($rendering == 'email') : ?>
+      <td>
+        <a href="mailto:<?php echo $account->properties[$propertyId] ?>"><?php echo $account->properties[$propertyId] ?></a>
+      </td>
+	
+    <?php else : ?>
+      <td><?php echo $account->properties[$propertyId] ?></td>
+		
+    <?php endif;?>
+		
+  <?php endforeach;?>
+
+	</tr>
+	
+<?php $i++; endforeach; ?>
+
+    <tr>
+      <td>
+        <input type="checkbox" class="account-checkbox" id="down-account-checkbox" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+      </td>
+
+      <td class="text-center">
+        <div class="input-group input-group-sm">
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn account-group-anchor" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="account-down-group-anchor" disabled="disabled">
+            <i class="fas fa-list" id="down-group-glyphicon"></i>
+          </button>
+        </div>
+      </td>
+      <td>&nbsp;</td>
+      <td colspan="<?php echo count($context->getConfig('student/list')) - 1 ?>">&nbsp;</td>    
+	</tr>
+</table>
