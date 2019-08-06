@@ -3,14 +3,14 @@
 	<div class="panel-heading" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
 		<strong>
 			<?php 
-			$title = (isset ($context->getConfig('student/search')['title']) ? $context->getConfig('student/search')['title'][$context->getLocale()] : $this->translate('Accounts', 'ppit-commitment', $context->getLocale()));
+			$title = (isset ($context->getConfig('student/search')['title']) ? $context->localize($context->getConfig('student/search')['title']) : $this->translate('Accounts', 'ppit-commitment', $context->getLocale()));
 			echo $title;
 			?>
 			(<span id="mode-text"></span>)
 		</strong>
 	
 <?php if ($context->isDemoModeActive()) : ?>
-		<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/title'][$context->getLocale()] ?>">
+		<a class="tip" href="#" title="<?php echo $context->localize($context->getConfig('demo')['student/search/title']) ?>">
 		    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
 		</a>
 <?php endif;?>
@@ -27,18 +27,18 @@
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	?>
 
-	<?php if ($rendering != 'select') $label = $property['labels'][$context->getLocale()]; ?>
+	<?php if ($rendering != 'select') $label = $context->localize($property['labels']); ?>
 
 	<?php if ($rendering == 'select') : ?>
 
 		<?php
-		$label = $property['labels'][$context->getLocale()];
+		$label = $context->localize($property['labels']);
 		
 		$modalities = array();
 		if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists($propertyId, $context->getPerimeters()['p-pit-studies'])) {
 			foreach ($context->getPerimeters()['p-pit-studies'][$propertyId] as $modalityId) {
 				if ($propertyId == 'place_id') $modalities[$modalityId] = $places[$modalityId]->caption;
-				else $modalities[$modalityId] = $property['modalities'][$modalityId][$context->getLocale()];
+				else $modalities[$modalityId] = $context->localize($property['modalities'][$modalityId]);
 			} 
 		}
 		else {
@@ -46,7 +46,7 @@
 				$modalities[$place->id] = $place->caption;
 			} 
 			else foreach ($property['modalities'] as $modalityId => $modality) {
-				$modalities[$modalityId] = $modality[$context->getLocale()];
+				$modalities[$modalityId] = $context->localize($modality);
 			} 
 		}
 		?>
@@ -99,7 +99,7 @@
           <span class="glyphicon glyphicon-remove"></span>
         </button>
 <?php if ($context->isDemoModeActive()) : ?>
-        <a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/search/x'][$context->getLocale()] ?>">
+        <a class="tip" href="#" title="<?php echo $context->localize($context->getConfig('demo')['student/search/x']) ?>">
             <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
         </a>
 <?php endif;?>
