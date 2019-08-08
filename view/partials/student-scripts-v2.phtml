@@ -583,9 +583,10 @@ $properties['class'] = array('type' => 'select', 'mandatory' => true);
 $properties['school_period'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
-$properties['type'] = array('type' => 'select', 'mandatory' => true);
 $properties['target_date'] = array('type' => 'date', 'mandatory' => true);
-$properties['observations'] = array('type' => 'ckeditor', 'mandatory' => true, 'maxSize' => 2047);
+$properties['done_observations'] = array('type' => 'ckeditor', 'mandatory' => false, 'maxSize' => 65535);
+$properties['todo_observations'] = array('type' => 'ckeditor', 'mandatory' => false, 'maxSize' => 65535);
+$properties['event_observations'] = array('type' => 'ckeditor', 'mandatory' => false, 'maxSize' => 65535);
 $properties['document'] = array('type' => 'dropbox', 'mandatory' => false);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
 echo $this->partial('/partials/check-update-properties', array('entity' => 'Note', 'context' => $context, 'properties' => $properties)) 
@@ -649,8 +650,10 @@ function postAddNoteForm(classe)
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('active');
 
-					CKEDITOR.replace('observations');
-			
+					CKEDITOR.replace('done_observations');
+                    CKEDITOR.replace('todo_observations');
+                    CKEDITOR.replace('event_observations');
+/*			
 					if ($('#type').val() == 'done-work') {
 						$('#input_target_date_group').hide();
 						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['done-work'] ?>');
@@ -662,7 +665,7 @@ function postAddNoteForm(classe)
 					else {
 						$('#input_target_date_group').show();
 						$('#observations_group').css('background-color', '<?php echo $context->getConfig('note/colour')['event'] ?>');
-					}
+					}*/
 				}
 			};
 			xhttp.send(formData);
@@ -709,8 +712,10 @@ function getAddNote(classe) {
 
 			$('#school_year').focus();
 			
-			CKEDITOR.replace('observations');
-
+			CKEDITOR.replace('done_observations');
+            CKEDITOR.replace('todo_observations');
+            CKEDITOR.replace('event_observations');
+/*
 			$('#input_target_date_group').hide();
 			$('#type').change(function () { 
 				if ($('#type').val() == 'done-work') {
@@ -725,7 +730,7 @@ function getAddNote(classe) {
 					$('#input_target_date_group').show();
 					$('#observations_group').css('background-color', 'LightBlue');
 				}
-			});
+			});*/
 
 	        $('#up-submit-button').click(function () { postAddNoteForm(); });
 	        $('#down-submit-button').click(function () { postAddNoteForm(); });

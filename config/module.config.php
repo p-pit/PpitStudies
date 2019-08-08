@@ -1118,8 +1118,9 @@ return array(
 							),
 					),
 					'planning' => array(
-							'route' => 'planning/index',
-							'params' => array('type' => 'calendar', 'app' => 'p-pit-studies'),
+							'route' => 'event/calendar',
+							'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'planning'),
+							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-time',
 							'label' => array(
 									'en_US' => 'Planning',
@@ -1177,43 +1178,31 @@ return array(
 							),
 					),
 					'subscriptions' => array(
-							'route' => 'student/registrationIndex',
-							'params' => array('app' => 'p-pit-studies', 'type' => 'p-pit-studies'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-folder-open',
+							'route' => 'account/indexAlt',
+							'params' => array('entry' => 'account', 'type' => 'p-pit-studies', 'entryId' => 'subscriptions'),
+							'glyphicon' => 'glyphicon-user',
 							'label' => array(
-									'en_US' => 'Registrations',
+									'en_US' => 'Subscriptions',
 									'fr_FR' => 'Inscriptions',
 							),
 					),
-					'user' => array(
-							'route' => 'user/index',
-							'params' => array('app' => 'p-pit-studies'),
+					'teacher' => array(
+							'route' => 'account/indexAlt',
+							'params' => array('entry' => 'account', 'type' => 'teacher', 'app' => 'p-pit-studies', 'entryId' => 'teacher'),
 							'glyphicon' => 'glyphicon-user',
-							'urlParams' => array(),
 							'label' => array(
 									'en_US' => 'Teachers',
 									'fr_FR' => 'Professeurs',
 							),
 					),
-				'group' => array(
-					'route' => 'account/indexAlt',
-					'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-studies'),
-					'label' => array(
-						'en_US' => 'Groups',
-						'fr_FR' => 'Groupes',
+					'group' => array(
+							'route' => 'account/indexAlt',
+							'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-studies', 'entryId' => 'group'),
+							'label' => array(
+								'en_US' => 'Groups',
+								'fr_FR' => 'Groupes',
+							),
 					),
-				),
-/*				'calendar_2019_2020' => array(
-					'route' => 'event/calendar',
-					'params' => array('type' => 'calendar', 'category' => '2019_2020', 'app' => 'p-pit-studies'),
-					'urlParams' => '?status=new',
-					'glyphicon' => 'glyphicon-calendar',
-					'label' => array(
-						'en_US' => 'Planning',
-						'fr_FR' => 'Planning 2019/2020',
-					),
-				),*/
 		),
 		'labels' => array(
 			'default' => '2pit Studies',
@@ -3936,14 +3925,12 @@ table.note-report tr.period {
 	
 	'event/update/calendar' => array(
 		'status' => ['mandatory' => true],
+		'groups' => ['mandatory' => true],
 		'place_id' => [],
 		'property_1' => [],
-		'n_fn' => [],
-		'property_2' => [],
+		'account_id' => [],
 		'property_3' => [],
-		'property_4' => [],
 		'caption' => array('mandatory' => false),
-		'description' => [],
 		'day_of_week' => array('mandatory' => false),
 		'begin_date' => array('mandatory' => false),
 		'begin_time' => array('mandatory' => false),

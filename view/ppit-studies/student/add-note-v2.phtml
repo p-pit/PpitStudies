@@ -140,18 +140,19 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 </div>
 
 <!-- Type -->
+<!--
 <div class="form-group row" id="type_group">
-  <label class="col-sm-5 col-form-label">* <?php echo $this->translate('Notification type', 'ppit-studies', $context->getLocale()) ?></label>
+  <label class="col-sm-5 col-form-label">* <?php //echo $this->translate('Notification type', 'ppit-studies', $context->getLocale()) ?></label>
   <div class="col-sm-7">
-    <select class="form-control" id="type" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+    <select class="form-control" id="type" <?php //if ($isDisabled) echo 'disabled="disabled"'?>>
       <option value=""/>
-      <option value="done-work" <?php if ($note->type == 'done-work') echo 'selected="selected"' ?>><?php echo $this->translate('Done work', 'ppit-studies', $context->getLocale()) ?></option>
-      <option value="todo-work" <?php if ($note->type == 'todo-work') echo 'selected="selected"' ?>><?php echo $this->translate('Work to do', 'ppit-studies', $context->getLocale()) ?></option>
-      <option value="event" <?php if ($note->type == 'event') echo 'selected="selected"' ?>><?php echo $this->translate('Event', 'ppit-studies', $context->getLocale()) ?></option>
+      <option value="done-work" <?php //if ($note->type == 'done-work') echo 'selected="selected"' ?>><?php //echo $this->translate('Done work', 'ppit-studies', $context->getLocale()) ?></option>
+      <option value="todo-work" <?php //if ($note->type == 'todo-work') echo 'selected="selected"' ?>><?php //echo $this->translate('Work to do', 'ppit-studies', $context->getLocale()) ?></option>
+      <option value="event" <?php //if ($note->type == 'event') echo 'selected="selected"' ?>><?php //echo $this->translate('Event', 'ppit-studies', $context->getLocale()) ?></option>
     </select>
     <div class="invalid-feedback" id="school_year_error"></div>
   </div>
-</div>
+</div> -->
 
 <!-- Target date -->
 <input type="hidden" id="target_date" />
@@ -164,11 +165,30 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
   </div>
 </div>
 
-<!-- Text -->
-<div class="form-group row" id="observations_group">
+<!-- Done work -->
+<h5 class="card-title text-muted"><?php echo $this->translate('Done work', 'ppit-studies', $context->getLocale()) ?></h5>
+<div class="form-group row" id="done_observations_group" style="background-color: <?php echo $context->getConfig('note/colour')['done-work'] ?>">
   <div class="col-sm-12">
-    <textarea class="form-control" id="observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
-    <div class="invalid-feedback" id="observations_error"></div>
+    <textarea class="form-control textarea-observations" id="done_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
+    <div class="invalid-feedback" id="done_observations_error"></div>
+  </div>
+</div>
+
+<!-- Todo work -->
+<h5 class="card-title text-muted"><?php echo $this->translate('Work to do', 'ppit-studies', $context->getLocale()) ?></h5>
+<div class="form-group row" id="todo_observations_group" style="background-color: <?php echo $context->getConfig('note/colour')['todo-work'] ?>">
+  <div class="col-sm-12">
+    <textarea class="form-control textarea-observations" id="todo_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
+    <div class="invalid-feedback" id="todo_observations_error"></div>
+  </div>
+</div>
+
+<!-- Event -->
+<h5 class="card-title text-muted"><?php echo $this->translate('Event', 'ppit-studies', $context->getLocale()) ?></h5>
+<div class="form-group row" id="event_observations_group" style="background-color: <?php echo $context->getConfig('note/colour')['event'] ?>">
+  <div class="col-sm-12">
+    <textarea class="form-control textarea-observations" id="event_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
+    <div class="invalid-feedback" id="event_observations_error"></div>
   </div>
 </div>
 		

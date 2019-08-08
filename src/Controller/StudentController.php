@@ -338,6 +338,7 @@ class StudentController extends AbstractActionController
        			if ($value) $criteria[$propertyId] = $value;
        		}
        	}
+       	
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
@@ -680,12 +681,169 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
-    public function addNoteV2Action()
-    {
-    	return $this->addNoteAction();
-    }
 
+    public function addNoteV2Action() {
+    
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    	$places = Place::getList(array());
+    
+    	// Retrieve the type and class
+    	$type = $this->params()->fromRoute('type', null);
+    	$class = $this->params()->fromRoute('class', null);
+    
+    	$note = Note::instanciate('homework', $class);
+    	if (count($places) == 1) $note->place_id = current($places)->id;
+    	$documentList = array();
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    	$request = $this->getRequest();
+    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
+    	$nbAccount = $request->getPost('nb-account');
+    	$accounts = array();
+    	for ($i = 0; $i < $nbAccount; $i++) {
+    		$account = Account::get($request->getPost('account_'.$i));
+    		$accounts[$account->id] = $account;
+    	}
+    	$place = Place::get($account->place_id);
+    	$note->place_id = $account->place_id;
+    	
+    	$school_periods = $place->getConfig('school_periods');
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$note->school_period = $current_school_period;
+    
+    	$nbCriteria = $request->getPost('nb-criteria');
+    	$criteria = array();
+    	for ($i = 0; $i < $nbCriteria; $i++) {
+    		$criterionId = $request->getPost('criterion-id_'.$i);
+    		$criterionValue = $request->getPost('criterion_'.$i);
+    		$criteria[$criterionId] = $criterionValue;
+    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
+    	}
+    
+    	if ($request->getPost('date')) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the note data
+    			$data = array();
+    			$data['place_id'] = $request->getPost('place_id');
+    			$data['category'] = 'homework';
+    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+    			$data['school_period'] = $request->getPost('school_period');
+    			$data['class'] = $request->getPost('class');
+    			$data['subject'] = $request->getPost('subject');
+    			$data['date'] = $request->getPost('date');
+    			$data['target_date'] = $request->getPost('target_date');
+    			$data['document'] = $request->getPost('document');
+    			$data['comment'] = $request->getPost('comment');
+    
+    			// Atomically save
+    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				 
+    				// Done work
+    				if ($request->getPost('done_observations')) {
+		    			$data['type'] = 'done-work';
+    					$data['observations'] = $request->getPost('done_observations');
+    					$rc = $note->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    
+    					$rc = $note->add();
+    					if ($rc != 'OK') $error = $rc;
+    
+    					// Save the note at the student level
+    					else for ($i = 0; $i < $nbAccount; $i++) {
+    						$account = $accounts[$request->getPost('account_'.$i)];
+    						$noteLink = NoteLink::instanciate($account->id, $note->id);
+    						$rc = $noteLink->add();
+    						if ($rc != 'OK') {
+    							$connection->rollback();
+    							$error = $rc;
+    						}
+    					}
+    				}
+    
+    				// Todo work
+    				if ($request->getPost('todo_observations')) {
+		    			$data['type'] = 'todo-work';
+    					$data['observations'] = $request->getPost('todo_observations');
+    					$rc = $note->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    
+    					$rc = $note->add();
+    					if ($rc != 'OK') $error = $rc;
+    
+    					// Save the note at the student level
+    					else for ($i = 0; $i < $nbAccount; $i++) {
+    						$account = $accounts[$request->getPost('account_'.$i)];
+    						$noteLink = NoteLink::instanciate($account->id, $note->id);
+    						$rc = $noteLink->add();
+    						if ($rc != 'OK') {
+    							$connection->rollback();
+    							$error = $rc;
+    						}
+    					}
+    				}
+
+    				// Todo work
+    				if ($request->getPost('event_observations')) {
+    					$data['type'] = 'event';
+    					$data['observations'] = $request->getPost('event_observations');
+    					$rc = $note->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    				
+    					$rc = $note->add();
+    					if ($rc != 'OK') $error = $rc;
+    				
+    					// Save the note at the student level
+    					else for ($i = 0; $i < $nbAccount; $i++) {
+    						$account = $accounts[$request->getPost('account_'.$i)];
+    						$noteLink = NoteLink::instanciate($account->id, $note->id);
+    						$rc = $noteLink->add();
+    						if ($rc != 'OK') {
+    							$connection->rollback();
+    							$error = $rc;
+    						}
+    					}
+    				}
+    				
+    				if ($error) $connection->rollback();
+    				else {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'places' => $places,
+    		'type' => $type,
+    		'accounts' => $accounts,
+    		'note' => $note,
+    		'documentList' => $documentList,
+    		'csrfForm' => $csrfForm,
+    		'error' => $error,
+    		'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
     public function addEvaluationAction() {
     
     	// Retrieve the context

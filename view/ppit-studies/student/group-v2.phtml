@@ -21,13 +21,7 @@
     <div class="modal-body">
 
       <form class="form-horizontal">
-
-        <div class="card mt-3">
-          <div class="card-body">
-    
-            <h5 class="card-title text-muted"><?php echo $this->translate('Selected criteria', 'ppit-commitment', $context->getLocale()) ?></h5>
-    
-            <input type="hidden" id="group-nb-criteria" value="<?php echo count($criteria) ?>" />
+        <input type="hidden" id="group-nb-criteria" value="<?php echo count($criteria) ?>" />
 
 <?php $i = 0; foreach ($criteria as $criterionId => $criterionValue) : ?>
 	<?php
@@ -38,21 +32,12 @@
 	elseif ($property['type'] == 'select') $value = $property['modalities'][$criterionValue][$context->getLocale()];
 	else $value = $criterionValue;
 	?>
-            <input type="hidden" id="group-criterion-id_<?php echo $i ?>" value="<?php echo $criterionId ?>" />
-
-            <div class="form-group row">
-              <label class="col-sm-5 control-label"><?php echo $label ?></label>
-              <div class="col-sm-7">
-                <input class="form-control" id="group-criterion_<?php echo $i ?>" disabled="disabled" value="<?php echo $value ?>" />
-              </div>
-            </div>
+        <input type="hidden" id="group-criterion-id_<?php echo $i ?>" value="<?php echo $criterionId ?>" />
+        <input type="hidden" id="group-criterion_<?php echo $i ?>" value="<?php echo $value ?>" />
 	
 <?php $i++; endforeach;?>
 
-          </div>
-        </div>
-
-        <div class="card mt-5">
+        <div class="card my-3">
           <div class="card-body">
             
             <h5 class="card-title text-muted"><?php echo $this->translate('Selected students', 'ppit-studies', $context->getLocale()) ?></h5>
@@ -74,9 +59,8 @@
       
           </div>
         </div>
-        <div>&nbsp;</div>
         
-        <div class="card">
+        <div class="card my-3">
           <div class="card-header">
 			
 		<ul class="nav nav-tabs card-header-tabs">
