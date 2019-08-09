@@ -195,8 +195,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 <!-- Document -->
 <div class="form-group row" id="document_group">
   <label class="col-sm-5 col-form-label"><?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>
-<?php if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) : ?>
-  <?php $dropbox = $context->getConfig('ppitDocument')['dropbox'] ?>
+<?php if ($dropbox) : ?>
     <a class="glyphicon glyphicon-paperclip" href="<?php echo $dropbox['root'].$dropbox['folders']['schooling'].'/'.$note->document ?>" title="<?php echo $this->translate('Attachment', 'ppit-document', $context->getLocale()) ?>" target=".blank"></a>
 <?php endif;?>
   </label>

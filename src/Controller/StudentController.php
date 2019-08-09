@@ -695,7 +695,18 @@ class StudentController extends AbstractActionController
     	$note = Note::instanciate('homework', $class);
     	if (count($places) == 1) $note->place_id = current($places)->id;
     	$documentList = array();
-    
+    	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
+    		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
+    		$dropbox = $context->getConfig('ppitDocument')['dropbox'];
+    		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
+    		try {
+    			$properties = $dropboxClient->getMetadataWithChildren($dropbox['folders']['schooling']);
+    			if ($properties) foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
+    		}
+    		catch(\Exception $e) {}
+    	}
+    	else $dropbox = null;
+    	 
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
@@ -835,6 +846,7 @@ class StudentController extends AbstractActionController
     		'type' => $type,
     		'accounts' => $accounts,
     		'note' => $note,
+	    	'dropbox' => $dropbox,
     		'documentList' => $documentList,
     		'csrfForm' => $csrfForm,
     		'error' => $error,
