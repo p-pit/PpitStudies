@@ -241,7 +241,7 @@ class Note
     	$where->equalTo('place_id', $place_id);
     	$where->equalTo('school_year', $school_year);
     	$where->equalTo('class', $class);
-    	$where->equalTo('school_period', $period);
+    	if ($period) $where->equalTo('school_period', $period);
     	if ($subject == 'global') $where->notEqualTo('subject', 'global');
     	else $where->equalTo('subject', $subject);
     	$select->where($where);

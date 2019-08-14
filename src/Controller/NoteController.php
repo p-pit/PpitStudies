@@ -210,7 +210,7 @@ class NoteController extends AbstractActionController
 		foreach($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['properties'] as $propertyId => $column) {
 			$property = $context->getConfig('note')['properties'][$propertyId];
 			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-    		print_r($property['labels'][$context->getLocale()].';');
+    		print_r($context->localize($property['labels']).';');
     	}
     	print_r("\n");
     
@@ -223,7 +223,7 @@ class NoteController extends AbstractActionController
     				if ($propertyId == 'place_id') print_r($account->place_caption);
     				elseif ($property['type'] == 'date') print_r($context->decodeDate($noteLink->properties[$propertyId]));
     				elseif ($property['type'] == 'number') print_r($context->formatFloat($noteLink->properties[$propertyId], 2));
-    				elseif ($property['type'] == 'select')  print_r((array_key_exists($noteLink->properties[$propertyId], $property['modalities'])) ? $property['modalities'][$noteLink->properties[$propertyId]][$context->getLocale()] : $noteLink->properties[$propertyId]);
+    				elseif ($property['type'] == 'select')  print_r((array_key_exists($noteLink->properties[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$noteLink->properties[$propertyId]]) : $noteLink->properties[$propertyId]);
     				else print_r($noteLink->properties[$propertyId]);
     			}
     			print_r(';');
@@ -563,10 +563,10 @@ class NoteController extends AbstractActionController
 					$previousLink->name.';'.
 					$previousLink->type.';'.
 					$previousLink->school_year.';'.
-					((!$previousLink->level) ? $previousLink->level : $context->getConfig('student/property/evaluationCategory')['modalities'][$previousLink->level][$context->getLocale()]).';'.
-					((!$previousLink->class) ? $previousLink->class : $context->getConfig('student/property/class')['modalities'][$previousLink->class][$context->getLocale()]).';'.
+					((!$previousLink->level) ? $previousLink->level : $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$previousLink->level])).';'.
+					((!$previousLink->class) ? $previousLink->class : $context->localize($context->getConfig('student/property/class')['modalities'][$previousLink->class])).';'.
 					$previousLink->school_period.';'.
-					(($previousLink->subject == 'global') ? $previousLink->subject : $context->getConfig('student/property/school_subject')['modalities'][$previousLink->subject][$context->getLocale()]).';'.
+					(($previousLink->subject == 'global') ? $previousLink->subject : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$previousLink->subject])).';'.
 					$previousLink->date.';'.
 					$previousLink->value.';'.
 					$previousLink->assessment.';'.
@@ -582,10 +582,10 @@ class NoteController extends AbstractActionController
 	    		$noteLink->name.';'.
 	    		$noteLink->type.';'.
 	    		$noteLink->school_year.';'.
-	    		((!$noteLink->level) ? $noteLink->level : $context->getConfig('student/property/evaluationCategory')['modalities'][$noteLink->level][$context->getLocale()]).';'.
-	    		((!$noteLink->class) ? $noteLink->class : $context->getConfig('student/property/class')['modalities'][$noteLink->class][$context->getLocale()]).';'.
+	    		((!$noteLink->level) ? $noteLink->level : $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$noteLink->level])).';'.
+	    		((!$noteLink->class) ? $noteLink->class : $context->localize($context->getConfig('student/property/class')['modalities'][$noteLink->class])).';'.
 	    		$noteLink->school_period.';'.
-	    		(($noteLink->subject == 'global') ? $noteLink->subject : $context->getConfig('student/property/school_subject')['modalities'][$noteLink->subject][$context->getLocale()]).';'.
+	    		(($noteLink->subject == 'global') ? $noteLink->subject : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$noteLink->subject])).';'.
 	    		$noteLink->date.';'.
 	    		$noteLink->value.';'.
 	    		$noteLink->assessment.';'.

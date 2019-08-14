@@ -1,8 +1,16 @@
 <?php echo $this->partial('/partials/search-scripts-v2') ?>
+<?php echo $this->partial('/ppit-core/view-controller/document', ['type' => 'binary', 'folder' => 'studies']) ?>
 
 <script>
 
 var criterion = 'n_fn', dir = 'ASC';
+
+function openDocumentModal()
+{
+  getDocumentList(getSearchParams(''));
+  $('#shared-document-modal').modal('toggle');
+  
+}
 
 function getStudentSearch()
 {
@@ -79,6 +87,9 @@ function getStudentSearch()
         getStudentList(getSearchParams(''));
       });
 
+      // Connect the shared documents button to a modal view
+      $('.shared-document-button').click(openDocumentModal);
+      
       getStudentList(getSearchParams(''));
     }
   }
@@ -650,7 +661,7 @@ function postAddNoteForm(classe)
 					document.getElementById(target).innerHTML = xhttp.responseText;
 					$('.action-btn').removeClass('active');
 
-					CKEDITOR.replace('done_observations');
+					CKEDITOR.replace('done_observations', { height: 100 });
                     CKEDITOR.replace('todo_observations');
                     CKEDITOR.replace('event_observations');
 /*			
@@ -701,6 +712,12 @@ function getAddNote(classe) {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
+
+            $('#document-select-panel').hide();
+            $('.document-show-anchor').click(function () {
+                $('#document-select-panel').show();
+                getDocumentSelect('binary', 'studies', 'document');
+            });
 			
             if (!$('#place_id').val()) $('#place_id').val(currentPlaceId);
             if (!$('#class').val()) $('#class').val(currentClass);

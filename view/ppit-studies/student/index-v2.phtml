@@ -8,7 +8,24 @@
 
 </div>
 
-<!-- Modal -->
+<!-- Modals -->
 
 <!-- Form opening tag -->
 <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="modalFormLabel" aria-hidden="true"></div>
+
+<!-- document modal -->
+<div class="modal fade" id="shared-document-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="modalFormLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+	    <h5 class="modal-title"><?php echo $this->translate('Shared documents', 'ppit-core', $context->getLocale()) ?> - <em>P-Pit Studies</em></h5>
+	    <div>
+	      <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>">
+	        <span aria-hidden="true">&times;</span>
+	      </button>
+	    </div>
+	  </div>
+	  <div class="modal-body" id="document-list-panel"></div>
+    </div>
+  </div>
+</div>

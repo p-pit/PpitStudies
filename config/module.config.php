@@ -2203,6 +2203,15 @@ return array(
 	),
 	
 	'core_account/p-pit-studies/property/property_16' => array('definition' => 'student/property/school_year'),
+
+	'core_account/p-pit-studies/property/property_17' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Real-time global average',
+			'fr_FR' => 'Moyenne générale temps-réel',
+		),
+	),
 	
 	'core_account/p-pit-studies/property/json_property_1' => array(
 		'definition' => 'inline',
@@ -2661,6 +2670,8 @@ table.note-report td {
 			'comment_4' => [],
 
 			'contact_history' => [],
+
+			'property_17' => [],
 	),
 
 	'core_account/nomad/p-pit-studies' => array(
