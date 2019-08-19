@@ -4820,7 +4820,7 @@ table.note-report tr.period {
 				'route' => 'student/planningV2',
 				'label' => array('en_US' => 'Planning', 'fr_FR' => 'Planning'),
 			),
-			'absence' => array(
+/*			'absence' => array(
 				'type' => 'static',
 				'level' => 'subject',
 				'route' => 'student/absence',
@@ -4831,7 +4831,7 @@ table.note-report tr.period {
 				'level' => 'subject',
 				'route' => 'student/homework',
 				'label' => array('en_US' => 'Homework', 'fr_FR' => 'Cahier de texte'),
-			),
+			),*/
 			'evaluation' => array(
 				'type' => 'static',
 				'level' => 'subject',
