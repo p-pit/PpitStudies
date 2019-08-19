@@ -170,7 +170,11 @@
 
               <!--Card image-->
               <div class="view view-cascade gradient-card-header primary-color">
-                <div class="avatar mx-auto"><img class="rounded-circle z-depth-1 img-fluid" src="<?php echo $this->basePath('photos/' . (($profile->photo_link_id) ? $profile->photo_link_id :  $profile->contact_1_id.'.jpg')) ?>"/></div>
+  <?php if ($profile->photo_link_id) : ?>
+                <div class="avatar mx-auto"><i class="img-fluid fas fa-user fa-5x"></i></div>
+  <?php else : ?>
+                <div class="avatar mx-auto"><img class="rounded-circle z-depth-1 img-fluid" src="<?php echo $this->basePath('photos/' . $profile->contact_1_id.'.jpg') ?>"/></div>
+  <?php endif;?>
               </div>
               <!--/Card image-->
 
