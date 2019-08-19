@@ -21,21 +21,21 @@
     <div class="modal-body">
 
       <form class="form-horizontal">
-        <input type="hidden" id="group-nb-criteria" value="<?php echo count($criteria) ?>" />
+        <input type="hidden" id="group-nb-criteria" value="<?php //echo count($criteria) ?>" />
 
-<?php $i = 0; foreach ($criteria as $criterionId => $criterionValue) : ?>
+<?php /*$i = 0; foreach ($criteria as $criterionId => $criterionValue) : ?>
 	<?php
 	$property = $context->getConfig('core_account/p-pit-studies/property/'.$criterionId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	$label = $property['labels'][$context->getLocale()];
 	if ($criterionId == 'place_id') $value = $places[$criterionValue]->caption; 
 	elseif ($property['type'] == 'select') $value = $property['modalities'][$criterionValue][$context->getLocale()];
-	else $value = $criterionValue;
+	else $value = $criterionValue;*/
 	?>
-        <input type="hidden" id="group-criterion-id_<?php echo $i ?>" value="<?php echo $criterionId ?>" />
-        <input type="hidden" id="group-criterion_<?php echo $i ?>" value="<?php echo $value ?>" />
+        <input type="hidden" id="group-criterion-id_<?php //echo $i ?>" value="<?php //echo $criterionId ?>" />
+        <input type="hidden" id="group-criterion_<?php //echo $i ?>" value="<?php //echo $value ?>" />
 	
-<?php $i++; endforeach;?>
+<?php //$i++; endforeach;?>
 
         <div class="card my-3">
           <div class="card-body">

@@ -169,7 +169,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 <h5 class="card-title text-muted"><?php echo $this->translate('Done work', 'ppit-studies', $context->getLocale()) ?></h5>
 <div class="form-group row" id="done_observations_group" style="background-color: <?php echo $context->getConfig('note/colour')['done-work'] ?>">
   <div class="col-sm-12">
-    <textarea class="form-control textarea-observations" id="done_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
+    <textarea class="form-control textarea-observations" id="done_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $done_observations ?></textarea>
     <div class="invalid-feedback" id="done_observations_error"></div>
   </div>
 </div>
@@ -178,7 +178,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 <h5 class="card-title text-muted"><?php echo $this->translate('Work to do', 'ppit-studies', $context->getLocale()) ?></h5>
 <div class="form-group row" id="todo_observations_group" style="background-color: <?php echo $context->getConfig('note/colour')['todo-work'] ?>">
   <div class="col-sm-12">
-    <textarea class="form-control textarea-observations" id="todo_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
+    <textarea class="form-control textarea-observations" id="todo_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $todo_observations ?></textarea>
     <div class="invalid-feedback" id="todo_observations_error"></div>
   </div>
 </div>
@@ -187,7 +187,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 <h5 class="card-title text-muted"><?php echo $this->translate('Event', 'ppit-studies', $context->getLocale()) ?></h5>
 <div class="form-group row" id="event_observations_group" style="background-color: <?php echo $context->getConfig('note/colour')['event'] ?>">
   <div class="col-sm-12">
-    <textarea class="form-control textarea-observations" id="event_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $note->observations ?></textarea>
+    <textarea class="form-control textarea-observations" id="event_observations" <?php if ($isDisabled) echo 'disabled="disabled"'?>><?php echo $event_observations ?></textarea>
     <div class="invalid-feedback" id="event_observations_error"></div>
   </div>
 </div>
@@ -197,13 +197,10 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 <!-- Document -->
 <div class="form-group row" id="document_group">
   <label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>
-<?php if ($dropbox) : ?>
-    <a class="glyphicon glyphicon-paperclip" href="<?php echo $dropbox['root'].$dropbox['folders']['schooling'].'/'.$note->document ?>" title="<?php echo $this->translate('Attachment', 'ppit-document', $context->getLocale()) ?>" target=".blank"></a>
-<?php endif;?>
   </label>
   <div class="col-sm-7">
     <input type="hidden" id="document" />
-    <a href="#" class="document-show-anchor"><?php echo $this->translate('Choose among the shared documents', 'ppit-core', $context->getLocale()) ?></a>
+    <a href="<?php echo ($isDisabled && $document) ? $this->url('document/download', ['id' => $document->id]) : '#' ?>" <?php if ($isDisabled && $document) : ?>target="_blank"<?php endif;?> class="document-show-anchor"><?php echo ($document) ? $document->name : $this->translate('Choose among the shared documents', 'ppit-core', $context->getLocale()) ?></a>
     <div class="invalid-feedback" id="document_error"></div>
   </div>
 </div>

@@ -3,6 +3,7 @@
 namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Notification;
+use PpitCore\Model\Account;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
@@ -149,6 +150,20 @@ class NoteController extends AbstractActionController
     public function listAction()
     {
     	return $this->getList();
+    }
+
+    public function getAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    	$id = $this->params()->fromRoute('id');
+    
+    	$account_id = (int) $this->params()->fromQuery('account_id');
+    
+    	$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account_id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
+
+    	echo json_encode($notes, JSON_PRETTY_PRINT);
+    	return $this->getResponse();
     }
     
     public function exportAction()
@@ -486,11 +501,11 @@ class NoteController extends AbstractActionController
 		    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		    			$connection->beginTransaction();
 		    			try {
-		    				if (!$note->id) $rc = $note->add();
+		    				if (!$note->id) $rc = $note->add(); // Pas d'ajout de note dans ce controller => A supprimer
 		    				elseif ($action == 'delete') $rc = $note->delete($request->getPost('update_time'));
 		    				else {
 		    					$rc = $note->update($note->update_time);
-		    					$note->update($note->update_time);
+		    					$note->update($note->update_time); // Ligne redondante à supprimer
 		    					foreach ($note->links as $noteLink) $noteLink->update(null);
 		    				}
 		    				if ($rc != 'OK') {

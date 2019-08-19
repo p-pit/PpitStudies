@@ -88,6 +88,35 @@ class Note
     	// Joined properties
         $this->teacher_n_fn = (isset($data['teacher_n_fn'])) ? $data['teacher_n_fn'] : null;
     }
+
+    public function getProperties()
+    {
+    	$data = array();
+    	$data['id'] = (int) $this->id;
+    	$data['place_id'] = (int) $this->place_id;
+    	$data['teacher_id'] = (int) $this->teacher_id;
+    	$data['status'] =  $this->status;
+    	$data['category'] =  $this->category;
+    	$data['type'] = $this->type;
+    	$data['school_year'] = $this->school_year;
+    	$data['level'] = $this->level;
+    	$data['class'] = $this->class;
+    	$data['school_period'] = $this->school_period;
+    	$data['subject'] = $this->subject;
+    	$data['date'] =  ($this->date) ? $this->date : null;
+    	$data['target_date'] =  ($this->target_date) ? $this->target_date : null;
+    	$data['reference_value'] =  ($this->reference_value) ? $this->reference_value : null;
+    	$data['weight'] =  ($this->weight) ? $this->weight : null;
+    	$data['observations'] =  ($this->observations) ? $this->observations : null;
+    	$data['document'] =  ($this->document) ? $this->document : null;
+    	$data['criteria'] =  ($this->criteria) ? $this->criteria : null;
+    	$data['results'] =  ($this->results) ? $this->results : null;
+    	$data['average_note'] = ($this->average_note) ? $this->average_note : null;
+    	$data['lower_note'] = ($this->lower_note) ? $this->lower_note : null;
+    	$data['higher_note'] = ($this->higher_note) ? $this->higher_note : null;
+    
+    	return $data;
+    }
     
     public function toArray()
     {
@@ -240,7 +269,7 @@ class Note
     	$where->equalTo('type', 'note');
     	$where->equalTo('place_id', $place_id);
     	$where->equalTo('school_year', $school_year);
-    	$where->equalTo('class', $class);
+    	if ($class) $where->equalTo('class', $class);
     	if ($period) $where->equalTo('school_period', $period);
     	if ($subject == 'global') $where->notEqualTo('subject', 'global');
     	else $where->equalTo('subject', $subject);
@@ -248,13 +277,19 @@ class Note
     	$cursor = NoteLink::getTable()->selectWith($select);
     	$periodNotes = array();
     	$periodCategoryNotes = array();
+    	$periodSubjectNotes = array();
+    	$periodSubjectCategoryNotes = array();
     	foreach ($cursor as $noteLink) {
     		if ($noteLink->value !== null) {
 		    	$periodNotes[$noteLink->account_id][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
 		    	$periodCategoryNotes[$noteLink->account_id][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+		    	$periodSubjectNotes[$noteLink->account_id][$noteLink->subject][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+		    	$periodSubjectCategoryNotes[$noteLink->account_id][$noteLink->subject][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
     		}
     	}
     	$categoryAverages = array();
+    	
+    	// Compute the global average
     	foreach ($periodNotes as $account_id => $notes) {
     		$average = 0;
     		$globalWeight = 0;
@@ -267,6 +302,8 @@ class Note
 	    		$categoryAverages[$account_id]['global'] = array('note' => $average, 'notes' => $notes);
     		}
     	}
+
+    	// Compute the per category (example 1st mock exam) average
     	foreach ($periodCategoryNotes as $account_id => $categories) {
     		foreach ($categories as $categoryId => $notes) {
 	    		$average = 0;
@@ -281,6 +318,41 @@ class Note
 	    		}
     		}
     	}
+    
+    	// Compute the per subject average
+    	foreach ($periodSubjectNotes as $account_id => $subjects) {
+    		foreach ($subjects as $subjectId => $notes) {
+	    		$average = 0;
+	    		$globalWeight = 0;
+	    		foreach ($notes as $note) {
+	    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
+	    			$globalWeight += $note['weight'];
+	    		}
+	    		if ($globalWeight != 0) {
+	    			$average /= $globalWeight;
+		    		$categoryAverages[$account_id][$subjectId]['global'] = array('note' => $average, 'notes' => $notes);
+	    		}
+    		}
+    	}
+
+    	// Compute the per subject and per category (ex. 1st mock exam in french) average
+    	foreach ($periodSubjectCategoryNotes as $account_id => $subjects) {
+    		foreach ($subjects as $subject_id => $categories) {
+				foreach ($categories as $categoryId => $notes) {
+		    		$average = 0;
+		    		$globalWeight = 0;
+		    		foreach ($notes as $note) {
+		    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
+		    			$globalWeight += $note['weight'];
+		    		}
+		    		if ($globalWeight != 0) {
+		    			$average /= $globalWeight;
+			    		$categoryAverages[$account_id][$subject_id][$categoryId] = array('note' => $average, 'notes' => $notes);
+		    		}
+	    		}
+    		}
+    	}
+    	 
     	return $categoryAverages;
     }
 

@@ -259,7 +259,16 @@ return array(
         										),
         								),
         						),
-        						'export' => array(
+        						'get' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/get[/:category][/:type]',
+        										'defaults' => array(
+        												'action' => 'get',
+        										),
+        								),
+        						),
+	       						'export' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/export[/:category][/:type]',
@@ -773,6 +782,18 @@ return array(
         										),
         								),
         						),
+	       						'planningV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/planning-v2[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'planningV2',
+        										),
+        								),
+        						),
 	       						'file' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -996,6 +1017,7 @@ return array(
 				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
             	array('route' => 'note/list', 'roles' => array('manager', 'teacher')),
+            	array('route' => 'note/get', 'roles' => array('manager', 'user')),
 				array('route' => 'note/export', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/exportCsv', 'roles' => array('admin')),
 				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
@@ -1052,6 +1074,7 @@ return array(
 				array('route' => 'student/addProgressV2', 'roles' => array('manager', 'coach')),
 				array('route' => 'student/dashboard', 'roles' => array('user')),
 				array('route' => 'student/planning', 'roles' => array('guest')),
+				array('route' => 'student/planningV2', 'roles' => array('user')),
 				array('route' => 'student/file', 'roles' => array('guest')),
 				array('route' => 'student/absence', 'roles' => array('guest')),
 				array('route' => 'student/homework', 'roles' => array('guest')),
@@ -2371,7 +2394,7 @@ return array(
 //					'date_4' => [],
 					'origine' => ['multiple' => true],
 					'property_1' => ['multiple' => true],
-					'property_10' => ['multiple' => true],
+					'property_7' => ['multiple' => true],
 					'property_6' => ['multiple' => true],
 					'property_15' => [],
 					'n_fn' => [],
@@ -2407,7 +2430,7 @@ return array(
 //					'next_meeting_confirmed' => [],
 //					'property_2' => [],
 					'origine' => [],
-					'property_10' => [],
+					'property_7' => [],
 //					'property_15' => [],
 //					'identifier' => [],
 					'place_id' => [],
@@ -2454,6 +2477,10 @@ return array(
 							'route' => 'account/updateContact',
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 4),
 							'labels' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
+					),
+					'account-document' => array(
+							'definition' => 'inline',
+							'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
 					),
 			),
 	),
@@ -3506,7 +3533,7 @@ table.note-report td {
 					'place_id' => 'select',
 					'property_16' => 'select',
 					'property_1' => 'select',
-					'property_10' => 'select',
+					'property_7' => 'select',
 					'property_6' => 'select',
 					'name' => 'contains',
 			),
@@ -3516,7 +3543,7 @@ table.note-report td {
 			'property_1' => 'image',
 			'photo_link_id' => 'photo',
 			'n_fn' => 'text',
-			'property_10' => 'select',
+			'property_7' => 'select',
 			'tel_cell' => 'phone',
 			'email' => 'email',
 	),
@@ -4718,7 +4745,7 @@ table.note-report tr.period {
 	),
 		
 	// Home page
-	'public/community/student' => array(
+	'public/community/student' => array( // Deprecated
 			'title' => array(
 					'en_US' => 'Studies by 2pit',
 					'fr_FR' => 'P-Pit Studies',
@@ -4752,7 +4779,7 @@ table.note-report tr.period {
 											'type' => 'static',
 											'level' => 'subject',
 											'route' => 'student/absence',
-											'label' => array('en_US' => 'Absences/lateness', 'fr_FR' => 'Absences/retards'),
+											'label' => array('en_US' => 'Absences & lateness', 'fr_FR' => 'Absences & retards'),
 									),
 									'homework' => array(
 											'type' => 'static',
@@ -4784,7 +4811,50 @@ table.note-report tr.period {
 					),
 			),
 	),
-		
+
+	'student/home/tabs' => array(
+		'content' => array(
+			'planning' => array(
+				'type' => 'calendar',
+				'level' => 'community',
+				'route' => 'student/planningV2',
+				'label' => array('en_US' => 'Planning', 'fr_FR' => 'Planning'),
+			),
+			'absence' => array(
+				'type' => 'static',
+				'level' => 'subject',
+				'route' => 'student/absence',
+				'label' => array('en_US' => 'Absences & lateness', 'fr_FR' => 'Absences & retards'),
+			),
+			'homework' => array(
+				'type' => 'static',
+				'level' => 'subject',
+				'route' => 'student/homework',
+				'label' => array('en_US' => 'Homework', 'fr_FR' => 'Cahier de texte'),
+			),
+			'evaluation' => array(
+				'type' => 'static',
+				'level' => 'subject',
+				'route' => 'student/evaluation',
+				'filter' => 'evaluation_category',
+				'label' => array('en_US' => 'Evaluations', 'fr_FR' => 'Relevés de notes'),
+			),
+			'schooling' => array(
+				'type' => 'static',
+				'level' => 'subject',
+				'route' => 'student/report',
+				'label' => array('en_US' => 'School reports', 'fr_FR' => 'Bulletins scolaires'),
+			),
+			'mock_evaluation' => array(
+				'type' => 'static',
+				'level' => 'subject',
+				'route' => 'student/exam',
+				'params' => ['mock' => 'mock'],
+				'label' => array('en_US' => 'Mock exams', 'fr_FR' => 'Examens blancs'),
+			),
+		),
+	),
+	
 	'perimeters' => array(
 			'p-pit-studies' => array(
 					'property_1' => 'student/property/discipline',

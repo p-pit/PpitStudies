@@ -121,18 +121,14 @@ function getStudentList(params) {
           
           // Able the group action button
           $('.account-group-anchor').prop('disabled', true);
-          $('.account-checkbox').click(function () {
-            $('.account-group-anchor').prop('disabled', false);
-          });
+          $('.account-checkbox').click(function () { $('.account-group-anchor').prop('disabled', false); });
 
           // Connect the check all checkbox
-          $('#account-checkbox').click(function () {
-            let current = $('#account-checkbox').prop('checked');
+          $('.account-checkbox-all').click(function () {
+            let current = $(this).prop('checked');
             $('.account-checkbox').prop('checked', (current) ? true : false);
-          });
-          $('#down-account-checkbox').click(function () {
-            let current = $('#down-account-checkbox').prop('checked');
-            $('.account-checkbox').prop('checked', (current) ? true : false);
+            $('.account-checkbox-all').prop('checked', (current) ? true : false);
+            $('.account-group-anchor').prop('disabled', false);
           });
           
           // Connect the grouped actions anchors
@@ -143,7 +139,7 @@ function getStudentList(params) {
           // Connect the detail anchors
           $('.account-detail-anchor').click(function () {
             var id = $(this).attr('id').split('_')[1];
-            getStudentHome(id);
+//            getStudentHome(id);
             $(this).removeClass("btn-outline-primary").addClass("btn-primary");
           });
 		}
@@ -153,6 +149,10 @@ function getStudentList(params) {
 			$('.account-detail-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
             $('.account-group-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
 		});
+
+        $("#student-home-modal").on("hidden.bs.modal", function () {
+          $('.account-detail-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
+        });
 
         $('[data-toggle="tooltip"]').tooltip();
 	}
@@ -346,23 +346,8 @@ function connectStudentTab(route) {
 function getStudentHome(id) {
 
 	var route = '<?php echo $this->url('student/studentHomeV2') ?>/' + id;
-
-	// Execute the ajax request
-	xhttp = new XMLHttpRequest();
-	xhttp.open("GET", route, true);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-		  $('#modalForm').html(xhttp.responseText);
-
-          $('#modalForm').modal('toggle');
-		}
-	}
-	xhttp.send();
-
-	// Highlight the clicked button (and only it in its class)
-	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
-	$('#account-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
+    $('#student-home-panel').html('<iframe src="' + route + '" height="1000"; style="width: 100%; border: none"></iframe>');
+    $('#student-home-modal').modal('toggle');
 }
 
 /////////////////////////
@@ -392,22 +377,31 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 		var validity = checkAbsenceUpdateProperties();
 
 		if (validity) {
-		
-			// Create a new FormData object.
-			var formData = new FormData();
-
+            var xhttp = new XMLHttpRequest();
+            var route, target;
+            route = '<?php echo $this->url('student/addAbsenceV2', array('type' => $typeId)) ?>?';
+            target = 'grouped-action-panel';
+/*
 			var criteriaNumber = $('#group-nb-criteria').val();
 			for (i = 0; i < criteriaNumber; i++) {
 				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
 				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
 			}
-			formData.append('nb-criteria', i);
+			formData.append('nb-criteria', i);*/
 
-			var accountNumber = $('#group-nb-account').val();
-			for (i = 0; i < accountNumber; i++) {
-				formData.append('account_' + i, $('#group-account_' + i).val());
-			}
-			formData.append('nb-account', i);
+            route += '&accounts=';
+            let first = true;
+            $('.account-checkbox').each(function () {
+              let account_id = $(this).attr('id').split('_')[1];
+              if ($(this).prop('checked')) {
+                  if (!first) route += ',';
+                  first = false;
+                  route += account_id;
+              }
+            });
+      
+            // Create a new FormData object.
+            var formData = new FormData();
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
@@ -415,10 +409,6 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 <?php endforeach ?>
 			formData.append('duration', $('#duration').val());
 
-			var xhttp = new XMLHttpRequest();
-			var route, target;
-			route = '<?php echo $this->url('student/addAbsenceV2', array('type' => $typeId)) ?>';
-			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			xhttp.onload = function () {
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -433,19 +423,20 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 function getAdd<?php echo $typeId?>Absence() {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addAbsenceV2', array('type' => $typeId)) ?>';
-	var formData = new FormData();
+	var route = '<?php echo $this->url('student/addAbsenceV2', array('type' => $typeId)) ?>?';
 
-	var accountNumber = $('#account-number').val();
-	for (i = 0, j = 0; i < accountNumber; i++) {
-		if (document.getElementById('account-checkbox_' + i).checked) {
-			formData.append('account_' + j, $('#account_' + i).val());
-			j++;
-		}
-	}
-	formData.append('nb-account', j);
+	    route += '&accounts=';
+	    let first = true;
+	    $('.account-checkbox').each(function () {
+	        let account_id = $(this).attr('id').split('_')[1];
+			if ($(this).prop('checked')) {
+	            if (!first) route += ',';
+	            first = false;
+	            route += account_id;
+			}
+		});
 
-	xhttp.open('POST', route, true);
+	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -465,7 +456,7 @@ function getAdd<?php echo $typeId?>Absence() {
           $('#down-submit-button').click(function () { connectAdd<?php echo $typeId ?>AbsenceForm(); });
 		}
 	}
-	xhttp.send(formData);
+	xhttp.send();
 
   // Highlight the clicked button (and only it in its class)
   $('.action-btn').removeClass('active');
@@ -499,33 +490,37 @@ function postAddEventForm(category)
 		var validity = checkEventUpdateProperties();
 
 		if (validity) {
-		
-			// Create a new FormData object.
-			var formData = new FormData();
-
+            var xhttp = new XMLHttpRequest();
+            var route, target;
+            route = '<?php echo $this->url('student/addEventV2') ?>/' + category;
+            target = 'grouped-action-panel';
+/*
 			var criteriaNumber = $('#group-nb-criteria').val();
 			for (i = 0; i < criteriaNumber; i++) {
 				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
 				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
 			}
-			formData.append('nb-criteria', i);
+			formData.append('nb-criteria', i);*/
 
-			var accountNumber = $('#group-nb-account').val();
-			for (var i = 0; i < accountNumber; i++) {
-				account_id = $('#group-account_' + i).val();
-				formData.append('account_' + i, account_id);
-			}
-			formData.append('nb-account', accountNumber);
+	  	    route += '&accounts=';
+	  	    let first = true;
+	  	    $('.account-checkbox').each(function () {
+	  	        let account_id = $(this).attr('id').split('_')[1];
+	  			if ($(this).prop('checked')) {
+	  	            if (!first) route += ',';
+	  	            first = false;
+	  	            route += account_id;
+	  			}
+	  		});
+      
+            // Create a new FormData object.
+            var formData = new FormData();
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
 <?php endforeach ?>
 
-			var xhttp = new XMLHttpRequest();
-			var route, target;
-			route = '<?php echo $this->url('student/addEventV2') ?>/' + category;
-			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -543,23 +538,24 @@ function getAddEvent(category) {
 	
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('student/addEventV2') ?>/' + category;
-	var formData = new FormData();
-
+/*
 	var criteriaNumber = $('#group-nb-criteria').val();
 	for (i = 0; i < criteriaNumber; i++) {
 		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
 		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
 	}
-	formData.append('nb-criteria', i);
+	formData.append('nb-criteria', i);*/
 
-	var accountNumber = $('#account-number').val();
-	for (i = 0, j = 0; i < accountNumber; i++) {
-		if (document.getElementById('account-checkbox_' + i).checked) {
-			formData.append('account_' + j, $('#account_' + i).val());
-			j++;
-		}
-	}
-	formData.append('nb-account', j);
+      route += '&accounts=';
+      let first = true;
+      $('.account-checkbox').each(function () {
+          let account_id = $(this).attr('id').split('_')[1];
+          if ($(this).prop('checked')) {
+              if (!first) route += ',';
+              first = false;
+              route += account_id;
+          }
+    });
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -607,27 +603,37 @@ var currentPlaceId = '', currentClass = '', currentSubject = '', currentType = '
 
 function postAddNoteForm(classe)
 {
-		// Check validity
-		var validity = checkNoteUpdateProperties();
+	// Check validity
+	var validity = checkNoteUpdateProperties();
 
-		if (validity) {
+    if (validity) {
+	    var xhttp = new XMLHttpRequest();
+	    var route, target;
+        route = '<?php echo $this->url('student/addNoteV2', array('type' => 'homework')) ?>?';
+	    if (classe) route += '&class=' + classe;
+	    target = 'grouped-action-panel';
+    
+		// Create a new FormData object.
+		var formData = new FormData();
+/*		
+		var criteriaNumber = $('#group-nb-criteria').val();
+		for (i = 0; i < criteriaNumber; i++) {
+		  route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
+  		}*/
+
+  	    route += '&accounts=';
+  	    let first = true;
+  	    $('.account-checkbox').each(function () {
+  	        let account_id = $(this).attr('id').split('_')[1];
+  			if ($(this).prop('checked')) {
+  	            if (!first) route += ',';
+  	            first = false;
+  	            route += account_id;
+  			}
+  		});
 
 			// Create a new FormData object.
 			var formData = new FormData();
-
-			var criteriaNumber = $('#group-nb-criteria').val();
-			for (i = 0; i < criteriaNumber; i++) {
-				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-			}
-			formData.append('nb-criteria', i);
-
-			var accountNumber = $('#group-nb-account').val();
-			for (var i = 0; i < accountNumber; i++) {
-				account_id = $('#group-account_' + i).val();
-				formData.append('account_' + i, account_id);
-			}
-			formData.append('nb-account', accountNumber);
 
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
@@ -649,11 +655,6 @@ function postAddNoteForm(classe)
     <?php endif;?>
 <?php endforeach ?>
 
-			var xhttp = new XMLHttpRequest();
-			var route, target;
-			route = '<?php echo $this->url('student/addNoteV2', array('type' => 'homework')) ?>';
-			if (classe) route += '/' + classe;
-			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -687,27 +688,26 @@ function postAddNoteForm(classe)
 function getAddNote(classe) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addNoteV2', array('type' => 'homework')) ?>';
-	if (classe) route += '/' + classe;
-	var formData = new FormData();
-
+	var route = '<?php echo $this->url('student/addNoteV2', array('type' => 'homework')) ?>?';
+	if (classe) route += '&class=' + classe;
+/*
 	var criteriaNumber = $('#group-nb-criteria').val();
 	for (i = 0; i < criteriaNumber; i++) {
-		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-	}
-	formData.append('nb-criteria', i);
+        route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
+	}*/
 
-	var accountNumber = $('#account-number').val();
-	for (i = 0, j = 0; i < accountNumber; i++) {
-		if (document.getElementById('account-checkbox_' + i).checked) {
-			formData.append('account_' + j, $('#account_' + i).val());
-			j++;
+    route += '&accounts=';
+    let first = true;
+    $('.account-checkbox').each(function () {
+        let account_id = $(this).attr('id').split('_')[1];
+		if ($(this).prop('checked')) {
+            if (!first) route += ',';
+            first = false;
+            route += account_id;
 		}
-	}
-	formData.append('nb-account', j);
+	});
 
-	xhttp.open('POST', route, true);
+	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -753,7 +753,7 @@ function getAddNote(classe) {
 	        $('#down-submit-button').click(function () { postAddNoteForm(); });
 		}
 	}
-	xhttp.send(formData);
+	xhttp.send();
 
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass('active');
@@ -787,55 +787,57 @@ function postAddEvaluationForm(type, classe)
 		var validity = checkEvaluationUpdateProperties();
 
 		if (validity) {
+		    var xhttp = new XMLHttpRequest();
+		    var route, target;
+		    route = '<?php echo $this->url('student/addEvaluationV2') ?>/' + type + '?';
+		    if (classe) route += '&class=' + classe;
+		    target = 'grouped-action-panel';
 		
 			// Create a new FormData object.
 			var formData = new FormData();
-
+/*
 			var criteriaNumber = $('#group-nb-criteria').val();
 			for (i = 0; i < criteriaNumber; i++) {
-				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-			}
-			formData.append('nb-criteria', i);
+		        route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
+			}*/
 
-			var accountNumber = $('#group-nb-account').val();
-			for (var i = 0; i < accountNumber; i++) {
-				account_id = $('#group-account_' + i).val();
-				formData.append('account_' + i, account_id);
+            route += '&accounts=';
+            let first = true;
+            $('.account-checkbox').each(function () {
+                let account_id = $(this).attr('id').split('_')[1];
+				if ($(this).prop('checked')) {
+		            if (!first) route += ',';
+                    first = false;
+		            route += account_id;
 
-				value = $('#input_value_' + account_id).val();
-				if (value != '') {
-					error = checkNumber(value, 0, 100);
-					if (error) {
-						renderElement('input_value_' + account_id, error);
-						validity = false;
-					}
-				    else { 
-						renderElement('input_value_' + account_id, null);
-						value = getNumber(value, 2);
-						$('#value_' + account_id).val(value);
-					}
+                    let value = $('#input_value_' + account_id).val();
+			        if (value != '') {
+			          let error = checkNumber(value, 0, 100);
+			          if (error) {
+			            renderElement('input_value_' + account_id, error);
+			            validity = false;
+			          }
+			          else { 
+			            renderElement('input_value_' + account_id, null);
+			            value = getNumber(value, 2);
+			            $('#value_' + account_id).val(value);
+			          }
+			        }
+			          
+			        formData.append('value_' + account_id, value);
+			
+			        let mention = $('#select_value_' + account_id).val();
+			        formData.append('mention_' + account_id, mention);
+			
+			        formData.append('assessment_' + account_id, $('#assessment_' + account_id).val());
 				}
-				
-				formData.append('value_' + account_id, value);
-
-				mention = $('#select_value_' + account_id).val();
-				formData.append('mention_' + account_id, mention);
-
-				formData.append('assessment_' + account_id, $('#assessment_' + account_id).val());
-			}
-			formData.append('nb-account', accountNumber);
+			});
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
 <?php endforeach ?>
 
-			var xhttp = new XMLHttpRequest();
-			var route, target;
-			route = '<?php echo $this->url('student/addEvaluationV2') ?>/' + type;
-			if (classe) route += '/' + classe;
-			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -852,27 +854,26 @@ function postAddEvaluationForm(type, classe)
 function getAddEvaluation(type, classe) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addEvaluationV2') ?>/' + type;
-	if (classe) route += '/' + classe;
-	var formData = new FormData();
-
+	var route = '<?php echo $this->url('student/addEvaluationV2') ?>/' + type + '?';
+	if (classe) route += '&class=' + classe;
+/*
 	var criteriaNumber = $('#group-nb-criteria').val();
 	for (i = 0; i < criteriaNumber; i++) {
-		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-	}
-	formData.append('nb-criteria', i);
+        route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
+	}*/
 
-	var accountNumber = $('#account-number').val();
-	for (i = 0, j = 0; i < accountNumber; i++) {
-		if (document.getElementById('account-checkbox_' + i).checked) {
-			formData.append('account_' + j, $('#account_' + i).val());
-			j++;
+    route += '&accounts=';
+    let first = true;
+    $('.account-checkbox').each(function () {
+        let account_id = $(this).attr('id').split('_')[1];
+		if ($(this).prop('checked')) {
+            if (!first) route += ',';
+            first = false;
+            route += account_id;
 		}
-	}
-	formData.append('nb-account', j);
+	});
 
-	xhttp.open('POST', route, true);
+	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -902,7 +903,7 @@ function getAddEvaluation(type, classe) {
           $('#down-submit-button').click(function () { postAddEvaluationForm(type, classe); });
 		}
 	}
-	xhttp.send(formData);
+	xhttp.send();
 
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass('active');
@@ -994,23 +995,31 @@ function postAddNotificationForm(category)
 		var validity = checkNotificationUpdateProperties();
 
 		if (validity) {
-		
-			// Create a new FormData object.
-			var formData = new FormData();
-
+            var xhttp = new XMLHttpRequest();
+            var route, target;
+            route = '<?php echo $this->url('student/addNotificationV2') ?>/' + category;
+            target = 'grouped-action-panel';
+/*
 			var criteriaNumber = $('#group-nb-criteria').val();
 			for (i = 0; i < criteriaNumber; i++) {
 				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
 				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
 			}
-			formData.append('nb-criteria', i);
+			formData.append('nb-criteria', i);*/
 
-			var accountNumber = $('#group-nb-account').val();
-			for (var i = 0; i < accountNumber; i++) {
-				account_id = $('#group-account_' + i).val();
-				formData.append('account_' + i, account_id);
-			}
-			formData.append('nb-account', accountNumber);
+	  	    route += '&accounts=';
+	  	    let first = true;
+	  	    $('.account-checkbox').each(function () {
+	  	        let account_id = $(this).attr('id').split('_')[1];
+	  			if ($(this).prop('checked')) {
+	  	            if (!first) route += ',';
+	  	            first = false;
+	  	            route += account_id;
+	  			}
+	  		});
+      
+            // Create a new FormData object.
+            var formData = new FormData();
 
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
@@ -1021,10 +1030,6 @@ function postAddNotificationForm(category)
 	<?php endif;?>
 <?php endforeach ?>
 
-			var xhttp = new XMLHttpRequest();
-			var route, target;
-			route = '<?php echo $this->url('student/addNotificationV2') ?>/' + category;
-			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -1044,23 +1049,24 @@ function getAddNotification(category) {
 	
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('student/addNotificationV2') ?>/' + category;
-	var formData = new FormData();
-
+/*
 	var criteriaNumber = $('#group-nb-criteria').val();
 	for (i = 0; i < criteriaNumber; i++) {
 		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
 		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
 	}
-	formData.append('nb-criteria', i);
+	formData.append('nb-criteria', i);*/
 
-	var accountNumber = $('#account-number').val();
-	for (i = 0, j = 0; i < accountNumber; i++) {
-		if (document.getElementById('account-checkbox_' + i).checked) {
-			formData.append('account_' + j, $('#account_' + i).val());
-			j++;
-		}
-	}
-	formData.append('nb-account', j);
+	    route += '&accounts=';
+	    let first = true;
+	    $('.account-checkbox').each(function () {
+	        let account_id = $(this).attr('id').split('_')[1];
+			if ($(this).prop('checked')) {
+	            if (!first) route += ',';
+	            first = false;
+	            route += account_id;
+			}
+		});
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -1118,32 +1124,37 @@ function postAddProgressForm(sport)
 		var validity = checkProgressUpdateProperties();
 
 		if (validity) {
-		
-			// Create a new FormData object.
-			var formData = new FormData();
-
+            var xhttp = new XMLHttpRequest();
+            var route, target;
+            route = '<?php echo $this->url('student/addProgressV2') ?>/' + sport;
+            target = 'grouped-action-panel';
+/*
 			var criteriaNumber = $('#group-nb-criteria').val();
 			for (i = 0; i < criteriaNumber; i++) {
 				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
 				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
 			}
-			formData.append('nb-criteria', i);
+			formData.append('nb-criteria', i);*/
 
-			var accountNumber = $('#group-nb-account').val();
-			for (i = 0; i < accountNumber; i++) {
-				formData.append('account_' + i, $('#group-account_' + i).val());
-			}
-			formData.append('nb-account', i);
+	  	    route += '&accounts=';
+	  	    let first = true;
+	  	    $('.account-checkbox').each(function () {
+	  	        let account_id = $(this).attr('id').split('_')[1];
+	  			if ($(this).prop('checked')) {
+	  	            if (!first) route += ',';
+	  	            first = false;
+	  	            route += account_id;
+	  			}
+	  		});
+      
+            // Create a new FormData object.
+            var formData = new FormData();
 			
 			// Get the properties values
 <?php foreach ($properties as $propertyId => $property) : ?>
 				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
 <?php endforeach ?>
 
-			var xhttp = new XMLHttpRequest();
-			var route, target;
-			route = '<?php echo $this->url('student/addProgressV2') ?>/' + sport;
-			target = 'grouped-action-panel';
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
@@ -1183,18 +1194,19 @@ function getAddProgress(sport) {
 
 function getStudentGroup() {
 
-	var route = '<?php echo $this->url('student/groupV2') ?>';
-	var formData = new FormData();
+	var route = '<?php echo $this->url('student/groupV2') ?>?';
 
-	var accountNumber = $('#account-number').val();
-	for (i = 0, j = 0; i < accountNumber; i++) {
-		if (document.getElementById('account-checkbox_' + i).checked) {
-			formData.append('account_' + j, $('#account_' + i).val());
-			j++;
+    route += '&accounts=';
+    let first = true;
+    $('.account-checkbox').each(function () {
+        let account_id = $(this).attr('id').split('_')[1];
+		if ($(this).prop('checked')) {
+            if (!first) route += ',';
+            first = false
+            route += account_id;
 		}
-	}
-	formData.append('nb-account', j);
-
+	});
+/*
 	var sport;
 
     $('.search_input_text').each(function () {
@@ -1225,11 +1237,11 @@ function getStudentGroup() {
     $('.search_input_date_max').each(function () {
       let propertyId = $(this).attr('id').split('-')[1];
       formData.append('max_' + propertyId, $(this).val());
-    });
+    });*/
 
 	// Execute the ajax request
 	xhttp = new XMLHttpRequest();
-	xhttp.open("POST", route, true);
+	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
       if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -1308,22 +1320,22 @@ function getStudentGroup() {
 
 			$('#note-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddNote($('#search_property_7').val()); // Class
+				getAddNote($('#search-property_7').val()); // Class
 			});
 
 			$('#evaluation-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddEvaluation('note', $('#search_property_7').val()); // Class
+				getAddEvaluation('note', $('#search-property_7').val()); // Class
 			});
 
 			$('#report-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddEvaluation('report', $('#search_property_7').val()); // Class
+				getAddEvaluation('report', $('#search-property_7').val()); // Class
 			});
 
 			$('#exam-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddEvaluation('exam', $('#search_property_7').val()); // Class
+				getAddEvaluation('exam', $('#search-property_7').val()); // Class
 			});
 
 			$('#progress-add-anchor').click(function () { 
@@ -1336,7 +1348,7 @@ function getStudentGroup() {
             $('[data-toggle="tooltip"]').tooltip();
 		}
 	}
-	xhttp.send(formData);
+	xhttp.send();
 
 	// Highlight the clicked button (and only it in its class)
 	$('.index-btn').removeClass("btn-primary").addClass("btn-default");

@@ -12,6 +12,7 @@ use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Credit;
 use PpitCore\Model\Csrf;
+use PpitCore\Model\Document;
 use PpitCore\Model\Instance;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
@@ -140,10 +141,58 @@ class StudentController extends AbstractActionController
 
 	public function studentHomeV2Action()
 	{
-		return $this->studentHomeAction();
+		// Retrieve context and parameters
+		$context = Context::getCurrent();
+    	$account_id = (int) $this->params()->fromRoute('account_id', 0);
+    	$profile = Account::get($account_id);
+    	$place = Place::get($profile->place_id);
+    	$template = $context->getConfig('student/home/tabs');
+    	 
+		// Authentication
+		$panel = $this->params()->fromQuery('panel');
+		$email = $this->params()->fromQuery('email');
+		$error = $this->params()->fromQuery('error');
+		$message = $this->params()->fromQuery('message');
+		$redirect = $this->params()->fromQuery('redirect', 'home');
+		if ($email && !$context->isAuthenticated()) {
+			$vcard = Vcard::get($email, 'email');
+			$profile->email = $email;
+			if ($vcard) {
+				$userContact = UserContact::get($vcard->id, 'vcard_id');
+				if ($userContact) $panel = 'modalLoginForm';
+				$profile->n_first = $vcard->n_first;
+				$profile->n_last = $vcard->n_last;
+			}
+			else {
+				$profile->n_first = $this->params()->fromQuery('n_first');
+				$profile->n_last = $this->params()->fromQuery('n_last');
+			}
+			if ($panel != 'modalLoginForm') {
+				$panel = 'modalRegisterForm';
+			}
+		}
+
+		$view = new ViewModel(array(
+			'context' => $context,
+			'place_identifier' => $place->identifier,
+			'profile' => $profile,
+			'requestUri' => $this->request->getRequestUri(),
+			'viewController' => 'ppit-studies/view-controller/student-scripts.phtml',
+
+			'template' => $template,
+
+			'token' => $this->params()->fromQuery('hash', null),
+			'panel' => $panel,
+			'email' => $email,
+			'redirect' => $redirect,
+			'message' => $message,
+			'error' => $error,
+		));
+		$view->setTerminal(true);
+		return $view;
 	}
 	
-    public function registrationIndexAction()
+	public function registrationIndexAction()
     {
     	$context = Context::getCurrent();
 		$place = Place::get($context->getPlaceId());
@@ -310,20 +359,20 @@ class StudentController extends AbstractActionController
     
     	// Retrieve the type
     	$type = $this->params()->fromRoute(0);
-    	 
-    	$request = $this->getRequest();
-       	if (!$request->isPost()) return $this->redirect()->toRoute('home');
-       	$nbAccount = $request->getPost('nb-account');
-
-       	$accounts = array();
-       	for ($i = 0; $i < $nbAccount; $i++) {
-       		$account = Account::get($request->getPost('account_'.$i));
-       		$accounts[] = $account;
-       	}
-       	$place = Place::get($account->place_id);
-       	$school_periods = $place->getConfig('school_periods');
-       	$current_school_period = $context->getCurrentPeriod($school_periods);
+    
+    	$accounts = [];
+    	$accountIds = $this->params()->fromQuery('accounts');
+    	if ($accountIds) $accountIds = explode(',', $accountIds);
+    	else $accountIds = [];
+    	foreach ($accountIds as $account_id) {
+    		$account = Account::get($account_id);
+    		$accounts[$account_id] = $account;
+    	}
+    	$place = Place::get($account->place_id);
        	
+    	$school_periods = $place->getConfig('school_periods');
+       	$current_school_period = $context->getCurrentPeriod($school_periods);
+/*       	
        	$criteria = array();
        	foreach ($context->getConfig('core_account/search/p-pit-studies')['properties'] as $propertyId => $unused) {
 			$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
@@ -337,13 +386,13 @@ class StudentController extends AbstractActionController
 				$value = ($request->getPost($propertyId) == 'null') ? null : $request->getPost($propertyId); // JS returns the string 'null' for multiple select input without selection
        			if ($value) $criteria[$propertyId] = $value;
        		}
-       	}
+       	}*/
        	
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'type' => $type,
-    			'criteria' => $criteria,
+//    			'criteria' => $criteria,
     			'accounts' => $accounts,
     			'places' => Place::getList(array()),
     			'school_periods' => $school_periods,
@@ -367,8 +416,7 @@ class StudentController extends AbstractActionController
     	$type = $this->params()->fromRoute('type', null);
     
     	$absence = Absence::instanciate($type);
-    
-    	$request = $this->getRequest();
+    /*
     	$nbCriteria = $request->getPost('nb-criteria');
     	$criteria = array();
     	for ($i = 0; $i < $nbCriteria; $i++) {
@@ -376,16 +424,19 @@ class StudentController extends AbstractActionController
     		$criterionValue = $request->getPost('criterion_'.$i);
     		$criteria[$criterionId] = $criterionValue;
 //    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
-    	}
+    	}*/
 
-    	$nbAccount = $request->getPost('nb-account');
-    	$accounts = array();
-    	for ($i = 0; $i < $nbAccount; $i++) {
-    		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[] = $account;
+    	$accounts = [];
+    	$accountIds = $this->params()->fromQuery('accounts');
+    	if ($accountIds) $accountIds = explode(',', $accountIds);
+    	else $accountIds = [];
+    	foreach ($accountIds as $account_id) {
+    		$account = Account::get($account_id);
+    		$accounts[$account_id] = $account;
     	}
     	$place = Place::get($account->place_id);
-       	$school_periods = $place->getConfig('school_periods');
+    	 
+    	$school_periods = $place->getConfig('school_periods');
        	$current_school_period = $context->getCurrentPeriod($school_periods);
     	$absence->school_period = $current_school_period;
     	 
@@ -395,6 +446,7 @@ class StudentController extends AbstractActionController
     	$error = null;
     	$message = null;
 
+    	$request = $this->getRequest();
     	if ($request->getPost('category')) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
@@ -567,10 +619,22 @@ class StudentController extends AbstractActionController
     	 
     	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
-    	$class = $this->params()->fromRoute('class', null);
+    	$class = $this->params()->fromQuery('class', null);
 
     	$note = Note::instanciate('homework', $class);
-		if (count($places) == 1) $note->place_id = current($places)->id;
+    	$note->class = $class;
+
+    	$accounts = [];
+    	$accountIds = $this->params()->fromQuery('accounts');
+    	if ($accountIds) $accountIds = explode(',', $accountIds);
+    	else $accountIds = [];
+    	foreach ($accountIds as $account_id) {
+    		$account = Account::get($account_id);
+    		$accounts[$account_id] = $account;
+    	}
+    	$place = Place::get($account->place_id);
+    	$note->place_id = $account->place_id;
+
     	$documentList = array();
     	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
     		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
@@ -590,29 +654,13 @@ class StudentController extends AbstractActionController
     	$error = null;
     	$message = null;
     	$request = $this->getRequest();
-    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
-    	$nbAccount = $request->getPost('nb-account');
-    	$accounts = array();
-    	for ($i = 0; $i < $nbAccount; $i++) {
-    		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[$account->id] = $account;
-    	}
-    	$place = Place::get($account->place_id);
+    	
        	$school_periods = $place->getConfig('school_periods');
        	$current_school_period = $context->getCurrentPeriod($school_periods);
 		$note->school_period = $current_school_period;
-		
-    	$nbCriteria = $request->getPost('nb-criteria');
-    	$criteria = array();
-    	for ($i = 0; $i < $nbCriteria; $i++) {
-    		$criterionId = $request->getPost('criterion-id_'.$i);
-    		$criterionValue = $request->getPost('criterion_'.$i);
-   			$criteria[$criterionId] = $criterionValue;
-    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
-    	}
 
-    	if ($request->getPost('date')) {
-    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    	if ($request->isPost()) {
+			$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
@@ -644,8 +692,7 @@ class StudentController extends AbstractActionController
     					$error = $rc;
     				}
     				// Save the note at the student level
-    				else for ($i = 0; $i < $nbAccount; $i++) {
-    					$account = $accounts[$request->getPost('account_'.$i)];
+    				else foreach ($accounts as $account_id => $account) {
     					$noteLink = NoteLink::instanciate($account->id, $note->id);
     				   	$rc = $noteLink->add();
 	    				if ($rc != 'OK') {
@@ -690,22 +737,28 @@ class StudentController extends AbstractActionController
     
     	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
-    	$class = $this->params()->fromRoute('class', null);
+    	$class = $this->params()->fromQuery('class', null);
     
     	$note = Note::instanciate('homework', $class);
-    	if (count($places) == 1) $note->place_id = current($places)->id;
-    	$documentList = array();
-    	if (array_key_exists('dropbox', $context->getConfig('ppitDocument'))) {
-    		require_once "vendor/dropbox/dropbox-sdk/lib/Dropbox/autoload.php";
-    		$dropbox = $context->getConfig('ppitDocument')['dropbox'];
-    		$dropboxClient = new \Dropbox\Client($dropbox['credential'], $dropbox['clientIdentifier']);
-    		try {
-    			$properties = $dropboxClient->getMetadataWithChildren($dropbox['folders']['schooling']);
-    			if ($properties) foreach ($properties['contents'] as $content) $documentList[] = substr($content['path'], strrpos($content['path'], '/')+1);
-    		}
-    		catch(\Exception $e) {}
+    	
+    	$note->class = $class;
+    
+    	$accounts = [];
+    	$accountIds = $this->params()->fromQuery('accounts');
+    	if ($accountIds) $accountIds = explode(',', $accountIds);
+    	else $accountIds = [];
+    	foreach ($accountIds as $account_id) {
+    		$account = Account::get($account_id);
+    		$accounts[$account_id] = $account;
     	}
-    	else $dropbox = null;
+    	$place = Place::get($account->place_id);
+    	$note->place_id = $account->place_id;
+
+		$document = null;
+		
+    	$done_observations = null;
+    	$todo_observations = null;
+    	$event_observations = null;
     	 
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -713,35 +766,20 @@ class StudentController extends AbstractActionController
     	$error = null;
     	$message = null;
     	$request = $this->getRequest();
-    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
-    	$nbAccount = $request->getPost('nb-account');
-    	$accounts = array();
-    	for ($i = 0; $i < $nbAccount; $i++) {
-    		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[$account->id] = $account;
-    	}
-    	$place = Place::get($account->place_id);
-    	$note->place_id = $account->place_id;
     	
     	$school_periods = $place->getConfig('school_periods');
     	$current_school_period = $context->getCurrentPeriod($school_periods);
     	$note->school_period = $current_school_period;
     
-    	$nbCriteria = $request->getPost('nb-criteria');
-    	$criteria = array();
-    	for ($i = 0; $i < $nbCriteria; $i++) {
-    		$criterionId = $request->getPost('criterion-id_'.$i);
-    		$criterionValue = $request->getPost('criterion_'.$i);
-    		$criteria[$criterionId] = $criterionValue;
-    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
-    	}
-    
-    	if ($request->getPost('date')) {
+    	if ($request->isPost()) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
-    
+
+    			$document_id = $request->getPost('document');
+    			$document = Document::get($document_id);
+    			 
     			// Load the note data
     			$data = array();
     			$data['place_id'] = $request->getPost('place_id');
@@ -752,7 +790,7 @@ class StudentController extends AbstractActionController
     			$data['subject'] = $request->getPost('subject');
     			$data['date'] = $request->getPost('date');
     			$data['target_date'] = $request->getPost('target_date');
-    			$data['document'] = $request->getPost('document');
+    			$data['document'] = $document_id;
     			$data['comment'] = $request->getPost('comment');
     
     			// Atomically save
@@ -764,6 +802,7 @@ class StudentController extends AbstractActionController
     				if ($request->getPost('done_observations')) {
 		    			$data['type'] = 'done-work';
     					$data['observations'] = $request->getPost('done_observations');
+    					$done_observations = $data['observations'];
     					$rc = $note->loadData($data);
     					if ($rc != 'OK') throw new \Exception('View error');
     
@@ -771,9 +810,8 @@ class StudentController extends AbstractActionController
     					if ($rc != 'OK') $error = $rc;
     
     					// Save the note at the student level
-    					else for ($i = 0; $i < $nbAccount; $i++) {
-    						$account = $accounts[$request->getPost('account_'.$i)];
-    						$noteLink = NoteLink::instanciate($account->id, $note->id);
+    					else foreach ($accounts as $account_id => $account) {
+    						$noteLink = NoteLink::instanciate($account_id, $note->id);
     						$rc = $noteLink->add();
     						if ($rc != 'OK') {
     							$connection->rollback();
@@ -786,6 +824,7 @@ class StudentController extends AbstractActionController
     				if ($request->getPost('todo_observations')) {
 		    			$data['type'] = 'todo-work';
     					$data['observations'] = $request->getPost('todo_observations');
+    					$todo_observations = $data['observations'];
     					$rc = $note->loadData($data);
     					if ($rc != 'OK') throw new \Exception('View error');
     
@@ -793,8 +832,7 @@ class StudentController extends AbstractActionController
     					if ($rc != 'OK') $error = $rc;
     
     					// Save the note at the student level
-    					else for ($i = 0; $i < $nbAccount; $i++) {
-    						$account = $accounts[$request->getPost('account_'.$i)];
+    					else foreach ($accounts as $account_id => $account) {
     						$noteLink = NoteLink::instanciate($account->id, $note->id);
     						$rc = $noteLink->add();
     						if ($rc != 'OK') {
@@ -804,10 +842,11 @@ class StudentController extends AbstractActionController
     					}
     				}
 
-    				// Todo work
+    				// Event
     				if ($request->getPost('event_observations')) {
     					$data['type'] = 'event';
     					$data['observations'] = $request->getPost('event_observations');
+    					$event_observations = $data['observations'];
     					$rc = $note->loadData($data);
     					if ($rc != 'OK') throw new \Exception('View error');
     				
@@ -815,8 +854,7 @@ class StudentController extends AbstractActionController
     					if ($rc != 'OK') $error = $rc;
     				
     					// Save the note at the student level
-    					else for ($i = 0; $i < $nbAccount; $i++) {
-    						$account = $accounts[$request->getPost('account_'.$i)];
+    					else foreach ($accounts as $account_id => $account) {
     						$noteLink = NoteLink::instanciate($account->id, $note->id);
     						$rc = $noteLink->add();
     						if ($rc != 'OK') {
@@ -846,8 +884,10 @@ class StudentController extends AbstractActionController
     		'type' => $type,
     		'accounts' => $accounts,
     		'note' => $note,
-	    	'dropbox' => $dropbox,
-    		'documentList' => $documentList,
+    		'done_observations' => $done_observations,
+    		'todo_observations' => $todo_observations,
+    		'event_observations' => $event_observations,
+    		'document' => $document,
     		'csrfForm' => $csrfForm,
     		'error' => $error,
     		'message' => $message
@@ -864,18 +904,19 @@ class StudentController extends AbstractActionController
     	
     	// Retrieve the type and class
     	$type = $this->params()->fromRoute('type', null);
-    	$class = $this->params()->fromRoute('class', null);
+    	$class = $this->params()->fromQuery('class', null);
 
     	$note = Note::instanciate($type, $class);
 
-    	$request = $this->getRequest();
-    	if (!$request->isPost()) return $this->redirect()->toRoute('home');
-    	$nbAccount = $request->getPost('nb-account');
-    	$accounts = array();
-    	for ($i = 0; $i < $nbAccount; $i++) {
-    		$account = Account::get($request->getPost('account_'.$i));
-    		$accounts[$account->id] = $account;
+    	$accounts = [];
+    	$accountIds = $this->params()->fromQuery('accounts');
+    	if ($accountIds) $accountIds = explode(',', $accountIds);
+    	else $accountIds = [];
+    	foreach ($accountIds as $account_id) {
+    		$account = Account::get($account_id);
+    		$accounts[$account_id] = $account;
     	}
+
     	$place = Place::get($account->place_id);
     	$note->place_id = $account->place_id;
     	 
@@ -902,26 +943,20 @@ class StudentController extends AbstractActionController
     	}
     	if (array_key_exists($context->getContactId(), $teachers)) $note->teacher_id = $context->getContactId();
 
+    	$school_periods = $place->getConfig('school_periods');
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$note->school_period = $current_school_period;
+//echo json_encode(Note::computePeriodAverages($note->place_id, $context->getConfig('student/property/school_year/default'), $class, 'Q1', 'global'), JSON_PRETTY_PRINT); exit;
+
     	// Instanciate the csrf form
+
+    	$request = $this->getRequest();
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
     	$error = null;
     	$message = null;
-    
-       	$school_periods = $place->getConfig('school_periods');
-       	$current_school_period = $context->getCurrentPeriod($school_periods);
-    	$note->school_period = $current_school_period;
 
-    	$nbCriteria = $request->getPost('nb-criteria');
-    	$criteria = array();
-    	for ($i = 0; $i < $nbCriteria; $i++) {
-    		$criterionId = $request->getPost('criterion-id_'.$i);
-    		$criterionValue = $request->getPost('criterion_'.$i);
-    		$criteria[$criterionId] = $criterionValue;
-    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
-    	}
-    
-    	if ($request->getPost('date')) {
+    	if ($request->isPost()) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
@@ -959,7 +994,7 @@ class StudentController extends AbstractActionController
     			// Retrieve the possibly existing evaluation (same year, class, period, subject, category and date)
     			// So it is possible to add students to it, and recompute the class average
     			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
-    			if ($previousNote) $note = $previousNote;
+    			if ($previousNote) $note = $previousNote; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
     			else $note->links = array();
 
     			// In current evaluation mode, in the case where the 'global' subject is selected, compute the average of all the note of the period for each selected student
@@ -976,11 +1011,9 @@ class StudentController extends AbstractActionController
     			elseif ($type == 'exam') {
     				$examAverages = Note::computeExamAverages($data['place_id'], $data['school_year'], $data['class'], $data['level']);
     			}
-
-    			// Create or update the note link that handles the note or average for each selected student
-    			$nbAccount = $request->getPost('nb-account');
-    			for ($i = 0; $i < $nbAccount; $i++) {
-    				$account = $accounts[$request->getPost('account_'.$i)];
+// Création uniquement
+    			// Create (or update) the note link that handles the note or average for each selected student
+    			foreach ($accounts as $account_id => $account) {
 	    			$noteLink = NoteLink::instanciate($account->id, null);
     				$value = $request->getPost('value_'.$account->id);
     				if ($value == '') $value = null;
@@ -1071,6 +1104,9 @@ class StudentController extends AbstractActionController
 			    				}
 		    				}
 		    				if (!$error) {
+    							$newAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
+//echo json_encode($newAverages, JSON_PRETTY_PRINT);
+		    					 
 		    					$connection->commit();
 		    					$message = 'OK';
 		    				}
@@ -1343,6 +1379,11 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 
+	public function planningV2Action()
+	{
+		return $this->planningAction();
+	}
+	
 	public function fileAction()
 	{
 		$context = Context::getCurrent();
@@ -1453,6 +1494,27 @@ class StudentController extends AbstractActionController
 				'config' => $context->getconfig(),
 				'account' => $account,
 				'notes' => $notes,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+	
+	public function homeworkV2Action()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$contact_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($contact_id, 'contact_1_id');
+	
+		$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
+	
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'account' => $account,
+				'notes' => json_encode($notes, JSON_PRETTY_PRINT),
 		));
 		$view->setTerminal(true);
 		return $view;

@@ -51,7 +51,7 @@
 
 <!-- Place -->
 <div class="form-group row" id="place_id_group">
-  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/place')['labels'][$context->getLocale()] ?></label>
+  <label class="col-sm-5 col-form-label">* <?php echo $context->localize($context->getConfig('student/property/place')['labels']) ?></label>
   <div class="col-sm-7">
     <select class="form-control" id="place_id" <?php if ($isDisabled || $note->place_id) echo 'disabled="disabled"'?>>
       <option />
@@ -78,12 +78,12 @@ else {
 }
 ?>
 <div class="form-group row" id="class_group">
-  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/class')['labels'][$context->getLocale()] ?></label>
+  <label class="col-sm-5 col-form-label">* <?php echo $context->localize($context->getConfig('student/property/class')['labels']) ?></label>
   <div class="col-sm-7">
     <select class="form-control" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
       <option />
 <?php foreach ($classes as $classId => $class) : ?>
-      <option value="<?php echo $classId ?>" <?php if ($classId == $note->class) echo 'selected="selected"' ?>><?php echo $class[$context->getLocale()] ?></option>
+      <option value="<?php echo $classId ?>" <?php if ($classId == $note->class) echo 'selected="selected"' ?>><?php echo $context->localize($class) ?></option>
 <?php endforeach;?>
     </select>
     <div class="invalid-feedback" id="class_error"></div>
@@ -92,7 +92,7 @@ else {
 
 <!-- Evaluation period -->
 <div class="form-group row" id="school_period_group">
-  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/school_period')['labels'][$context->getLocale()] ?></label>
+  <label class="col-sm-5 col-form-label">* <?php echo $context->localize($context->getConfig('student/property/school_period')['labels']) ?></label>
   <div class="col-sm-7">
     <select class="form-control" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
       <option />
@@ -130,12 +130,12 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 ?>
 <div class="form-group row" id="subject_group">
 <?php if ($type != 'exam') : ?>
-  <label class="col-sm-5 col-form-label">* <?php echo $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()] ?></label>
+  <label class="col-sm-5 col-form-label">* <?php echo $context->localize($context->getConfig('student/property/school_subject')['labels']) ?></label>
   <div class="col-sm-7">
     <select class="form-control" id="subject" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
       <option />
   <?php foreach ($modalities as $subjectId => $subject) : ?>
-    <?php $caption = $subject[$context->getLocale()] ?>
+    <?php $caption = $context->localize($subject) ?>
       <option value="<?php echo $subjectId ?>" <?php if ($note->subject == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
   <?php endforeach;?>
   <?php if (/*$type == 'report' &&*/ $context->hasRole('manager')) : ?>
@@ -154,7 +154,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 
 <div class="form-group row" id="level_group">
   <?php if ($type != 'report') : ?>
-  <label class="col-sm-5 col-form-label"><?php echo $context->getConfig('student/property/evaluationCategory')['labels'][$context->getLocale()] ?></label>
+  <label class="col-sm-5 col-form-label"><?php echo $context->localize($context->getConfig('student/property/evaluationCategory')['labels']) ?></label>
   <div class="col-sm-7">
     <select class="form-control" id="level" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
       <option />
@@ -174,12 +174,12 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 
 <!-- Exam -->
 <div class="form-group row" id="level_group">
-  <label class="col-sm-5 col-form-label"><?php echo $context->getConfig('student/property/exam')['labels'][$context->getLocale()] ?></label>
+  <label class="col-sm-5 col-form-label"><?php echo $context->localize($context->getConfig('student/property/exam')['labels']) ?></label>
     <div class="col-sm-7">
       <select class="form-control" id="level" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
         <option />
   <?php foreach ($context->getConfig('student/property/exam')['modalities'] as $categoryId => $unused) : ?>
-    <?php $caption = $context->getConfig('student/property/evaluationCategory')['modalities'][$categoryId][$context->getLocale()]; ?>
+    <?php $caption = $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$categoryId]); ?>
         <option value="<?php echo $categoryId ?>" <?php if ($note->level == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
   <?php endforeach;?>
       </select>
@@ -238,7 +238,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
     <select class="form-control select_value" id="select_value_<?php echo $account->id ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
       <option />
     <?php foreach ($context->getConfig('student/property/reportMention')['modalities'] as $categoryId => $category) : ?>
-      <?php $caption = $category[$context->getLocale()]; ?>
+      <?php $caption = $context->localize($category); ?>
       <option value="<?php echo $categoryId ?>" <?php if ($note->results[$account->id]['note'] == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
     <?php endforeach;?>
     </select>
