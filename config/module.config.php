@@ -830,6 +830,18 @@ return array(
         										),
         								),
         						),
+	       						'homeworkV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/homework-v2[/:account_id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'homeworkV2',
+        										),
+        								),
+        						),
 	       						'evaluation' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1078,6 +1090,7 @@ return array(
 				array('route' => 'student/file', 'roles' => array('guest')),
 				array('route' => 'student/absence', 'roles' => array('guest')),
 				array('route' => 'student/homework', 'roles' => array('guest')),
+				array('route' => 'student/homeworkV2', 'roles' => array('user')),
 				array('route' => 'student/evaluation', 'roles' => array('guest')),
 				array('route' => 'student/exam', 'roles' => array('guest')),
 				array('route' => 'student/report', 'roles' => array('guest')),

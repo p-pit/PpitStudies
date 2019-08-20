@@ -1504,17 +1504,42 @@ class StudentController extends AbstractActionController
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
-		$contact_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($contact_id, 'contact_1_id');
-	
-		$notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
-	
+		$account_id = $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+		$type = $this->params()->fromQuery('type');
+		$subject = $this->params()->fromQuery('subject');
+		$date = $this->params()->fromQuery('date');
+
+		$filters = [];
+		if ($subject) $filters['subject'] = $subject;
+		if ($type == 'done-work') $filters['date'] = $date;
+		elseif ($type == 'todo-work') $filters['target_date'] = $date;
+
+		$groups = [];
+		foreach ($account->groups as $group_id => $unused) $groups[] = $group_id;
+//		if ($groups) $filters['groups'] = $groups;
+		
+		$notes = Note::GetList('homework', $type, $filters, 'date', 'DESC', 'search', null);
+		foreach ($notes as $note) {
+			$documents = [];
+			if ($note->document) {
+				$documentIds = explode(',', $note->document);
+				foreach ($documentIds as $document_id) {
+					$document = Document::get($document_id);
+					$documents[$document->id] = $document->getProperties();
+				}
+			}
+			$note->properties['documents'] = $documents;
+		}
+
 		// Return the link list
 		$view = new ViewModel(array(
-				'context' => $context,
-				'config' => $context->getconfig(),
-				'account' => $account,
-				'notes' => json_encode($notes, JSON_PRETTY_PRINT),
+			'context' => $context,
+			'type' => $type,
+			'subject' => $subject,
+			'date' => $date,
+			'account' => $account,
+			'notes' => $notes,
 		));
 		$view->setTerminal(true);
 		return $view;

@@ -202,32 +202,7 @@
 
 <div class="modal fade" id="student-homework-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content" id="student-modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?> &mdash; <?php echo $context->getConfig('student/property/school_subject')['modalities']['french'][$context->getLocale()] ?></h5>
-        <div>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      </div>
-      <div class="modal-body">
-        <div class="container">
-	      <div>
-	        <div class="text-center text-muted font-weight-bold">
-	          <?php echo $this->translate('For the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate('2019-08-20') ?>
-	        </div>
-	        <div class="text-muted" id="student-homework-observations"></div>
-	      </div>
-	      <div>
-	        <?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>:
-	        <a href="<?php echo $this->url('document/download', ['id' => 8307]) ?>" target="_blank">
-	          <?php echo 'eiffel-plan.png' ?>
-	        </a>
-	      </div>
-        </div>
-      </div>
-    </div>
+    <div class="modal-content" id="student-homework-content"></div>
   </div>
 </div>
 

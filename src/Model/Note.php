@@ -23,6 +23,7 @@ class Note
     public $school_year;
     public $level;
     public $class;
+    public $groups;
     public $school_period;
     public $subject;
     public $date;
@@ -69,6 +70,7 @@ class Note
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
         $this->class = (isset($data['class'])) ? $data['class'] : null;
+        $this->groups = (isset($data['groups'])) ? $data['groups'] : null;
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
@@ -101,6 +103,7 @@ class Note
     	$data['school_year'] = $this->school_year;
     	$data['level'] = $this->level;
     	$data['class'] = $this->class;
+    	$data['groups'] = $this->groups;
     	$data['school_period'] = $this->school_period;
     	$data['subject'] = $this->subject;
     	$data['date'] =  ($this->date) ? $this->date : null;
@@ -131,6 +134,7 @@ class Note
     	$data['school_year'] = $this->school_year;
     	$data['level'] = $this->level;
     	$data['class'] = $this->class;
+    	$data['groups'] = $this->groups;
     	$data['school_period'] = $this->school_period;
     	$data['subject'] = $this->subject;
     	$data['date'] =  ($this->date) ? $this->date : null;
@@ -169,8 +173,10 @@ class Note
 
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-    			if ($propertyId == 'place_id') $where->equalTo('place_id', $params[$propertyId]);
-				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
+    			if ($propertyId == 'type') $where->equalTo('student_note.type', $params[$propertyId]);
+    			elseif ($propertyId == 'place_id') $where->equalTo('place_id', $params[$propertyId]);
+    			elseif ($propertyId == 'groups') $where->in('groups', $params[$propertyId]);
+    			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			else $where->like('student_note.'.$propertyId, '%'.$params[$propertyId].'%');
     		}
@@ -458,6 +464,10 @@ class Note
        	if (array_key_exists('class', $data)) {
 	    	$this->class = trim(strip_tags($data['class']));
 		    if (!$this->class || strlen($this->class) > 255) return 'Integrity';
+		}
+        if (array_key_exists('groups', $data)) {
+	    	$this->groups = trim(strip_tags($data['groups']));
+		    if (strlen($this->groups) > 255) return 'Integrity';
 		}
 		if (array_key_exists('school_period', $data)) {
 	    	$this->school_period = trim(strip_tags($data['school_period']));

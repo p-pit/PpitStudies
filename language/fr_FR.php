@@ -27,6 +27,7 @@
 		'Coach: phone' => 'Coach : tél.',
 		'Cumulative duration' => 'Durée cumulée',
 		'Done' => 'Effectué',
+		'Done the' => 'Réalisé le',
 		'Done work' => 'Travail effectué',
 		'Download in PDF format' => 'Télécharger au format PDF',
 		'Entire day' => 'Journée entière',

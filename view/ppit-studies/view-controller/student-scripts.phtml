@@ -25,6 +25,7 @@ function getEvents(calendar) {
 			jQuery.each(obj, function (name, value) {
 		      calendar.addEvent({
 		          id: value.id,
+                  category: 'event',
 	              allDay: false,
 		          title: value.formatted,
 		          color: 'white',
@@ -69,15 +70,21 @@ function getHomework(calendar) {
             color = '<?php echo $context->getConfig('note/colour')['event'] ?>', textColor = 'black';
         }
 
+        if (homework.type == 'done-work') date = homework.date;
+        else date = homework.target_date;
         calendar.addEvent({
           id: homeworkId,
+          category: 'homework',
+          type: homework.type,
+          subject: homework.subject,
+          target_date: date,
           allDay: true,
           title: schoolSubjectsLabels[homework.subject],
           observations: homework.observations,
           color: color,
           textColor: textColor,
-          start: homework.date, 
-          end: homework.date
+          start: date, 
+          end: date
         });
       });
     }
@@ -134,15 +141,32 @@ function showStatic(route, target) {
 
 function showCalendar(route, target) {
   // Execute the ajax request
-  var xhttp = new XMLHttpRequest();
+  let xhttp = new XMLHttpRequest();
   xhttp.open("GET", route, true);
   xhttp.onreadystatechange = function() {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4) {
       document.getElementById(target).innerHTML = xhttp.responseText;
-      createCalendar(function (info) { 
-console.log(info.event);
-    	$('#student-homework-modal').modal('show');
+      createCalendar(function (info) {
+        let homework = info.event.extendedProps;
+        if (homework.category == 'homework') {
+	        let route = '<?php echo $this->url('student/homeworkV2', ['account_id' => $profile->id]) ?>?';
+            if (homework.type == 'done-work') route += '&type=done-work';
+            else if (homework.type == 'todo-work') route += '&type=todo-work';
+            else route += '&type=event';
+            route += '&date=' + homework.target_date;
+            route += '&subject=' + homework.subject;
+	        let xhttp2 = new XMLHttpRequest();
+	        xhttp2.open("GET", route, true);
+	        xhttp2.onreadystatechange = function() {
+	          if (xhttp2.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+	          if (xhttp2.readyState == 4 && xhttp2.status == 200) {
+	        	  $('#student-homework-content').html(xhttp2.responseText);
+	              $('#student-homework-modal').modal('show');
+	          }
+	        }
+          xhttp2.send();
+        }
       });
     }
   }

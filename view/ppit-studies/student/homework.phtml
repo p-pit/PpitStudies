@@ -14,9 +14,8 @@
 			<div><strong><em><?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></em></strong></div>
 	<?php $currentSubject = $note->subject; endif;?>
 	<?php if ($note->document) : ?>
-		<?php $dropbox = $context->getConfig('ppitDocument')['dropbox'] ?>
 			<div>
-				<?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>:
+				<?php //echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>:
 				<a href="<?php echo $this->url('student/dropboxLink', array('document' => $note->document)) ?>">
 					<?php echo $note->document ?>
 				</a>
