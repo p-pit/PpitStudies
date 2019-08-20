@@ -1237,8 +1237,8 @@ return array(
 							'params' => array('entry' => 'account', 'type' => 'teacher', 'app' => 'p-pit-studies', 'entryId' => 'teacher'),
 							'glyphicon' => 'glyphicon-user',
 							'label' => array(
-									'en_US' => 'Teachers',
-									'fr_FR' => 'Professeurs',
+									'en_US' => 'Trainers',
+									'fr_FR' => 'Formateurs',
 							),
 					),
 					'group' => array(
@@ -3994,8 +3994,8 @@ table.note-report tr.period {
 		'caption' => array('mandatory' => false),
 		'day_of_week' => array('mandatory' => false),
 		'begin_date' => array('mandatory' => false),
-		'begin_time' => array('mandatory' => false),
 		'end_date' => array('mandatory' => false),
+		'begin_time' => array('mandatory' => false),
 		'end_time' => array('mandatory' => false),
 		'exception_1' => array('mandatory' => false),
 		'exception_2' => array('mandatory' => false),
