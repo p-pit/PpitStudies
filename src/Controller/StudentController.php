@@ -147,6 +147,8 @@ class StudentController extends AbstractActionController
     	$profile = Account::get($account_id);
     	$place = Place::get($profile->place_id);
     	$template = $context->getConfig('student/home/tabs');
+    	$logo = ($place->logo_src) ? $place->logo_src : '/logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
+    	$logo_height = ($place->logo_src) ? $place->logo_height : $context->getConfig('headerParams')['logo-height'];
     	 
 		// Authentication
 		$panel = $this->params()->fromQuery('panel');
@@ -180,7 +182,9 @@ class StudentController extends AbstractActionController
 			'viewController' => 'ppit-studies/view-controller/student-scripts.phtml',
 
 			'template' => $template,
-
+			'logo' => $logo,
+			'logo_height' => $logo_height,
+				
 			'token' => $this->params()->fromQuery('hash', null),
 			'panel' => $panel,
 			'email' => $email,
@@ -255,12 +259,14 @@ class StudentController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
+    	$groups = Account::getList('group', [], '+name', null);
+    	
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
 				'places' => Place::getList(array()),
+    			'groups' => $groups,
     	));
     	$view->setTerminal(true);
     	return $view;

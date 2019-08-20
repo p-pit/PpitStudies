@@ -357,7 +357,7 @@ function getStudentHome(id) {
 <?php 
 $properties = array();
 $properties['category'] = array('type' => 'select', 'mandatory' => true);
-$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
+//$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
 $properties['motive'] = array('type' => 'select', 'mandatory' => false);
 $properties['begin_date'] = array('type' => 'date', 'mandatory' => true);
 $properties['end_date'] = array('type' => 'date', 'mandatory' => false);
@@ -375,7 +375,6 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
 {
 		// Check validity
 		var validity = checkAbsenceUpdateProperties();
-
 		if (validity) {
             var xhttp = new XMLHttpRequest();
             var route, target;

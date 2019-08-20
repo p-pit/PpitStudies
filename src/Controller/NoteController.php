@@ -47,6 +47,11 @@ class NoteController extends AbstractActionController
     			'places' => Place::getList(array()),
     	));
     }
+    
+    public function indexV2Action()
+    {
+    	return $this->indexAction();
+    }
 
     public function getFilters($category, $params)
     {
@@ -100,6 +105,11 @@ class NoteController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+    
+    public function searchV2Action()
+    {
+    	return $this->searchAction();
+    }
 
     public function getList()
     {
@@ -152,6 +162,11 @@ class NoteController extends AbstractActionController
     	return $this->getList();
     }
 
+    public function listV2Action()
+    {
+    	return $this->getList();
+    }
+    
     public function getAction()
     {
     	// Retrieve the context
@@ -349,6 +364,11 @@ class NoteController extends AbstractActionController
     	return $view;
     }
 
+    public function updateV2Action()
+    {
+    	return $this->updateAction();
+    }
+    
     public function updateEvaluationAction()
     {
     	// Retrieve the context

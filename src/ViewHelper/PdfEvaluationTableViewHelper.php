@@ -38,10 +38,10 @@ class PdfEvaluationTableViewHelper
 		    		$rows .= sprintf(
 		   					$context->getConfig('student/report/evaluationSubject')['html'], 
 			   				'style="background-color: #EEE"',
-		    				(!$evaluation->subject) ? '' : ($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()]).' - '.$evaluation->n_fn);
+		    				(!$evaluation->subject) ? '' : ($context->localize($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject])).' - '.$evaluation->n_fn);
 		    	}
 		    	$subject = $evaluation->subject;
-		    	$caption = (array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()] : '';
+		    	$caption = (array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level]) : '';
 		    	if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
 		   		$rows.= sprintf(
 		   				$context->getConfig('student/report/evaluationRow')['html'], 

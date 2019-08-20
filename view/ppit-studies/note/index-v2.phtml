@@ -1,0 +1,57 @@
+<!-- Load the common form javascript functions -->
+<?php echo $this->partial('/partials/common-form-js.phtml'); ?>
+
+<div class="container">
+
+<?php
+$title = $context->getConfig('note/index')['title'][$context->getLocale()];
+$this->headTitle($title);
+echo $this->partial('/partials/header');
+?>
+	
+	<div>&nbsp;</div>
+	
+	<div class="row" id="main_menu">
+
+<?php foreach ($menu as $entryId => $entry) : ?>
+	<?php if ($context->isAllowed($entry['route'])) : ?>
+		<div class="col-md-2">
+				<button type="button" class="btn <?php echo ($entryId == 'evaluation' && $type == 'note' || $entryId == 'report' && $type == 'report' || $entryId == 'exam' && $type == 'exam' || $entryId == 'homework' && $category == 'homework') ? 'btn-primary' : 'btn-default' ?> menu-btn" style="width:100%; text-align: left" id="<?php echo $entryId ?>-anchor">
+		<?php if (array_key_exists('glyphicon', $entry)) : ?>
+					<span class="glyphicon <?php echo $entry['glyphicon'] ?>"></span>
+		<?php endif;?>
+					<?php echo $entry['label'][$context->getLocale()] ?>
+				</button>
+			</div>
+	<?php endif ?>
+<?php endforeach ?>
+
+	</div>
+	<div>&nbsp;</div>
+
+	<!-- Main panel -->
+	<div class="row">
+	    <div class="col-md-12 ppit-panel" id="index_action"></div>
+	</div>
+	
+	<!-- Login -->
+	<div class="row">
+	    <div class="col-md-6 col-md-offset-3 ppit-panel" id="login-panel">
+		</div>
+	</div>
+</div>
+
+<script>
+
+<?php
+echo $this->partial('/ppit-studies/view-controller/note-scripts');
+echo $this->partial('/partials/ppit-controller') 
+?>
+
+<?php foreach ($menu as $entryId => $entry) : ?>
+	$('#<?php echo $entryId ?>-anchor').click(function () { $(location).attr('href', '<?php echo $this->url($entry['route'], $entry['params']) ?>'); });
+<?php endforeach;?>
+
+activateNote();
+
+</script>

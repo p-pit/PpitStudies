@@ -70,7 +70,16 @@ return array(
         										),
         								),
         						),
-        						'export' => array(
+	       						'get' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/get[/:type]',
+        										'defaults' => array(
+        												'action' => 'get',
+        										),
+        								),
+        						),
+	       						'export' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/export',
@@ -241,7 +250,16 @@ return array(
         										),
         								),
         						),
-        						'search' => array(
+        						'indexV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index-v2[/:app][/:category][/:type]',
+        										'defaults' => array(
+        												'action' => 'indexV2',
+        										),
+        								),
+        						),
+				       			'search' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/search[/:category][/:type]',
@@ -250,7 +268,16 @@ return array(
         										),
         								),
         						),
-        						'list' => array(
+				       			'searchV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search-v2[/:category][/:type]',
+        										'defaults' => array(
+        												'action' => 'searchV2',
+        										),
+        								),
+        						),
+	       						'list' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/list[/:category][/:type]',
@@ -259,7 +286,16 @@ return array(
         										),
         								),
         						),
-        						'get' => array(
+	       						'listV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list-v2[/:category][/:type]',
+        										'defaults' => array(
+        												'action' => 'listV2',
+        										),
+        								),
+        						),
+	       						'get' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/get[/:category][/:type]',
@@ -286,7 +322,7 @@ return array(
         										),
         								),
         						),
-	       						'detail' => array(
+/*	       						'detail' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/detail[/:type][/:id][/:action]',
@@ -297,7 +333,7 @@ return array(
         												'action' => 'detail',
         										),
         								),
-        						),
+        						),*/
 	       						'update' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -307,6 +343,18 @@ return array(
 		        								),
 		        								'defaults' => array(
 		        										'action' => 'update',
+		        								),
+		        						),
+		        				),
+	       						'updateV2' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update-v2[/:id][/:act]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'updateV2',
 		        								),
 		        						),
 		        				),
@@ -1011,6 +1059,7 @@ return array(
 				array('route' => 'absence/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/search', 'roles' => array('manager', 'coach', 'teacher')),
             	array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'absence/get', 'roles' => array('user')),
 				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher')),
@@ -1027,13 +1076,17 @@ return array(
 
 				array('route' => 'note', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/indexV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
-            	array('route' => 'note/list', 'roles' => array('manager', 'teacher')),
-            	array('route' => 'note/get', 'roles' => array('manager', 'user')),
+				array('route' => 'note/searchV2', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/list', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/listV2', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/get', 'roles' => array('manager', 'user')),
 				array('route' => 'note/export', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/exportCsv', 'roles' => array('admin')),
-				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/updateV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 						
@@ -3557,6 +3610,7 @@ table.note-report td {
 					'property_16' => 'select',
 					'property_1' => 'select',
 					'property_7' => 'select',
+					'groups' => 'select',
 					'property_6' => 'select',
 					'name' => 'contains',
 			),

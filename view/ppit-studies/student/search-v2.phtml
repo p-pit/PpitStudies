@@ -16,8 +16,14 @@
 <?php foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) : ?>
 	<?php 
 	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
+	if (!$property) $property = $context->getConfig('core_account/generic/property/'.$propertyId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 
+	if ($propertyId == 'groups') {
+		$property['modalities'] = array();
+		foreach ($groups as $group) $property['modalities'][$group->id] = ['default' => $group->name];
+	}
+	
     $label = $context->localize($property['labels']);
     $options = (array_key_exists('options', $property)) ? $property['options'] : [];
     ?>

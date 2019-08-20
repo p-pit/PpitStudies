@@ -140,6 +140,24 @@ class AbsenceController extends AbstractActionController
 		$writer->save('php://output');
 		return $this->response;
     }
+
+    public function getAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    	$id = $this->params()->fromRoute('id');
+    
+    	$account_id = $this->params()->fromQuery('account_id');
+    
+    	$cursor = Absence::getList(null, ['account_id' => $account_id], 'begin_date', 'DESC', 'search', null);
+    	$absences = [];
+    	foreach ($cursor as $absence_id => $absence) {
+    		$absences[] = $absence;
+    	}
+    	
+    	echo json_encode($absences, JSON_PRETTY_PRINT);
+    	return $this->getResponse();
+    }
     
     public function updateAction()
     {

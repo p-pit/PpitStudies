@@ -6,6 +6,7 @@ function getEvents(calendar) {
   calendar.getEvents().forEach(function (event, id) { event.remove(); });
 
   getHomework(calendar);
+  getAbsence(calendar);
 	
 	// Execute the ajax request
   let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=2019-09-01&end=2020-07-31';
@@ -49,6 +50,14 @@ let schoolSubjectsLabels = {
 <?php endforeach; ?>
 }
 
+let absenceMotiveLabels = {
+<?php $first = true; foreach ($context->getConfig('absence/property/motive')['modalities'] as $modalityId => $modality) : ?>
+  <?php if (!$first) : ?>,<?php endif; ?>
+  <?php $first = false ?>
+  '<?php echo $modalityId ?>': '<?php echo $context->localize($modality) ?>'
+<?php endforeach; ?>
+}
+
 function getHomework(calendar) {
 
   // Retrieve the homework events
@@ -85,6 +94,37 @@ function getHomework(calendar) {
           textColor: textColor,
           start: date, 
           end: date
+        });
+      });
+    }
+  }
+  xhttp.send();
+}
+
+function getAbsence(calendar) {
+
+  // Retrieve the homework events
+  let xhttp = new XMLHttpRequest();
+  xhttp.open("GET", '<?php echo $this->url('absence/get') ?>?account_id=<?php echo $profile->id ?>', true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      let obj = jQuery.parseJSON(xhttp.responseText);
+      obj.forEach(function (absence, absenceId) {
+
+        let title = '';
+        title += schoolSubjectsLabels[absence.subject] + ' (' + absenceMotiveLabels[absence.motive] + ')';
+         
+        calendar.addEvent({
+          id: absenceId,
+          category: absence.category,
+          subject: absence.subject,
+          start: absence.begin_date,
+          end: (absence.end_date) ? absence.end_date : absence.begin_date,
+          allDay: true,
+          title: title,
+          color: (absence.category == 'absence') ? 'red' : 'orange',
+          textColor: 'white',
         });
       });
     }

@@ -181,7 +181,7 @@ class Absence
 					$i++;
 					$absence->properties = $absence->getProperties();
 					if ($limit && $i > $limit) break;
-					$absences[] = $absence;
+					$absences[$absence->id] = $absence;
 			}
 		}
 		return $absences;
@@ -243,7 +243,7 @@ class Absence
 		}
         if (array_key_exists('school_period', $data)) {
 	    	$this->school_period = trim(strip_tags($data['school_period']));
-		    if (!$this->school_period || strlen($this->school_period) > 255) return 'Integrity';
+		    if (strlen($this->school_period) > 255) return 'Integrity';
 		}
 		if (array_key_exists('type', $data)) {
 		    $this->type = trim(strip_tags($data['type']));
