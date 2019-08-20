@@ -50,12 +50,12 @@
   header,
  
     #intro {
-      height: 70%;
+      height: 60%;
       max-width: 100%;
     }
   
   #intro {
-      background: url("<?php echo $this->basePath('/img/2pit.io/intro-learning.png') ?>") no-repeat center center;
+      background: url("<?php echo $this->basePath('/img/2pit.io/learning-petit.jpg') ?>") no-repeat center center;
       -webkit-background-size: contain;
       -moz-background-size: contain;
       -o-background-size: contain;
@@ -204,14 +204,29 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" id="student-modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><?php echo $this->translate('Homework', 'ppit-studies', $context->getLocale()) ?></h5>
+        <h5 class="modal-title"><?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?> &mdash; <?php echo $context->getConfig('student/property/school_subject')['modalities']['french'][$context->getLocale()] ?></h5>
         <div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
       </div>
-      <div class="modal-body"></div>
+      <div class="modal-body">
+        <div class="container">
+	      <div>
+	        <div class="text-center text-muted font-weight-bold">
+	          <?php echo $this->translate('For the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate('2019-08-20') ?>
+	        </div>
+	        <div class="text-muted" id="student-homework-observations"></div>
+	      </div>
+	      <div>
+	        <?php echo $this->translate('Attachment', 'ppit-commitment', $context->getLocale()) ?>:
+	        <a href="<?php echo $this->url('document/download', ['id' => 8307]) ?>" target="_blank">
+	          <?php echo 'eiffel-plan.png' ?>
+	        </a>
+	      </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

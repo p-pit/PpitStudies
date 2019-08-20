@@ -6,68 +6,38 @@ function getEvents(calendar) {
   calendar.getEvents().forEach(function (event, id) { event.remove(); });
 
   getHomework(calendar);
-
-  // Retrieve the planning
-  xhttp = new XMLHttpRequest();
-  xhttp.open("GET", $('#events-route').val() + '?begin=' + viewBeginDate, true);
-  xhttp.onreadystatechange = function() {
-    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-    if (xhttp.readyState == 4) {
-      obj = jQuery.parseJSON(xhttp.responseText);
-
-      jQuery.each(obj.planning, function (name, value) {
-        var color = 'lightBlue', textColor = 'black';     
-<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-  <?php foreach ($category['color'] as $color => $unused) : ?>
-        if (value.properties['category'] == '<?php echo $categoryId ?>') {
-          color = '<?php echo $color ?>';
-          textColor = 'white';
-        }
-  <?php endforeach;?>
+	
+	// Execute the ajax request
+  let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=2019-09-01&end=2020-07-31';
+    route += '&groups=';
+<?php $first = true; foreach ($profile->groups as $groupId => $group) : ?>
+  	<?php if (!$first) : ?>route += ',';<?php endif;?>
+    <?php $first = false ?>
+    route += '<?php echo $group['group_id'] ?>';
 <?php endforeach;?>
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			let obj = jQuery.parseJSON(xhttp.responseText);
 
-        var title = '';
-        if (value.properties['property_3']) title += value.properties['property_3'];
-        if (value.properties['property_3'] && value.properties['caption']) title += ' - ';
-        if (value.properties['caption']) title += value.properties['caption'];
-        if (value.properties['location']) title += ' (' + value.properties['location'] + ')';
-        calendar.addEvent({
-          id:value.id,
-          allDay: (value.properties['begin_time'] == '00:00:00' && value.properties['end_time'] == '00:00:00') ? true : false,
-          title: title,
-          color: color,
-          textColor: textColor,
-          start: value.properties['begin_date'] + ' ' + value.properties['begin_time'], 
-          end: value.properties['end_date'] + ' ' + value.properties['end_time']
-        });
-      });
+			jQuery.each(obj, function (name, value) {
+		      calendar.addEvent({
+		          id: value.id,
+	              allDay: false,
+		          title: value.formatted,
+		          color: 'white',
+	              textColor: 'black',
+				  start: value.begin_date + ' ' + value.begin_time,
+				  end: value.begin_date + ' ' + value.end_time
+              });
+			});
 
-      jQuery.each(obj.events, function (name, value) {
-        var color = 'lightBlue', textColor = 'black';     
-<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-  <?php foreach ($category['color'] as $color => $unused) : ?>
-        if (value.category == '<?php echo $categoryId ?>') {
-          color = '<?php echo $color ?>';
-          textColor = 'white';
-        }
-  <?php endforeach;?>
-<?php endforeach;?>
-
-        calendar.addEvent({
-          id:value.id,
-          allDay: true,
-          title: value.title + ' (' + value.location + ')',
-          color: color,
-          textColor: textColor,
-          start: value.begin_time, 
-          end: value.end_time
-        });
-      });
-    }
-
-    calendar.render();
-  }
-  xhttp.send();
+            calendar.render();
+		}
+	}
+	xhttp.send();
 }
 
 let schoolSubjectsLabels = {
@@ -103,6 +73,7 @@ function getHomework(calendar) {
           id: homeworkId,
           allDay: true,
           title: schoolSubjectsLabels[homework.subject],
+          observations: homework.observations,
           color: color,
           textColor: textColor,
           start: homework.date, 
@@ -125,7 +96,8 @@ function createCalendar(callback) {
       firstDay: 1,
       minTime: '08:00:00',
       maxTime: '18:00:00',
-
+      contentHeight: 'auto',
+      
       businessHours: {
         dow: [ 1, 2, 3, 4, 5], // Monday - Thursday
         startTime: '08:00', // a start time (10am in this example)
@@ -138,23 +110,11 @@ function createCalendar(callback) {
 
       allDaySlot: true,
       allDayText: '<?php echo $this->translate('Day', 'ppit-core', $context->getLocale()) ?>',
-      
+    	    		  
       eventClick: callback
     });
 
-  $('.fc-prev-button').click(function(){
-    var dateTime = new Date(viewBeginDate).getTime();
-    var endTime = dateTime - 60*60*24*7*1000;
-    viewBeginDate = new Date(endTime).toISOString().slice(0, 10);
-    getEvents(calendar);
-  });
-  
-  $('.fc-next-button').click(function(){
-    var dateTime = new Date(viewBeginDate).getTime();
-    var endTime = dateTime + 60*60*24*7*1000;
-    viewBeginDate = new Date(endTime).toISOString().slice(0, 10);
-    getEvents(calendar);
-  });
+    calendar.render();
     
   getEvents(calendar);
 }
@@ -180,8 +140,9 @@ function showCalendar(route, target) {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4) {
       document.getElementById(target).innerHTML = xhttp.responseText;
-      createCalendar(function () { 
-        $('#student-homework-modal').modal('show');
+      createCalendar(function (info) { 
+console.log(info.event);
+    	$('#student-homework-modal').modal('show');
       });
     }
   }

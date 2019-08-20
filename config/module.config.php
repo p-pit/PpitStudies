@@ -1140,7 +1140,17 @@ return array(
 									'fr_FR' => 'Elèves/Classes',
 							),
 					),
-					'planning' => array(
+					'calendar' => array(
+						'route' => 'event/calendar',
+						'params' => array('type' => 'calendar', 'category' => 'calendar', 'app' => 'p-pit-studies'),
+						'urlParams' => '?status=new',
+						'glyphicon' => 'glyphicon-calendar',
+						'label' => array(
+							'en_US' => 'Planning',
+							'fr_FR' => 'Planning',
+						),
+					),
+/*					'planning' => array(
 							'route' => 'event/calendar',
 							'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'planning'),
 							'urlParams' => array(),
@@ -1149,7 +1159,7 @@ return array(
 									'en_US' => 'Planning',
 									'fr_FR' => 'Planning',
 							),
-					),
+					),*/
 					'absence' => array(
 							'route' => 'absence/index',
 							'params' => array('app' => 'p-pit-studies', 'type' => ''),
