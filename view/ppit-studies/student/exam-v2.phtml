@@ -1,30 +1,20 @@
 <style>
 table.note-report {
-	font-size: 0.83em;
-	border-width:1px; 
- 	border-style:solid; 
-	border-color:gray;
-}
-table.note-report caption { 
-	font-size:1.5em; 
-	padding:1em 0 0.5em 1em;
+	font-size: 1em;
+	border: 1px solid gray;
 }
 table.note-report th {
-	color: #666;
-//    font-size:0.83em;
+	color: #FFF;
+	font-weight: bold;
 	text-align: center;
-	border-width:1px; 
- 	border-style:solid; 
-	border-color:gray;
-	background-color:#DDD;
+	vertical-align: center;
+	border: 1px solid gray;
+	background-color: #006169;
 }
 
 table.note-report td {
 	color: #666;
-//	font-size: 0.83em;
-	border-width:1px; 
- 	border-style:solid; 
-	border-color:gray;
+	border: 1px solid gray;
 }
 
 table.note-report td.subject {
@@ -42,9 +32,9 @@ table.note-report tr.period {
 	$level = substr($periodId, 10);
 	?>
     <!--Card content-->
-<div class="card-block" style="color: #686868">
+<div class="container card-block" style="color: #686868">
     <!--Title-->
-    <h4 class="card-title" style="text-align: center">
+    <h4 class="card-title mt-3" style="text-align: center">
 		<?php echo $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$level]) ?>
 	</h4>
 	<!--Text-->
@@ -52,7 +42,7 @@ table.note-report tr.period {
 	$urlParams = array('account_id' => $account->id, 'school_year' => $school_year, 'level' => $level);
 	?>
 		<div><a href="<?php echo $this->url('student/downloadExam', $urlParams) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
-		<table class="table note-report">
+		<table class="table note-report mt-3">
 			<tr>
 				<th rowspan="2"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>
 				<th rowspan="2"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></th>

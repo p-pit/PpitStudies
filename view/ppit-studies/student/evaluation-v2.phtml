@@ -44,9 +44,9 @@ table.note-report tr.period {
 	?>
 	
     <!--Card content-->
-<div class="card-block" style="color: #686868">
+<div class="container card-block" style="color: #686868">
     <!--Title-->
-    <h4 class="card-title" style="text-align: center">
+    <h4 class="card-title mt-3" style="text-align: center">
 		<?php echo $context->getConfig('student/property/school_year')['labels'][$context->getLocale()] ?>:
 		<?php echo $context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()] ?> &mdash;
 		<?php echo $context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()] ?>
@@ -57,7 +57,7 @@ table.note-report tr.period {
 	if ($mock) $urlParams['level'] = 'mock';
 	?>
 		<div><a href="<?php echo $this->url('student/download', $urlParams) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
-		<table class="table note-report">
+		<table class="table note-report mt-3">
 			<tr>
 				<th rowspan="2"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></th>
 				<th rowspan="2"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></th>
