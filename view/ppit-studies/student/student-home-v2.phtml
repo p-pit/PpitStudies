@@ -183,7 +183,9 @@
   
               <div class="h6 text-center text-muted my-4"><?php echo $profile->n_fn ?></div>
               <div class="h6 text-center text-muted my-4"><?php echo $profile->property_16 ?> &mdash; <?php echo $profile->property_7 ?></div>
-<!--              <div class="text-center text-muted my-4"><strong><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?>:</strong> 12,5</div> -->
+<?php if ($global_average) : ?>
+              <div class="text-center text-muted my-4"><strong><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?>:</strong> <?php echo $context->formatFloat($global_average, 2) ?></div>
+<?php endif;?>
   
               </div>
               <!--/.Card content-->

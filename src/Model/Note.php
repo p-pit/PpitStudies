@@ -262,7 +262,7 @@ class Note
     	return $notes;
     }
 
-    public static function computePeriodAverages($place_id, $school_year, $class, $period, $subject)
+    public static function computePeriodAverages($place_id, $school_year, $class, $period = null, $subject = 'global')
     {
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
@@ -324,7 +324,7 @@ class Note
 	    		}
     		}
     	}
-    
+/*    
     	// Compute the per subject average
     	foreach ($periodSubjectNotes as $account_id => $subjects) {
     		foreach ($subjects as $subjectId => $notes) {
@@ -357,7 +357,7 @@ class Note
 		    		}
 	    		}
     		}
-    	}
+    	}*/
     	 
     	return $categoryAverages;
     }

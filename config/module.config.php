@@ -902,6 +902,18 @@ return array(
         										),
         								),
         						),
+	       						'evaluationV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/evaluation-v2[/:id][/:mock]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'evaluationV2',
+        										),
+        								),
+        						),
 	       						'exam' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -914,6 +926,18 @@ return array(
         										),
         								),
         						),
+	       						'examV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/exam-v2[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'examV2',
+        										),
+        								),
+        						),
 	       						'report' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -923,6 +947,18 @@ return array(
         										),
         										'defaults' => array(
         												'action' => 'report',
+        										),
+        								),
+        						),
+	       						'reportV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/report-v2[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'reportV2',
         										),
         								),
         						),
@@ -1145,8 +1181,11 @@ return array(
 				array('route' => 'student/homework', 'roles' => array('guest')),
 				array('route' => 'student/homeworkV2', 'roles' => array('user')),
 				array('route' => 'student/evaluation', 'roles' => array('guest')),
+				array('route' => 'student/evaluationV2', 'roles' => array('guest')),
 				array('route' => 'student/exam', 'roles' => array('guest')),
+				array('route' => 'student/examV2', 'roles' => array('guest')),
 				array('route' => 'student/report', 'roles' => array('guest')),
+				array('route' => 'student/reportV2', 'roles' => array('guest')),
 				array('route' => 'student/download', 'roles' => array('guest')),
 				array('route' => 'student/downloadExam', 'roles' => array('guest')),
 				array('route' => 'student/dropboxLink', 'roles' => array('guest')),
@@ -4007,6 +4046,7 @@ table.note-report tr.period {
 			'caption' => [],
 			'day_of_week' => [],
 			'begin_date' => [],
+			'end_date' => [],
 			'begin_time' => [],
 		),
 	),
@@ -4042,7 +4082,7 @@ table.note-report tr.period {
 		'status' => ['mandatory' => true],
 		'groups' => ['mandatory' => true],
 		'place_id' => [],
-		'property_1' => [],
+		'property_1' => ['default' => 'student/property/school_year/default'],
 		'account_id' => [],
 		'property_3' => [],
 		'caption' => array('mandatory' => false),
@@ -4912,20 +4952,20 @@ table.note-report tr.period {
 			'evaluation' => array(
 				'type' => 'static',
 				'level' => 'subject',
-				'route' => 'student/evaluation',
+				'route' => 'student/evaluationV2',
 				'filter' => 'evaluation_category',
 				'label' => array('en_US' => 'Evaluations', 'fr_FR' => 'Relevés de notes'),
 			),
 			'schooling' => array(
 				'type' => 'static',
 				'level' => 'subject',
-				'route' => 'student/report',
+				'route' => 'student/reportV2',
 				'label' => array('en_US' => 'School reports', 'fr_FR' => 'Bulletins scolaires'),
 			),
 			'mock_evaluation' => array(
 				'type' => 'static',
 				'level' => 'subject',
-				'route' => 'student/exam',
+				'route' => 'student/examV2',
 				'params' => ['mock' => 'mock'],
 				'label' => array('en_US' => 'Mock exams', 'fr_FR' => 'Examens blancs'),
 			),
