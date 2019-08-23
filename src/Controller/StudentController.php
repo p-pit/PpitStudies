@@ -177,9 +177,9 @@ class StudentController extends AbstractActionController
 		// Retrieve the global average if exists
     	$current_school_year = $context->getConfig('student/property/school_year/default');
     	$school_periods = $place->getConfig('school_periods');
-    	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$current_school_period = 'Q1'; //$context->getCurrentPeriod($school_periods);
 		$cursor = NoteLink::getList('report', ['category' => 'evaluation', 'subject' => 'global', 'school_year' => $current_school_year, 'school_period' => $current_school_period, 'account_id' => $profile->id], 'id', 'ASC', $mode = 'search');
-		$averageNote = current($cursor);
+		foreach ($cursor as $report) $averageNote = current($cursor); // Should be unique but to keep only the last one
 		$global_average = ($averageNote) ? $averageNote->value : null;
 		
 		$view = new ViewModel(array(
