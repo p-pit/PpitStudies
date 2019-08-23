@@ -49,9 +49,9 @@ class PdfEvaluationTableViewHelper
 		   				$caption,
 		   				$context->formatFloat($evaluation->weight, 1),
 		   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0),
-						$context->formatFloat($evaluation->lower_note, 2),
+		   				$context->formatFloat($evaluation->higher_note, 2),
 		   				$context->formatFloat($evaluation->average_note, 2),
-						$context->formatFloat($evaluation->higher_note, 2),
+						$context->formatFloat($evaluation->lower_note, 2),
 						$context->decodeDate($evaluation->date)/*,
 						$evaluation->assessment*/
 		   		);
