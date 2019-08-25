@@ -1,0 +1,131 @@
+<!-- 
+/**
+ * PpitAccounting V1.0 (https://github.com/p-pit/PpitAccounting)
+ *
+ * @link      https://github.com/p-pit/PpitAccounting
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitAccounting/blob/master/license.txt GNU-GPL license
+ */
+-->
+
+<style>
+table td { 
+  font-size: 0.9rem;
+}
+</style>
+
+<div class="col-md-12">
+ 
+  <table class="table table-sm table-hover">
+    <tr class="table-info">
+      <th>&nbsp;</th>
+	
+
+<?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
+  <?php 
+  $property = $context->getConfig('absence')['properties'][$propertyId];
+  if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
+  $label = $property['labels'][$context->getLocale()];
+  ?>
+
+      <th align="center">
+        <a type="button" class="btn btn-sm sort_anchor <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
+          <span><?php echo $label ?></span>
+  <?php if ($major == $propertyId) : ?>
+          <i class="fas fa-caret-<?php echo ($dir == 'ASC') ? 'up' : 'down' ?>"></i>
+  <?php endif ?>
+        </a>
+      </th>
+
+<?php endforeach;?>
+
+	</tr>
+
+<?php $i = 0; $sum = 0; foreach ($absences as $absence) : ?>
+  <?php $sum += $absence->duration; ?> 
+	
+    <tr>
+      <td>
+        <input type="hidden" id="absence_<?php echo $i ?>" value="<?php echo $absence->id ?>" />
+        <button type="button" class="btn btn-sm btn-outline-primary index-btn absence-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="absence-detail-anchor_<?php echo $absence->id ?>">
+          <i class="fas fa-search" id="group-glyphicon"></i>
+        </button>
+      </td>
+
+  <?php foreach ($context->getConfig('absence/list') as $propertyId => $rendering) : ?>
+	
+    <?php if ($propertyId == 'subject') : ?>
+      <?php
+      if ($absence->type == 'schooling') {
+        if (array_key_exists('p-pit-studies', $context->getPerimeters()) && array_key_exists('school_subject', $context->getPerimeters()['p-pit-studies'])) {
+          $modalities = array();
+          foreach ($context->getPerimeters()['p-pit-studies']['school_subject'] as $modalityId) {
+            $modalities[$modalityId] = $context->getConfig('student/property/school_subject')['modalities'][$modalityId];
+          }
+        }
+        else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
+      }
+      else $modalities = $subject['modalities'];
+      ?>
+		
+      <td><?php if ($absence->subject) echo $modalities[$absence->subject][$context->getLocale()] ?></td>
+		
+    <?php else : ?>
+      <?php $property = $context->getConfig('absence')['properties'][$propertyId] ?>
+      <?php if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']) ?>
+	
+      <?php if ($propertyId == 'place_id') : ?>
+      <td><?php echo $places[$absence->place_id]->caption ?></td>
+	
+      <?php elseif ($propertyId == 'n_fn') : ?>
+      <td><?php echo $absence->n_fn ?></td>
+	
+      <?php elseif ($propertyId == 'duration') : ?>
+      <td style="text-align: right"><?php if ((int)($absence->duration/60)) echo ((int)($absence->duration/60)).'h' ?><?php if ($absence->duration%60) echo ($absence->duration%60).'mn' ?></td>
+
+      <?php elseif ($rendering == 'date') : ?>
+      <td><?php echo $context->decodeDate($absence->properties[$propertyId]) ?></td>
+
+      <?php elseif ($rendering == 'number') : ?>
+      <td style="text-align: right"><?php if ($absence->category == 'lateness') echo $absence->properties[$propertyId] ?></td>
+
+      <?php elseif ($rendering == 'select') : ?>
+      <td><?php echo $context->localize($property['modalities'][$absence->properties[$propertyId]]) ?></td>
+
+      <?php else : ?>
+      <td><?php echo $absence->properties[$propertyId] ?></td>
+
+      <?php endif;?>
+      <?php endif;?>
+
+    <?php endforeach;?>
+	
+    </tr>
+	
+<?php $i++; endforeach; ?>
+
+	<tr>
+
+<?php if (count($absences) == '50') : ?>
+      <td style="text-align: center">
+        <div class="input-group input-group-sm">
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="more-anchor">
+            <i class="fas fa-ellipsis-h" id="more-glyphicon"></i>
+          </button>
+        </div>
+      </td>
+
+<?php else : ?>
+      <td>&nbsp;</td>
+
+<?php endif;?>
+
+      <td colspan="<?php echo count($context->getConfig('absence/list')) ?>">&nbsp;</td>
+	</tr>
+	
+	<tr>
+      <td colspan="<?php echo count($context->getConfig('absence/list')) ?>" style="font-weight: bold; text-align:right"><?php echo $this->translate('Total duration', 'ppit-studies', $context->getLocale()) ?></td>
+      <td style="font-weight: bold; text-align:right"><?php if ((int)($sum/60)) echo ((int)($sum/60)).'h' ?><?php if ($sum%60) echo sprintf("%02u", $sum%60).'mn' ?></td>
+	</tr>
+  </table>
+</div>

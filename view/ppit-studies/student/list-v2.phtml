@@ -80,7 +80,7 @@ table td {
       <td><?php echo $account->n_fn ?></td>
 	
     <?php elseif ($rendering == 'select' && $account->properties[$propertyId]) : ?>
-      <td><?php echo $property['modalities'][$account->properties[$propertyId]][$context->getLocale()] ?></td>
+      <td><?php if (array_key_exists($account->properties[$propertyId], $property['modalities'])) echo $context->localize($property['modalities'][$account->properties[$propertyId]]) ?></td>
 	
     <?php elseif ($rendering == 'text') : ?>
       <td><?php echo $account->properties[$propertyId] ?></td>
@@ -95,7 +95,7 @@ table td {
 
     <?php elseif ($rendering == 'image' && $account->properties[$propertyId]) : ?>
 	  <td class="text-center">
-        <?php $label = (array_key_exists($account->properties[$propertyId], $property['modalities'])) ? $property['modalities'][$account->properties[$propertyId]][$context->getLocale()] : $account->properties[$propertyId] ?>
+        <?php $label = (array_key_exists($account->properties[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$account->properties[$propertyId]]) : $account->properties[$propertyId] ?>
         <img height="20" src="<?php echo $this->basePath('/img'.(($account->type) ? '/'.$account->type : '').'/'.$account->properties[$propertyId].'.png') ?>" title="<?php echo $label ?>" alt="<?php echo $label ?>" /><br>
       </td>
 

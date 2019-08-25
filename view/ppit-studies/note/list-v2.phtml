@@ -1,6 +1,24 @@
-<table class="table table-striped ppit_index">
-	<tr>
-		<th>&nbsp;</th>
+<!-- 
+/**
+ * PpitAccounting V1.0 (https://github.com/p-pit/PpitAccounting)
+ *
+ * @link      https://github.com/p-pit/PpitAccounting
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitAccounting/blob/master/license.txt GNU-GPL license
+ */
+-->
+
+<style>
+table td { 
+  font-size: 0.9rem;
+}
+</style>
+
+<div class="col-md-12">
+ 
+  <table class="table table-sm table-hover">
+    <tr class="table-info">
+      <th>&nbsp;</th>
 
 <?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 	<?php 
@@ -17,16 +35,16 @@
 	elseif ($propertyId == 'average_note') $label = $this->translate(($type == 'note') ? 'Average note' : 'Class average', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'higher_note') $label = $this->translate(($type == 'note') ? 'Highest note' : 'Highest average', 'ppit-studies', $context->getLocale());
 	?>
-	<?php if ($label) : ?>
-		<th align="center">
-			<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="<?php echo $propertyId ?>-anchor">
-				<span><?php echo $label ?></span>
-		<?php if ($major == $propertyId) : ?>
-				<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
-		<?php endif ?>
-			</button>
+  <?php if ($label) : ?>
+      <th align="center">
+        <a type="button" class="btn btn-sm sort_anchor <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
+          <span><?php echo $label ?></span>
+    <?php if ($major == $propertyId) : ?>
+          <i class="fas fa-caret-<?php echo ($dir == 'ASC') ? 'up' : 'down' ?>"></i>
+    <?php endif ?>
+        </a>
 		</th>
-	<?php endif;?>
+  <?php endif;?>
 <?php endforeach;?>
 
 	</tr>
@@ -41,11 +59,11 @@
 	
 	<tr>
 
-		<td style="text-align: center">
-			<button type="button" class="btn btn-default index-btn note-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $note->id ?>">
-				<span class="glyphicon glyphicon-zoom-in" id="group-glyphicon"></span>
-			</button>
-		</td>
+      <td style="text-align: center">
+        <button type="button" class="btn btn-sm btn-outline-primary index-btn note-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $note->id ?>">
+          <i class="fas fa-search" id="group-glyphicon"></i>
+        </button>
+      </td>
 
 	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 	
@@ -95,18 +113,15 @@
 	
 	</tr>
 	
-	<tr class="detail-row" id="detail-row_<?php echo $note->id ?>" rowspan="2"><td colspan="99"><div class="col-md-6 col-md-offset-3 ppit-panel" id="detail-div_<?php echo $note->id ?>"></div></td></tr>
-	<tr class="invisible"><td colspan="99"></td></tr>
-	
 <?php endforeach; ?>
 
 	<tr>
 
-<?php if ($mode == 'todo' && count($notes) == '50') : ?>
+<?php if (count($notes) == '50') : ?>
 		<td style="text-align: center">
-			<button type="button" class="btn btn-default index-btn" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="note-more-anchor">
-				<span class="glyphicon glyphicon-option-horizontal" id="more-glyphicon"></span>
-			</button>
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="more-anchor">
+            <i class="fas fa-ellipsis-h" id="more-glyphicon"></i>
+          </button>
 		</td>
 <?php else : ?>
 		<td>&nbsp;</td>
@@ -125,11 +140,5 @@
 	<?php endforeach;?>
 	</tr>
 
-<?php if ($context->isDemoModeActive()) : ?>
-	<?php $qualifier = ($category == 'homework') ? $category : (($type == 'note') ? 'note' : 'report') ?>
-				<a style="align: right" class="tip" href="#" title="<?php echo $context->getConfig('demo')['note/list/'.$qualifier][$context->getLocale()] ?>">
-				    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
-				</a>
-<?php endif;?>
-
-</table>
+  </table>
+</div>

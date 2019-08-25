@@ -52,7 +52,16 @@ return array(
         										),
         								),
         						),
-        						'search' => array(
+        						'indexV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/index-v2[/:entryId]',
+        										'defaults' => array(
+        												'action' => 'indexV2',
+        										),
+        								),
+        						),
+	       						'search' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/search',
@@ -61,12 +70,30 @@ return array(
         										),
         								),
         						),
-        						'list' => array(
+	       						'searchV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/search-v2',
+        										'defaults' => array(
+        												'action' => 'searchV2',
+        										),
+        								),
+        						),
+	       						'list' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/list',
         										'defaults' => array(
         												'action' => 'list',
+        										),
+        								),
+        						),
+	       						'listV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/list-v2',
+        										'defaults' => array(
+        												'action' => 'listV2',
         										),
         								),
         						),
@@ -88,7 +115,7 @@ return array(
         										),
         								),
         						),
-	       						'detail' => array(
+	       						/*'detail' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/detail[/:type][/:id][/:action]',
@@ -99,7 +126,7 @@ return array(
         												'action' => 'detail',
         										),
         								),
-        						),
+        						),*/
 	       						'update' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -109,6 +136,18 @@ return array(
 		        								),
 		        								'defaults' => array(
 		        										'action' => 'update',
+		        								),
+		        						),
+		        				),
+	       						'updateV2' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update-v2[/:id][/:act]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'updateV2',
 		        								),
 		        						),
 		        				),
@@ -253,7 +292,7 @@ return array(
         						'indexV2' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index-v2[/:app][/:category][/:type]',
+        										'route' => '/index-v2[/:category][/:type][/:entryId]',
         										'defaults' => array(
         												'action' => 'indexV2',
         										),
@@ -370,7 +409,19 @@ return array(
 		        								),
 		        						),
 		        				),
-			       				'reprise' => array(
+	       						'updateEvaluationV2' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/update-evaluation-v2[/:id][/:act]',
+		        								'constraints' => array(
+		        										'id'     => '[0-9]*',
+		        								),
+		        								'defaults' => array(
+		        										'action' => 'updateEvaluationV2',
+		        								),
+		        						),
+		        				),
+				       			'reprise' => array(
 	       								'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/reprise[/:place_identifier]',
@@ -1093,12 +1144,16 @@ return array(
 
 				array('route' => 'absence', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/index', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/search', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'absence/get', 'roles' => array('user')),
+				array('route' => 'absence/searchV2', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/listV2', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/get', 'roles' => array('user')),
 				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'absence/updateV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/reprise', 'roles' => array('admin')),
 				
 				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher')),
@@ -1124,6 +1179,7 @@ return array(
 				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/updateEvaluationV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 						
 				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher')),
@@ -1266,8 +1322,8 @@ return array(
 							),
 					),*/
 					'absence' => array(
-							'route' => 'absence/index',
-							'params' => array('app' => 'p-pit-studies', 'type' => ''),
+							'route' => 'absence/indexV2',
+							'params' => array('type' => '', 'entryId' => 'absence'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-hourglass',
 							'label' => array(
@@ -1276,8 +1332,8 @@ return array(
 							),
 					),
 					'homework' => array(
-							'route' => 'note/index',
-							'params' => array('app' => 'p-pit-studies', 'category' => 'homework'),
+							'route' => 'note/indexV2',
+							'params' => array('category' => 'homework', 'type' => '*', 'entryId' => 'homework'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-calendar',
 							'label' => array(
@@ -1286,8 +1342,8 @@ return array(
 							),
 					),
 					'evaluation' => array(
-							'route' => 'note/index',
-							'params' => array('app' => 'p-pit-studies', 'category' => 'evaluation', 'type' => 'note'),
+							'route' => 'note/indexV2',
+							'params' => array('category' => 'evaluation', 'type' => 'note', 'entryId' => 'evaluation'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-dashboard',
 							'label' => array(
@@ -1296,8 +1352,8 @@ return array(
 							),
 					),
 					'report' => array(
-							'route' => 'note/index',
-							'params' => array('app' => 'p-pit-studies', 'category' => 'evaluation', 'type' => 'report'),
+							'route' => 'note/indexV2',
+							'params' => array('category' => 'evaluation', 'type' => 'report', 'entryId' => 'report'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-education',
 							'label' => array(
@@ -1306,8 +1362,8 @@ return array(
 							),
 					),
 					'exam' => array(
-							'route' => 'note/index',
-							'params' => array('app' => 'p-pit-studies', 'category' => 'evaluation', 'type' => 'exam'),
+							'route' => 'note/indexV2',
+							'params' => array('category' => 'evaluation', 'type' => 'exam', 'entryId' => 'exam'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-education',
 							'label' => array(
@@ -4303,7 +4359,7 @@ table.note-report tr.period {
 	'absence/list' => array(
 			'place_id' => 'text',
 			'n_fn' => 'text',
-			'school_period' => 'text',
+			'school_period' => 'select',
 			'category' => 'select',
 			'subject' => 'text',
 			'begin_date' => 'date',

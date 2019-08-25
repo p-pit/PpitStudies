@@ -40,7 +40,45 @@ class AbsenceController extends AbstractActionController
     			'places' => Place::getList(array()),
     	));
     }
+    
+    public function indexV2Action()
+    {
+    	$context = Context::getCurrent();
+    	$place = Place::get($context->getPlaceId());
+    	$entry = $this->params()->fromRoute('entry', 'absence');
+    	 
+    	// Transient: Serialize a list of the entries from all menus
+    	$menuEntries = [];
+    	foreach ($context->getApplications() as $applicationId => $application) {
+    		if ($context->getConfig('menus/'.$applicationId)) {
+    			foreach ($context->getConfig('menus/' . $applicationId)['entries'] as $entryId => $entryDef) {
+    				$menuEntries[$entryId] = ['menuId' => $applicationId, 'menu' => $application, 'definition' => $entryDef];
+    			}
+    		}
+    	}
+    	$tab = $this->params()->fromRoute('entryId', 'absence');
 
+    	// Retrieve the application
+    	$app = $menuEntries[$tab]['menuId'];
+    	$applicationName = $context->localize($menuEntries[$tab]['menu']['labels']);
+    	 
+    	$this->layout('/layout/core-layout');
+    	$this->layout()->setVariables(array(
+    		'context' => $context,
+    		'place' => $place,
+    		'entry' => $entry,
+//			'config' => $config,
+    		'tab' => $tab,
+    		'app' => $app,
+    		'applicationName' => $applicationName,
+    		'pageScripts' => 'ppit-studies/view-controller/absence-scripts',
+    	));
+    	 
+    	return new ViewModel(array(
+    		'context' => $context,
+    	));
+    }
+    
     public function getFilters($params)
     {
 		$context = Context::getCurrent();
@@ -89,6 +127,11 @@ class AbsenceController extends AbstractActionController
     	return $view;
     }
 
+    public function searchV2Action()
+    {
+    	return $this->searchAction();
+    }
+    
     public function getList()
     {
     	// Retrieve the context
@@ -120,6 +163,11 @@ class AbsenceController extends AbstractActionController
     }
     
     public function listAction()
+    {
+    	return $this->getList();
+    }
+
+    public function listV2Action()
     {
     	return $this->getList();
     }
@@ -237,7 +285,12 @@ class AbsenceController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-	    
+
+    public function updateV2Action()
+    {
+    	return $this->updateAction();
+    }
+    
 	public function repriseAction()
 	{
 	    $where = array();

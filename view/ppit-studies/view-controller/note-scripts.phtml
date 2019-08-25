@@ -1,222 +1,85 @@
+<!-- 
+/**
+ * PpitCore V1.0 (https://github.com/p-pit/PpitCore)
+ *
+ * @link      https://github.com/p-pit/PpitCore
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitCore/blob/master/license.txt GNU-GPL license
+ */
+-->
 
-function connectRemoveIcon(id, target)
-{
-	$('#' + id).click(function () {
-		$('#' + target).hide();
-		filterNoteList();
-	});
-}
+<?php echo $this->partial('/partials/search-scripts-v2') ?>
+<?php echo $this->partial('/ppit-core/view-controller/document', ['type' => 'binary', 'folder' => 'studies']) ?>
 
-function getParams() {
+<script>
 
-	var params = '?', todo = true;
-
-<?php foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) : ?>
-
-	<?php if ($rendering == 'range' || $rendering == 'date') : ?>
-	
-	var min_<?php echo $propertyId ?> = document.getElementById('search_min_<?php echo $propertyId ?>').value;
-	if (min_<?php echo $propertyId ?>) min_<?php echo $propertyId ?> = encodeDate(min_<?php echo $propertyId ?>);
-	if (min_<?php echo $propertyId ?>.length >= 2) { params += 'min_<?php echo $propertyId ?>=' + min_<?php echo $propertyId ?> + '&'; todo = false; }
-
-	var max_<?php echo $propertyId ?> = document.getElementById('search_max_<?php echo $propertyId ?>').value;
-	if (max_<?php echo $propertyId ?>) max_<?php echo $propertyId ?> = encodeDate(max_<?php echo $propertyId ?>);
-	if (max_<?php echo $propertyId ?>.length >= 2) { params += 'max_<?php echo $propertyId ?>=' + max_<?php echo $propertyId ?> + '&'; todo = false; }
-
-	<?php elseif ($propertyId == 'place_id') : ?>
-
-	var <?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (<?php echo $propertyId ?>) { params += '<?php echo $propertyId ?>=' + <?php echo $propertyId ?> + '&'; todo = false; }
-	
-	<?php else : ?>
-
-	var prop_<?php echo $propertyId ?> = document.getElementById('search_<?php echo $propertyId ?>').value;
-	if (prop_<?php echo $propertyId ?>.length >= 2) { params += '<?php echo $propertyId ?>=' + prop_<?php echo $propertyId ?> + '&'; todo = false; }
-	
-	<?php endif;?>
-
-<?php endforeach;?>
-
-	<?php
-	$todoTitle = (isset ($context->getConfig('note/search'.'/'.$category)['todoTitle']) ? $context->getConfig('note/search'.'/'.$category)['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
-	$searchTitle = (isset ($context->getConfig('note/search'.'/'.$category)['searchTitle']) ? $context->getConfig('note/search'.'/'.$category)['searchTitle'][$context->getLocale()] : $this->translate('search', 'ppit-core', $context->getLocale()));
-	?>
-	$('#mode-text').text((todo) ? '<?php echo $todoTitle ?>' : '<?php echo $searchTitle ?>');
-	if (!todo) $('#limit').val('');
-
-	return params;
-}
+var criterion = 'date', dir = 'DESC';
 
 // Export the list
 function exportNoteList() {
-
-	$('.detail-row').hide();
-
-	var params = getParams();
-	document.location.href = '<?php echo $this->url('note/export', array('category' => $category, 'type' => $type)) ?>' + params;
+	var params = getSearchParams('');
+	document.location.href = '<?php echo $this->url('note/export', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 }
 
 // Export the list
-function csvNoteList() {
-
-	var params = getParams();
-	document.location.href = '<?php echo $this->url('note/exportCsv', array('category' => $category, 'type' => $type)) ?>' + params;
-}
-
-function eraseNoteSearch() {
-
-<?php foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) : ?>
-
-	$('.detail-row').hide();
-
-	<?php if ($rendering == 'range' || $rendering == 'date') : ?>
-	$('#search_min_<?php echo $propertyId ?>').val('');
-	$('#search_max_<?php echo $propertyId ?>').val('');
-
-	<?php else : ?>
-	$('#search_<?php echo $propertyId ?>').val('');
-	
-	<?php endif;?>
-
-<?php endforeach;?>
-
-	$('#limit').val('50');
-	getNoteList(getParams(), 'date', 'DESC');
-}
-
-function sortNoteList(criterion) {
-	$('.detail-row').hide();
-
-	var dir;
-	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
-	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
-	if (criterion + '-anchor' == ascCriterion) dir = 'DESC'; else dir = 'ASC';
-	getNoteList(getParams(), criterion, dir);
-}
-
-function filterNoteList() {
-
-	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
-	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
-	if (ascCriterion) {
-		criterion = ascCriterion.split('-')[0];
-		dir = 'ASC';
-	}
-	else if (descCriterion) {
-		criterion = descCriterion.split('-')[0];
-		dir = 'DESC';
-	}
-	else {
-		criterion = 'date';
-		dir = 'DESC';
-	}
-	getNoteList(getParams(), criterion, dir);
-}
-
-function connectNoteSearchInputs() {
-
-	$('#export-button').click(function () { exportNoteList(); });
-	$('#csv-button').click(function () { csvNoteList(); });
-	
-	$('#erase-button').unbind();
-	$('#erase-button').click(function () { eraseNoteSearch(); });
-
-<?php foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) : ?>
-	
-	<?php if (
-			$propertyId == 'category'
-		||	$propertyId == 'level'
-		||	$propertyId == 'school_subject'
-		||	$propertyId == 'school_period'
-		||	$propertyId == 'school_year'
-		||	$propertyId == 'specialty') : ?>
-	$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-
-	<?php elseif ($rendering == 'range') : ?>
-	$('#search_min_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-
-	<?php elseif ($rendering == 'date') : ?>
-	$("#search_min_<?php echo $propertyId ?>").datepicker();
-	$("#search_max_<?php echo $propertyId ?>").datepicker();
-	$('#search_min_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	$('#search_max_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	
-	<?php elseif ($rendering == 'select') : ?>
-		$('#search_<?php echo $propertyId ?>').change(function () { filterNoteList(); });
-	
-	<?php else : ?>
-		$('#search_<?php echo $propertyId ?>').keyup(function () { filterNoteList(); });
-
-	<?php endif;?>
-
-<?php endforeach;?>
-}
+/*function csvNoteList() {
+	var params = getSearchParams('');
+	document.location.href = '<?php echo $this->url('note/exportCsv', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+}*/
 
 // Load the list
-function getNoteList(params, major, dir) {
+function getNoteList(params) {
 	// Execute the ajax request
-	route = '<?php echo $this->url('note/listV2', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
+	route = '<?php echo $this->url('note/listV2', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4) {
-	<?php if (!$config['isTraceActive']) : ?>
-			if (xhttp.status == 200) {
-	<?php endif;?>
-			document.getElementById('note-list-panel').innerHTML = xhttp.responseText;
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			$('#note-list-panel').html(xhttp.responseText);
 
-			$('.detail-row').hide();
-			$('.invisible').hide();
-			
-			$(function () {
-			    $('.tip').tooltip({
-			        content: function () {
-			            return $(this).prop('title');
-			        }
-			    });
-			});
-			
-			// Connect the sort anchors
-			$('.ppit-sort-anchor').each(function () {
-				$(this).click(function () {
-					sortNoteList($(this).attr('id').split('-')[0]);
-				});
-			});
-
-			// Connect the more anchor
-			$('#note-more-anchor').click(function () {
-				$('#limit').val('');
-				filterNoteList();
-			});
-
-			// Connect the detail anchors
-			$('.note-detail-anchor').each(function () {
-				$(this).click(function () {
-					if ('<?php echo $category ?>' == 'homework') getNoteUpdate($(this).attr('id').split('_')[1]);
-					else if ('<?php echo $category ?>' == 'evaluation') getEvaluationUpdate($(this).attr('id').split('_')[1]);
-				});
-			});
-<?php if (!$config['isTraceActive']) : ?>
-			}
-<?php endif;?>
+            $('#export-button').click(function () { exportAbsenceList(); });
+      
+            // Connect the sort anchors
+            $('.sort_anchor').click(function () {
+              criterion = $(this).attr('id').split('-')[0];
+              ascCriterion = $('.sort_anchor_up').attr('id');
+              descCriterion = $('.sort_anchor_down').attr('id');
+              if (criterion + '-anchor' == ascCriterion) dir = 'DESC';
+              else if (criterion + '-anchor' == descCriterion) dir = 'ASC';
+              else dir = 'ASC';
+              getNoteList(getSearchParams(''));
+            });
+      
+            // Connect the detail anchors
+            $('.note-detail-anchor').click(function () {
+              var id = $(this).attr('id').split('_')[1];
+              if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
+              else if ('<?php echo $category ?>' == 'evaluation') getEvaluationUpdate(id);
+              $(this).removeClass("btn-outline-primary").addClass("btn-primary");
+              $('#modalForm').modal('toggle');
+            });
 		}
 	}
 	xhttp.send();
 }
 
-function connectAuditPanel(id)
+$('#modalForm').on('hidden.bs.modal', function (e) {
+  $('.note-update-anchor').addClass("btn-outline-primary").removeClass("btn-primary");
+  getNoteList(getSearchParams(''));
+})
+
+function connectAuditPanel()
 {
-	$('#audit-panel_' + id).hide();
-	$('#audit-label_' + id).click(function () {
-		if ($('#audit-label_' + id).text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
-			$('#audit-panel_' + id).show();
-			$('#audit-label_' + id).text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+	$('#audit-panel').hide();
+	$('#audit-label').click(function () {
+		if ($('#audit-label').text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#audit-panel').show();
+			$('#audit-label').text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
 		}
 		else {
-			$('#audit-panel_' + id).hide();
-			$('#audit-label_' + id).text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+			$('#audit-panel').hide();
+			$('#audit-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
 		}
 	});
 }
@@ -275,9 +138,8 @@ function connectNoteUpdateForm(id, action)
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
 				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-					document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;
-					connectRemoveIcon('remove-anchor_' + id, 'detail-raw_' + id);
-					connectAuditPanel(id);
+					$('#note-update-panel').html(xhttp.responseText);
+					connectAuditPanel();
 				}
 			};
 			xhttp.send(formData);
@@ -288,15 +150,6 @@ function connectNoteUpdateForm(id, action)
 
 function getNoteUpdate(id, action) {
 
-	// Ensure the target is displayed
-	$('.detail-row').hide();
-	$('#detail-row_' + id).show();
-
-	// Highlight the clicked button (and only it in its class)
-	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
-	$('.index-btn').attr('disabled', 'disabled');
-	$('#note-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
-
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('note/updateV2') ?>/' + id;
 	if (action) route += '/' + action;
@@ -304,24 +157,17 @@ function getNoteUpdate(id, action) {
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4) {
-	<?php if (!$config['isTraceActive']) : ?>
-			if (xhttp.status == 200) {
-	<?php endif;?>
-			$('#detail-row_' + id).show();
-			document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;			
-			
-			$(function () {
-			    $('.tip').tooltip({
-			        content: function () {
-			            return $(this).prop('title');
-			        }
-			    });
-			});
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			$('#note-update-panel').html(xhttp.responseText);			
+			connectAuditPanel();
 
-			connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
-			connectAuditPanel(id);
 			$('#subject').focus();
+
+            $('#document-select-panel').hide();
+            $('.document-show-anchor').click(function () {
+                $('#document-select-panel').show();
+                getDocumentSelect('binary', 'studies', 'document');
+            });
 			
 			if ($('#type').val() != 'todo-work') $('#input_target_date_group').hide();
 			if (action == 'update') {
@@ -349,10 +195,6 @@ function getNoteUpdate(id, action) {
 				$('#delete-anchor').click(function () { getNoteUpdate(id, 'delete'); });
 			}
 			else $('#add-anchor').click(function () { getNoteUpdate(id, 'add'); });
-
-<?php if (!$config['isTraceActive']) : ?>
-			}
-<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -433,15 +275,14 @@ function connectEvaluationUpdateForm(id, action)
 
 			var xhttp = new XMLHttpRequest();
 			var route, target;
-			route = '<?php echo $this->url('note/updateEvaluation') ?>/' + id;
+			route = '<?php echo $this->url('note/updateEvaluationV2') ?>/' + id;
 			if (action) route += '/' + action;
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
 			xhttp.onload = function () {
 				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-					document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;
-					connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
-					connectAuditPanel(id);
+					$('#note-update-panel').html(xhttp.responseText);			
+					connectAuditPanel();
 				}
 			};
 			xhttp.send(formData);
@@ -452,39 +293,17 @@ function connectEvaluationUpdateForm(id, action)
 
 function getEvaluationUpdate(id, action) {
 
-	// Ensure the target is displayed
-	$('.detail-row').hide();
-	$('#detail-row_' + id).show();
-
-	// Highlight the clicked button (and only it in its class)
-	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
-	$('.index-btn').attr('disabled', 'disabled');
-	$('#note-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
-
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('note/updateEvaluation') ?>/' + id;
+	var route = '<?php echo $this->url('note/updateEvaluationV2') ?>/' + id;
 	if (action) route += '/' + action;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4) {
-	<?php if (!$config['isTraceActive']) : ?>
-			if (xhttp.status == 200) {
-	<?php endif;?>
-			$('#detail-row_' + id).show();
-			document.getElementById('detail-div_' + id).innerHTML = xhttp.responseText;			
-			
-			$(function () {
-			    $('.tip').tooltip({
-			        content: function () {
-			            return $(this).prop('title');
-			        }
-			    });
-			});
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			$('#note-update-panel').html(xhttp.responseText);			
+			connectAuditPanel();
 
-			connectRemoveIcon('remove-anchor_' + id, 'detail-row_' + id);
-			connectAuditPanel(id);
 			$('#subject').focus();
 
 			if ($('#note_type').val() == 'report') {
@@ -508,27 +327,86 @@ function getEvaluationUpdate(id, action) {
 				$('#delete-anchor').click(function () { getEvaluationUpdate(id, 'delete'); });
 			}
 			else $('#add-anchor').click(function () { getEvaluationUpdate(id, 'add'); });
-
-<?php if (!$config['isTraceActive']) : ?>
-			}
-<?php endif;?>
 		}
 	}
 	xhttp.send();
 }
 
-function activateNote() {
+function getSearch() {
 
 	// Load the search panel and highlight the menu entry
-	loadPanel('index_action', '<?php echo $this->url('note/searchV2', array('category' => $category, 'type' => $type)) ?>');
+    let xhttp = new XMLHttpRequest();
+    xhttp.open("GET", '<?php echo $this->url('note/searchV2', array('category' => $category, 'type' => $type)) ?>', true);
+    xhttp.onreadystatechange = function() {
+      if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+          $('#index-panel').html(xhttp.responseText);
+      	
+          $('#erase-button').click(function () { 
+            $('.search_selectpicker').selectpicker('refresh');
+            $('.search_check_value').val('0');
+            $('.search_check').removeClass('btn-secondary').addClass('btn-default').removeClass('active');
+            $('#erase-button').removeClass('btn-success').addClass('btn-default');
+            $('#erase-button').attr('disabled', 'disabled');
+            getNoteList(getSearchParams(''));
+          });
+          
+          $('.search_selectpicker').selectpicker('refresh');
+          
+          // Connect the date picker on date inputs
+          $('.search_input_date').datepicker();
+     
+          // Trigger the change event on search inputs and refresh the list
+          $('.search_input').change(function () {
+            if ($(this).attr('id')) {
+              var propertyId = $(this).attr('id').split('-')[1];
+              $('#erase-button').removeClass('btn-default').addClass('btn-success');
+              $('#erase-button').attr('disabled', false);
+              $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
+              $('#search_check_value-' + propertyId).val('1');
+              getNoteList(getSearchParams(''));
+            }
+          }); 
 
-	<?php
-	$todoTitle = (isset ($context->getConfig('note/search'.'/'.$category)['todoTitle']) ? $context->getConfig('note/search'.'/'.$category)['todoTitle'][$context->getLocale()] : $this->translate('active', 'ppit-core', $context->getLocale()));
-	?>
-	$('#mode-text').text('<?php echo $todoTitle ?>');
-		
-	// Connect the search inputs
-	connectNoteSearchInputs();
-	
-	getNoteList('?', 'date', 'DESC');
+          // Trigger the keyup event on search inputs and refresh the list
+          $('.search_input').keyup(function () {
+            if ($(this).attr('id')) {
+              if ($(this).val().length > 2) {
+                var propertyId = $(this).attr('id').split('-')[1];
+                $('#erase-button').removeClass('btn-default').addClass('btn-success');
+                $('#erase-button').attr('disabled', false);
+                $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
+                $('#search_check_value-' + propertyId).val('1');
+                getNoteList(getSearchParams(''));
+              }
+            }
+          });
+
+          // Trigger the click event on per-property checks (allowing to search on empty values) and refresh the list
+          $('.search_check').click(function() {
+            $('#erase-button').removeClass('btn-default').addClass('btn-success');
+            $('#erase-button').attr('disabled', false);
+            var propertyId = $(this).attr('id').split('-')[1], check = 'search_check_value-' + propertyId;
+            if ($('#' + check).val() == '1') {
+              $(this).removeClass('btn-secondary').addClass('btn-default').removeClass('active');
+              $('#' + check).val('0');
+              $('#search-' + propertyId).val('');
+              $('#search_min-' + propertyId).val('');
+              $('#search_max-' + propertyId).val('');
+            }
+            else {
+              $(this).removeClass('btn-default').addClass('btn-secondary').addClass('active');
+              $('#' + check).val('1');
+            }
+            getNoteList(getSearchParams(''));
+          });
+       
+          getNoteList(getSearchParams(''));
+      }
+    };
+    xhttp.send();
 }
+
+getSearch();
+
+</script>

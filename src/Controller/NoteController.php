@@ -6,6 +6,7 @@ use PpitCommitment\Model\Notification;
 use PpitCore\Model\Account;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
+use PpitCore\Model\Document;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
@@ -50,9 +51,48 @@ class NoteController extends AbstractActionController
     
     public function indexV2Action()
     {
-    	return $this->indexAction();
-    }
+    	$context = Context::getCurrent();
+		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
+    	$place = Place::get($context->getPlaceId());
+    	$entry = $this->params()->fromRoute('entry', 'homework');
 
+    	// Transient: Serialize a list of the entries from all menus
+    	$menuEntries = [];
+    	foreach ($context->getApplications() as $applicationId => $application) {
+    		if ($context->getConfig('menus/'.$applicationId)) {
+    			foreach ($context->getConfig('menus/' . $applicationId)['entries'] as $entryId => $entryDef) {
+    				$menuEntries[$entryId] = ['menuId' => $applicationId, 'menu' => $application, 'definition' => $entryDef];
+    			}
+    		}
+    	}
+    	$tab = $this->params()->fromRoute('entryId', 'homework');
+    	
+    	// Retrieve the application
+    	$app = $menuEntries[$tab]['menuId'];
+    	$applicationName = $context->localize($menuEntries[$tab]['menu']['labels']);
+    	 
+		$category = $this->params()->fromRoute('category');
+		$type = $this->params()->fromRoute('type');
+		
+		$this->layout('/layout/core-layout');
+		$this->layout()->setVariables(array(
+			'context' => $context,
+			'place' => $place,
+			'entry' => $entry,
+//			'config' => $config,
+			'tab' => $tab,
+			'app' => $app,
+			'applicationName' => $applicationName,
+			'pageScripts' => 'ppit-studies/view-controller/note-scripts',
+    		'category' => $category,
+    		'type' => $type,
+		));
+		
+		return new ViewModel(array(
+    		'context' => $context,
+    	));
+    }
+    
     public function getFilters($category, $params)
     {
 		$context = Context::getCurrent();
@@ -118,6 +158,7 @@ class NoteController extends AbstractActionController
     
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
+		if ($type == '*') $type = null;
 		$params = $this->getFilters($category, $this->params());
 		$limit = $this->params()->fromQuery('limit');
 		$major = ($this->params()->fromQuery('major', 'date'));
@@ -366,7 +407,96 @@ class NoteController extends AbstractActionController
 
     public function updateV2Action()
     {
-    	return $this->updateAction();
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$id = (int) $this->params()->fromRoute('id', 0);
+    	$note = Note::get($id);
+    	$place = Place::get($note->place_id);
+    	$school_periods = $place->getConfig('school_periods');
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	if (!$note->school_period) $note->school_period = $current_school_period;
+    	$action = $this->params()->fromRoute('act', null);
+    
+    	if ($note->document) $document = Document::get($note->document);
+    	else $document = null;
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	if ($action == 'delete') $message = 'confirm-delete';
+    	elseif ($action) $message =  'confirm-update';
+    	else $message = null;
+    	$request = $this->getRequest();
+    	if ($request->isPost()) {
+    		$message = null;
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    		 
+    		if ($csrfForm->isValid()) { // CSRF check
+    			if ($action != 'delete') {
+    
+    				$document_id = $request->getPost('document');
+    				$document = Document::get($document_id);
+    
+    				// Load the input data
+    				$data = array();
+    				$data['place_id'] = $request->getPost('place_id');
+    				if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
+    				if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
+    				$data['class'] = $request->getPost('class');
+    				$data['school_period'] = $request->getPost('school_period');
+    				$data['level'] = $request->getPost('level');
+    				$data['subject'] = $request->getPost('subject');
+    				$data['date'] = $request->getPost('date');
+    				$data['type'] = $request->getPost('type');
+    				$data['target_date'] = $request->getPost('target_date');
+    				$data['document'] = $document_id;
+    				$data['observations'] = $request->getPost('observations');
+    				$data['comment'] = $request->getPost('comment');
+    				$rc = $note->loadData($data);
+    				if ($rc != 'OK') throw new \Exception('View error');
+    			}
+    
+    			// Atomically save
+    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    				if (!$note->id) $rc = $note->add();
+    				elseif ($action == 'delete') $rc = $note->delete($request->getPost('update_time'));
+    				else $rc = $note->update($note->update_time);
+    				if ($rc != 'OK') {
+    					$connection->rollback();
+    					$error = $rc;
+    				}
+    				if (!$error) {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'places' => Place::getList(array()),
+    		'id' => $id,
+    		'action' => $action,
+    		'note' => $note,
+    		'school_periods' => $school_periods,
+    		'document' => $document,
+    		'csrfForm' => $csrfForm,
+    		'error' => $error,
+    		'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
     }
     
     public function updateEvaluationAction()
@@ -560,6 +690,12 @@ class NoteController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
+    
+    public function updateEvaluationV2Action()
+    {
+    	return $this->updateEvaluationAction();
+    }
+    
 /*    
     public function repriseAction()
     {
