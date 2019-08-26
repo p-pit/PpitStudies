@@ -178,6 +178,7 @@ class Note
     			elseif ($propertyId == 'groups') $where->in('groups', $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
+    			elseif ($property['type'] == 'select') $where->equalTo('student_note.'.$propertyId, $params[$propertyId]);
     			else $where->like('student_note.'.$propertyId, '%'.$params[$propertyId].'%');
     		}
     	}
