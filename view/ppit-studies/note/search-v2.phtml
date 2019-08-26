@@ -95,8 +95,8 @@
             </div>
             <select class="form-control search_input search_input_select" id="search-<?php echo $propertyId ?>">
               <option value=""></option>
-      <?php foreach ($modalities as $modalityId => $modalityLabel) : ?>
-              <option value="<?php echo $modalityId ?>"><?php echo $modalityLabel ?></option>
+      <?php foreach ($property['modalities'] as $modalityId => $modalityLabel) : ?>
+              <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modalityLabel) ?></option>
       <?php endforeach;?>
             </select>
           </div>
