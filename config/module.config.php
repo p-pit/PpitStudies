@@ -4145,10 +4145,19 @@ table.note-report tr.period {
 		'title' => array('default' => 'Event detail', 'fr_FR' => 'Détail de l\'évènement'),
 		'displayAudit' => true,
 	),
+
+	'event/format/calendar' => [
+		'mask' => '%s %s %s',
+		'params' => [
+			'property_3' => [],
+			'caption' => ['mask' => ' - %s'],
+			'location' => ['mask' => '(%s)'],
+		],
+	],
 	
 	'event/update/calendar' => array(
 		'status' => ['mandatory' => true],
-		'groups' => ['mandatory' => true],
+		'groups' => [],
 		'place_id' => [],
 		'property_1' => ['mandatory' => true, 'default' => 'student/property/school_year/default'],
 		'account_id' => [],
