@@ -4110,6 +4110,7 @@ table.note-report tr.period {
 		'searchTitle' => array('default' => 'search', 'fr_FR' => 'recherche'),
 		'properties' => array(
 			'place_id' => [],
+			'property_1' => ['default' => 'student/property/school_year/default'],
 			'groups' => [],
 			'property_2' => [],
 			'n_fn' => [],
@@ -4149,7 +4150,7 @@ table.note-report tr.period {
 		'status' => ['mandatory' => true],
 		'groups' => ['mandatory' => true],
 		'place_id' => [],
-		'property_1' => ['default' => 'student/property/school_year/default'],
+		'property_1' => ['mandatory' => true, 'default' => 'student/property/school_year/default'],
 		'account_id' => [],
 		'property_2' => [],
 		'property_3' => [],
