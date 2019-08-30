@@ -12,7 +12,7 @@
 	        <div class="text-center text-muted font-weight-bold">
 <?php if ($type == 'done-work') : ?>
 	          <?php echo $this->translate('Done the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($date) ?>
-<?php elseif ($type == 'todo-work') : ?>
+<?php elseif (in_array($type, ['todo-work', 'event'])) : ?>
             <?php echo $this->translate('For the', 'ppit-studies', $context->getLocale()).' '.$context->decodeDate($date) ?>
 <?php endif;?>
 	        </div>

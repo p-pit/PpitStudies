@@ -1059,7 +1059,7 @@ class StudentController extends AbstractActionController
     			    	else $value = null;
     			    	if ($value !== null) $value = $value * $data['reference_value'] / 20;
     				}
-    				if ($value !== null || $assessment) {
+//    				if ($value !== null || $assessment) {
 	    				$noteLink->value = $value;
 	    				$noteLink->evaluation = $mention;
 	    				$noteLink->assessment = $assessment;
@@ -1074,7 +1074,7 @@ class StudentController extends AbstractActionController
 		    			}
 	    				if (array_key_exists($noteLink->account_id, $note->links)) $note->links[$noteLink->account_id]->delete(null); 
 	    				$note->links[$noteLink->account_id] = $noteLink;
-    				}
+//    				}
     			}
     			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
@@ -1822,6 +1822,59 @@ class StudentController extends AbstractActionController
 		return $view;
 	}
 
+	public function absenceV2Action()
+	{
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+		$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'begin_date', 'DESC', 'search', null);
+		$absences = array();
+		$absenceCount = 0;
+		$cumulativeAbsence = 0;
+		$latenesss = array();
+		$latenessCount = 0;
+		$cumulativeLateness = 0;
+		foreach ($absLates as $absLate) {
+			if ($absLate->category == 'absence') {
+				$absences[] = $absLate;
+				$absenceCount++;
+				$cumulativeAbsence += $absLate->duration;
+			}
+			elseif ($absLate->category =='lateness') {
+				$latenesss[] = $absLate;
+				$latenessCount++;
+				$cumulativeLateness += $absLate->duration;
+			}
+		}
+	
+		$periods = array();
+		$absLates = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
+		foreach($absLates as $absLate) {
+			$key = $absLate->school_year.'.'.$absLate->school_period;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $absLate;
+		}
+		krsort($periods);
+	
+		// Return the link list
+		$view = new ViewModel(array(
+			'context' => $context,
+			'config' => $context->getconfig(),
+			'account' => $account,
+			'periods' => $periods,
+			'absences' => $absences,
+			'absenceCount' => $absenceCount,
+			'cumulativeAbsence' => $cumulativeAbsence,
+			'latenesss' => $latenesss,
+			'latenessCount' => $latenessCount,
+			'cumulativeLateness' => $cumulativeLateness,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+	
 	public function homeworkAction()
 	{
 		// Retrieve the context
@@ -1857,8 +1910,8 @@ class StudentController extends AbstractActionController
 		$filters = [];
 		if ($subject) $filters['subject'] = $subject;
 		if ($type == 'done-work') $filters['date'] = $date;
-		elseif ($type == 'todo-work') $filters['target_date'] = $date;
-
+		elseif (in_array($type, ['todo-work', 'event'])) $filters['target_date'] = $date;
+		
 		$groups = [];
 		foreach ($account->groups as $group_id => $unused) $groups[] = $group_id;
 //		if ($groups) $filters['groups'] = $groups;

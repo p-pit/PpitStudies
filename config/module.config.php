@@ -1,7 +1,10 @@
 <?php
 namespace PpitStudies;
 
-return array(
+include('commitment_message_p_pit_studies.php');
+
+return array_merge(
+[
 	'controllers' => array(
         'invokables' => array(
         	'PpitStudies\Controller\Absence' => 'PpitStudies\Controller\AbsenceController',
@@ -917,6 +920,18 @@ return array(
         										),
         								),
         						),
+	       						'absenceV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/absence-v2[/:account_id]',
+        										'constraints' => array(
+        												'account_id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'absenceV2',
+        										),
+        								),
+        						),
 	       						'homework' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1234,6 +1249,7 @@ return array(
 				array('route' => 'student/planningV2', 'roles' => array('user')),
 				array('route' => 'student/file', 'roles' => array('guest')),
 				array('route' => 'student/absence', 'roles' => array('guest')),
+				array('route' => 'student/absenceV2', 'roles' => array('user')),
 				array('route' => 'student/homework', 'roles' => array('guest')),
 				array('route' => 'student/homeworkV2', 'roles' => array('user')),
 				array('route' => 'student/evaluation', 'roles' => array('guest')),
@@ -1561,6 +1577,15 @@ return array(
 			'fr_FR' => 'Nom de l’entreprise',
 		),
 	),
+
+	'commitment/p-pit-studies/property/property_9' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Expected number of training hours',
+			'fr_FR' => 'Nombre d’heures de formation prévues',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/account_property_1' => ['definition' => 'student/property/discipline'],
 	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_4'],
@@ -1575,10 +1600,10 @@ return array(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'place_id', 'account_name', 'email', 'invoice_n_fn', 'year',
+			'status', 'place_id', 'account_name', 'email', 'n_title', 'n_first', 'n_last', 'invoice_n_fn', 'year',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
-			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9',
 			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8',
@@ -1692,6 +1717,8 @@ return array(
 
 	'commitment/update/p-pit-studies' => array(
 		'status' => array('mandatory' => true),
+		'year' => array('mandatory' => true),
+		'invoice_date' => array('mandatory' => true),
 		'caption' => array('mandatory' => true),
 		'account_id' => array('mandatory' => true),
 		'description' => array('mandatory' => false),
@@ -1703,6 +1730,7 @@ return array(
 		'property_6' => array('mandatory' => false),
 		'property_7' => array('mandatory' => false),
 		'property_8' => array('mandatory' => false),
+		'property_9' => array('mandatory' => false),
 	),
 	'commitment/group/p-pit-studies' => array(
 		'status' => [],
@@ -1735,6 +1763,7 @@ return array(
 		'property_6' => 'U',
 		'property_7' => 'V',
 		'property_8' => 'W',
+		'property_9' => 'X',
 	),
 	
 	'commitment/invoice/p-pit-studies' => array(
@@ -1768,6 +1797,120 @@ return array(
 			),
 			'terms' => true,
 	),
+
+	// Legal documents
+/*	
+	'commitment/message/p-pit-studies/attestation_fin_formation' => [
+		'name' => ['default' => 'Attestation de fin de formation'],
+		'header' => [
+			'class' => 'header',
+			'paragraphs' => [
+				['type' => 'p', 'class' => 'text-right', 'label' => ['default' => '%s'], 'params' => ['addressee_invoice_name']],
+				['type' => 'p', 'class' => 'text-right', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_street']],
+				['type' => 'p', 'class' => 'text-right', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_extended']],
+				['type' => 'p', 'class' => 'text-right', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_post_office_box']],
+				['type' => 'p', 'class' => 'text-right', 'label' => ['default' => '%s %s'], 'params' => ['addressee_adr_zip', 'addressee_adr_city']],
+				['type' => 'p', 'class' => 'text-right', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_state']],
+				['type' => 'p', 'class' => 'text-right', 'label' => ['default' => '%s %s'], 'params' => ['addressee_adr_state', 'addressee_adr_country']],
+				['type' => 'br'], ['type' => 'br'], ['type' => 'br'],
+				['type' => 'h1', 'label' => ['default' => 'ATTESTATION DE FIN DE FORMATION']],
+				['type' => 'h3', 'label' => ['default' => 'Art. L.6353-1 du Code du travail']],
+			],
+		],
+		'body' => [
+			'class' => 'body',
+			'paragraphs' => [
+				[
+					'type' => 'p',
+					'class' => 'text-justify',
+					'label' => ['default' => '<p><strong>Intitulé de la formation : </strong>%s</p>'],
+					'params' => ['property_5'],
+				],
+				[
+					'type' => 'p',
+					'class' => 'text-justify',
+					'label' => ['default' => '<strong>Objectifs : Maîtriser les connaissances techniques et les compétences professionnelles associées aux épreuves du %s</strong>'],
+					'params' => ['account_property_10'],
+				],
+				[
+					'type' => 'p',
+					'class' => 'text-justify',
+					'label' => ['default' => '<strong>Lieu de formation : </strong>(Lieu à préciser)'],
+				],
+				[
+					'type' => 'p',
+					'class' => 'text-justify',
+					'label' => ['default' => '<strong>Date et durée : </strong>du <strong>%s</strong> au <strong>%s</strong> pour une durée de <strong>%s heures</strong>'],
+					'params' => ['property_6', 'property_7', 'property_9'],
+				],
+				[
+					'type' => 'p',
+					'class' => 'text-justify',
+					'label' => ['default' => '<strong>Évaluation des acquis de la formation : </strong>'],
+				],
+				[
+					'type' => 'p',
+					'class' => 'text-justify',
+					'label' => ['default' => '&nbsp;&nbsp;&nbsp;&nbsp;<strong>Examen du brevet de technicien supérieur : ADMIS(E) ou REFUSÉ(E)</strong>'],
+				],
+				[
+					'type' => 'p',
+					'class' => 'text-justify',
+					'label' => ['default' => 'Cette attestation peut vous permettre de renseigner votre passeport orientation-formation (art. L.6315-2 du Code du travail)'],
+				],
+			],
+		],
+		'footer' => [
+			'class' => 'footer',
+			'paragraphs' => [
+				[
+					'type' => 'p',
+					'label' => ['default' => 'Délivrée par (à préciser),'],
+					'params' => [],
+				],
+				[
+					'type' => 'p',
+					'label' => ['default' => 'à %s %s %s'],
+					'params' => ['contact_n_title', 'contact_n_first', 'contact_n_last'],
+				],
+				[
+					'type' => 'p',
+					'label' => ['default' => '%s %s'],
+					'params' => ['adr_street', 'adr_extended'],
+				],
+				[
+					'type' => 'p',
+					'label' => ['default' => '%s %s'],
+					'params' => ['adr_zip', 'adr_city'],
+				],
+				[
+					'type' => 'p',
+					'label' => ['default' => '%s'],
+					'params' => ['adr_country'],
+				],
+				[
+					'type' => 'p',
+					'label' => ['default' => ''],
+					'params' => [],
+				],
+				[
+					'type' => 'p',
+					'label' => ['default' => 'à LE PERREUX SUR MARNE, le %s'],
+					'params' => ['current_date'],
+				],
+				[
+					'type' => 'p',
+					'class' => 'text-center',
+					'label' => ['default' => 'LA DIRECTION STUDENCY'],
+					'params' => [],
+				],
+			],
+		],
+	],
+
+	'commitment/message/p-pit-studies' => [
+		'commitment/message/p-pit-studies/attestation_fin_formation',
+	],*/
 	
 	// Account p-pit-studies
 	
@@ -5400,4 +5543,7 @@ table.note-report tr.period {
 ',
 			),
 	),
+],
+
+	COMMITMENT_MESSAGE_P_PIT_STUDIES
 );
