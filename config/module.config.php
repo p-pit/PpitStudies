@@ -1600,7 +1600,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'place_id', 'account_name', 'email', 'n_title', 'n_first', 'n_last', 'invoice_n_fn', 'year',
+			'status', 'place_id', 'account_name', 'email', 'n_title', 'n_first', 'n_last', 'birth_date', 'invoice_n_fn', 'year',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9',
@@ -2828,6 +2828,7 @@ return array_merge(
 			'origine' => array('mandatory' => false),
 			'property_12' => array('mandatory' => false),
 			'title_1' => null,
+			'n_title' => array('mandatory' => false),
 			'n_first' => array('mandatory' => true),
 			'n_last' => array('mandatory' => true),
 			'photo_link_id' => array('mandatory' => false),
