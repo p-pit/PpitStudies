@@ -8,15 +8,24 @@ function getEvents(calendar) {
   getHomework(calendar);
   getAbsence(calendar);
 	
-	// Execute the ajax request
   let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=2019-09-01&end=2020-07-31';
-    route += '&groups=';
-<?php $first = true; foreach ($profile->groups as $groupId => $group) : ?>
-  	<?php if (!$first) : ?>route += ',';<?php endif;?>
-    <?php $first = false ?>
-    route += '<?php echo $group['group_id'] ?>';
-<?php endforeach;?>
-	var xhttp = new XMLHttpRequest();
+
+// Filter on groups
+<?php if ($profile->groups) : ?>
+	  route += '&groups=';
+  <?php $first = true; foreach ($profile->groups as $groupId => $group) : ?>
+  	  <?php if (!$first) : ?>route += ',';<?php endif;?>
+      <?php $first = false ?>
+      route += '<?php echo $group['group_id'] ?>';
+  <?php endforeach;?>
+<?php endif;?>
+
+// Filter on class
+<?php if ($profile->property_7) : ?>
+      route += '&property_7=' + <?php echo $profile->property_7 ?>
+<?php endif;?>
+
+    var xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
