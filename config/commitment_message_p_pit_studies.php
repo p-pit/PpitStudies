@@ -50,8 +50,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Je soussigné(e) %s atteste que :'],
-						'params' => ['study_manager_name'],
+						'label' => ['default' => 'Je soussigné(e) le Directeur du Centre de Formation atteste que :'],
 					],
 					[
 						'type' => 'p',
@@ -101,7 +100,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 				'paragraphs' => [
 					[
 						'type' => 'p',
-						'label' => ['default' => 'Fait à LE PERREUX SUR MARNE, le %s'],
+						'label' => ['default' => 'Fait à BOULOGNE, le %s'],
 						'params' => ['current_date'],
 					],
 					['type' => 'br'], ['type' => 'br'], ['type' => 'br'], ['type' => 'br'],
@@ -178,7 +177,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Cette formation, d’une durée de %s heures se déroulera à l’adresse suivante :'],
+						'label' => ['default' => 'Cette formation, d’une durée de %s heures se déroulera à l’adresse suivante : <strong>61 bis rue des Peupliers, 92100 Boulogne-Billancourt</strong>'],
 						'params' => ['property_9'],
 					],
 					[
@@ -259,7 +258,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Je soussigné(e) %s atteste que :'],
+						'label' => ['default' => 'Je soussigné(e) le Directeur du Centre de Formation atteste que :'],
 						'params' => ['study_manager_name'],
 					],
 					[
@@ -294,7 +293,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Les heures en centre de formation sont dispensées au lieu : <strong>(Lieu à préciser)</strong>'],
+						'label' => ['default' => 'Les heures en centre de formation sont dispensées au lieu : <strong>61 bis rue des Peupliers, 92100 Boulogne-Billancourt</strong>'],
 					],
 				],
 			],
@@ -373,13 +372,12 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => '<strong>Objectifs : Maîtriser les connaissances techniques et les compétences professionnelles associées aux épreuves du %s</strong>'],
-						'params' => ['account_property_10'],
+						'label' => ['default' => '<strong>Objectifs : Maîtriser les connaissances techniques et les compétences professionnelles associées aux épreuves de la formation</strong>'],
 					],
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => '<strong>Lieu de formation : </strong>(Lieu à préciser)'],
+						'label' => ['default' => '<strong>Lieu de formation : </strong>61 bis rue des Peupliers, 92100 Boulogne-Billancourt'],
 					],
 					[
 						'type' => 'p',
@@ -395,7 +393,8 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => '&nbsp;&nbsp;&nbsp;&nbsp;<strong>Examen du brevet de technicien supérieur : ADMIS(E) ou REFUSÉ(E)</strong>'],
+						'label' => ['default' => '&nbsp;&nbsp;&nbsp;&nbsp;<strong>Examen de la formation %s : ADMIS(E) ou REFUSÉ(E)</strong>'],
+						'params' => ['property_5'],
 					],
 					[
 						'type' => 'p',
@@ -409,8 +408,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 				'paragraphs' => [
 					[
 						'type' => 'p',
-						'label' => ['default' => 'Délivrée par %s,'],
-						'params' => ['study_manager_name'],
+						'label' => ['default' => 'Délivrée par le Directeur du Centre de Formation,'],
 					],
 					[
 						'type' => 'p',
