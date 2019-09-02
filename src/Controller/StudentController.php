@@ -180,7 +180,7 @@ class StudentController extends AbstractActionController
     	$current_school_period = 'Q1'; //$context->getCurrentPeriod($school_periods);
 		$cursor = NoteLink::getList('report', ['category' => 'evaluation', 'subject' => 'global', 'school_year' => $current_school_year, 'school_period' => $current_school_period, 'account_id' => $profile->id], 'id', 'ASC', $mode = 'search');
 		foreach ($cursor as $report) $averageNote = $report; // Should be unique but to keep only the last one
-		if (isset($averageNote)) $global_average = ($averageNote) ? $averageNote->value : null;
+		$global_average = (isset($averageNote) && $averageNote) ? $averageNote->value : null;
 		
 		$view = new ViewModel(array(
 			'context' => $context,
