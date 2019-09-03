@@ -77,7 +77,7 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Trainee’s signature</strong> / Hours', 'fr_FR' => '<strong>Signature du stagiaire</strong> / Horaire'],
+						'header' => ['default' => '<strong>Trainee’s signature</strong> / Hours', 'fr_FR' => '<strong>Signature du stagiaire</strong>'],
 						'label' => ['default' => '&nbsp;'],
 					],
 				],
