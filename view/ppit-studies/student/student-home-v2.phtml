@@ -53,9 +53,13 @@
       height: 60%;
       max-width: 100%;
     }
-  
+
+  <?php
+  $home_intro_background = $place->getConfig('home_intro_background');
+  $home_intro_background = ($home_intro_background) ? '/img/' . $context->getInstance()->caption . '/' . $home_intro_background : '/img/2pit.io/learning-petit.jpg';
+  ?>  
   #intro {
-      background: url("<?php echo $this->basePath('/img/2pit.io/learning-petit.jpg') ?>") no-repeat center center;
+      background: url("<?php echo $this->basePath($home_intro_background) ?>") no-repeat center center;
       -webkit-background-size: contain;
       -moz-background-size: contain;
       -o-background-size: contain;

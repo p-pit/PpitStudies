@@ -185,6 +185,7 @@ class StudentController extends AbstractActionController
 		$view = new ViewModel(array(
 			'context' => $context,
 			'place_identifier' => $place->identifier,
+			'place' => $place,
 			'profile' => $profile,
 			'global_average' => $global_average,
 			'requestUri' => $this->request->getRequestUri(),
