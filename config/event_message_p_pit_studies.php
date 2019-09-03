@@ -58,9 +58,9 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 						'class' => 'text-center',
 						'label' => [
 							'default' => 'Module: <strong>%s</strong> &mdash; Date: <strong>%s</strong> &mdash; Start: <strong>%s</strong> &mdash; End: <strong>%s</strong> &mdash; Duration: <strong>%s</strong>',
-							'fr_FR' => 'Module: <strong>%s</strong> &mdash; Date: <strong>%s</strong> &mdash; Début: <strong>%s</strong> &mdash; Fin: <strong>%s</strong> &mdash; Durée: <strong>%sh</strong>'
+							'fr_FR' => 'Module: <strong>%s</strong> &mdash; Date: <strong>%s</strong> &mdash; Début: <strong>%s</strong> &mdash; Fin: <strong>%s</strong> &mdash; Durée: <strong>%s</strong>'
 						],
-						'params' => ['property_2', 'begin_date', 'begin_time', 'end_time', 'duration'],
+						'params' => ['property_3', 'begin_date', 'begin_time', 'end_time', 'duration'],
 					],
 					['type' => 'br'],
 				],
@@ -72,7 +72,7 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'class' => 'text-justify',
 						'header' => ['default' => '<strong>Trainee</strong> / Hours', 'fr_FR' => '<strong>Stagiaire</strong> / Horaire'],
-						'label' => ['default' => '<strong>%s %s</strong> / from %s to %s (%s)', 'fr_FR' => '<strong>%s %s</strong> / de %s à %s (%sh)'],
+						'label' => ['default' => '<strong>%s %s</strong> / from %s to %s (%s)', 'fr_FR' => '<strong>%s %s</strong> / de %s à %s (%s)'],
 						'params' => ['account:n_first', 'account:n_last', 'begin_time', 'end_time', 'duration'],
 					],
 					[
