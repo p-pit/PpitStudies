@@ -3585,6 +3585,7 @@ table.note-report td {
 					'termProCommerce' => array('fr_FR' => 'Term. Pro Commerce'),
 					'1ereProGa' => array('fr_FR' => '1ère Pro GA'),
 					'2ndeProService' => array('fr_FR' => '2nde Pro Service'),
+					'1ereProService' => array('fr_FR' => '1ère Pro Service'),
 					'1ereProVente' => array('fr_FR' => '1ère Pro Vente'),
 					'termProVente' => array('fr_FR' => 'Term. Pro Vente'),
 					'fle' => array('fr_FR' => 'FLE', 'level' => 'FLE'),
