@@ -65,19 +65,35 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 					['type' => 'br'],
 				],
 			],
-			'table' => [
+			'account' => [
 				'class' => 'table',
-				'entity' => 'account',
-				'columns' => [
+				'paragraphs' => [
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Trainee</strong> / Hours', 'fr_FR' => '<strong>Stagiaire</strong> / Horaire'],
-						'label' => ['default' => '<strong>%s %s</strong> / from %s to %s (%s)', 'fr_FR' => '<strong>%s %s</strong> / de %s à %s (%s)'],
-						'params' => ['account:n_first', 'account:n_last', 'begin_time', 'end_time', 'duration'],
+						'header' => ['default' => '<strong>Trainer</strong>', 'fr_FR' => '<strong>Formateur</strong>'],
+						'label' => ['default' => '%s'],
+						'params' => ['n_fn'],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Trainee’s signature</strong> / Hours', 'fr_FR' => '<strong>Signature du stagiaire</strong>'],
+						'header' => ['default' => '<strong>Trainer’s signature</strong>', 'fr_FR' => '<strong>Signature du formateur</strong>'],
+						'label' => ['default' => '&nbsp;'],
+					],
+				],
+			],
+			'attendees' => [
+				'class' => 'table',
+				'entity' => 'account',
+				'paragraphs' => [
+					[
+						'class' => 'text-justify',
+						'header' => ['default' => '<strong>Trainee</strong>', 'fr_FR' => '<strong>Stagiaire</strong>'],
+						'label' => ['default' => '%s'],
+						'params' => ['account:n_fn'],
+					],
+					[
+						'class' => 'text-justify',
+						'header' => ['default' => '<strong>Trainee’s signature</strong>', 'fr_FR' => '<strong>Signature du stagiaire</strong>'],
 						'label' => ['default' => '&nbsp;'],
 					],
 				],
