@@ -145,6 +145,8 @@ class StudentController extends AbstractActionController
 		$context = Context::getCurrent();
     	$account_id = (int) $this->params()->fromRoute('account_id', 0);
     	$profile = Account::get($account_id);
+    	if (!$profile) $profile = Account::get($context->getContactId(), 'contact_1_id');
+    	if (!$profile) return $this->redirect()->toRoute('home');
     	$place = Place::get($profile->place_id);
     	$template = $context->getConfig('student/home/tabs');
     	$logo = ($place->logo_src) ? $place->logo_src : '/logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
