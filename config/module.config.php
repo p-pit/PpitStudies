@@ -4209,6 +4209,18 @@ table.note-report tr.period {
 			'column' => 'type',
 	),
 
+	// Planning event
+
+	'event/planning/property/matched_accounts' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'account_type' => 'p-pit-studies',
+		'labels' => array(
+			'en_US' => 'Student',
+			'fr_FR' => 'Élève',
+		),
+	),
+	
 	// Calendar event
 	
 	'event/calendar/property/property_1' => array('definition' => 'student/property/school_year'),
