@@ -603,7 +603,7 @@ class NoteController extends AbstractActionController
     						$noteLink->audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
     					}
     					else $value = null;
-    			    	if ($value !== null) $value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+    			    	if ($value !== null) $value = $value * $data['reference_value'] / 20; //$context->getConfig('student/parameter/average_computation')['reference_value'];
     				}
     			    elseif ($note->type == 'exam' && $value === null) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     					if (array_key_exists($noteLink->account_id, $examAverages)) {
