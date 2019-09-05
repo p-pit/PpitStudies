@@ -789,7 +789,7 @@ class NoteController extends AbstractActionController
 		    	if ($note->subject == 'global') {
 		    		foreach($cursor as $noteLink) {
 						$value = $noteLink->computeStudentAverage($note->school_year, $note->school_period);
-						$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
+						$value = round($value * $note->reference_value / 20 /*$context->getConfig('student/parameter/average_computation')['reference_value']*/, 2);
 						if ($value != $noteLink->value) {
 							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
 							print_r('New: '.$value."\n");
@@ -814,6 +814,7 @@ class NoteController extends AbstractActionController
 						$distribution = array();
 						if (array_key_exists($noteLink->account_id, $computedAverages)) {
 		    				$value = $computedAverages[$noteLink->account_id]['global']['note'];
+							$value = round($value * $note->reference_value / 20 /*$context->getConfig('student/parameter/average_computation')['reference_value']*/, 2);
 		    				$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
 		    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
 		    					$distribution[$categoryId] = $category['note'];
