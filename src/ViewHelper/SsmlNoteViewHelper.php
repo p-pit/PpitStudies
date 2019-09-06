@@ -19,7 +19,7 @@ class SsmlNoteViewHelper
 		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 		$category = $view->category;
 		
-		$title = $context->getConfig('note/export'.(($category) ? '/'.$category : ''))['title'][$context->getLocale()];
+		$title = $context->localize($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['title']);
 		
 		// Set document properties
 		$workbook->getProperties()->setCreator('P-Pit')
@@ -35,7 +35,7 @@ class SsmlNoteViewHelper
 		foreach($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['properties'] as $propertyId => $column) {
 			$property = $context->getConfig('note')['properties'][$propertyId];
 			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-			$sheet->setCellValue($column.'1', $property['labels'][$context->getLocale()]);
+			$sheet->setCellValue($column.'1', $context->localize($property['labels']));
 			$sheet->getStyle($column.'1')->getFont()->getColor()->setRGB(substr($context->getConfig('styleSheet')['panelHeadingColor'], 1, 6));
 			$sheet->getStyle($column.'1')->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB(substr($context->getConfig('styleSheet')['panelHeadingBackground'], 1, 6));
 			$sheet->getStyle($column.'1')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -54,7 +54,7 @@ class SsmlNoteViewHelper
 						$sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
-					elseif ($property['type'] == 'select')  $sheet->setCellValue($column.$j, (array_key_exists('modalities', $property) && array_key_exists($noteLink->getProperties()[$propertyId], $property['modalities'])) ? $property['modalities'][$noteLink->getProperties()[$propertyId]][$context->getLocale()] : $noteLink->getProperties()[$propertyId]);
+					elseif ($property['type'] == 'select')  $sheet->setCellValue($column.$j, (array_key_exists('modalities', $property) && array_key_exists($noteLink->getProperties()[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$noteLink->getProperties()[$propertyId]]) : $noteLink->getProperties()[$propertyId]);
 					else $sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
 				}
 			}

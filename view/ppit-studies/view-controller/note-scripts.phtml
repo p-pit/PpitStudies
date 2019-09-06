@@ -400,7 +400,11 @@ function getSearch() {
             }
             getNoteList(getSearchParams(''));
           });
-       
+
+          $('#export-button').click(function () {
+       	    document.location.href = '<?php echo $this->url('note/export', array('category' => $category, 'type' => $type)) ?>' + getSearchParams('');
+          });
+
           getNoteList(getSearchParams(''));
       }
     };
