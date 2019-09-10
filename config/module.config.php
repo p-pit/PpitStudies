@@ -4575,8 +4575,15 @@ table.note-report tr.period {
 	'note/property/date' => array(
 			'type' => 'date',
 			'labels' => array(
-					'en_US' => 'Date',
-					'fr_FR' => 'Date',
+					'en_US' => 'Notification date',
+					'fr_FR' => 'Date de notification',
+			),
+	),
+	'note/property/target_date' => array(
+			'type' => 'date',
+			'labels' => array(
+					'en_US' => 'Target date',
+					'fr_FR' => 'Date cible',
 			),
 	),
 	'note/property/name' => array(
@@ -4733,6 +4740,7 @@ table.note-report tr.period {
 					'n_fn' => array('definition' => 'note/property/n_fn'),
 					'level' => array('definition' => 'student/property/evaluationCategory'),
 					'date' => array('definition' => 'note/property/date'),
+					'target_date' => array('definition' => 'note/property/target_date'),
 					'name' => array('definition' => 'note/property/name'),
 					'value' => array('definition' => 'note/property/value'),
 					'reference_value' => array('definition' => 'note/property/reference_value'),
@@ -4791,7 +4799,7 @@ table.note-report tr.period {
 					'school_period' => 'select',
 					'class' => 'select',
 					'subject' => 'select',
-					'date' => 'date',
+					'target_date' => 'date',
 			),
 			'more' => array(
 			),
@@ -4804,6 +4812,7 @@ table.note-report tr.period {
 			'class' => 'select',
 			'subject' => 'select',
 			'date' => 'date',
+			'target_date' => 'date',
 	),
 		
 	'note/list/evaluation' => array(
@@ -4830,8 +4839,9 @@ table.note-report tr.period {
 				'level' => 'F',
 				'subject' => 'G',
 				'name' => 'H',
-				'date' => 'I',
+				'target_date' => 'I',
 				'observations' => 'J',
+				'date' => 'K',
 			),
 	),
 

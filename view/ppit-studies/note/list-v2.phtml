@@ -29,7 +29,8 @@ table td {
 	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
 	elseif ($type != 'report' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
-	elseif ($propertyId == 'date') $label = $this->translate('Date', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'date') $label = $this->translate('Notification date', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'target_date') $label = $this->translate('Target date', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'weight') $label = $this->translate('Weight', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'lower_note') $label = $this->translate(($type == 'note') ? 'Lowest note' : 'Lowest average', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'average_note') $label = $this->translate(($type == 'note') ? 'Average note' : 'Class average', 'ppit-studies', $context->getLocale());
@@ -95,6 +96,9 @@ table td {
 
 		<?php elseif ($propertyId == 'date') : ?>
 		<td><?php echo $context->decodeDate($note->date) ?></td>
+
+        <?php elseif ($propertyId == 'target_date') : ?>
+        <td><?php echo $context->decodeDate($note->target_date) ?></td>
 
 		<?php elseif ($propertyId == 'weight') : ?>
 		<td><?php echo $context->formatFloat($note->weight, 1) ?></td>
