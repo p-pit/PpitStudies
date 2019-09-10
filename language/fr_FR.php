@@ -160,6 +160,7 @@
 		'Tennis' => 'Tennis',
 		'Text' => 'Texte',
 		'To do' => 'A faire',
+		'Work to do or event date' => 'Date du travail à faire ou événement',
 		'To remember:' => 'A noter :',
 		'to the' => 'au',
 		'Total duration' => 'Durée totale',

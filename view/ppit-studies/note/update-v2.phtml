@@ -187,7 +187,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 <?php $noteDate = ($note->date) ? $note->date : Date('Y-m-d') ?>
 		<input type="hidden" id="date" />
 		<div class="form-group row" id="input_date_group">
-			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Date', 'ppit-core', $context->getLocale()) ?></label>
+			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Notification date', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<input class="form-control form-control-sm" id="input_date" value="<?php echo $context->decodeDate($noteDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
                 <div class="invalid-feedback" id="input_date_error"></div>
@@ -212,7 +212,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 		<input type="hidden" id="target_date" />
 <?php $targetDate = ($note->target_date) ? $note->target_date : Date('Y-m-d') ?>
 		<div class="form-group row" id="input_target_date_group">
-			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Target date', 'ppit-studies', $context->getLocale()) ?></label>
+			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Work to do or event date', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 				<input class="form-control form-control-sm" id="input_target_date" value="<?php echo $context->decodeDate($targetDate) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> />
                 <div class="invalid-feedback" id="input_target_date_error"></div>
