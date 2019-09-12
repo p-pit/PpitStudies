@@ -1601,7 +1601,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'place_id', 'account_name', 'email', 'n_title', 'n_first', 'n_last', 'birth_date', 'invoice_n_fn', 'year',
+			'status', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'birth_date', 'invoice_n_fn', 'year',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9',
@@ -1707,6 +1707,8 @@ return array_merge(
 			'account_name' => [],
 			'caption' => [],
 			'property_1' => [],
+			'email' => [],
+			'tel_cell' => [],
 			'property_2' => [],
 			'property_3' => [],
 			'including_options_amount' => [],
@@ -1765,6 +1767,7 @@ return array_merge(
 		'property_7' => 'V',
 		'property_8' => 'W',
 		'property_9' => 'X',
+		'tel_cell' => 'Y',
 	),
 	
 	'commitment/invoice/p-pit-studies' => array(
@@ -3215,6 +3218,8 @@ table.note-report td {
 		'comment' => 'T',
 		'document' => 'U',
 		'invoice_identifier' => 'V',
+		'email' => 'W',
+		'tel_cell' => 'X',
 	),
 
 	'commitmentTerm/invoice/p-pit-studies' => array(
@@ -4270,13 +4275,13 @@ table.note-report tr.period {
 		'todoTitle' => array('default' => 'recent', 'fr_FR' => 'récents'),
 		'searchTitle' => array('default' => 'search', 'fr_FR' => 'recherche'),
 		'properties' => array(
-			'place_id' => [],
-			'property_1' => ['default' => 'student/property/school_year/default'],
+			'place_id' => ['multiple' => true],
+			'property_1' => ['default' => 'student/property/school_year/default', 'multiple' => true],
 			'groups' => [],
-			'property_2' => [],
+			'property_2' => ['multiple' => true],
 			'n_fn' => [],
-			'property_3' => [],
-			'account_id' => [],
+			'property_3' => ['multiple' => true],
+			'account_id' => ['multiple' => true],
 		),
 	),
 	
