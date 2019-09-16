@@ -15,7 +15,7 @@
 	<?php 
 	$property = $context->getConfig('note')['properties'][$propertyId];
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-	$label = $property['labels'][$context->getLocale()];
+	$label = $context->localize($property['labels']);
 	?>
 
 	<?php if ($propertyId == 'type') : ?>
@@ -27,7 +27,7 @@
             <select class="form-control search_input search_input_select" id="search-type">
               <option value=""></option>
       <?php foreach ($context->getConfig('note')['types'][$category] as $typeId => $type) : ?>
-              <option value="<?php echo $typeId ?>"><?php echo $type['labels'][$context->getLocale()] ?></option>
+              <option value="<?php echo $typeId ?>"><?php echo $context->localize($type['labels']) ?></option>
       <?php endforeach;?>
             </select>
           </div>

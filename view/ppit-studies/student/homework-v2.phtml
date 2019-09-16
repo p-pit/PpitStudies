@@ -1,5 +1,5 @@
       <div class="modal-header">
-        <h5 class="modal-title"><?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?> &mdash; <?php echo $context->getConfig('student/property/school_subject')['modalities'][$subject][$context->getLocale()] ?></h5>
+        <h5 class="modal-title"><?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?> &mdash; <?php echo $context->localize($context->getConfig('student/property/school_subject')['modalities'][$subject]) ?></h5>
         <div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>">
             <span aria-hidden="true">&times;</span>

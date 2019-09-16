@@ -47,9 +47,9 @@ table.note-report tr.period {
 <div class="container card-block" style="color: #686868">
     <!--Title-->
     <h4 class="card-title mt-3" style="text-align: center">
-		<?php echo $context->getConfig('student/property/school_year')['labels'][$context->getLocale()] ?>:
-		<?php echo $context->getConfig('student/property/school_year')['modalities'][$school_year][$context->getLocale()] ?> &mdash;
-		<?php echo $context->getConfig('student/property/school_period')['modalities'][$school_period][$context->getLocale()] ?>
+		<?php echo $context->localize($context->getConfig('student/property/school_year')['labels']) ?>:
+		<?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?> &mdash;
+		<?php echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
 	</h4>
 	<!--Text-->
 	<?php 
@@ -74,7 +74,7 @@ table.note-report tr.period {
           <?php if ($note->subject == 'global') : ?>
                     <?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?>
           <?php else : ?>
-					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+					<?php echo $context->localize($context->getConfig('student/property/school_subject')['modalities'][$note->subject]) ?>
           <?php endif;?>
 		<?php if (array_key_exists($note->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) : ?>
 					<span style="font-weight: normal">(<?php echo $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$note->level]) ?>)</span>

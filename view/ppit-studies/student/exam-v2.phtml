@@ -59,7 +59,7 @@ table.note-report tr.period {
 		<?php if ($note->type == 'note') : ?>
 			<tr>
 				<td class="subject">
-					<?php echo $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+					<?php echo $context->localize($context->getConfig('student/property/school_subject')['modalities'][$note->subject]) ?>
 				</td>
 				<td><?php echo $context->decodeDate($note->date) ?></td>
 				<td align="right">
@@ -91,7 +91,7 @@ table.note-report tr.period {
 	<?php $note = $general ?>
 			<tr>
 				<td class="subject">
-					<?php echo ($note->subject == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?>
+					<?php echo ($note->subject == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$note->subject]) ?>
 				</td>
 				<td><?php echo $context->decodeDate($note->date) ?></td>
 				<td align="right">

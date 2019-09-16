@@ -27,9 +27,9 @@
 	<?php
 	$property = $context->getConfig('core_account/p-pit-studies/property/'.$criterionId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-	$label = $property['labels'][$context->getLocale()];
+	$label = $context->localize($property['labels']);
 	if ($criterionId == 'place_id') $value = $places[$criterionValue]->caption; 
-	elseif ($property['type'] == 'select') $value = $property['modalities'][$criterionValue][$context->getLocale()];
+	elseif ($property['type'] == 'select') $value = $context->localize($property['modalities'][$criterionValue]);
 	else $value = $criterionValue;*/
 	?>
         <input type="hidden" id="group-criterion-id_<?php //echo $i ?>" value="<?php //echo $criterionId ?>" />

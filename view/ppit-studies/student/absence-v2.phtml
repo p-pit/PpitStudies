@@ -167,7 +167,7 @@ table.note-report tr.period {
 		<strong><?php echo $context->decodeDate($lateness->begin_date) ?></strong>
 	<?php if ($lateness->subject) : ?>
 		&mdash;
-		<?php echo $context->localize($context->getConfig('student/property/school_subject')['modalities'][$lateness->subject][$context->getLocale()]) ?>
+		<?php echo $context->localize($context->getConfig('student/property/school_subject')['modalities'][$lateness->subject]) ?>
 	<?php endif;?>
 	<?php if ($lateness->duration) : ?>
 		&mdash;

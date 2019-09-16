@@ -1440,9 +1440,9 @@ return array_merge(
 			'student/property/school_year',
 			'student/property/school_period',*/
 			'student/property/evaluationCategory',
-/*			'student/property/reportMention',
+//			'student/property/reportMention',
 			'student/property/school_subject',
-			'absence/property/motive',*/
+//			'absence/property/motive',
 	),
 
 	'currentApplication' => 'p-pit-studies',
@@ -2019,7 +2019,7 @@ return array_merge(
 	
 	'core_account/p-pit-studies/property/tel_cell' => array(
 		'definition' => 'inline',
-		'type' => 'input',
+		'type' => 'phone',
 		'labels' => array(
 			'en_US' => 'Cellular',
 			'fr_FR' => 'Mobile',
@@ -3572,6 +3572,9 @@ table.note-report td {
 					'2ndea' => array('fr_FR' => '2nde A'),
 					'2ndeb' => array('fr_FR' => '2nde B'),
 					'1ere' => array('fr_FR' => '1ère'),
+					'1ere_a' => array('default' => 'Première A'),
+					'1ere_b' => array('default' => 'Première B'),
+					'1ere_c' => array('default' => 'Première C'),
 					'1ereGenerale1' => array('fr_FR' => '1ère générale 1'),
 					'1ereGenerale2' => array('fr_FR' => '1ère générale 2'),
 					'1ereSTMG' => array('fr_FR' => '1ère STMG'),
@@ -3580,7 +3583,12 @@ table.note-report td {
 					'1ereSTMGa' => array('fr_FR' => '1ère STMG A'),
 					'1ereSTMGb' => array('fr_FR' => '1ère STMG B'),
 					'term' => array('fr_FR' => 'Terminale'),
+					'termL' => array('fr_FR' => 'Term. L'),
+					'termS' => array('fr_FR' => 'Term. S'),
+					'termES' => array('fr_FR' => 'Term. ES'),
 					'termSTMG' => array('fr_FR' => 'Term. STMG'),
+					'termSTMG_a' => array('default' => 'Term. STMG A'),
+					'termSTMG_b' => array('default' => 'Term. STMG B'),
 					'2ndeProCommerce' => array('fr_FR' => '2nde Pro Commerce'),
 					'1ereProCommerce' => array('fr_FR' => '1ère Pro Commerce'),
 					'termProCommerce' => array('fr_FR' => 'Term. Pro Commerce'),
@@ -3603,9 +3611,6 @@ table.note-report td {
 					'1ereL' => array('fr_FR' => '1ère L', 'archive' => true),
 					'1ereS' => array('fr_FR' => '1ère S', 'archive' => true),
 					'1ereES' => array('fr_FR' => '1ère ES', 'archive' => true),
-					'termL' => array('fr_FR' => 'Term. L', 'archive' => true),
-					'termS' => array('fr_FR' => 'Term. S', 'archive' => true),
-					'termES' => array('fr_FR' => 'Term. ES', 'archive' => true),
 			),
 			'labels' => array(
 					'en_US' => 'Class',
@@ -3787,24 +3792,22 @@ table.note-report td {
 					'ess' => array('en_US' => 'Economic & social sciences', 'fr_FR' => 'SES'),
 					'business' => array('en_US' => 'Business', 'fr_FR' => 'Commerce'),
 					'sales' => array('en_US' => 'Sales', 'fr_FR' => 'Vente'),
+					'animation_offre_commerciale' => array('default' => 'Animation de l’offre commerciale'),
+					'culture_juridique_economique_manageriale' => array('default' => 'Culture juridique, économique et managériale'),
 					'management' => array('en_US' => 'Management', 'fr_FR' => 'Management'),
+					'management_equipe_commerciale' => array('default' => 'Management de l’équipe commerciale'),
 					'communication' => array('en_US' => 'Communication', 'fr_FR' => 'Communication'),
 					'duc' => array('en_US' => 'Business unit development', 'fr_FR' => 'Développement de l’unité commerciale (DUC)'),
-
-// Demande M. Volle
+					'developpement_relation_client' => array('default' => 'Développement de la relation client et vente conseil'),
+					'gestion_operationnelle' => array('default' => 'Gestion opérationnelle'),
 					'pfeg' => array('en_US' => 'PFEG', 'fr_FR' => 'PFEG'),
-//
-// Demande A Herrera
 					'epi' => array('en_US' => 'EPI', 'fr_FR' => 'EPI'),
 					'vsp' => array('en_US' => 'VSP', 'fr_FR' => 'VSP'),
 					'mde' => array('en_US' => 'MDE', 'fr_FR' => 'MDE'),
-//
 					'applied-arts' => array('en_US' => 'Applied arts', 'fr_FR' => 'Arts appliqués'),
 					'plastic-arts' => array('en_US' => 'Plastic arts', 'fr_FR' => 'Arts plastiques'),
 					'music' => array('en_US' => 'Music', 'fr_FR' => 'Musique'),
-// Demande E Moreau
 					'dance-history' => array('en_US' => 'Dance history', 'fr_FR' => 'Histoire de la danse'),
-//
 					'specialite' => array('en_US' => 'Specialty', 'fr_FR' => 'Spécialité'),
 					'spe-stmg' => array('en_US' => 'STMG specialty', 'fr_FR' => 'Spécialité STMG'),
 					'spe-acrc' => array('en_US' => 'ACRC specialty', 'fr_FR' => 'Spécialité ACRC'),

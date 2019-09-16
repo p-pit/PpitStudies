@@ -151,6 +151,7 @@ class StudentController extends AbstractActionController
     	$template = $context->getConfig('student/home/tabs');
     	$logo = ($place->logo_src) ? $place->logo_src : '/logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
     	$logo_height = ($place->logo_src) ? $place->logo_height : $context->getConfig('headerParams')['logo-height'];
+    	$configProperties = Account::getConfig('p-pit-studies');
     	 
 		// Authentication
 		$panel = $this->params()->fromQuery('panel');
@@ -183,7 +184,7 @@ class StudentController extends AbstractActionController
 		$cursor = NoteLink::getList('report', ['category' => 'evaluation', 'subject' => 'global', 'school_year' => $current_school_year, 'school_period' => $current_school_period, 'account_id' => $profile->id], 'id', 'ASC', $mode = 'search');
 		foreach ($cursor as $report) $averageNote = $report; // Should be unique but to keep only the last one
 		$global_average = (isset($averageNote) && $averageNote) ? $averageNote->value : null;
-		
+
 		$view = new ViewModel(array(
 			'context' => $context,
 			'place_identifier' => $place->identifier,
@@ -192,7 +193,8 @@ class StudentController extends AbstractActionController
 			'global_average' => $global_average,
 			'requestUri' => $this->request->getRequestUri(),
 			'viewController' => 'ppit-studies/view-controller/student-scripts.phtml',
-
+			'configProperties' => $configProperties,
+			
 			'template' => $template,
 			'logo' => $logo,
 			'logo_height' => $logo_height,

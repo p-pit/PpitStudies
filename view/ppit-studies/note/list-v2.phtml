@@ -24,11 +24,11 @@ table td {
 	<?php 
 	$label = null;
 	if ($propertyId == 'type') $label = $this->translate('Type', 'ppit-core', $context->getLocale());
-	elseif ($propertyId == 'place_id') $label = $context->getConfig('note')['properties']['place_id']['labels'][$context->getLocale()];
-	elseif ($propertyId == 'school_period') $label = $context->getConfig('student/property/school_period')['labels'][$context->getLocale()];
-	elseif ($propertyId == 'class') $label = $context->getConfig('student/property/class')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'place_id') $label = $context->localize($context->getConfig('note')['properties']['place_id']['labels']);
+	elseif ($propertyId == 'school_period') $label = $context->localize($context->getConfig('student/property/school_period')['labels']);
+	elseif ($propertyId == 'class') $label = $context->localize($context->getConfig('student/property/class')['labels']);
 	elseif ($type != 'report' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
-	elseif ($propertyId == 'subject') $label = $context->getConfig('student/property/school_subject')['labels'][$context->getLocale()];
+	elseif ($propertyId == 'subject') $label = $context->localize($context->getConfig('student/property/school_subject')['labels']);
 	elseif ($propertyId == 'date') $label = $this->translate('Notification date', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'target_date') $label = $this->translate('Target date', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'weight') $label = $this->translate('Weight', 'ppit-studies', $context->getLocale());
@@ -69,29 +69,29 @@ table td {
 	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 	
 		<?php if ($propertyId == 'type') : ?>
-		<td <?php if ($backgroundColor) echo 'style="background-color: '.$backgroundColor.'"' ?>><?php echo $context->getConfig('note')['types'][$category][$note->type]['labels'][$context->getLocale()] ?></td>
+		<td <?php if ($backgroundColor) echo 'style="background-color: '.$backgroundColor.'"' ?>><?php echo $context->localize($context->getConfig('note')['types'][$category][$note->type]['labels']) ?></td>
 
 		<?php elseif ($propertyId == 'place_id') : ?>
 		<td><?php echo $places[$note->place_id]->caption ?></td>
 
 		<?php elseif ($propertyId == 'school_period') : ?>
-		<td><?php if ($note->school_period) echo $context->getConfig('student/property/school_period')['modalities'][$note->school_period][$context->getLocale()] ?></td>
+		<td><?php if ($note->school_period) echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$note->school_period]) ?></td>
 
 		<?php elseif ($propertyId == 'class') : ?>
-		<td><?php echo $context->getConfig('student/property/class')['modalities'][$note->class][$context->getLocale()] ?></td>
+		<td><?php echo $context->localize($context->getConfig('student/property/class')['modalities'][$note->class]) ?></td>
 
 		<?php elseif ($type != 'report' && $propertyId == 'level') : ?>
 			<?php if (!$note->level)  : ?>
 		<td style="color: red;">A compléter</td>
 			<?php else : ?>
-		<td><?php echo $context->getConfig('student/property/evaluationCategory')['modalities'][$note->level][$context->getLocale()] ?></td>
+		<td><?php echo $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$note->level]) ?></td>
 			<?php endif;?>
 
 		<?php elseif ($propertyId == 'subject') : ?>
 			<?php if (!$note->subject)  : ?>
 		<td style="color: red;">A compléter</td>
 			<?php else : ?>
-		<td><?php echo ($note->subject == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : $context->getConfig('student/property/school_subject')['modalities'][$note->subject][$context->getLocale()] ?></td>
+		<td><?php echo ($note->subject == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$note->subject]) ?></td>
 			<?php endif;?>
 
 		<?php elseif ($propertyId == 'date') : ?>
