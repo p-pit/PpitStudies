@@ -1913,6 +1913,7 @@ class StudentController extends AbstractActionController
 		$date = $this->params()->fromQuery('date');
 
 		$filters = [];
+		$filters['class'] = $account->property_7;
 		if ($subject) $filters['subject'] = $subject;
 		if ($type == 'done-work') $filters['date'] = $date;
 		elseif (in_array($type, ['todo-work', 'event'])) $filters['target_date'] = $date;

@@ -3553,6 +3553,8 @@ table.note-report td {
 					'cm1_cm2' => array('fr_FR' => 'CM1/CM2'),
 					'cm2' => array('fr_FR' => 'CM2'),
 					'6e' => array('fr_FR' => '6e'),
+					'6ea' => array('fr_FR' => '6e A'),
+					'6eb' => array('fr_FR' => '6e B'),
 					'5e' => array('fr_FR' => '5e'),
 					'5e1' => array('fr_FR' => '5e1'),
 					'5e2' => array('fr_FR' => '5e2'),
