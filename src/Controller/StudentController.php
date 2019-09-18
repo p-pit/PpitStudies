@@ -1918,8 +1918,8 @@ class StudentController extends AbstractActionController
 		if ($type == 'done-work') $filters['date'] = $date;
 		elseif (in_array($type, ['todo-work', 'event'])) $filters['target_date'] = $date;
 		
-		$groups = [];
-		foreach ($account->groups as $group_id => $unused) $groups[] = $group_id;
+/*		$groups = [];
+		foreach ($account->groups as $group_id => $unused) $groups[] = $group_id;*/
 //		if ($groups) $filters['groups'] = $groups;
 		
 		$notes = Note::GetList('homework', $type, $filters, 'date', 'DESC', 'search', null);
