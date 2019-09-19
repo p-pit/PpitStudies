@@ -18,10 +18,9 @@ function getEvents(calendar) {
       <?php $first = false ?>
       route += '<?php echo $group_id ?>';
   <?php endforeach;?>
-<?php endif;?>
 
 // Filter on class
-<?php if ($profile->property_7) : ?>
+<?php elseif ($profile->property_7) : ?>
       route += '&property_2=' + '<?php echo $profile->property_7 ?>';
 <?php endif;?>
 
