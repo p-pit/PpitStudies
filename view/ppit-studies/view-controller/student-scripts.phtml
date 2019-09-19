@@ -13,10 +13,10 @@ function getEvents(calendar) {
 // Filter on groups
 <?php if ($profile->groups) : ?>
 	  route += '&groups=';
-  <?php $first = true; foreach ($profile->groups as $groupId => $group) : ?>
+  <?php $first = true; foreach (explode(',', $profile->groups) as $group_id) : ?>
   	  <?php if (!$first) : ?>route += ',';<?php endif;?>
       <?php $first = false ?>
-      route += '<?php echo $group['group_id'] ?>';
+      route += '<?php echo $group_id ?>';
   <?php endforeach;?>
 <?php endif;?>
 
