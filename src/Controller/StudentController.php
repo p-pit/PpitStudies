@@ -194,7 +194,8 @@ class StudentController extends AbstractActionController
 			'requestUri' => $this->request->getRequestUri(),
 			'viewController' => 'ppit-studies/view-controller/student-scripts.phtml',
 			'configProperties' => $configProperties,
-			
+			'groups' => Account::getList('group', [], '+name', null),
+				
 			'template' => $template,
 			'logo' => $logo,
 			'logo_height' => $logo_height,
