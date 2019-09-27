@@ -63,6 +63,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 						'class' => 'text-justify',
 						'label' => ['default' => 'Né(e) le %s'],
 						'params' => ['birth_date'],
+						'fillEmptyValue' => true
 					],
 					[
 						'type' => 'p',
@@ -85,13 +86,19 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 						'type' => 'p',
 						'class' => 'text-center',
 						'label' => ['default' => '<strong>%s</strong>'],
-						'params' => ['property_5'],
+						'params' => ['property_1'],
 					],
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
 						'label' => ['default' => 'Pour la période du <strong>%s</strong> au <strong>%s</strong>.'],
 						'params' => ['property_6', 'property_7'],
+						'fillEmptyValue' => true
+					],
+					[
+						'type' => 'p',
+						'class' => 'text-justify',
+						'label' => ['default' => 'Pour faire valoir ce que de droit.'],
 					],
 				],
 			],
@@ -100,21 +107,21 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 				'paragraphs' => [
 					[
 						'type' => 'p',
-						'label' => ['default' => 'Fait à BOULOGNE, le %s'],
+						'label' => ['default' => 'Fait à Boulogne Billancourt, le %s'],
 						'params' => ['current_date'],
 					],
 					['type' => 'br'], ['type' => 'br'], ['type' => 'br'], ['type' => 'br'],
 					[
 						'type' => 'p',
 						'class' => 'text-center',
-						'label' => ['default' => 'LA DIRECTION STUDENCY'],
+						'label' => ['default' => 'LE DIRECTEUR DU CENTRE DE FORMATION'],
 						'params' => [],
 					],
 				],
 			],
 		],
 	],
-
+	
 	'commitment/message/p-pit-studies/convocation_formation' => [
 		'name' => ['default' => 'Convocation à la formation'],
 		'style' => ['default' => '
