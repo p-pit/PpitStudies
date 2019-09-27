@@ -71,7 +71,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 						'label' => ['default' => 'Demeurant à l’adresse :'],
 					],
 					['type' => 'p', 'class' => 'text-justify', 'label' => ['default' => '%s'], 'params' => ['addressee_invoice_name']],
-					['type' => 'p', 'class' => 'text-justify', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_street']],
+					['type' => 'p', 'class' => 'text-justify', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_street'], 'fillEmptyValue' => true],
 					['type' => 'p', 'class' => 'text-justify', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_extended']],
 					['type' => 'p', 'class' => 'text-justify', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_post_office_box']],
 					['type' => 'p', 'class' => 'text-justify', 'label' => ['default' => '%s %s'], 'params' => ['addressee_adr_zip', 'addressee_adr_city']],
