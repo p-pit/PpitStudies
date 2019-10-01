@@ -253,7 +253,7 @@ class NoteLink
     	}
     	$globalAverage = 0;
     	$globalWeight = 0;
-    	$this->audit = json_encode($periodAverages, JSON_PRETTY_PRINT);
+    	$this->audit = $periodAverages;
     	foreach ($periodAverages as $average) {
     		$globalAverage += $average['note'] * $context->getConfig('student/parameter/average_computation')['reference_value'] / $average['reference_value'] * $average['weight'];
     		$globalWeight += $average['weight'];
