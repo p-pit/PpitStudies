@@ -219,7 +219,7 @@ class Note
 		return $notes;
     }
 
-    public static function retrieve($place_id, $category, $type, $class, $school_year, $school_period, $subject, $level, $date)
+    public static function retrieve($place_id, $category, $type, $class, $school_year, $school_period, $subject, $level = null, $date = null)
     {
     	$select = Note::getTable()->getSelect();
     	$where = new Where;
@@ -231,8 +231,8 @@ class Note
     	$where->equalTo('school_year', $school_year);
     	$where->equalTo('school_period', $school_period);
     	$where->equalTo('subject', $subject);
-    	$where->equalTo('level', $level);
-    	$where->equalTo('date', $date);
+    	if ($level) $where->equalTo('level', $level);
+    	if ($date) $where->equalTo('date', $date);
     	$select->where($where);
     	$cursor = Note::getTable()->selectWith($select);
     	foreach ($cursor as $note) {

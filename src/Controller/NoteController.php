@@ -506,6 +506,7 @@ class NoteController extends AbstractActionController
 
     	$id = (int) $this->params()->fromRoute('id', 0);
     	$note = Note::get($id);
+    	$place = Place::get($note->place_id);
     	$action = $this->params()->fromRoute('act', null);
 
     	// Retrieve the teachers
@@ -663,6 +664,155 @@ class NoteController extends AbstractActionController
 		    					$error = $rc;
 		    				}
 		    				if (!$error) {
+		    					// Create or update the reports, per subject and global
+		    					
+		    					// Retrieve the possibly existing report (same year, class, period, subject)
+		    					// So it is possible to add students to it, and recompute the group average
+		    					
+		    					$report = Note::instanciate('report', $data['class']);
+		    					$report->place_id = $data['place_id'];
+		    					if (array_key_exists($context->getContactId(), $teachers)) $report->teacher_id = $context->getContactId();
+		    					
+		    					$school_periods = $place->getConfig('school_periods');
+		    					$current_school_period = $context->getCurrentPeriod($school_periods);
+		    					$note->school_period = $current_school_period;
+		    					
+		    					// Load the input data
+		    					$data['level'] = null;
+		    					$data['reference_value'] = 20;
+		    					$data['weight'] = 1;
+		    					$data['observations'] = null;
+		    					$data['comment'] = null;
+		    					$data['criteria'] = array();
+		    					
+		    					// Compute the new subject average for the period
+		    					$newSubjectAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class'], $data['school_period'], $data['subject']);
+		    					
+		    					$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $note->school_year, $data['school_period'], $data['subject']);
+		    					if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
+		    					else $report->links = array();
+		    					
+				    			foreach ($note->links as $noteLink) {
+		    						$reportLink = NoteLink::instanciate($noteLink->account_id, null);
+		    						$audit = [];
+		    						$value = $newSubjectAverages[$noteLink->account_id]['global']['note'];
+		    						$audit = $newSubjectAverages[$noteLink->account_id]['global']['notes'];
+		    						$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+		    						$reportLink->value = $value;
+		    						$reportLink->distribution = array();
+		    						foreach ($newSubjectAverages[$noteLink->account_id] as $categoryId => $category) {
+		    							if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+		    						}
+		    						$reportLink->audit = $audit;
+		    						if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+		    						$report->links[$reportLink->account_id] = $reportLink;
+		    					}
+		    					$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+		    					foreach ($report->links as $reportLink) {
+		    						if ($reportLink->value !== null) {
+		    							$noteSum += $reportLink->value;
+		    							$noteCount++;
+		    							if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
+		    							if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
+		    						}
+		    					}
+		    					if ($noteCount > 0) {
+		    						$data['average_note'] = round($noteSum / $noteCount, 2);
+		    						$data['lower_note'] = $lowerNote;
+		    						$data['higher_note'] = $higherNote;
+		    					};
+		    					if (count($report->links)) {
+		    						$rc = $report->loadData($data);
+		    						if ($rc == 'Integrity') throw new \Exception('View error');
+		    						if ($rc == 'Duplicate') $error = $rc;
+		    						else {
+		    							if ($report->id) $rc = $report->update(null);
+		    							else $rc = $report->add();
+		    							if ($rc != 'OK') {
+		    								$connection->rollback();
+		    								$error = $rc;
+		    							}
+		    							// Save the note at the student level
+		    							else foreach ($report->links as $reportLink) {
+		    								if (!$reportLink->id) {
+		    									$reportLink->note_id = $report->id;
+		    									$rc = $reportLink->add();
+		    								}
+		    								if ($rc != 'OK') {
+		    									$connection->rollback();
+		    									$error = $rc;
+		    									break;
+		    								}
+		    							}
+		    						}
+		    					}
+		    					
+		    					// Compute the new global average
+		    					$newGlobalAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class']);
+		    					$report->id = null;
+		    					
+		    					$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $note->school_year, $data['school_period'], 'global');
+var_dump($previousReport);
+		    					if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
+		    					else $report->links = array();
+		    					
+		    					$data['subject'] = 'global';
+		    					
+				    			foreach ($note->links as $noteLink) {
+		    						$reportLink = NoteLink::instanciate($noteLink->account_id, null);
+		    						$audit = [];
+		    						$value = $reportLink->computeStudentAverage($note->school_year, $data['school_period']);
+		    						$audit = $newGlobalAverages[$noteLink->account_id]['global']['notes'];
+		    						$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+		    						$reportLink->value = $value;
+		    						$reportLink->distribution = array();
+		    						foreach ($newGlobalAverages[$noteLink->account_id] as $categoryId => $category) {
+		    							if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+		    						}
+		    						$reportLink->audit = $audit;
+		    						if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+		    						$report->links[$reportLink->account_id] = $reportLink;
+		    					}
+		    					$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+		    					foreach ($report->links as $reportLink) {
+		    						if ($reportLink->value !== null) {
+		    							$noteSum += $reportLink->value;
+		    							$noteCount++;
+		    							if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
+		    							if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
+		    						}
+		    					}
+		    					if ($noteCount > 0) {
+		    						$data['average_note'] = round($noteSum / $noteCount, 2);
+		    						$data['lower_note'] = $lowerNote;
+		    						$data['higher_note'] = $higherNote;
+		    					};
+		    					if (count($report->links)) {
+		    						$rc = $report->loadData($data);
+		    						if ($rc == 'Integrity') throw new \Exception('View error');
+		    						if ($rc == 'Duplicate') $error = $rc;
+		    						else {
+		    							if ($report->id) $rc = $report->update(null);
+		    							else $rc = $report->add();
+		    							if ($rc != 'OK') {
+		    								$connection->rollback();
+		    								$error = $rc;
+		    							}
+		    							// Save the note at the student level
+		    							else foreach ($report->links as $reportLink) {
+		    								if (!$reportLink->id) {
+		    									$reportLink->note_id = $report->id;
+		    									$rc = $reportLink->add();
+		    								}
+		    								if ($rc != 'OK') {
+		    									$connection->rollback();
+		    									$error = $rc;
+		    									break;
+		    								}
+		    							}
+		    						}
+		    					}
+		    					 
 		    					$connection->commit();
 		    					$message = 'OK';
 		    				}

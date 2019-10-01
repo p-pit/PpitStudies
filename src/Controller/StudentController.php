@@ -1335,7 +1335,7 @@ class StudentController extends AbstractActionController
 								// Compute the new subject average for the period
 								$newSubjectAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
 
-								$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
+								$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], $data['subject']/*, $data['level'], $data['date']*/);
 								if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
 								else $report->links = array();
 								
@@ -1398,7 +1398,7 @@ class StudentController extends AbstractActionController
 								$newGlobalAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class']);
 								$report->id = null;
 
-								$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], 'global', $data['level'], $data['date']);
+								$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], 'global'/*, $data['level'], $data['date']*/);
 								if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
 								else $report->links = array();
 								
