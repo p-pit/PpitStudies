@@ -752,7 +752,6 @@ class NoteController extends AbstractActionController
 		    					$report->id = null;
 		    					
 		    					$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $note->school_year, $data['school_period'], 'global');
-var_dump($previousReport);
 		    					if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
 		    					else $report->links = array();
 		    					
@@ -978,7 +977,7 @@ var_dump($previousReport);
 								$noteLink->value = $value;
 								$noteLink->distribution = $distribution;
 								$noteLink->audit = $audit;
-//								$noteLink->update(null);
+								$noteLink->update(null);
 							}
 						}
 					}
