@@ -944,7 +944,7 @@ class NoteController extends AbstractActionController
 							print_r('New: '.$value."\n");
 							print_r('Old: '.$noteLink->value."\n");
 							$noteLink->value = $value;
-//							$noteLink->update(null);
+							$noteLink->update(null);
 			    		}
 /*						if ($noteLink->value) {
 							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
