@@ -90,7 +90,7 @@ table td {
       <td style="text-align: right"><?php if ($absence->category == 'lateness') echo $absence->properties[$propertyId] ?></td>
 
       <?php elseif ($rendering == 'select') : ?>
-      <td><?php echo $context->localize($property['modalities'][$absence->properties[$propertyId]]) ?></td>
+      <td><?php if ($absence->properties[$propertyId]) echo $context->localize($property['modalities'][$absence->properties[$propertyId]]) ?></td>
 
       <?php else : ?>
       <td><?php echo $absence->properties[$propertyId] ?></td>
