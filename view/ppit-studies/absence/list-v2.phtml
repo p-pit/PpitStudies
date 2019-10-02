@@ -25,7 +25,7 @@ table td {
   <?php 
   $property = $context->getConfig('absence')['properties'][$propertyId];
   if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
-  $label = $property['labels'][$context->getLocale()];
+  $label = $context->localize($property['labels']);
   ?>
 
       <th align="center">
@@ -68,7 +68,7 @@ table td {
       else $modalities = $subject['modalities'];
       ?>
 		
-      <td><?php if ($absence->subject) echo $modalities[$absence->subject][$context->getLocale()] ?></td>
+      <td><?php if ($absence->subject) echo $context->localize($modalities[$absence->subject]) ?></td>
 		
     <?php else : ?>
       <?php $property = $context->getConfig('absence')['properties'][$propertyId] ?>
