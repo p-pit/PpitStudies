@@ -50,7 +50,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Je soussigné(e) le Directeur du Centre de Formation atteste que :'],
+						'label' => ['default' => 'Je soussigné(e) le Directeur pédagogique de l’établissement certifie que :'],
 					],
 					[
 						'type' => 'p',
@@ -80,13 +80,18 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Est inscrit(e) à la formation :'],
+						'label' => ['default' => 'Est inscrit(e) en :'],
 					],
 					[
 						'type' => 'p',
 						'class' => 'text-center',
 						'label' => ['default' => '<strong>%s</strong>'],
 						'params' => ['property_1'],
+					],
+					[
+						'type' => 'p',
+						'class' => 'text-justify',
+						'label' => ['default' => 'au sein de notre établissement.'],
 					],
 					[
 						'type' => 'p',
@@ -114,7 +119,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-center',
-						'label' => ['default' => 'LE DIRECTEUR DU CENTRE DE FORMATION'],
+						'label' => ['default' => 'Le Directeur Pédagogique'],
 						'params' => [],
 					],
 				],
