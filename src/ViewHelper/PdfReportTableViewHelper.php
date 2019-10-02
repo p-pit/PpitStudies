@@ -35,19 +35,19 @@ class PdfReportTableViewHelper
 	    $globalEvaluation = '';
 	    $globalAverage = null;
 	    foreach ($period as $evaluation) {
-/*	    	if ($category == 'note' && $evaluation->level) $distribution = $context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level][$context->getLocale()].'&nbsp;'.$context->decodeDate($evaluation->date);
+/*	    	if ($category == 'note' && $evaluation->level) $distribution = $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level]).'&nbsp;'.$context->decodeDate($evaluation->date);
     		else {
 		   		$distribution = array();
 		   		foreach ($evaluation->distribution as $category => $value) {
 		   			if ($category && $category != 'global') {
-		   				$distribution[] = $context->getConfig('student/property/evaluationCategory')['modalities'][$category][$context->getLocale()].':&nbsp;'.$context->formatFloat($value, 2);
+		   				$distribution[] = $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$category]).':&nbsp;'.$context->formatFloat($value, 2);
 		   			}
 		   		}
 		   		$distribution = implode('<br>', $distribution);
     		}*/
     		if ($evaluation->subject == 'global') $globalAverage = $evaluation;
     		else {
-    			$subject = (!$evaluation->subject) ? '' : $context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject][$context->getLocale()];
+    			$subject = (!$evaluation->subject) ? '' : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject]);
 	    		if ($evaluation->value === null) $note = $translator->translate('Not eval.', 'ppit-studies', $context->getLocale());
 	    		else {
 	    			$score = null;
