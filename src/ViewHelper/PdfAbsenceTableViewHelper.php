@@ -50,7 +50,7 @@ class PdfAbsenceTableViewHelper
 	   				$context->getConfig('student/report/absenceRow')['html'], 
 	    			'',
 					$translator->translate((($absLate->category == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()),
-	    			($absLate->subject) ? $context->getConfig('student/property/school_subject')['modalities'][$absLate->subject][$context->getLocale()] : '',
+	    			($absLate->subject) ? $context->localize($context->getConfig('student/property/school_subject')['modalities'][$absLate->subject]) : '',
 					$period,
 	    			$duration,
 	    			(($absLate->motive) ? $context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate->motive]) : ''),
