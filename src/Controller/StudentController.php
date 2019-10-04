@@ -3,8 +3,8 @@
 namespace PpitStudies\Controller;
 
 use PpitCommitment\Model\Commitment;
-use PpitCommitment\Model\Event;
 use PpitCommitment\Model\Notification;
+use PpitCommitment\ViewHelper\CommitmentMessageViewHelper;
 use PpitCommitment\ViewHelper\SsmlAccountViewHelper;
 use PpitCore\Form\CsrfForm;
 use PpitCore\Model\Account;
@@ -13,9 +13,11 @@ use PpitCore\Model\Context;
 use PpitCore\Model\Credit;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Document;
+use PpitCore\Model\Event;
 use PpitCore\Model\Instance;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
+use PpitCore\ViewHelper\EventPlanningViewHelper;
 use PpitCommitment\ViewHelper\PpitPDF;
 use PpitStudies\Model\Absence;
 use PpitStudies\Model\Note;
@@ -542,7 +544,7 @@ class StudentController extends AbstractActionController
     	return $this->addAbsenceAction();
     }
 
-    public function addEventAction() {
+    public function addEventAction() { // Deprecated
     
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -550,7 +552,7 @@ class StudentController extends AbstractActionController
     	// Retrieve the type
     	$category = $this->params()->fromRoute('category', null);
     
-    	$event = Event::instanciate('p-pit-studies');
+    	$event = \PpitCommitment\Model\Event::instanciate('p-pit-studies');
     
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
@@ -591,7 +593,7 @@ class StudentController extends AbstractActionController
     			$data['comment'] = $request->getPost('comment');
     			 
     			// Atomically save
-    			$connection = Event::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection = \PpitCommitment\Model\Event::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
     			try {
     				$rc = $event->loadData($data);
@@ -1775,6 +1777,290 @@ class StudentController extends AbstractActionController
 		else return $this->response;
 	}
 
+	public function generateAttendance($account, $place)
+	{
+		// Retrieve the context and parameters
+		$context = Context::getCurrent();
+	
+		// From Query
+		$groups = $account->groups;
+
+		if ($groups) $groups = explode(',', $groups);
+		$begin = $context->getConfig('student/property/school_year/start');
+		$end = $context->getConfig('student/property/school_year/end');
+		
+		$template = $context->getConfig('commitments/message/' . $account->type . '/attendance');
+		$addressee = $this->params()->fromQuery('addressee');
+		if ($addressee) $addressee = Vcard::get($addressee);
+		 
+		// Retrieve the account description for the type
+    	$eventDescription = Event::getDescription('calendar');
+    	$accountDescription = Account::getDescription($account->type);
+    	 
+    	$months = array();
+    	 
+		// Retrieve the attendance cumul by month
+		if (!$groups) $events = Event::getList('calendar', ['property_2' => $account->property_7], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'matched_accounts', 'update_time', 'property_1', 'property_2', 'property_3']);
+		else {
+			$events = [];
+			$groups = explode(',', $groups);
+			foreach ($groups as $group_id) {
+				$cursor = Event::getList('calendar', ['groups' => $group_id], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'update_time', 'property_1', 'property_2', 'property_3']);
+				foreach ($cursor as $event_id => $event) $events[$event_id] = $event;
+			}
+		}
+		$attendances = EventPlanningViewHelper::displayPlanning($eventDescription, $events, $begin, $end);
+		foreach($attendances as $attendance) {
+			$key = substr($attendance['begin_date'], 0, 7);
+			if (!array_key_exists($key, $months)) {
+				$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
+			}
+			$months[$key]['attendances'][] = $attendance;
+		}
+		
+		// Retrieve the absence cumul by month
+		$absences = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
+		foreach($absences as $absence) {
+			$key = substr($absence->begin_date, 0, 7);
+			if (!array_key_exists($key, $months)) {
+				$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
+			}
+			$months[$key]['absences'][] = $absence;
+			$months[$key]['cumulativeDuration'] += $absence->duration;
+		}
+
+		ksort($months);
+		$monthsCopy = [];
+		foreach ($months as $month_id => $month) {
+			$month['period'] = $context->localize(['01' => ['default' => 'Janvier'], '02' => ['default' => 'Février'], '03' => ['default' => 'Mars'], '04' => ['default' => 'Avril'], '05' => ['default' => 'Mai'], '06' => ['default' => 'Juin'], '07' => ['default' => 'Juillet'], '08' => ['default' => 'Août'], '09' => ['default' => 'Septembre'], '10' => ['default' => 'Octobre'], '11' => ['default' => 'Novembre'], '12' => ['default' => 'Décembre']][substr($month_id, 5, 2)]) . ' ' . substr($month_id, 0, 4);
+			$month['group'] = 0;
+			$month['individual'] = 0;
+			$month['health_absence'] = 0;
+			$month['vacation_absence'] = 0;
+			$month['necessity_absence'] = 0;
+			$month['business_absence'] = 0;
+			$month['other_absence'] = 0;
+			
+			// Sum the attendance
+			foreach ($month['attendances'] as $attendance) {
+				$month['group'] += $attendance['duration'];
+			}
+			$month['total_presence'] = $month['group'] + $month['individual'];
+
+			// Sum the absences
+			foreach ($month['absences'] as $absence) {
+				if ($absence->motive == 'medical') $month['health_absence'] += $absence->duration;
+				else $month['other_absence'] += $absence->duration;
+			}
+			$month['total_absence'] = $month['health_absence'] + $month['vacation_absence'] + $month['necessity_absence'] + $month['business_absence'] + $month['other_absence'];
+				
+			// Subtract the cumulative absence time from the attendance
+			if ($month['group'] > $month['total_absence']) $month['group'] -= $month['total_absence'];
+			if ($month['total_presence'] > $month['total_absence']) $month['total_presence'] -= $month['total_absence'];
+			
+			// Convert all the time values to hh:mm format
+			$month['group'] = ((int) ($month['group'] / 60)) . 'h' . sprintf('%02u', $month['group'] % 60) . 'mn';
+			$month['individual'] = ((int) ($month['individual'] / 60)) . 'h' . sprintf('%02u', $month['individual'] % 60) . 'mn';
+			$month['total_presence'] = ((int) ($month['total_presence'] / 60)) . 'h' . sprintf('%02u', $month['total_presence'] % 60) . 'mn';
+			$month['health_absence'] = ((int) ($month['health_absence'] / 60)) . 'h' . sprintf('%02u', $month['health_absence'] % 60) . 'mn';
+			$month['vacation_absence'] = ((int) ($month['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $month['vacation_absence'] % 60) . 'mn';
+			$month['necessity_absence'] = ((int) ($month['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $month['necessity_absence'] % 60) . 'mn';
+			$month['business_absence'] = ((int) ($month['business_absence'] / 60)) . 'h' . sprintf('%02u', $month['business_absence'] % 60) . 'mn';
+			$month['other_absence'] = ((int) ($month['other_absence'] / 60)) . 'h' . sprintf('%02u', $month['other_absence'] % 60) . 'mn';
+			$month['total_absence'] = ((int) ($month['total_absence'] / 60)) . 'h' . sprintf('%02u', $month['total_absence'] % 60) . 'mn';
+			$monthsCopy[] = $month;
+		}
+		$months = $monthsCopy;
+
+		// Determine the addressee
+		if (!$addressee) {
+			if ($account->name != $account->n_last . ', ' . $account->n_first) $message['addressee_name'] = $account->name;
+			if ($account->contact_1_status == 'invoice') $addressee = $account->contact_1;
+			elseif ($account->contact_2_status == 'invoice') $addressee = $account->contact_2;
+			elseif ($account->contact_3_status == 'invoice') $addressee = $account->contact_3;
+			elseif ($account->contact_4_status == 'invoice') $addressee = $account->contact_4;
+			elseif ($account->contact_5_status == 'invoice') $addressee = $account->contact_5;
+		}
+		 
+		if (!$addressee) {
+			if ($account->contact_1_status == 'main') $addressee = $account->contact_1;
+			elseif ($account->contact_2_status == 'main') $addressee = $account->contact_2;
+			elseif ($account->contact_3_status == 'main') $addressee = $account->contact_3;
+			elseif ($account->contact_4_status == 'main') $addressee = $account->contact_4;
+			elseif ($account->contact_5_status == 'main') $addressee = $account->contact_5;
+		}
+		if (!$addressee) $addressee = $account->contact_1;
+	
+		// Initialize the message
+		$message = ['type' => $account->type];
+		$message = ['identifier' => 'attendance'];
+	
+		// Set the header data
+		if ($place && $place->banner_src) {
+			$message['headerData']['src'] = $place->banner_src;
+			$message['headerData']['width'] = ($place->banner_width) ? $place->banner_width : $context->getConfig('corePlace')['properties']['banner_width']['maxValue'];
+		}
+		elseif (array_key_exists('advert', $context->getConfig('headerParams'))) {
+			$message['headerData']['src'] = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['advert'];
+			$message['headerData']['width'] = $context->getConfig('headerParams')['advert-width'];
+		}
+	
+		if ($place->getConfig('commitment/invoice_header')) $message['header'] = $place->getConfig('commitment/invoice_header');
+		else $message['header'] = $context->getConfig('commitment/invoice_header');
+	
+		// Add the data to merge with the template at printing time
+
+		$message['data'] = [];
+		foreach ($template['sections'] as $sectionId => $section) {
+			if ($sectionId == 'months') {
+				$message['data']['months']['occurrence_number'] = count($months);
+				$i = 0;
+				foreach ($months as $month_id => $month) {
+					foreach ($section['paragraphs'] as $column) {
+						if (array_key_exists('params', $column)) foreach ($column['params'] as $prefixedPropertyId) {
+							if (strpos($prefixedPropertyId, ':')) {
+								$arrayPropertyId = explode(':', $prefixedPropertyId);
+								$prefix = $arrayPropertyId[0];
+								$propertyId = $arrayPropertyId[1];
+							}
+							else {
+								$prefix = null;
+								$propertyId = $prefixedPropertyId;
+							}
+		
+							$property = null;
+							if ($prefix && array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
+								$property = $accountDescription['properties'][$propertyId];
+								$codedValue = $account->properties[$propertyId];
+							}
+							elseif (array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
+								$property = $accountDescription['properties'][$propertyId];
+								$codedValue = $account->properties[$propertyId];
+							}
+							else $codedValue = $month[$propertyId];
+
+							if ($property) {
+								if ($property['type'] == 'select') $value = $context->localize($property['modalities'][$codedValue]);
+								elseif ($property['type'] == 'multiselect') {
+									$codes = $codedValue;
+									if ($codes) $codes = explode(',', $codes);
+									else $codes = [];
+									$value = [];
+									foreach ($codes as $code) $value[] = $context->localize($property['modalities'][$code]);
+									$value = implode(',', $value);
+								}
+								elseif ($property['type'] == 'date') $value = $context->decodeDate($codedValue);
+								elseif ($property['type'] == 'number') $value = $context->formatFloat($codedValue, 2);
+								else $value = $codedValue;
+								$message['data'][($prefix) ? $prefixedPropertyId . '_' . $i : $prefixedPropertyId] = $value;
+							}
+							else $message['data'][($prefix) ? $prefixedPropertyId . '_' . $i : $prefixedPropertyId] = $codedValue;
+						}
+					}
+					$i++;
+				}
+			}
+			else {
+				if ($section['class'] == 'table') {
+					$message['data'][$sectionId]['occurrence_number'] = (array_key_exists('occurrence_number', $section)) ? $section['occurrence_number'] : 1;
+				}
+				foreach ($section['paragraphs'] as $paragraph) {
+					if (array_key_exists('params', $paragraph)) foreach ($paragraph['params'] as $propertyId) {
+						$message['data'][$propertyId] = null;
+						if (array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
+							$property = $accountDescription['properties'][$propertyId];
+							if ($property['type'] == 'select') $value = $context->localize($property['modalities'][$account->properties[$propertyId]]);
+							elseif ($property['type'] == 'multiselect') {
+								$codes = $account->properties[$propertyId];
+								if ($codes) $codes = explode(',', $codes);
+								else $codes = [];
+								$value = [];
+								foreach ($codes as $code) $value[] = $context->localize($property['modalities'][$code]);
+								$value = implode(',', $value);
+							}
+							elseif ($property['type'] == 'date') $value = $context->decodeDate($account->properties[$propertyId]);
+							elseif ($property['type'] == 'number') $value = $context->formatFloat($account->properties[$propertyId], 2);
+							else $value = $account->properties[$propertyId];
+							$message['data'][$propertyId] = $value;
+						}
+					}
+				}
+			}
+		}
+		$message['data']['current_date'] = $context->decodeDate(date('Y-m-d'));
+		$message['data']['study_manager_name'] = $place->getConfig('study_manager_name');
+		
+		// Overright the addressee
+		$message['data']['addressee_n_fn'] = '';
+		if ($addressee->n_title || $addressee->n_last || $addressee->n_first) {
+			if ($addressee->n_title) $message['data']['addressee_n_fn'] .= $addressee->n_title.' ';
+			$message['data']['addressee_n_fn'] .= $addressee->n_last.' ';
+			$message['data']['addressee_n_fn'] .= $addressee->n_first;
+		}
+		if ($addressee->adr_street) $message['data']['addressee_adr_street'] = $addressee->adr_street;
+		if ($addressee->adr_extended) $message['data']['addressee_adr_extended'] = $addressee->adr_extended;
+		if ($addressee->adr_post_office_box) $message['data']['customer_adr_post_office_box'] = $addressee->adr_post_office_box;
+		if ($addressee->adr_zip) $message['data']['addressee_adr_zip'] = $addressee->adr_zip;
+		if ($addressee->adr_city) $message['data']['addressee_adr_city'] = $addressee->adr_city;
+		if ($addressee->adr_state) $message['data']['addressee_adr_state'] = $addressee->adr_state;
+		if ($addressee->adr_country) $message['data']['addressee_adr_country'] = $addressee->adr_country;
+	
+		// Set the legal footer
+		$legal_footer_1 = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
+		if ($legal_footer_1) $message['legal_footer_1'] = $legal_footer_1;
+		$legal_footer_2 = ($place->legal_footer_2) ? $place->legal_footer_2 : ((array_key_exists('footer_2', $context->getConfig('headerParams'))) ? $context->getConfig('headerParams')['footer_2']['value'] : null);
+		if ($legal_footer_2) $message['legal_footer_2'] = $legal_footer_2;
+	
+		// Add the presentation template
+		$message['template'] = $template;
+		
+		return $message;
+	}
+	
+	public function generateAttendanceAction()
+	{
+		// Retrieve the context and parameters
+		$context = Context::getCurrent();
+		$account_id = (int) $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+		$place = Place::get($account->place_id);
+		
+		// Add the presentation template
+		$attendance = $this->generateAttendance($account, $place);
+		
+		// Render the message in HTML
+		$html = CommitmentMessageViewHelper::renderHtml($attendance, $place);
+
+		$view = new ViewModel(array(
+			'context' => $context,
+			'account_id' => $account_id,
+			'attendance' => $attendance,
+			'html' => $html,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+
+	public function downloadAttendanceAction()
+	{
+		// Retrieve the context, parameters and data
+		$context = Context::getCurrent();
+		$account_id = (int) $this->params()->fromRoute('account_id');
+		$account = Account::get($account_id);
+		$place = Place::get($account->place_id);
+
+		// Add the presentation template
+		$attendance = $this->generateAttendance($account, $place);
+		
+		// create new PDF document
+		$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+	
+		CommitmentMessageViewHelper::renderPdf($pdf, $attendance, $place);
+	
+		$content = $pdf->Output($attendance['identifier'] . '-' . $context->getInstance()->caption . '-' . $account->n_fn . '.pdf', 'I');
+		return $this->response;
+	}
+	
 	public function absenceAction()
 	{
 		// Retrieve the context

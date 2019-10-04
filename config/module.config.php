@@ -2,6 +2,7 @@
 namespace PpitStudies;
 
 include('commitment_message_p_pit_studies.php');
+include('core_account_message_p_pit_studies.php');
 include('event_message_p_pit_studies.php');
 
 return array_merge(
@@ -933,30 +934,6 @@ return array_merge(
         										),
         								),
         						),
-	       						'homework' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/homework[/:id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'homework',
-        										),
-        								),
-        						),
-	       						'homeworkV2' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/homework-v2[/:account_id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'homeworkV2',
-        										),
-        								),
-        						),
 	       						'evaluation' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1002,6 +979,54 @@ return array_merge(
         										),
         										'defaults' => array(
         												'action' => 'examV2',
+        										),
+        								),
+        						),
+	       						'generateAttendance' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/generate-attendance[/:account_id]',
+        										'constraints' => array(
+        												'account_id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'generateAttendance',
+        										),
+        								),
+        						),
+	       						'downloadAttendance' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/download-attendance[/:account_id]',
+        										'constraints' => array(
+        												'account_id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'downloadAttendance',
+        										),
+        								),
+        						),
+	       						'homework' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/homework[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'homework',
+        										),
+        								),
+        						),
+	       						'homeworkV2' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/homework-v2[/:account_id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'homeworkV2',
         										),
         								),
         						),
@@ -1257,6 +1282,8 @@ return array_merge(
 				array('route' => 'student/evaluationV2', 'roles' => array('guest')),
 				array('route' => 'student/exam', 'roles' => array('guest')),
 				array('route' => 'student/examV2', 'roles' => array('guest')),
+				array('route' => 'student/generateAttendance', 'roles' => array('operational_management', 'sales_manager', 'manager')),
+				array('route' => 'student/downloadAttendance', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/report', 'roles' => array('guest')),
 				array('route' => 'student/reportV2', 'roles' => array('guest')),
 				array('route' => 'student/download', 'roles' => array('guest')),
@@ -3667,7 +3694,9 @@ table.note-report td {
 			),
 	),
 	'student/property/school_year/default' => '2019-2020',
-
+	'student/property/school_year/start' => '2019-09-01',
+	'student/property/school_year/end' => '2020-07-31',
+	
 	'student/property/school_period' => array(
 			'type' => 'select',
 			'modalities' => array(
@@ -5591,5 +5620,6 @@ table.note-report tr.period {
 ],
 
 	COMMITMENT_MESSAGE_P_PIT_STUDIES,
+	CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES,
 	EVENT_MESSAGE_P_PIT_STUDIES
 );
