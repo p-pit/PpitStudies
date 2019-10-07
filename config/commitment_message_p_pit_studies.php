@@ -11,6 +11,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 
 	'commitment/message/p-pit-studies/certificat_scolarite' => [
 		'name' => ['default' => 'Certificat de scolarité'],
+		'stamp' => true,
 		'style' => ['default' => '
 			<style>
 			table {
