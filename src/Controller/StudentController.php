@@ -1787,7 +1787,7 @@ class StudentController extends AbstractActionController
 
 		if ($groups) $groups = explode(',', $groups);
 		$begin = $context->getConfig('student/property/school_year/start');
-		$end = $context->getConfig('student/property/school_year/end');
+		$end = date('Y-m-d'); /*$context->getConfig('student/property/school_year/end')*/;
 		
 		$template = $context->getConfig('commitments/message/' . $account->type . '/attendance');
 		$addressee = $this->params()->fromQuery('addressee');
