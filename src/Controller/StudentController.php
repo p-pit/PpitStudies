@@ -147,7 +147,14 @@ class StudentController extends AbstractActionController
 		$context = Context::getCurrent();
     	$account_id = (int) $this->params()->fromRoute('account_id', 0);
     	$profile = Account::get($account_id);
-    	if (!$profile) $profile = Account::get($context->getContactId(), 'contact_1_id');
+//    	if (!$profile) $profile = Account::get($context->getContactId(), 'contact_1_id');
+		if (!$profile) {
+			$candidates = Account::getList('p-pit-studies', ['contact_1_id' => $context->getContactId()]);
+			foreach ($candidates as $candidate) if ($candidate->status != 'gone') {
+				$profile = $candidate;
+				break;
+			}
+		}
     	if (!$profile) return $this->redirect()->toRoute('home');
     	$place = Place::get($profile->place_id);
     	$template = $context->getConfig('student/home/tabs');

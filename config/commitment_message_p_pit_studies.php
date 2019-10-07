@@ -51,6 +51,8 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 						'type' => 'p',
 						'class' => 'text-justify',
 						'label' => ['default' => 'Je soussigné(e) le Directeur pédagogique de l’établissement certifie que :'],
+//						'label' => ['default' => 'Je soussigné(e), %s, Directeur pédagogique de l’établissement certifie que :'],
+//						'params' => ['study_manager_name'],
 					],
 					[
 						'type' => 'p',
