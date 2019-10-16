@@ -3580,6 +3580,7 @@ table.note-report td {
 			'modalities' => array(
 					'cm1_cm2' => array('fr_FR' => 'CM1/CM2'),
 					'cm2' => array('fr_FR' => 'CM2'),
+					'cm2_6e' => array('fr_FR' => 'CM2/6ème'),
 					'6e' => array('fr_FR' => '6e'),
 					'6ea' => array('fr_FR' => '6e A'),
 					'6eb' => array('fr_FR' => '6e B'),
@@ -3589,6 +3590,8 @@ table.note-report td {
 					'4e' => array('fr_FR' => '4e'),
 					'4e1' => array('fr_FR' => '4e1'),
 					'4e2' => array('fr_FR' => '4e2'),
+					'4ea' => array('fr_FR' => '4ème A'),
+					'4eb' => array('fr_FR' => '4ème B'),
 					'3e' => array('fr_FR' => '3e'),
 					'3e1' => array('fr_FR' => '3e1'),
 					'3e2' => array('fr_FR' => '3e2'),
@@ -3806,6 +3809,7 @@ table.note-report td {
 					'civics' => array('en_US' => 'Civics', 'fr_FR' => 'Instruction civique'),
 					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
 					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
+					'svt_techno' => array('default' => 'SVT techno'),
 					'sciences' => array('en_US' => 'Sciences', 'fr_FR' => 'Sciences'),
 					'enseignement_scientifique' => array('default' => 'Enseignement scientifique'),
 					'numerique_informatique' => array('default' => 'Numérique informatique'),
@@ -3864,11 +3868,16 @@ table.note-report td {
 
 					'pro_skills' => array('en_US' => 'Professional skills', 'fr_FR' => 'Techniques pros / Techniques d’entretien'),
 				
-					'study-period' => array('en_US' => 'Study period', 'fr_FR' => 'Etude surveillée'),
+					'study-period' => array('en_US' => 'Study period', 'fr_FR' => 'Etudes dirigées'),
+					'dst' => array('default' => 'DST'),
+					'ed_dst' => array('default' => 'ED-DST'),
 					'tpe' => array('en_US' => 'TPE', 'fr_FR' => 'TPE'),
 				
 					'school_life' => array('en_US' => 'School life', 'fr_FR' => 'Vie scolaire'),
 					'sport' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
+			
+					'dejeuner' => array('default' => 'Déjeuner'),
+					'pause' => array('default' => 'Pause'),
 			),
 			'labels' => array(
 					'en_US' => 'Subject',
@@ -4365,7 +4374,7 @@ table.note-report tr.period {
 	'event/update/calendar' => array(
 		'status' => ['mandatory' => true],
 		'groups' => [],
-		'place_id' => [],
+		'place_id' => ['mandatory' => true],
 		'property_1' => ['mandatory' => true, 'default' => 'student/property/school_year/default'],
 		'account_id' => [],
 		'property_2' => [],
