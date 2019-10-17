@@ -14,16 +14,12 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 		'route' => 'student/generateAttendance',
 		'style' => ['default' => '
 			<style>
-	    	table {
-	    		border-collapse: collapse;
-			}
 			.table {
 	    		font-size: 7;
 				padding-top: 10;
 				padding-right: 5;
 				padding-bottom: 10;
 				padding-left: 5;
-				border: 1px solid black;
 			}
 			.text-center {
 				text-align: center;
@@ -50,7 +46,7 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 				],
 			],
 			'title' => [
-				'class' => 'box-title',
+				'class' => '',
 				'paragraphs' => [
 					['type' => 'h1', 'class' => 'text-center', 'label' => ['default' => 'ATTESTATION DE PRÉSENCE']],
 				],
@@ -63,12 +59,13 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 						'type' => 'p',
 						'class' => 'text-justify',
 						'label' => ['default' => 'Convention : <strong>%s - %s %s %s</strong>'],
-						'params' => ['property_1', 'n_title', 'n_first', 'n_last'],
+						'params' => ['property_10', 'n_title', 'n_first', 'n_last'],
 					],
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Tuteur :'],
+						'label' => ['default' => 'Tuteur : %s'],
+						'params' => ['property_11'],
 					],
 				],
 			],
@@ -78,63 +75,93 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 				'paragraphs' => [
 					[
 						'class' => 'text-justify',
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => ''],
 						'header' => ['default' => '<strong>Période</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:period'],
+						'sum' => ['label' => ['default' => '<strong>Total</strong>']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Heures en groupe</strong>', 'style' => 'background-color: green'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures de présence</strong>'],
+						'header' => ['default' => '<strong>Heures en groupe</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:group'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:group']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Heures individuelles</strong>', 'style' => 'background-color: green'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures de présence</strong>'],
+						'header' => ['default' => '<strong>Heures individuelles</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:individual'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:individual']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Total présence</strong>', 'style' => 'background-color: green'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures de présence</strong>'],
+						'header' => ['default' => '<strong>Total présence</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:total_presence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:total_presence']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Absences justifiées pour maladie</strong>', 'style' => 'background-color: red'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
+						'header' => ['default' => '<strong>Absences justifiées pour maladie</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:health_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:health_absence']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Congés payés</strong>', 'style' => 'background-color: red'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
+						'header' => ['default' => '<strong>Congés payés</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:vacation_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:vacation_absence']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Cas de<br>force majeure</strong>', 'style' => 'background-color: red'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
+						'header' => ['default' => '<strong>Cas de<br>force majeure</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:necessity_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:necessity_absence']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Demande<br>de<br>l’entreprise</strong>', 'style' => 'background-color: red'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
+						'header' => ['default' => '<strong>Demande<br>de<br>l’entreprise</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:business_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:business_absence']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Autres absences *</strong>', 'style' => 'background-color: red'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
+						'header' => ['default' => '<strong>Autres absences *</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:other_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:other_absence']],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Total absences</strong>', 'style' => 'background-color: red'],
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
+						'header' => ['default' => '<strong>Total absences</strong>'],
 						'label' => ['default' => '%s'],
 						'params' => ['month:total_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:total_absence']],
 					],
 				],
 			],
@@ -150,8 +177,8 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'type' => 'p',
 						'class' => 'text-justify',
-						'label' => ['default' => 'Les états de présence signés par %s sont tenus à la disposition de l’OPCA.'],
-						'params' => ['study_manager_name'],
+						'label' => ['default' => 'Les états de présence signés par %s %s %s sont tenus à la disposition de l’OPCA.'],
+						'params' => ['n_title', 'n_first', 'n_last'],
 					],
 				],
 			],
@@ -160,11 +187,13 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 				'paragraphs' => [
 					[
 						'class' => 'text-justify',
+						'style' => 'font-size: 12',
 						'header' => ['default' => '<strong>L’établissement</strong>'],
 						'label' => ['default' => '&nbsp;'],
 					],
 					[
 						'class' => 'text-justify',
+						'style' => 'font-size: 12',
 						'header' => ['default' => '<strong>Signature de l’élève</strong>'],
 						'label' => ['default' => '&nbsp;'],
 					],

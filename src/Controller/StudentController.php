@@ -1805,12 +1805,11 @@ class StudentController extends AbstractActionController
     	$accountDescription = Account::getDescription($account->type);
     	 
     	$months = array();
-    	 
+
 		// Retrieve the attendance cumul by month
 		if (!$groups) $events = Event::getList('calendar', ['property_2' => $account->property_7], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'matched_accounts', 'update_time', 'property_1', 'property_2', 'property_3']);
 		else {
 			$events = [];
-			$groups = explode(',', $groups);
 			foreach ($groups as $group_id) {
 				$cursor = Event::getList('calendar', ['groups' => $group_id], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'update_time', 'property_1', 'property_2', 'property_3']);
 				foreach ($cursor as $event_id => $event) $events[$event_id] = $event;
@@ -1838,6 +1837,15 @@ class StudentController extends AbstractActionController
 
 		ksort($months);
 		$monthsCopy = [];
+		$sum['group'] = 0;
+		$sum['individual'] = 0;
+		$sum['total_presence'] = 0;
+		$sum['health_absence'] = 0;
+		$sum['vacation_absence'] = 0;
+		$sum['necessity_absence'] = 0;
+		$sum['business_absence'] = 0;
+		$sum['other_absence'] = 0;
+		$sum['total_absence'] = 0;
 		foreach ($months as $month_id => $month) {
 			$month['period'] = $context->localize(['01' => ['default' => 'Janvier'], '02' => ['default' => 'Février'], '03' => ['default' => 'Mars'], '04' => ['default' => 'Avril'], '05' => ['default' => 'Mai'], '06' => ['default' => 'Juin'], '07' => ['default' => 'Juillet'], '08' => ['default' => 'Août'], '09' => ['default' => 'Septembre'], '10' => ['default' => 'Octobre'], '11' => ['default' => 'Novembre'], '12' => ['default' => 'Décembre']][substr($month_id, 5, 2)]) . ' ' . substr($month_id, 0, 4);
 			$month['group'] = 0;
@@ -1853,18 +1861,25 @@ class StudentController extends AbstractActionController
 				$month['group'] += $attendance['duration'];
 			}
 			$month['total_presence'] = $month['group'] + $month['individual'];
-
+				
 			// Sum the absences
 			foreach ($month['absences'] as $absence) {
 				if ($absence->motive == 'medical') $month['health_absence'] += $absence->duration;
 				else $month['other_absence'] += $absence->duration;
 			}
 			$month['total_absence'] = $month['health_absence'] + $month['vacation_absence'] + $month['necessity_absence'] + $month['business_absence'] + $month['other_absence'];
-				
+
 			// Subtract the cumulative absence time from the attendance
 			if ($month['group'] > $month['total_absence']) $month['group'] -= $month['total_absence'];
 			if ($month['total_presence'] > $month['total_absence']) $month['total_presence'] -= $month['total_absence'];
-			
+
+			// Compute the sums
+			$sum['group'] += $month['group'];
+			$sum['total_presence'] += $month['total_presence'];
+			$sum['health_absence'] += $month['health_absence'];
+			$sum['other_absence'] += $month['other_absence'];
+			$sum['total_absence'] += $month['total_absence'];
+
 			// Convert all the time values to hh:mm format
 			$month['group'] = ((int) ($month['group'] / 60)) . 'h' . sprintf('%02u', $month['group'] % 60) . 'mn';
 			$month['individual'] = ((int) ($month['individual'] / 60)) . 'h' . sprintf('%02u', $month['individual'] % 60) . 'mn';
@@ -1879,6 +1894,17 @@ class StudentController extends AbstractActionController
 		}
 		$months = $monthsCopy;
 
+		// Convert all the summed time values to hh:mm format
+		$sum['group'] = ((int) ($sum['group'] / 60)) . 'h' . sprintf('%02u', $sum['group'] % 60) . 'mn';
+		$sum['individual'] = ((int) ($sum['individual'] / 60)) . 'h' . sprintf('%02u', $sum['individual'] % 60) . 'mn';
+		$sum['total_presence'] = ((int) ($sum['total_presence'] / 60)) . 'h' . sprintf('%02u', $sum['total_presence'] % 60) . 'mn';
+		$sum['health_absence'] = ((int) ($sum['health_absence'] / 60)) . 'h' . sprintf('%02u', $sum['health_absence'] % 60) . 'mn';
+		$sum['vacation_absence'] = ((int) ($sum['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $sum['vacation_absence'] % 60) . 'mn';
+		$sum['necessity_absence'] = ((int) ($sum['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $sum['necessity_absence'] % 60) . 'mn';
+		$sum['business_absence'] = ((int) ($sum['business_absence'] / 60)) . 'h' . sprintf('%02u', $sum['business_absence'] % 60) . 'mn';
+		$sum['other_absence'] = ((int) ($sum['other_absence'] / 60)) . 'h' . sprintf('%02u', $sum['other_absence'] % 60) . 'mn';
+		$sum['total_absence'] = ((int) ($sum['total_absence'] / 60)) . 'h' . sprintf('%02u', $sum['total_absence'] % 60) . 'mn';
+		
 		// Determine the addressee
 		if (!$addressee) {
 			if ($account->name != $account->n_last . ', ' . $account->n_first) $message['addressee_name'] = $account->name;
@@ -1924,6 +1950,8 @@ class StudentController extends AbstractActionController
 				$i = 0;
 				foreach ($months as $month_id => $month) {
 					foreach ($section['paragraphs'] as $column) {
+						
+						// Feed the row data
 						if (array_key_exists('params', $column)) foreach ($column['params'] as $prefixedPropertyId) {
 							if (strpos($prefixedPropertyId, ':')) {
 								$arrayPropertyId = explode(':', $prefixedPropertyId);
@@ -1965,6 +1993,24 @@ class StudentController extends AbstractActionController
 						}
 					}
 					$i++;
+				}
+				
+				// Feed the sum data
+				foreach ($section['paragraphs'] as $column) {
+					if (array_key_exists('sum', $column) && array_key_exists('params', $column['sum'])) foreach ($column['sum']['params'] as $prefixedPropertyId) {
+						if (strpos($prefixedPropertyId, ':')) {
+							$arrayPropertyId = explode(':', $prefixedPropertyId);
+							$prefix = $arrayPropertyId[0];
+							$propertyId = $arrayPropertyId[1];
+						}
+						else {
+							$prefix = null;
+							$propertyId = $prefixedPropertyId;
+						}
+	
+						$codedValue = $sum[$propertyId];
+						$message['data'][$prefixedPropertyId] = $codedValue;
+					}
 				}
 			}
 			else {
