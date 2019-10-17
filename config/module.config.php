@@ -2584,6 +2584,10 @@ return array_merge(
 		'definition' => 'inline',
 		'type' => 'select',
 		'modalities' => array(
+			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel'),
+			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours'),
+			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé'),
+				
 			'initial' => array('en_US' => 'Initial training', 'fr_FR' => 'Formation initiale'),
 			'part_time' => array('en_US' => 'Part time training', 'fr_FR' => 'Formation en alternance'),
 			'part_time_initial' => array('en_US' => 'Part time/Initial training', 'fr_FR' => 'Formation initiale/en alternance'),
