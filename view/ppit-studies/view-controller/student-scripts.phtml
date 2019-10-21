@@ -254,7 +254,7 @@ function showCalendar(route, target) {
       ?>
 showStatic('<?php echo $route ?>', '<?php echo $tabId ?>-panel');
     <?php elseif ($tab['type'] == 'calendar') : ?>
-showCalendar('<?php echo $this->url($tab['route'], array('id' => $profile->contact_1_id)) ?>', '<?php echo $tabId ?>-panel');
+showCalendar('<?php echo $this->url($tab['route'], array('id' => $profile->id)) ?>', '<?php echo $tabId ?>-panel');
     <?php endif;?>
 <?php endforeach;?>
 

@@ -1740,7 +1740,20 @@ class StudentController extends AbstractActionController
 
 	public function planningV2Action()
 	{
-		return $this->planningAction();
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+		$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => ($account) ? $account->id : null), array('force_canonical' => true));
+
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'eventsRoute' => $eventsRoute,
+		));
+		$view->setTerminal(true);
+		return $view;
 	}
 	
 	public function fileAction()
@@ -2346,7 +2359,37 @@ class StudentController extends AbstractActionController
 
 	public function evaluationV2Action()
 	{
-		return $this->evaluationAction();
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+		$school_year = $context->getConfig('student/property/school_year/default');
+		$place = Place::get($account->place_id);
+		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+		$mock = $this->params()->fromRoute('mock');
+
+		$periods = array();
+		$params = array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/);
+		if ($mock) $params['level'] = "mock";
+		$notes = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			$key = $note->school_year.'.'.$note->school_period;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $note;
+		}
+		krsort($periods);
+		
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'account' => $account,
+				'periods' => $periods,
+				'mock' => $mock,
+		));
+		$view->setTerminal(true);
+		return $view;
 	}
 	
 	public function examAction()
@@ -2388,7 +2431,39 @@ class StudentController extends AbstractActionController
 
 	public function examV2Action()
 	{
-		return $this->examAction();
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+		$place = Place::get($account->place_id);
+	
+		$periods = array();
+		$notes = NoteLink::GetList('exam', ['account_id' => $account->id], 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			$key = $note->school_year.'.'.$note->level;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $note;
+		}
+		krsort($periods);
+		foreach ($periods as $periodId => &$period) {
+			$school_year = substr($periodId, 0, 9);
+			$level = substr($periodId, 10);
+			$notes = NoteLink::GetList('note', ['account_id' => $account->id, 'school_year' => $school_year, 'level' => $level], 'date', 'DESC', 'search');
+			foreach($notes as $note) {
+				$period[] = $note;
+			}
+		}
+
+		// Return the link list
+		$view = new ViewModel(array(
+			'context' => $context,
+			'config' => $context->getconfig(),
+			'account' => $account,
+			'periods' => $periods,
+		));
+		$view->setTerminal(true);
+		return $view;
 	}
 	
 	public function reportAction()
@@ -2421,7 +2496,30 @@ class StudentController extends AbstractActionController
 
 	public function reportV2Action()
 	{
-		return $this->reportAction();
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		$account_id = (int) $this->params()->fromRoute('id');
+		$account = Account::get($account_id);
+	
+		$periods = array();
+		$notes = NoteLink::GetList('report', array('account_id' => $account->id), 'date', 'DESC', 'search');
+		foreach($notes as $note) {
+			$key = $note->school_year.'.'.$note->school_period;
+			if (!array_key_exists($key, $periods)) $periods[$key] = array();
+			$periods[$key][] = $note;
+		}
+		krsort($periods);
+
+		// Return the link list
+		$view = new ViewModel(array(
+				'context' => $context,
+				'config' => $context->getconfig(),
+				'account' => $account,
+				'periods' => $periods,
+		));
+		$view->setTerminal(true);
+		return $view;
 	}
 	
 	public function downloadAction()
