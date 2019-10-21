@@ -246,7 +246,7 @@ function showCalendar(route, target) {
 <?php foreach ($template['content'] as $tabId => $tab) : ?>
     <?php if ($tab['type'] == 'static') : ?>
       <?php
-      $params = array('id' => $profile->contact_1_id);
+      $params = array('id' => $profile->id);
       if (array_key_exists('params', $tab)) {
         foreach ($tab['params'] as $param => $argument) $params[$param] = $argument;
       }
