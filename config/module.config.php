@@ -1623,7 +1623,8 @@ return array_merge(
 	'commitment/p-pit-studies/property/account_property_13' => ['definition' => 'student/property/contact_meeting_context'],
 	'commitment/p-pit-studies/property/account_property_15' => ['definition' => 'core_account/p-pit-studies/property/property_15'],
 	'commitment/p-pit-studies/property/account_property_16' => ['definition' => 'student/property/school_year'],
-
+	'commitment/p-pit-studies/property/account_property_19' => ['definition' => 'core_account/p-pit-studies/property/property_19'],
+	
 	'commitment/p-pit-studies' => array(
 		'tax' => 'including',
 		'currencySymbol' => '€',
@@ -1635,7 +1636,7 @@ return array_merge(
 			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8',
-			'account_property_9', 'account_property_10', 'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16',
+			'account_property_9', 'account_property_10', 'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_19',
 			'default_means_of_payment', 'update_time',
 		),
 		'order' => 'school_year DESC',
@@ -2479,29 +2480,6 @@ return array_merge(
 			'fr_FR' => 'Langues',
 		),
 	),
-	
-	'core_account/p-pit-studies/property/property_18' => array(
-		'definition' => 'inline',
-		'type' => 'multiselect',
-		'modalities' => [
-			'art' => ['default' => 'Arts'],
-			'biology' => ['default' => 'Biologie, écologie'],
-			'history-geography' => ['default' => 'Histoire-géographie, géopolitique et sciences politiques'],
-			'literature' => ['default' => 'Humanités, littérature et philosophie'],
-			'language' => ['default' => 'Langues, littératures et cultures étrangères'],
-			'antiquity' => ['default' => 'Littérature, langues et cultures de l’Antiquité'],
-			'mathematics' => ['default' => 'Mathématiques'],
-			'computer-science' => ['default' => 'Numérique et sciences informatiques'],
-			'physics-chemistry' => ['default' => 'Physique-Chimie'],
-			'life-science' => ['default' => 'Sciences de la Vie et de la Terre'],
-			'engineering-science' => ['default' => 'Sciences de l’ingénieur'],
-			'economic-social-science' => ['default' => 'Sciences économiques et sociales'],
-		],
-		'labels' => array(
-			'en_US' => 'Specialties',
-			'fr_FR' => 'Spécialités',
-		),
-	),
 
 	'core_account/p-pit-studies/property/property_6' => array(
 		'definition' => 'inline',
@@ -2584,13 +2562,13 @@ return array_merge(
 		'definition' => 'inline',
 		'type' => 'select',
 		'modalities' => array(
-			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel'),
-			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours'),
-			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé'),
-				
 			'initial' => array('en_US' => 'Initial training', 'fr_FR' => 'Formation initiale'),
 			'part_time' => array('en_US' => 'Part time training', 'fr_FR' => 'Formation en alternance'),
 			'part_time_initial' => array('en_US' => 'Part time/Initial training', 'fr_FR' => 'Formation initiale/en alternance'),
+
+			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel', 'archive' => true),
+			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours', 'archive' => true),
+			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé', 'archive' => true),
 		),
 		'labels' => array(
 			'en_US' => 'Study choice',
@@ -2606,6 +2584,58 @@ return array_merge(
 		'labels' => array(
 			'en_US' => 'Real-time global average',
 			'fr_FR' => 'Moyenne générale temps-réel',
+		),
+	),
+
+	'core_account/p-pit-studies/property/property_18' => array(
+		'definition' => 'inline',
+		'type' => 'multiselect',
+		'modalities' => [
+			'art' => ['default' => 'Arts'],
+			'biology' => ['default' => 'Biologie, écologie'],
+			'history-geography' => ['default' => 'Histoire-géographie, géopolitique et sciences politiques'],
+			'literature' => ['default' => 'Humanités, littérature et philosophie'],
+			'language' => ['default' => 'Langues, littératures et cultures étrangères'],
+			'antiquity' => ['default' => 'Littérature, langues et cultures de l’Antiquité'],
+			'mathematics' => ['default' => 'Mathématiques'],
+			'computer-science' => ['default' => 'Numérique et sciences informatiques'],
+			'physics-chemistry' => ['default' => 'Physique-Chimie'],
+			'life-science' => ['default' => 'Sciences de la Vie et de la Terre'],
+			'engineering-science' => ['default' => 'Sciences de l’ingénieur'],
+			'economic-social-science' => ['default' => 'Sciences économiques et sociales'],
+		],
+		'labels' => array(
+			'en_US' => 'Specialties',
+			'fr_FR' => 'Spécialités',
+		),
+	),
+	
+	'core_account/p-pit-studies/property/property_19' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel'),
+			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours'),
+			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé'),
+		),
+		'labels' => array(
+			'en_US' => 'Financing',
+			'fr_FR' => 'Financement',
+		),
+	),
+
+	'core_account/p-pit-studies/property/property_20' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'source' => array(
+			'entity' => 'core_account',
+			'type' => 'business',
+			'status' => 'new,active',
+			'property' => 'name',
+		),
+		'labels' => array(
+			'en_US' => 'Company',
+			'fr_FR' => 'Entreprise',
 		),
 	),
 	
@@ -2764,6 +2794,8 @@ return array_merge(
 					'property_18' => ['multiple' => true],
 					'property_6' => ['multiple' => true],
 					'property_15' => [],
+					'property_19' => [],
+					'property_20' => [],
 					'n_fn' => [],
 					'email' => [],
 					'tel_cell' => [],
@@ -2855,6 +2887,7 @@ return array_merge(
 			'identifier' => array('mandatory' => false),
 			'name' => array('mandatory' => false),
 			'property_16' => array('mandatory' => false),
+			'property_20' => array('mandatory' => false),
 			'basket' => array('mandatory' => false),
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
@@ -2890,6 +2923,7 @@ return array_merge(
 			'bank_identifier' => array('mandatory' => false),
 			'title_2' => null,
 			'property_15' => array('mandatory' => false),
+			'property_19' => array('mandatory' => false),
 			'property_1' => array('mandatory' => false),
 			'groups' => array('readonly' => true),
 			'property_11' => array('mandatory' => false),
@@ -2941,6 +2975,7 @@ return array_merge(
 			'property_13' => array('mandatory' => false),
 			'property_16' => array('mandatory' => false),
 			'property_15' => array('mandatory' => false),
+			'property_19' => array('mandatory' => false),
 			'property_7' => array('mandatory' => false),
 			'contact_history' => array('mandatory' => false),
 	),
@@ -2972,6 +3007,7 @@ return array_merge(
 				'title' => 'title_2',
 				'rows' => array(
 					'property_15' => array('mandatory' => false),
+					'property_19' => array('mandatory' => false),
 					'property_1' => array('mandatory' => false),
 					'property_10' => array('mandatory' => false),
 					'property_7' => array('mandatory' => false),
@@ -3021,6 +3057,7 @@ table.note-report td {
 			'property_8' => [],
 			'property_1' => [],
 			'property_15' => [],
+			'property_19' => [],
 			'place_id' => [],
 			'email' => [],
 			'address' => [],
