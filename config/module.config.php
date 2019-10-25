@@ -2564,12 +2564,8 @@ return array_merge(
 		'modalities' => array(
 			'full_time' => array('default' => 'Full time', 'fr_FR' => 'Full time'),
 			'part_time' => array('default' => 'Part time', 'fr_FR' => 'Part time'),
-			'?' => array('default' => '?', 'fr_FR' => '?'),
-
+			'online' => array('default' => 'Online', 'fr_FR' => 'En ligne'),
 			'initial' => array('default' => 'Initial'),
-			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel', 'archive' => true),
-			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours', 'archive' => true),
-			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé', 'archive' => true),
 		),
 		'labels' => array(
 			'en_US' => 'Rythm',
