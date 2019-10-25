@@ -2566,7 +2566,7 @@ return array_merge(
 			'part_time' => array('default' => 'Part time', 'fr_FR' => 'Part time'),
 			'?' => array('default' => '?', 'fr_FR' => '?'),
 
-			'initial' => array('default' => 'Initial', 'archive' => true),
+			'initial' => array('default' => 'Initial'),
 			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel', 'archive' => true),
 			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours', 'archive' => true),
 			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé', 'archive' => true),
