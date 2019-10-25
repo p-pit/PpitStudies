@@ -2562,16 +2562,17 @@ return array_merge(
 		'definition' => 'inline',
 		'type' => 'select',
 		'modalities' => array(
-			'initial' => array('en_US' => 'Initial training', 'fr_FR' => 'Formation initiale'),
-			'part_time' => array('en_US' => 'Part time training', 'fr_FR' => 'Formation en alternance'),
-			'part_time_initial' => array('en_US' => 'Part time/Initial training', 'fr_FR' => 'Formation initiale/en alternance'),
+			'full_time' => array('default' => 'Full time', 'fr_FR' => 'Full time'),
+			'part_time' => array('default' => 'Part time', 'fr_FR' => 'Part time'),
+			'?' => array('default' => '?', 'fr_FR' => '?'),
 
+			'initial' => array('default' => 'Initial', 'archive' => true),
 			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel', 'archive' => true),
 			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours', 'archive' => true),
 			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé', 'archive' => true),
 		),
 		'labels' => array(
-			'en_US' => 'Study choice',
+			'en_US' => 'Rythm',
 			'fr_FR' => 'Rythme',
 		),
 	),
