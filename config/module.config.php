@@ -2565,7 +2565,7 @@ return array_merge(
 			'full_time' => array('default' => 'Full time', 'fr_FR' => 'Full time'),
 			'part_time' => array('default' => 'Part time', 'fr_FR' => 'Part time'),
 			'online' => array('default' => 'Online', 'fr_FR' => 'En ligne'),
-			'initial' => array('default' => 'Initial'),
+			'initial' => array('default' => 'Initial', 'archive' => true),
 		),
 		'labels' => array(
 			'en_US' => 'Rythm',
