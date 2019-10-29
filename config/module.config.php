@@ -1345,6 +1345,9 @@ return array_merge(
 									'fr_FR' => 'Elèves/Classes',
 							),
 					),
+					
+					// planning_implement_event_calendar: Le planning de P-Pit Studies implémente la feature event/calendar de l'enabler PpitCore.
+					
 					'calendar' => array(
 						'route' => 'event/calendar',
 						'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'calendar'),
@@ -2566,6 +2569,11 @@ return array_merge(
 			'part_time' => array('default' => 'Part time', 'fr_FR' => 'Part time'),
 			'online' => array('default' => 'Online', 'fr_FR' => 'En ligne'),
 			'initial' => array('default' => 'Initial', 'archive' => true),
+
+			'?' => array('default' => '?', 'fr_FR' => '?', 'archive' => true),
+			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel', 'archive' => true),
+			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours', 'archive' => true),
+			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé', 'archive' => true),
 		),
 		'labels' => array(
 			'en_US' => 'Rythm',
@@ -4358,6 +4366,8 @@ table.note-report tr.period {
 		'title' => array('default' => 'Planning', 'fr_FR' => 'Planning'),
 	),
 	
+	// planning_search_property: Je filtre en standard le planning par établissement, par année scolaire, par groupe, par tout ou partie du nom formaté (NOM, Prénom), par matière, par intervenant
+
 	'event/search/calendar' => array(
 		'title' => array('default' => 'Planning', 'fr_FR' => 'Planning'),
 		'todoTitle' => array('default' => 'recent', 'fr_FR' => 'récents'),
@@ -4367,7 +4377,7 @@ table.note-report tr.period {
 			'property_1' => ['default' => 'student/property/school_year/default', 'multiple' => true],
 			'groups' => [],
 			'property_2' => ['multiple' => true],
-			'n_fn' => [],
+//			'n_fn' => [],
 			'property_3' => ['multiple' => true],
 			'account_id' => ['multiple' => true],
 		),
@@ -4418,11 +4428,11 @@ table.note-report tr.period {
 		'property_2' => [],
 		'property_3' => [],
 		'caption' => array('mandatory' => false),
-		'day_of_week' => array('mandatory' => false),
-		'begin_date' => array('mandatory' => false),
+		'day_of_week' => array('mandatory' => true),
+		'begin_date' => array('mandatory' => true),
 		'end_date' => array('mandatory' => false),
-		'begin_time' => array('mandatory' => false),
-		'end_time' => array('mandatory' => false),
+		'begin_time' => array('mandatory' => true),
+		'end_time' => array('mandatory' => true),
 		'exception_1' => array('mandatory' => false),
 		'exception_2' => array('mandatory' => false),
 		'exception_3' => array('mandatory' => false),

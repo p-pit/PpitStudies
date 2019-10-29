@@ -25,6 +25,9 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 				padding-left: 5;
 			border: 1px solid black;
 			}
+			p {
+	    		font-size: 10;
+			}
 			.addressee {
 				font-weight: bold;
 				font-size: 12;
@@ -32,8 +35,11 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 			.text-center {
 				text-align: center;
 			}
-			.text-justify{
+			.text-justify {
 				text-align: justify;
+			}
+			.text-grey {
+	    		color: grey;
 			}
 			</style>
 		'],
@@ -53,6 +59,15 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 				'class' => 'body',
 				'paragraphs' => [
 					['type' => 'br'],
+					[
+						'type' => 'p',
+						'class' => 'text-center',
+						'label' => [
+							'default' => 'Learning course: <strong>%s</strong>',
+							'fr_FR' => 'Formation: <strong>%s</strong>'
+						],
+						'params' => ['property_2'],
+					],
 					[
 						'type' => 'p',
 						'class' => 'text-center',
@@ -88,8 +103,8 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'class' => 'text-justify',
 						'header' => ['default' => '<strong>Trainee</strong>', 'fr_FR' => '<strong>Stagiaire</strong>'],
-						'label' => ['default' => '%s'],
-						'params' => ['account:n_fn'],
+						'label' => ['default' => '<span class="%s">%s %s</span>'],
+						'params' => ['account:view_class', 'account:n_fn', 'account:group' => '(%s)'],
 					],
 					[
 						'class' => 'text-justify',
