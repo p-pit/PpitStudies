@@ -4428,7 +4428,7 @@ table.note-report tr.period {
 		'property_2' => [],
 		'property_3' => [],
 		'caption' => array('mandatory' => false),
-		'day_of_week' => array('mandatory' => true),
+		'day_of_week' => array('mandatory' => false),
 		'begin_date' => array('mandatory' => true),
 		'end_date' => array('mandatory' => false),
 		'begin_time' => array('mandatory' => true),
