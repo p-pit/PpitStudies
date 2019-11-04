@@ -44,6 +44,12 @@ function getAbsenceList(params) {
                 else dir = 'ASC';
 				getAbsenceList(getSearchParams(''));
 			});
+
+            // Connect the more anchor
+            $('#more-anchor').click(function () {
+              $('#limit').val('');
+              getAbsenceList(getSearchParams(''));
+            });
       
             // Connect the detail anchors
             $('.absence-detail-anchor').click(function () {

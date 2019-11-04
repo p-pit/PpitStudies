@@ -116,12 +116,15 @@ class AbsenceController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
+
+    	$description = Absence::getConfig();
+    	 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'places' => Place::getList(array()),
+    			'description' => $description,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -176,11 +179,13 @@ class AbsenceController extends AbstractActionController
     {
     	$view = $this->getList();
 
+    	$description = Absence::getConfig();
+    	
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
 		$workbook = new \PHPExcel;
-		(new SsmlAbsenceViewHelper)->formatXls($workbook, $view);		
+		(new SsmlAbsenceViewHelper)->formatXls($description, $workbook, $view);		
 		$writer = new \PHPExcel_Writer_Excel2007($workbook);
 		
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

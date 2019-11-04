@@ -29,8 +29,7 @@
   <?php else : ?>
 	
     <?php
-    $property = $context->getConfig('absence')['properties'][$propertyId];
-    if ($property['type'] == 'repository') $property = $context->getConfig($property['definition']);
+    $property = $description[$propertyId];
     $label = $context->localize($property['labels']);
     ?>
 	
