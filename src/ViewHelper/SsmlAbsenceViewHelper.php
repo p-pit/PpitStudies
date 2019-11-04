@@ -51,7 +51,15 @@ class SsmlAbsenceViewHelper
 						$sheet->setCellValue($column.$j, $absence->properties[$propertyId]);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
-					elseif (in_array($property['type'], ['select', 'multiselect']))  $sheet->setCellValue($column.$j, (array_key_exists('modalities', $property) && array_key_exists($absence->properties[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$absence->properties[$propertyId]]) : $absence->properties[$propertyId]);
+					elseif ($property['type'] == 'select')  $sheet->setCellValue($column.$j, (array_key_exists('modalities', $property) && array_key_exists($absence->properties[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$absence->properties[$propertyId]]) : $absence->properties[$propertyId]);
+					elseif ($property['type'] == 'multiselect') {
+						if ($absence->properties[$propertyId]) {
+							$values = explode(',', $absence->properties[$propertyId]);
+							$decodedValues = [];
+							foreach ($values as $value) if (array_key_exists('modalities', $property) && array_key_exists($value, $property['modalities'])) $decodedValues[] = $context->localize($property['modalities'][$value]);
+						}
+						$sheet->setCellValue($column.$j, implode(',', $decodedValues));
+					}
 					else $sheet->setCellValue($column.$j, $absence->properties[$propertyId]);
 				}
 			}
