@@ -1797,7 +1797,7 @@ class StudentController extends AbstractActionController
 		else return $this->response;
 	}
 
-	public function generateAttendance($account, $place)
+	public function generateAttendance($account, $begin, $place)
 	{
 		// Retrieve the context and parameters
 		$context = Context::getCurrent();
@@ -1806,7 +1806,6 @@ class StudentController extends AbstractActionController
 		$groups = $account->groups;
 
 		if ($groups) $groups = explode(',', $groups);
-		$begin = $context->getConfig('student/property/school_year/start');
 		$end = date('Y-m-d'); /*$context->getConfig('student/property/school_year/end')*/;
 		
 		$template = $context->getConfig('commitments/message/' . $account->type . '/attendance');
@@ -2090,9 +2089,10 @@ class StudentController extends AbstractActionController
 		$account_id = (int) $this->params()->fromRoute('account_id');
 		$account = Account::get($account_id);
 		$place = Place::get($account->place_id);
+		$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
 		
 		// Add the presentation template
-		$attendance = $this->generateAttendance($account, $place);
+		$attendance = $this->generateAttendance($account, $start_date, $place);
 		
 		// Render the message in HTML
 		$html = CommitmentMessageViewHelper::renderHtml($attendance, $place);
@@ -2100,6 +2100,7 @@ class StudentController extends AbstractActionController
 		$view = new ViewModel(array(
 			'context' => $context,
 			'account_id' => $account_id,
+			'start_date' => $start_date,
 			'attendance' => $attendance,
 			'html' => $html,
 		));
@@ -2114,9 +2115,10 @@ class StudentController extends AbstractActionController
 		$account_id = (int) $this->params()->fromRoute('account_id');
 		$account = Account::get($account_id);
 		$place = Place::get($account->place_id);
-
+		$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
+		
 		// Add the presentation template
-		$attendance = $this->generateAttendance($account, $place);
+		$attendance = $this->generateAttendance($account, $start_date, $place);
 		
 		// create new PDF document
 		$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

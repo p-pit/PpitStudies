@@ -986,7 +986,7 @@ return array_merge(
 	       						'generateAttendance' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/generate-attendance[/:account_id]',
+        										'route' => '/generate-attendance[/:account_id][/:start_date]',
         										'constraints' => array(
         												'account_id' => '[0-9]*',
         										),
@@ -998,7 +998,7 @@ return array_merge(
 	       						'downloadAttendance' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/download-attendance[/:account_id]',
+        										'route' => '/download-attendance[/:account_id][/:start_date]',
         										'constraints' => array(
         												'account_id' => '[0-9]*',
         										),
@@ -4608,6 +4608,7 @@ table.note-report tr.period {
 							),
 					),
 				
+					'account_id' => ['definition' => 'commitment/generic/property/account_id'],
 					'account_status' => ['definition' => 'commitment/generic/property/account_status'],
 					'account_name' => ['definition' => 'core_account/generic/property/name'],
 					'account_identifier' => ['definition' => 'commitment/generic/property/account_identifier'],
