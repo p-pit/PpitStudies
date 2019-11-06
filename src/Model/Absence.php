@@ -294,6 +294,38 @@ class Absence
 		$currentRoles = $context->getRoles();
 		$i = 0;
 		foreach ($cursor as $absence) {
+			$absence->properties = $absence->getProperties();
+			$absence->properties['place_id'] = $absence->place_id;
+			$absence->properties['email'] = $absence->email;
+			$absence->properties['property_1'] = $absence->sport;
+			$absence->properties['property_7'] = $absence->class;
+			$absence->properties['school_subject'] = $absence->subject;
+			
+			$absence->properties['account_status'] = $absence->account_status;
+			$absence->properties['account_identifier'] = $absence->account_identifier;
+			$absence->properties['account_groups'] = $absence->account_groups;
+			$absence->properties['account_date_1'] = $absence->account_date_1;
+			$absence->properties['account_date_2'] = $absence->account_date_2;
+			$absence->properties['account_date_3'] = $absence->account_date_3;
+			$absence->properties['account_date_4'] = $absence->account_date_4;
+			$absence->properties['account_date_5'] = $absence->account_date_5;
+			$absence->properties['account_property_1'] = $absence->account_property_1;
+			$absence->properties['account_property_2'] = $absence->account_property_2;
+			$absence->properties['account_property_3'] = $absence->account_property_3;
+			$absence->properties['account_property_4'] = $absence->account_property_4;
+			$absence->properties['account_property_5'] = $absence->account_property_5;
+			$absence->properties['account_property_6'] = $absence->account_property_6;
+			$absence->properties['account_property_7'] = $absence->account_property_7;
+			$absence->properties['account_property_8'] = $absence->account_property_8;
+			$absence->properties['account_property_9'] = $absence->account_property_9;
+			$absence->properties['account_property_10'] = $absence->account_property_10;
+			$absence->properties['account_property_11'] = $absence->account_property_11;
+			$absence->properties['account_property_12'] = $absence->account_property_12;
+			$absence->properties['account_property_13'] = $absence->account_property_13;
+			$absence->properties['account_property_14'] = $absence->account_property_14;
+			$absence->properties['account_property_15'] = $absence->account_property_15;
+			$absence->properties['account_property_16'] = $absence->account_property_16;
+			$absence->properties['account_property_19'] = $absence->account_property_19;
 				
 			// Filter on authorized perimeter
 			$keep = true;
@@ -318,38 +350,6 @@ class Absence
 
 			if ($keep) {
 					$i++;
-					$absence->properties = $absence->getProperties();
-					$absence->properties['place_id'] = $absence->place_id;
-					$absence->properties['email'] = $absence->email;
-					$absence->properties['property_1'] = $absence->sport;
-					$absence->properties['property_7'] = $absence->class;
-					$absence->properties['school_subject'] = $absence->subject;
-		
-					$absence->properties['account_status'] = $absence->account_status;
-					$absence->properties['account_identifier'] = $absence->account_identifier;
-					$absence->properties['account_groups'] = $absence->account_groups;
-					$absence->properties['account_date_1'] = $absence->account_date_1;
-					$absence->properties['account_date_2'] = $absence->account_date_2;
-					$absence->properties['account_date_3'] = $absence->account_date_3;
-					$absence->properties['account_date_4'] = $absence->account_date_4;
-					$absence->properties['account_date_5'] = $absence->account_date_5;
-					$absence->properties['account_property_1'] = $absence->account_property_1;
-					$absence->properties['account_property_2'] = $absence->account_property_2;
-					$absence->properties['account_property_3'] = $absence->account_property_3;
-					$absence->properties['account_property_4'] = $absence->account_property_4;
-					$absence->properties['account_property_5'] = $absence->account_property_5;
-					$absence->properties['account_property_6'] = $absence->account_property_6;
-					$absence->properties['account_property_7'] = $absence->account_property_7;
-					$absence->properties['account_property_8'] = $absence->account_property_8;
-					$absence->properties['account_property_9'] = $absence->account_property_9;
-					$absence->properties['account_property_10'] = $absence->account_property_10;
-					$absence->properties['account_property_11'] = $absence->account_property_11;
-					$absence->properties['account_property_12'] = $absence->account_property_12;
-					$absence->properties['account_property_13'] = $absence->account_property_13;
-					$absence->properties['account_property_14'] = $absence->account_property_14;
-					$absence->properties['account_property_15'] = $absence->account_property_15;
-					$absence->properties['account_property_16'] = $absence->account_property_16;
-					$absence->properties['account_property_19'] = $absence->account_property_19;
 					if ($limit && $i > $limit) break;
 					$absences[$absence->id] = $absence;
 			}

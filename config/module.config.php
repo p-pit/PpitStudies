@@ -3,6 +3,7 @@ namespace PpitStudies;
 
 include('commitment_message_p_pit_studies.php');
 include('core_account_message_p_pit_studies.php');
+include('core_account_message_teacher.php');
 include('event_message_p_pit_studies.php');
 
 return array_merge(
@@ -5709,5 +5710,6 @@ table.note-report tr.period {
 
 	COMMITMENT_MESSAGE_P_PIT_STUDIES,
 	CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES,
+	CORE_ACCOUNT_MESSAGE_TEACHER,
 	EVENT_MESSAGE_P_PIT_STUDIES
 );
