@@ -962,7 +962,7 @@ class NoteController extends AbstractActionController
 						$value = round($value * $note->reference_value / 20, 2);
 //						$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
     					if ($value != $noteLink->value) {
-							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
+							print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: '.$noteLink->account_id.' '.$note->class.' '.$note->subject."\n");
 							print_r('New: '.$value."\n");
 							print_r('Old: '.$noteLink->value."\n");
 							$noteLink->value = $value;
@@ -982,7 +982,7 @@ class NoteController extends AbstractActionController
 //							$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
     						$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
 		    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
-		    					$distribution[$categoryId] = $category['note'];
+		    					if ($category != 'global') $distribution[$categoryId] = $category['note'];
 							}
 							if (round($value, 2) != round($noteLink->value, 2) || count($distribution) != count($noteLink->distribution)) {
 								print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: '.$noteLink->account_id.' '.$note->class.' '.$note->subject."\n");
