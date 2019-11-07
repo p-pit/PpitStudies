@@ -956,7 +956,7 @@ class NoteController extends AbstractActionController
 		    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
 	    					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
 		    				$cursor = NoteLink::getTable()->selectWith($select);
-		    	if ($note->subject == 'global') {
+/*		    	if ($note->subject == 'global') {
 		    		foreach($cursor as $noteLink) {
 						$value = $noteLink->computeStudentAverage($note->school_year, $note->school_period);
 						$value = round($value * $note->reference_value / 20, 2);
@@ -970,7 +970,7 @@ class NoteController extends AbstractActionController
 			    		}
 		    		}
 		    	}
-		    	else {
+		    	else {*/
 		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
 			    	foreach($cursor as $noteLink) {
 //						$note->links[] = $noteLink;
@@ -982,7 +982,7 @@ class NoteController extends AbstractActionController
 //							$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
     						$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
 		    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
-		    					if ($category != 'global') $distribution[$categoryId] = $category['note'];
+		    					if ($categoryId != 'global') $distribution[$categoryId] = $category['note'];
 							}
 							if (round($value, 2) != round($noteLink->value, 2) || count($distribution) != count($noteLink->distribution)) {
 								print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: '.$noteLink->account_id.' '.$note->class.' '.$note->subject."\n");
@@ -997,7 +997,7 @@ class NoteController extends AbstractActionController
 							}
 						}
 					}
-		    	}
+//		    	}
 	    	}
 	    	return $this->response;
 	    }
