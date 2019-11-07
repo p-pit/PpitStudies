@@ -924,10 +924,10 @@ class NoteController extends AbstractActionController
     {
     	$context = Context::getCurrent();
     	$select = Note::getTable()->getSelect()->where(['status' => 'deleted']);
-    	$cursor = $select->selectWith($select);
+    	$cursor = Note::getTable()->selectWith($select);
 	    foreach ($cursor as $note) {
 	    	$select = NoteLink::getTable()->getSelect()->where(['note_id' => $note->id]);
-    		$cursor = $select->selectWith($select);
+    		$cursor = NoteLink::getTable()->selectWith($select);
 	    	foreach ($cursor as $noteLink) {
 	    		if ($noteLink->status != 'deleted') {
 	    			print_r($note->id . ' ' . $noteLink->id);
