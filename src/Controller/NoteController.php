@@ -978,7 +978,7 @@ class NoteController extends AbstractActionController
 						$distribution = array();
 						if (array_key_exists($noteLink->account_id, $computedAverages)) {
 		    				$value = $computedAverages[$noteLink->account_id]['global']['note'];
-							$value = round($value * 20 , 2);
+							$value = round($value * $note->reference_value / 20 , 2);
 //							$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
     						$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
 		    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
