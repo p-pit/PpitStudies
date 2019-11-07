@@ -919,7 +919,7 @@ class NoteController extends AbstractActionController
     	}
     	return $this->response;
     }*/
-
+/*
     public function repriseAction()
     {
     	$context = Context::getCurrent();
@@ -936,8 +936,8 @@ class NoteController extends AbstractActionController
 	    	}
 	    }
 	    return $this->response;
-    }
-  /*  
+    }*/
+
 	    public function repriseAction()
 	    {
 	    	$context = Context::getCurrent();
@@ -1000,5 +1000,5 @@ class NoteController extends AbstractActionController
 		    	}
 	    	}
 	    	return $this->response;
-	    }*/
+	    }
 }
