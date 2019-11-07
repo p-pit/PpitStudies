@@ -993,7 +993,7 @@ class NoteController extends AbstractActionController
 								$noteLink->value = $value;
 								$noteLink->distribution = $distribution;
 								$noteLink->audit = $audit;
-								$noteLink->update(null);
+//								$noteLink->update(null);
 							}
 						}
 					}
