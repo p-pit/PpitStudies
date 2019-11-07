@@ -243,7 +243,8 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
     <?php endforeach;?>
     </select>
   <?php endif?>
-    <input class="form-control input_value" id="input_value_<?php echo $account->id ?>" placeholder="<?php echo $this->translate((in_array($type, ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($message == 'OK' && $note->links[$account->id]->value !== null) echo 'value="'.$context->formatFloat($note->links[$account->id]->value, 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
+    <?php ?>
+    <input class="form-control input_value" id="input_value_<?php echo $account->id ?>" placeholder="<?php echo $this->translate((in_array($type, ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($message == 'OK' && array_key_exists($account->id, $note->links) && $note->links[$account->id]->value !== null) echo 'value="'.$context->formatFloat($note->links[$account->id]->value, 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
     <div class="invalid-feedback" id="input_value_<?php echo $account->id ?>_error"></div>
   </div>
 </div>

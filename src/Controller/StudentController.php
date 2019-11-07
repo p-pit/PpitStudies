@@ -1349,19 +1349,23 @@ class StudentController extends AbstractActionController
 								else $report->links = array();
 								
 								foreach ($accounts as $account_id => $account) {
-									$reportLink = NoteLink::instanciate($account->id, null);
-									$audit = [];
-									$value = $newSubjectAverages[$account->id]['global']['note'];
-									$audit = $newSubjectAverages[$account->id]['global']['notes'];
-									$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
-									$reportLink->value = $value;
-									$reportLink->distribution = array();
-									foreach ($newSubjectAverages[$account->id] as $categoryId => $category) {
-										if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+									
+									// Compute the average only for evaluated students in the list
+									if (array_key_exists($account->id, $newSubjectAverages)) {
+										$reportLink = NoteLink::instanciate($account->id, null);
+										$audit = [];
+										$value = $newSubjectAverages[$account->id]['global']['note'];
+										$audit = $newSubjectAverages[$account->id]['global']['notes'];
+										$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+										$reportLink->value = $value;
+										$reportLink->distribution = array();
+										foreach ($newSubjectAverages[$account->id] as $categoryId => $category) {
+											if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+										}
+										$reportLink->audit = $audit;
+										if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+										$report->links[$reportLink->account_id] = $reportLink;
 									}
-									$reportLink->audit = $audit;
-									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
-									$report->links[$reportLink->account_id] = $reportLink;
 								}
 								$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
 								foreach ($report->links as $reportLink) {
@@ -1414,20 +1418,21 @@ class StudentController extends AbstractActionController
 								$data['subject'] = 'global';
 								
 								foreach ($accounts as $account_id => $account) {
-									$reportLink = NoteLink::instanciate($account->id, null);
-									$audit = [];
-    			    				$value = $reportLink->computeStudentAverage($data['school_year'], $data['school_period']);
-//									$value = $newGlobalAverages[$account->id]['global']['note'];
-									$audit = $newGlobalAverages[$account->id]['global']['notes'];
-									$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
-									$reportLink->value = $value;
-									$reportLink->distribution = array();
-									foreach ($newGlobalAverages[$account->id] as $categoryId => $category) {
-										if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+									if (array_key_exists($account->id, $newGlobalAverages)) {
+										$reportLink = NoteLink::instanciate($account->id, null);
+										$audit = [];
+	    			    				$value = $newGlobalAverages[$account->id]['global']['note'];
+										$audit = $newGlobalAverages[$account->id]['global']['notes'];
+										$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
+										$reportLink->value = $value;
+										$reportLink->distribution = array();
+										foreach ($newGlobalAverages[$account->id] as $categoryId => $category) {
+											if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+										}
+										$reportLink->audit = $audit;
+										if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+										$report->links[$reportLink->account_id] = $reportLink;
 									}
-									$reportLink->audit = $audit;
-									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
-									$report->links[$reportLink->account_id] = $reportLink;
 								}
 								$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
 								foreach ($report->links as $reportLink) {

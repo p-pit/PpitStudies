@@ -464,7 +464,10 @@ class NoteController extends AbstractActionController
     			$connection->beginTransaction();
     			try {
     				if (!$note->id) $rc = $note->add();
-    				elseif ($action == 'delete') $rc = $note->delete($request->getPost('update_time'));
+    				elseif ($action == 'delete') {
+		    			foreach ($note->links as $noteLink) $noteLink->delete(null);
+		    			$rc = $note->delete($request->getPost('update_time'));
+		    		}
     				else $rc = $note->update($note->update_time);
     				if ($rc != 'OK') {
     					$connection->rollback();
@@ -750,9 +753,9 @@ class NoteController extends AbstractActionController
 		    					// Compute the new global average
 		    					$newGlobalAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class']);
 		    					$report->id = null;
-		    					
+		    					 
 		    					$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $note->school_year, $data['school_period'], 'global');
-		    					if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
+		    					if ($previousReport) $report = $previousReport; // A faire : Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
 		    					else $report->links = array();
 		    					
 		    					$data['subject'] = 'global';
@@ -760,7 +763,7 @@ class NoteController extends AbstractActionController
 				    			foreach ($note->links as $noteLink) {
 		    						$reportLink = NoteLink::instanciate($noteLink->account_id, null);
 		    						$audit = [];
-		    						$value = $reportLink->computeStudentAverage($note->school_year, $data['school_period']);
+		    						$value = $newGlobalAverages[$noteLink->account_id]['global']['note'];
 		    						$audit = $newGlobalAverages[$noteLink->account_id]['global']['notes'];
 		    						$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
 		    						$reportLink->value = $value;
@@ -944,7 +947,7 @@ class NoteController extends AbstractActionController
 							print_r('New: '.$value."\n");
 							print_r('Old: '.$noteLink->value."\n");
 							$noteLink->value = $value;
-							$noteLink->update(null);
+//							$noteLink->update(null);
 			    		}
 /*						if ($noteLink->value) {
 							print_r($note->type.' '.$noteLink->id.' '.$note->place_id.' '.$note->class.' '.$note->subject."\n");
@@ -977,7 +980,7 @@ class NoteController extends AbstractActionController
 								$noteLink->value = $value;
 								$noteLink->distribution = $distribution;
 								$noteLink->audit = $audit;
-								$noteLink->update(null);
+//								$noteLink->update(null);
 							}
 						}
 					}
