@@ -930,11 +930,12 @@ class NoteController extends AbstractActionController
     		$cursor = NoteLink::getTable()->selectWith($select);
 	    	foreach ($cursor as $noteLink) {
 	    		if ($noteLink->status != 'deleted') {
-	    			print_r($note->id . ' ' . $noteLink->id);
-//	    			$noteLink->delete(null);
+	    			print_r($note->id . ' ' . $noteLink->id . "\n");
+	    			$noteLink->delete(null);
 	    		}
 	    	}
 	    }
+	    return $this->response;
     }
   /*  
 	    public function repriseAction()
