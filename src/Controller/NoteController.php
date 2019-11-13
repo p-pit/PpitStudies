@@ -19,7 +19,7 @@ use Zend\View\Model\ViewModel;
 
 class NoteController extends AbstractActionController
 {
-    public function indexAction()
+/*    public function indexAction()
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
@@ -47,7 +47,7 @@ class NoteController extends AbstractActionController
     			'type' => $type,
     			'places' => Place::getList(array()),
     	));
-    }
+    }*/
     
     public function indexV2Action()
     {
@@ -125,8 +125,8 @@ class NoteController extends AbstractActionController
     	 
     	return $filters;
     }
-
-    public function searchAction()
+    
+    public function searchV2Action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -145,12 +145,12 @@ class NoteController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
-    public function searchV2Action()
+/*
+    public function searchAction()
     {
-    	return $this->searchAction();
-    }
-
+    	return $this->searchV2Action();
+    }*/
+/*    
     public function getList()
     {
     	// Retrieve the context
@@ -196,16 +196,58 @@ class NoteController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
-    
+    }*/
+ /*   
     public function listAction()
     {
     	return $this->getList();
-    }
+    }*/
 
     public function listV2Action()
     {
-    	return $this->getList();
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+		$category = $this->params()->fromRoute('category');
+		$type = $this->params()->fromRoute('type');
+		if ($type == '*') $type = null;
+		$params = $this->getFilters($category, $this->params());
+		$limit = $this->params()->fromQuery('limit');
+		$major = ($this->params()->fromQuery('major', 'date'));
+    	$dir = ($this->params()->fromQuery('dir', 'DESC'));
+    
+    	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
+    
+    	// Retrieve the list
+    	$notes = Note::getList($category, $type, $params, $major, $dir, $mode, $limit);
+		$average = 0;
+    	if ($category == 'evaluation') {
+			$totalWeight = 0;
+    		$maxAverage = 0;
+			foreach ($notes as $note) {
+				$maxAverage += $note->reference_value;
+				$totalWeight += $note->weight;
+				if ($note->reference_value) $average += $note->average_note / $note->reference_value * $note->weight;
+			}
+			$average /= ($totalWeight) ? $totalWeight : 1;
+    	}
+    	
+    	// Return the link list
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getconfig(),
+	    		'places' => Place::getList(array()),
+    			'category' => $category,
+    			'type' => $type,
+    			'notes' => $notes,
+				'average' => $average,
+    			'mode' => $mode,
+    			'params' => $params,
+    			'major' => $major,
+    			'dir' => $dir,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
     }
     
     public function getAction()
@@ -303,7 +345,7 @@ class NoteController extends AbstractActionController
     	}
     	return $this->response;
     }
-
+/*
     public function updateAction()
     {
     	// Retrieve the context
@@ -403,7 +445,7 @@ class NoteController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
+    }*/
 
     public function updateV2Action()
     {
@@ -502,7 +544,7 @@ class NoteController extends AbstractActionController
     	return $view;
     }
     
-    public function updateEvaluationAction()
+    public function updateEvaluationV2Action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -701,13 +743,16 @@ class NoteController extends AbstractActionController
 		    						$value = $newSubjectAverages[$noteLink->account_id]['global']['note'];
 		    						$audit = $newSubjectAverages[$noteLink->account_id]['global']['notes'];
 		    						$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
-		    						$reportLink->value = $value;
+			    						$reportLink->value = $value;
 		    						$reportLink->distribution = array();
 		    						foreach ($newSubjectAverages[$noteLink->account_id] as $categoryId => $category) {
 		    							if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
 		    						}
 		    						$reportLink->audit = $audit;
-		    						if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+		    						if (array_key_exists($reportLink->account_id, $report->links) && $report->links[$reportLink->account_id]->id) {
+		    							$report->links[$reportLink->account_id]->delete(null);
+		    							unset($report->links[$reportLink->account_id]);
+		    						}
 		    						$report->links[$reportLink->account_id] = $reportLink;
 		    					}
 		    					$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
@@ -772,7 +817,10 @@ class NoteController extends AbstractActionController
 		    							if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
 		    						}
 		    						$reportLink->audit = $audit;
-		    						if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+		    						if (array_key_exists($reportLink->account_id, $report->links) && $report->links[$reportLink->account_id]->id) {
+		    							$report->links[$reportLink->account_id]->delete(null);
+		    							unset($report->links[$reportLink->account_id]);
+		    						}
 		    						$report->links[$reportLink->account_id] = $reportLink;
 		    					}
 		    					$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
@@ -842,11 +890,11 @@ class NoteController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
-    public function updateEvaluationV2Action()
+/*
+    public function updateEvaluationAction()
     {
-    	return $this->updateEvaluationAction();
-    }
+    	return $this->updateEvaluationV2Action();
+    }*/
     
 /*    
     public function repriseAction()

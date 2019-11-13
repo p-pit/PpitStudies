@@ -90,13 +90,13 @@
         </a>
       </li>
 <?php endif;?>
-<?php if (array_key_exists('news_flash', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
-      <li class="nav-item">
-        <a class="nav-link action-btn" href="#" id="news_flash-notification-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
-          <?php echo $this->translate('Notification', 'ppit-commitment', $context->getLocale()) ?>
+<?php //if (array_key_exists('news_flash', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
+<!--       <li class="nav-item">
+        <a class="nav-link action-btn" href="#" id="news_flash-notification-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php //echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+          <?php //echo $this->translate('Notification', 'ppit-commitment', $context->getLocale()) ?>
         </a>
-      </li>
-<?php endif;?>
+      </li> -->
+<?php //endif;?>
 <?php if (array_key_exists('news_flash', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>
       <li class="nav-item">
         <a class="nav-link action-btn" href="#" id="news_flash-event-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
@@ -111,22 +111,15 @@
 		<div class="group-panel" id="sport-panel">
 
     <ul class="nav nav-pills nav-justified">
-      <li class="nav-item">
-        <a class="nav-link action-btn" href="#" id="progress-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
-          <?php echo $this->translate('Sport progress', 'ppit-studies', $context->getLocale()) ?>
+<!--      <li class="nav-item">
+        <a class="nav-link action-btn" href="#" id="progress-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php //echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+          <?php //echo $this->translate('Sport progress', 'ppit-studies', $context->getLocale()) ?>
         </a>
-      </li>
+      </li> -->
 <?php if (array_key_exists('sport', $context->getConfig('absence')['types'])) : ?>
       <li class="nav-item">
         <a class="nav-link action-btn" href="#" id="sport-absence-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
           <?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
-        </a>
-      </li>
-<?php endif;?>
-<?php if (array_key_exists('sport', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
-      <li class="nav-item">
-        <a class="nav-link action-btn" href="#" id="sport-notification-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
-          <?php echo $this->translate('Notification', 'ppit-studies', $context->getLocale()) ?>
         </a>
       </li>
 <?php endif;?>

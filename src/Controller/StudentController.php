@@ -34,58 +34,6 @@ use Zend\View\Model\ViewModel;
 
 class StudentController extends AbstractActionController
 {
-	public function getConfigProperties($type) {
-		$context = Context::getCurrent();
-		$properties = array();
-		foreach($context->getConfig('core_account/'.$type)['properties'] as $propertyId) {
-			$property = $context->getConfig('core_account/'.$type.'/property/'.$propertyId);
-			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-			$properties[$propertyId] = $property;
-		}
-		return $properties;
-	}
-/*
-	public function getVcardProperties() {
-		$context = Context::getCurrent();
-		$properties = array();
-		foreach($context->getConfig('vcard/properties') as $propertyId => $property) {
-			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-			$properties[$propertyId] = $property;
-		}
-		return $properties;
-	}*/
-	
-	public function indexAction()
-    {
-    	$context = Context::getCurrent();
-    	$config = $context->getConfig();
-    	$app = $this->params()->fromRoute('app', 'p-pit-studies');
-    	$place = Place::get($context->getPlaceId());
-
-		$menu = $context->getConfig('menus/'.$app)['entries'];
-    	$currentEntry = $this->params()->fromQuery('entry');
-
-		if ($config['isDemoAccountUpdatable'] || $context->getInstanceId() == 0) $outOfStockCredits = false;
-		elseif ($context->getConfig('credit')['unlimitedCredits']) $outOfStockCredits = false;
-		else {
-			$credit = Credit::get('p-pit-communities', 'type');
-			if (!$credit) $outOfStockCredits = true;
-			else $outOfStockCredits = ($credit->quantity < 0);
-		}
-
-    	return new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getConfig(),
-    			'place' => $place,
-    			'applicationId' => 'p-pit-studies',
-    			'applicationName' => 'P-Pit Studies',
-    			'active' => 'application',
-    			'menu' => $menu,
-    			'currentEntry' => $currentEntry,
-    			'outOfStockCredits' => $outOfStockCredits,
-    	));
-    }
-
     public function indexV2Action()
     {
     	$context = Context::getCurrent();
@@ -119,154 +67,142 @@ class StudentController extends AbstractActionController
     		'applicationName' => $applicationName,
 			'pageScripts' => '/partials/student-scripts-v2',
     	));
-    	
-		$view = $this->indexAction();
-    	return $view;
-    }
-    
-	public function studentHomeAction()
-    {
-    	$context = Context::getCurrent();
-    	$account_id = (int) $this->params()->fromRoute('account_id', 0);
-    	$account = Account::get($account_id);
-    	$place = Place::get($account->place_id);
 
-     	$view = new ViewModel(array(
+    	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getConfig(),
-     			'account' => $account,
-     			'place' => $place,
+    			'place' => $place,
     	));
-    	$view->setTerminal(true);
-    	return $view;
-	}
+		return $view;
+    }
 
-	public function studentHomeV2Action()
-	{
-		// Retrieve context and parameters
-		$context = Context::getCurrent();
-    	$account_id = (int) $this->params()->fromRoute('account_id', 0);
-    	$profile = Account::get($account_id);
-//    	if (!$profile) $profile = Account::get($context->getContactId(), 'contact_1_id');
-		if (!$profile) {
-			$candidates = Account::getList('p-pit-studies', ['contact_1_id' => $context->getContactId()]);
-			foreach ($candidates as $candidate) if ($candidate->status != 'gone') {
-				$profile = $candidate;
-				break;
-			}
-		}
+    public function studentHomeV2Action()
+    {
+    	// Retrieve context and parameters
+    	$context = Context::getCurrent();
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	 
+    	$profile = null;
+    	if ($account_id) $profile = Account::get($account_id);
+    	else {
+    		$candidates = Account::getList('p-pit-studies', ['contact_1_id' => $context->getContactId()]);
+    		foreach ($candidates as $candidate) if ($candidate->status != 'gone') {
+    			$profile = $candidate;
+    			break;
+    		}
+    	}
     	if (!$profile) return $this->redirect()->toRoute('home');
     	$place = Place::get($profile->place_id);
     	$template = $context->getConfig('student/home/tabs');
     	$logo = ($place->logo_src) ? $place->logo_src : '/logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['logo'];
     	$logo_height = ($place->logo_src) ? $place->logo_height : $context->getConfig('headerParams')['logo-height'];
     	$configProperties = Account::getConfig('p-pit-studies');
-    	 
-		// Authentication
-		$panel = $this->params()->fromQuery('panel');
-		$email = $this->params()->fromQuery('email');
-		$error = $this->params()->fromQuery('error');
-		$message = $this->params()->fromQuery('message');
-		$redirect = $this->params()->fromQuery('redirect', 'home');
-		if ($email && !$context->isAuthenticated()) {
-			$vcard = Vcard::get($email, 'email');
-			$profile->email = $email;
-			if ($vcard) {
-				$userContact = UserContact::get($vcard->id, 'vcard_id');
-				if ($userContact) $panel = 'modalLoginForm';
-				$profile->n_first = $vcard->n_first;
-				$profile->n_last = $vcard->n_last;
-			}
-			else {
-				$profile->n_first = $this->params()->fromQuery('n_first');
-				$profile->n_last = $this->params()->fromQuery('n_last');
-			}
-			if ($panel != 'modalLoginForm') {
-				$panel = 'modalRegisterForm';
-			}
-		}
-
-		// Retrieve the global average if exists
+    
+    	// Authentication
+    	$panel = $this->params()->fromQuery('panel');
+    	$email = $this->params()->fromQuery('email');
+    	$error = $this->params()->fromQuery('error');
+    	$message = $this->params()->fromQuery('message');
+    	$redirect = $this->params()->fromQuery('redirect', 'home');
+    	if ($email && !$context->isAuthenticated()) {
+    		$vcard = Vcard::get($email, 'email');
+    		$profile->email = $email;
+    		if ($vcard) {
+    			$userContact = UserContact::get($vcard->id, 'vcard_id');
+    			if ($userContact) $panel = 'modalLoginForm';
+    			$profile->n_first = $vcard->n_first;
+    			$profile->n_last = $vcard->n_last;
+    		}
+    		else {
+    			$profile->n_first = $this->params()->fromQuery('n_first');
+    			$profile->n_last = $this->params()->fromQuery('n_last');
+    		}
+    		if ($panel != 'modalLoginForm') {
+    			$panel = 'modalRegisterForm';
+    		}
+    	}
+    
+    	// Retrieve the global average if exists
     	$current_school_year = $context->getConfig('student/property/school_year/default');
     	$school_periods = $place->getConfig('school_periods');
     	$current_school_period = 'Q1'; //$context->getCurrentPeriod($school_periods);
-		$cursor = NoteLink::getList('report', ['category' => 'evaluation', 'subject' => 'global', 'school_year' => $current_school_year, 'school_period' => $current_school_period, 'account_id' => $profile->id], 'id', 'ASC', $mode = 'search');
-		foreach ($cursor as $report) $averageNote = $report; // Should be unique but to keep only the last one
-		$global_average = (isset($averageNote) && $averageNote) ? $averageNote->value : null;
-
-		$view = new ViewModel(array(
-			'context' => $context,
-			'place_identifier' => $place->identifier,
-			'place' => $place,
-			'profile' => $profile,
-			'global_average' => $global_average,
-			'requestUri' => $this->request->getRequestUri(),
-			'viewController' => 'ppit-studies/view-controller/student-scripts.phtml',
-			'configProperties' => $configProperties,
-			'groups' => Account::getList('group', [], '+name', null),
-				
-			'template' => $template,
-			'logo' => $logo,
-			'logo_height' => $logo_height,
-				
-			'token' => $this->params()->fromQuery('hash', null),
-			'panel' => $panel,
-			'email' => $email,
-			'redirect' => $redirect,
-			'message' => $message,
-			'error' => $error,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-	
-	public function registrationIndexAction()
+    	$cursor = NoteLink::getList('report', ['category' => 'evaluation', 'subject' => 'global', 'school_year' => $current_school_year, 'school_period' => $current_school_period, 'account_id' => $profile->id], 'id', 'ASC', $mode = 'search');
+    	foreach ($cursor as $report) $averageNote = $report; // Should be unique but to keep only the last one
+    	$global_average = (isset($averageNote) && $averageNote) ? $averageNote->value : null;
+    
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'place_identifier' => $place->identifier,
+    		'place' => $place,
+    		'profile' => $profile,
+    		'global_average' => $global_average,
+    		'requestUri' => $this->request->getRequestUri(),
+    		'viewController' => 'ppit-studies/view-controller/student-scripts.phtml',
+    		'configProperties' => $configProperties,
+    		'groups' => Account::getList('group', [], '+name', null),
+    
+    		'template' => $template,
+    		'logo' => $logo,
+    		'logo_height' => $logo_height,
+    
+    		'token' => $this->params()->fromQuery('hash', null),
+    		'panel' => $panel,
+    		'email' => $email,
+    		'redirect' => $redirect,
+    		'message' => $message,
+    		'error' => $error,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
+    public function registrationIndexAction()
     {
     	$context = Context::getCurrent();
-		$place = Place::get($context->getPlaceId());
-		
-		$type = $this->params()->fromRoute('type', 'p-pit-studies');
-		$configProperties = Account::getConfig($type);
-		$vcardProperties = Vcard::getConfig();
-		$commitmentProperties = \PpitCommitment\Model\Commitment::getDescription('p-pit-studies')['update'];
-		
-		$menu = $context->getConfig('menus/'.$type)['entries'];
-		$currentEntry = $this->params()->fromQuery('entry');
-
+    	$place = Place::get($context->getPlaceId());
+    
+    	$type = $this->params()->fromRoute('type', 'p-pit-studies');
+    	$configProperties = Account::getConfig($type);
+    	$vcardProperties = Vcard::getConfig();
+    	$commitmentProperties = \PpitCommitment\Model\Commitment::getDescription('p-pit-studies')['update'];
+    
+    	$menu = $context->getConfig('menus/'.$type)['entries'];
+    	$currentEntry = $this->params()->fromQuery('entry');
+    
     	return new ViewModel(array(
-    			'context' => $context,
-				'configProperties' => $configProperties,
-				'vcardProperties' => $vcardProperties,
-    			'config' => $context->getConfig(),
-    			'place' => $place,
-    			'active' => 'application',
-    			'applicationId' => $type,
-    			'applicationName' => $context->getConfig('ppitApplications')[$type]['labels'][$context->getLocale()],
-    			'menu' => $menu,
-    			'currentEntry' => $currentEntry,
-    			'templates' => array(),
-    			'entry' => 'account',
-    			'type' => $type,
-				'page' => $context->getConfig('core_account/index/'.$type),
-				'indexPage' => $context->getConfig('core_account/index/'.$type),
-    			'searchPage' => Account::getConfigSearch($type, $configProperties),
-				'listPage' => Account::getConfigList($type, $configProperties),
-				'detailPage' => $context->getConfig('core_account/detail/'.$type),
-				'updatePage' => Account::getConfigUpdate($type, $configProperties),
-				'updateContactPage' => $context->getConfig('core_account/updateContact/'.$type),
-    			'groupUpdatePage' => Account::getConfigGroupUpdate($type, $configProperties),
-    			'commitmentProperties' => $commitmentProperties,
-    			'status' => 'active',
+    		'context' => $context,
+    		'configProperties' => $configProperties,
+    		'vcardProperties' => $vcardProperties,
+    		'config' => $context->getConfig(),
+    		'place' => $place,
+    		'active' => 'application',
+    		'applicationId' => $type,
+    		'applicationName' => $context->getConfig('ppitApplications')[$type]['labels'][$context->getLocale()],
+    		'menu' => $menu,
+    		'currentEntry' => $currentEntry,
+    		'templates' => array(),
+    		'entry' => 'account',
+    		'type' => $type,
+    		'page' => $context->getConfig('core_account/index/'.$type),
+    		'indexPage' => $context->getConfig('core_account/index/'.$type),
+    		'searchPage' => Account::getConfigSearch($type, $configProperties),
+    		'listPage' => Account::getConfigList($type, $configProperties),
+    		'detailPage' => $context->getConfig('core_account/detail/'.$type),
+    		'updatePage' => Account::getConfigUpdate($type, $configProperties),
+    		'updateContactPage' => $context->getConfig('core_account/updateContact/'.$type),
+    		'groupUpdatePage' => Account::getConfigGroupUpdate($type, $configProperties),
+    		'commitmentProperties' => $commitmentProperties,
+    		'status' => 'active',
     	));
     }
-
+    
     public function getFilters($params)
     {
-		$context = Context::getCurrent();
-    	
+    	$context = Context::getCurrent();
+    	 
     	// Retrieve the query parameters
     	$filters = array();
-
+    
     	foreach ($context->getConfig('student/search')['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
@@ -278,27 +214,22 @@ class StudentController extends AbstractActionController
     	}
     	return $filters;
     }
-
-    public function searchAction()
+    
+    public function searchV2action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
     	$groups = Account::getList('group', [], '+name', null);
-    	
+    	 
     	// Return the link list
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-				'places' => Place::getList(array()),
-    			'groups' => $groups,
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'places' => Place::getList(array()),
+    		'groups' => $groups,
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
-    
-    public function searchV2action()
-    {
-    	return $this->searchAction();
     }
 
     public function getList()
@@ -309,31 +240,26 @@ class StudentController extends AbstractActionController
     	$major = $this->params()->fromQuery('major');
     	$dir = $this->params()->fromQuery('dir');
     	$limit = $this->params()->fromQuery('limit');
-    	 
+    
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     	$params['status'] = 'active,retention';
-
+    
     	// Retrieve the list
     	$accounts = Account::getList('p-pit-studies', $params, (($dir == 'DESC') ? '-' : '+').$major, $limit);
-
+    
     	// Return the link list
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'accounts' => $accounts,
-				'places' => Place::getList(array()),
-    			'mode' => $mode,
-    			'params' => $params,
-    			'major' => $major,
-    			'dir' => $dir,
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'accounts' => $accounts,
+    		'places' => Place::getList(array()),
+    		'mode' => $mode,
+    		'params' => $params,
+    		'major' => $major,
+    		'dir' => $dir,
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
-    
-    public function listAction()
-    {
-    	return $this->getList();
     }
 
     public function listV2Action()
@@ -345,20 +271,20 @@ class StudentController extends AbstractActionController
     {
     	$view = $this->getList();
     	$description = Account::getDescription($view->type);
-    	 
-   		include 'public/PHPExcel_1/Classes/PHPExcel.php';
-   		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
-
-		$workbook = new \PHPExcel;
-		(new SsmlAccountViewHelper)->formatXls($description, $workbook, $view->accounts);		
-		$writer = new \PHPExcel_Writer_Excel2007($workbook);
-		
-		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition:inline;filename=Fichier.xlsx ');
-		$writer->save('php://output');
+    
+    	include 'public/PHPExcel_1/Classes/PHPExcel.php';
+    	include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
+    
+    	$workbook = new \PHPExcel;
+    	(new SsmlAccountViewHelper)->formatXls($description, $workbook, $view->accounts);
+    	$writer = new \PHPExcel_Writer_Excel2007($workbook);
+    
+    	header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    	header('Content-Disposition:inline;filename=Fichier.xlsx ');
+    	$writer->save('php://output');
     }
     
-    public function detailAction()
+    public function detailV2Action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -368,21 +294,16 @@ class StudentController extends AbstractActionController
     	else $account = Account::instanciate();
     
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'id' => $account->id,
-    			'account' => $account,
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'id' => $account->id,
+    		'account' => $account,
     	));
     	$view->setTerminal(true);
     	return $view;
     }
-    
-    public function detailV2Action()
-    {
-    	return $this->detailAction();
-    }
-    
-    public function groupAction()
+
+    public function groupV2Action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -399,46 +320,25 @@ class StudentController extends AbstractActionController
     		$accounts[$account_id] = $account;
     	}
     	$place = Place::get($account->place_id);
-       	
+    
     	$school_periods = $place->getConfig('school_periods');
-       	$current_school_period = $context->getCurrentPeriod($school_periods);
-/*       	
-       	$criteria = array();
-       	foreach ($context->getConfig('core_account/search/p-pit-studies')['properties'] as $propertyId => $unused) {
-			$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
-			if (!$property) $property = $context->getConfig('core_account/generic/property/'.$propertyId);
-			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
-			if (in_array($property['type'], array('date', 'time', 'datetime', 'number'))) {
-				if ($request->getPost('min_'.$propertyId)) $criteria['min_'.$propertyId] = $request->getPost('min_'.$propertyId);
-       			if ($request->getPost('max_'.$propertyId)) $criteria['max_'.$propertyId] = $request->getPost('max_'.$propertyId);
-       		}
-       		else {
-				$value = ($request->getPost($propertyId) == 'null') ? null : $request->getPost($propertyId); // JS returns the string 'null' for multiple select input without selection
-       			if ($value) $criteria[$propertyId] = $value;
-       		}
-       	}*/
-       	
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
+    
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'type' => $type,
-//    			'criteria' => $criteria,
-    			'accounts' => $accounts,
-    			'places' => Place::getList(array()),
-    			'school_periods' => $school_periods,
-    			'current_school_period' => $current_school_period,
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'type' => $type,
+    		'accounts' => $accounts,
+    		'places' => Place::getList(array()),
+    		'school_periods' => $school_periods,
+    		'current_school_period' => $current_school_period,
     	));
     	$view->setTerminal(true);
     	return $view;
     }
-    
-    public function groupV2Action()
-    {
-    	return $this->groupAction();
-    }
 
-    public function addAbsenceAction() {
-    
+    public function addAbsenceV2Action()
+    {
     	// Retrieve the context
     	$context = Context::getCurrent();
     
@@ -446,16 +346,7 @@ class StudentController extends AbstractActionController
     	$type = $this->params()->fromRoute('type', null);
     
     	$absence = Absence::instanciate($type);
-    /*
-    	$nbCriteria = $request->getPost('nb-criteria');
-    	$criteria = array();
-    	for ($i = 0; $i < $nbCriteria; $i++) {
-    		$criterionId = $request->getPost('criterion-id_'.$i);
-    		$criterionValue = $request->getPost('criterion_'.$i);
-    		$criteria[$criterionId] = $criterionValue;
-//    		if ($criterionId == 'property_7' && !$note->class) $note->class = $criterionValue;
-    	}*/
-
+    
     	$accounts = [];
     	$accountIds = $this->params()->fromQuery('accounts');
     	if ($accountIds) $accountIds = explode(',', $accountIds);
@@ -465,32 +356,24 @@ class StudentController extends AbstractActionController
     		$accounts[$account_id] = $account;
     	}
     	$place = Place::get($account->place_id);
-    	 
+    
     	$school_periods = $place->getConfig('school_periods');
-       	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
     	$absence->school_period = $current_school_period;
-    	 
+    
     	// Instanciate the csrf form
     	$csrfForm = new CsrfForm();
     	$csrfForm->addCsrfElement('csrf');
     	$error = null;
     	$message = null;
-
+    
     	$request = $this->getRequest();
     	if ($request->getPost('category')) {
     		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
     		$csrfForm->setData($request->getPost());
     
     		if ($csrfForm->isValid()) { // CSRF check
-				
-    			$nbCriteria = $request->getPost('nb-criteria');
-    			$criteria = array();
-    			for ($i = 0; $i < $nbCriteria; $i++) {
-    				$criterionId = $request->getPost('criterion-id_'.$i);
-    				$criterionValue = $request->getPost('criterion_'.$i);
-    				$criteria[$criterionId] = $criterionValue;
-    			}
-    			 
+    				
     			// Load the input data
     			$data = array();
     			$data['category'] = $request->getPost('category');
@@ -501,9 +384,9 @@ class StudentController extends AbstractActionController
     			$data['begin_date'] = $request->getPost('begin_date');
     			$data['end_date'] = $request->getPost('end_date');
     			$data['duration'] = $request->getPost('duration');
-				$data['observations'] = $request->getPost('observations');
+    			$data['observations'] = $request->getPost('observations');
     			$data['comment'] = $request->getPost('comment');
-
+    
     			// Atomically save
     			$connection = Absence::getTable()->getAdapter()->getDriver()->getConnection();
     			$connection->beginTransaction();
@@ -532,25 +415,1415 @@ class StudentController extends AbstractActionController
     			}
     		}
     	}
-    	 
+    
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'type' => $type,
-    			'absence' => $absence,
-    			'csrfForm' => $csrfForm,
-    			'error' => $error,
-    			'message' => $message
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'type' => $type,
+    		'absence' => $absence,
+    		'csrfForm' => $csrfForm,
+    		'error' => $error,
+    		'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function addNoteV2Action() {
+    
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    	$places = Place::getList(array());
+    
+    	// Retrieve the type and class
+    	$type = $this->params()->fromRoute('type', null);
+    	$class = $this->params()->fromQuery('class', null);
+    
+    	$note = Note::instanciate('homework', $class);
+    	 
+    	$note->class = $class;
+    
+    	$accounts = [];
+    	$accountIds = $this->params()->fromQuery('accounts');
+    	if ($accountIds) $accountIds = explode(',', $accountIds);
+    	else $accountIds = [];
+    	foreach ($accountIds as $account_id) {
+    		$account = Account::get($account_id);
+    		$accounts[$account_id] = $account;
+    	}
+    	$place = Place::get($account->place_id);
+    	$note->place_id = $account->place_id;
+    
+    	$document = null;
+    
+    	$done_observations = null;
+    	$todo_observations = null;
+    	$event_observations = null;
+    
+    	// Instanciate the csrf form
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    	$request = $this->getRequest();
+    	 
+    	$school_periods = $place->getConfig('school_periods');
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$note->school_period = $current_school_period;
+    
+    	if ($request->isPost()) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			$document_id = $request->getPost('document');
+    			$document = Document::get($document_id);
+    
+    			// Load the note data
+    			$data = array();
+    			$data['place_id'] = $request->getPost('place_id');
+    			$data['category'] = 'homework';
+    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+    			$data['school_period'] = $request->getPost('school_period');
+    			$data['class'] = $request->getPost('class');
+    			$data['subject'] = $request->getPost('subject');
+    			$data['date'] = $request->getPost('date');
+    			$data['target_date'] = $request->getPost('target_date');
+    			$data['document'] = $document_id;
+    			$data['comment'] = $request->getPost('comment');
+    
+    			// Atomically save
+    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+    			$connection->beginTransaction();
+    			try {
+    					
+    				// Done work
+    				if ($request->getPost('done_observations')) {
+    					$data['type'] = 'done-work';
+    					$data['observations'] = $request->getPost('done_observations');
+    					$done_observations = $data['observations'];
+    					$rc = $note->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    
+    					$rc = $note->add();
+    					if ($rc != 'OK') $error = $rc;
+    
+    					// Save the note at the student level
+    					else foreach ($accounts as $account_id => $account) {
+    						$noteLink = NoteLink::instanciate($account_id, $note->id);
+    						$rc = $noteLink->add();
+    						if ($rc != 'OK') {
+    							$connection->rollback();
+    							$error = $rc;
+    						}
+    					}
+    				}
+    
+    				// Todo work
+    				if ($request->getPost('todo_observations')) {
+    					$data['type'] = 'todo-work';
+    					$data['observations'] = $request->getPost('todo_observations');
+    					$todo_observations = $data['observations'];
+    					$rc = $note->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    
+    					$rc = $note->add();
+    					if ($rc != 'OK') $error = $rc;
+    
+    					// Save the note at the student level
+    					else foreach ($accounts as $account_id => $account) {
+    						$noteLink = NoteLink::instanciate($account->id, $note->id);
+    						$rc = $noteLink->add();
+    						if ($rc != 'OK') {
+    							$connection->rollback();
+    							$error = $rc;
+    						}
+    					}
+    				}
+    
+    				// Event
+    				if ($request->getPost('event_observations')) {
+    					$data['type'] = 'event';
+    					$data['observations'] = $request->getPost('event_observations');
+    					$event_observations = $data['observations'];
+    					$rc = $note->loadData($data);
+    					if ($rc != 'OK') throw new \Exception('View error');
+    
+    					$rc = $note->add();
+    					if ($rc != 'OK') $error = $rc;
+    
+    					// Save the note at the student level
+    					else foreach ($accounts as $account_id => $account) {
+    						$noteLink = NoteLink::instanciate($account->id, $note->id);
+    						$rc = $noteLink->add();
+    						if ($rc != 'OK') {
+    							$connection->rollback();
+    							$error = $rc;
+    						}
+    					}
+    				}
+    
+    				if ($error) $connection->rollback();
+    				else {
+    					$connection->commit();
+    					$message = 'OK';
+    				}
+    			}
+    			catch (\Exception $e) {
+    				$connection->rollback();
+    				throw $e;
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'places' => $places,
+    		'type' => $type,
+    		'accounts' => $accounts,
+    		'note' => $note,
+    		'done_observations' => $done_observations,
+    		'todo_observations' => $todo_observations,
+    		'event_observations' => $event_observations,
+    		'document' => $document,
+    		'csrfForm' => $csrfForm,
+    		'error' => $error,
+    		'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function addEvaluationV2Action() {
+    
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    	$places = Place::getList(array());
+    
+    	// Retrieve the class
+    	$class = $this->params()->fromQuery('class', null);
+    
+    	$note = Note::instanciate('note', $class);
+    
+    	$accounts = [];
+    	$accountIds = $this->params()->fromQuery('accounts');
+    	if ($accountIds) $accountIds = explode(',', $accountIds);
+    	else $accountIds = [];
+    	foreach ($accountIds as $account_id) {
+    		$account = Account::get($account_id);
+    		$accounts[$account_id] = $account;
+    	}
+    
+    	$place = Place::get($account->place_id);
+    	$note->place_id = $account->place_id;
+    
+    	// user_story - student_evaluation_teachers: Les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif"
+    	// todo: not compliant to the user story
+    
+    	$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
+    	$where = new Where;
+    	$where->notEqualTo('status', 'deleted');
+    	$where->like('roles', '%teacher%');
+    	$select->where($where);
+    	$cursor = Vcard::getTable()->selectWith($select);
+    	$contact = null;
+    	$teachers = array();
+    	foreach ($cursor as $contact) {
+    		if (	!$account->place_id
+    				||	!array_key_exists('p-pit-admin', $contact->perimeters)
+    				|| 	!array_key_exists('place_id', $contact->perimeters['p-pit-admin'])) {
+    					$teachers[$contact->id] = $contact;
+    				}
+    				else {
+    					foreach ($contact->perimeters['p-pit-admin']['place_id'] as $place_id) {
+    						if ($account->place_id == $place_id) $teachers[$contact->id] = $contact;
+    					}
+    				}
+    	}
+    	if (array_key_exists($context->getContactId(), $teachers)) $note->teacher_id = $context->getContactId();
+    
+    	// user_story - student_evaluation_period: La période est pré-renseignée à la période en cours (en paramètre) mais peut être modifiée (ex. pour effectuer une rétro-saisie sur une période antérieure).
+    	$school_periods = $place->getConfig('school_periods');
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
+    	$note->school_period = $current_school_period;
+    
+    	$request = $this->getRequest();
+    	$csrfForm = new CsrfForm();
+    	$csrfForm->addCsrfElement('csrf');
+    	$error = null;
+    	$message = null;
+    
+    	if ($request->isPost()) {
+    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
+    		$csrfForm->setData($request->getPost());
+    
+    		if ($csrfForm->isValid()) { // CSRF check
+    
+    			// Load the input data
+    			$data = array();
+    			$data['status'] = 'current';
+    			$data['place_id'] = $request->getPost('place_id');
+    
+    			// User story - student_evaluation_teachers:
+    			// Rôle manager: les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif".
+    			// Rôle enseignant: je ne peux pas affecter un autre enseignant que moi-même à l'évaluation.
+    			 
+    			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
+    			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
+    			 
+    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
+    			$data['school_period'] = $request->getPost('school_period');
+    			$data['class'] = $request->getPost('class');
+    			$teacher_id = $request->getPost('teacher_id');
+    			if ($teacher_id) {
+    				$teacher = $teachers[$teacher_id];
+    				$data['teacher_id'] = $teacher->id;
+    			}
+    			$data['level'] = $request->getPost('level');
+    			$data['subject'] = $request->getPost('subject');
+    			$data['date'] = $request->getPost('date');
+    			$data['reference_value'] = $request->getPost('reference_value');
+    			$data['weight'] = $request->getPost('weight');
+    			$data['observations'] = $request->getPost('observations');
+    			$data['comment'] = $request->getPost('comment');
+    
+    			// user_story - student_evaluation_add_student_more_student:
+    			// Si l'évaluation existe déjà (même période, classe, matière, catégorie et date), les étudiants sélectionnés en action groupée sont ajoutés à cette évaluation uniquement s'ils n'y sont pas déjà affectés.
+    			// Si un étudiant est sélectionné mais et déjà affecté à cette évaluation, il est écarté de la sélection et l'utilisateur est averti du rejet.
+    
+    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', 'note', $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
+    			if ($previousNote) $note = $previousNote; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
+    			else $note->links = array();
+    
+    			foreach ($accounts as $account_id => $account) {
+    				$noteLink = NoteLink::instanciate($account->id, null);
+    				$value = $request->getPost('value_'.$account->id);
+    				if ($value == '') $value = null;
+    				$mention = $request->getPost('mention_'.$account->id);
+    				$assessment = $request->getPost('assessment_'.$account->id);
+    				$audit = [];
+    				if ($value !== null || $assessment) {
+    					$noteLink->value = $value;
+    					$noteLink->evaluation = $mention;
+    					$noteLink->assessment = $assessment;
+    					$noteLink->distribution = array();
+    
+    					// todo: Not compliant to the user story. The evaluation for students already linked should not be affected
+    					if (array_key_exists($noteLink->account_id, $note->links)) $note->links[$noteLink->account_id]->delete(null);
+    					$note->links[$noteLink->account_id] = $noteLink;
+    				}
+    			}
+    
+    			// user_story - student_evaluation_group_indicators: L'ajout d'une évaluation ou l'ajout d'étudiants à une évaluation existante entraîne le recalcul automatique de la note inférieure, de la note moyenne et de la note supérieure de l'ensemble des notes à cette évaluation de tous les étudiants qui lui sont affectés. Les étudiants affectés mais non notés n'influencent pas ce calcul.
+    
+    			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+    			foreach ($note->links as $noteLink) {
+    				if ($noteLink->value !== null) {
+    					$noteSum += $noteLink->value;
+    					$noteCount++;
+    					if ($noteLink->value < $lowerNote) $lowerNote = $noteLink->value;
+    					if ($noteLink->value > $higherNote) $higherNote = $noteLink->value;
+    				}
+    			}
+    			if ($noteCount > 0) {
+    				$data['average_note'] = round($noteSum / $noteCount, 2);
+    				$data['lower_note'] = $lowerNote;
+    				$data['higher_note'] = $higherNote;
+    			};
+    			 
+    			if (count($note->links)) {
+    				$rc = $note->loadData($data);
+    				if ($rc == 'Integrity') throw new \Exception('View error');
+    				if ($rc == 'Duplicate') $error = $rc;
+    				else {
+    
+    					// Atomically save
+    					$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+    					$connection->beginTransaction();
+    					try {
+    						if ($note->id) $rc = $note->update(null);
+    						else $rc = $note->add();
+    						if ($rc != 'OK') {
+    							$connection->rollback();
+    							$error = $rc;
+    						}
+    						// Save the note at the student level
+    						else foreach ($note->links as $noteLink) {
+    							if (!$noteLink->id) {
+    								$noteLink->note_id = $note->id;
+    								$rc = $noteLink->add();
+    							}
+    							if ($rc != 'OK') {
+    								$connection->rollback();
+    								$error = $rc;
+    								break;
+    							}
+    						}
+    						if (!$error) {
+    
+    							// user_story - student_evaluation_subject_average:
+    							// L'ajout d'une évaluation ou l'ajout d'étudiants à une évaluation existante entraîne le recalcul automatique de la moyenne de la matière de la période, pour chaque élève affecté à l'évaluation.
+    							// La note de référence des moyennes (ex. /20) est un paramètre global.
+    							// La moyenne par matière calculée est mémorisée pour pouvoir être affichée dans la home étudiant.
+    								
+    							$school_periods = $place->getConfig('school_periods');
+    							$current_school_period = $context->getCurrentPeriod($school_periods);
+    							$note->school_period = $current_school_period;
+    
+    							// Load the input data
+    							$data['level'] = null;
+    							$data['weight'] = 1;
+    							$data['observations'] = null;
+    							$data['comment'] = null;
+    							$data['criteria'] = array();
+    
+    							// Compute the new subject average for the period of all the student linked to the selected place and belonging to the selected class
+    							$newSubjectAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
+    
+    							$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], $data['subject']);
+    							if ($previousReport) $report = $previousReport;
+    							else {
+    								$report = Note::instanciate('report', $class);
+    								$report->links = array();
+    								$report->place_id = $account->place_id;
+    								if (array_key_exists($context->getContactId(), $teachers)) $report->teacher_id = $context->getContactId();
+    							}
+    
+    							foreach ($accounts as $account_id => $account) {
+    									
+    								// Compute the average only for evaluated students in the list
+    								if (array_key_exists($account->id, $newSubjectAverages)) {
+    									$reportLink = NoteLink::instanciate($account->id, null);
+    									$audit = [];
+    									$value = $newSubjectAverages[$account->id]['global']['note'];
+    									$audit = $newSubjectAverages[$account->id]['global']['notes'];
+    									$value = $value * 20 / $context->getConfig('student/parameter/average_computation')['reference_value'];
+    									$reportLink->value = $value;
+    									$reportLink->distribution = array();
+    									foreach ($newSubjectAverages[$account->id] as $categoryId => $category) {
+    										if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+    									}
+    									$reportLink->audit = $audit;
+    
+    									// todo: not delete and add. Update instead
+    
+    									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+    									$report->links[$reportLink->account_id] = $reportLink;
+    								}
+    							}
+    
+    							// user_story - student_evaluation_subject_average_indicators: Le recalcul d'une moyenne par matière de la classe entraîne le recalcul automatique de la moyenne inférieure, de la moyenne des moyennes et de la moyenne supérieure de l'ensemble des moyennes à cette matière de tous les étudiants de la classe.
+    
+    							$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+    							foreach ($report->links as $reportLink) {
+    								if ($reportLink->value !== null) {
+    									$noteSum += $reportLink->value;
+    									$noteCount++;
+    									if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
+    									if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
+    								}
+    							}
+    							if ($noteCount > 0) {
+    								$data['average_note'] = round($noteSum / $noteCount, 2);
+    								$data['lower_note'] = $lowerNote;
+    								$data['higher_note'] = $higherNote;
+    							};
+    
+    							if (count($report->links)) {
+    								$rc = $report->loadData($data);
+    								if ($rc == 'Integrity') throw new \Exception('View error');
+    								if ($rc == 'Duplicate') $error = $rc;
+    								else {
+    									if ($report->id) $rc = $report->update(null);
+    									else $rc = $report->add();
+    									if ($rc != 'OK') {
+    										$connection->rollback();
+    										$error = $rc;
+    									}
+    									// Save the note at the student level
+    									else foreach ($report->links as $reportLink) {
+    										if (!$reportLink->id) {
+    											$reportLink->note_id = $report->id;
+    											$rc = $reportLink->add();
+    										}
+    										if ($rc != 'OK') {
+    											$connection->rollback();
+    											$error = $rc;
+    											break;
+    										}
+    									}
+    								}
+    							}
+    
+    							// user_story - student_evaluation_global_average:
+    							// L'ajout d'une évaluation ou l'ajout d'étudiants à une évaluation existante entraîne le recalcul automatique de moyenne générale de la période, pour chaque élève affecté à l'évaluation.
+    							// La note de référence des moyennes (ex. /20) est un paramètre global.
+    							// La moyenne générale calculée est mémorisée pour pouvoir être affichée dans la home étudiant.
+    
+    							$newGlobalAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class']);
+    							$report->id = null;
+    
+    							$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], 'global'/*, $data['level'], $data['date']*/);
+    							if ($previousReport) $report = $previousReport;
+    							else $report->links = array();
+    
+    							$data['subject'] = 'global';
+    
+    							foreach ($accounts as $account_id => $account) {
+    								if (array_key_exists($account->id, $newGlobalAverages)) {
+    									$reportLink = NoteLink::instanciate($account->id, null);
+    									$audit = [];
+    									$value = $newGlobalAverages[$account->id]['global']['note'];
+    									$audit = $newGlobalAverages[$account->id]['global']['notes'];
+    									$value = $value * 20 / $context->getConfig('student/parameter/average_computation')['reference_value'];
+    									$reportLink->value = $value;
+    									$reportLink->distribution = array();
+    									foreach ($newGlobalAverages[$account->id] as $categoryId => $category) {
+    										if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
+    									}
+    
+    									// todo: not delete and add. Update instead
+    
+    									$reportLink->audit = $audit;
+    									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+    									$report->links[$reportLink->account_id] = $reportLink;
+    								}
+    							}
+    
+    							// user_story - student_evaluation_global_average_indicators: Le recalcul de la moyenne générale de la classe entraîne le recalcul automatique de la moyenne inférieure, de la moyenne des moyennes et de la moyenne supérieure de l'ensemble des moyennes de tous les étudiants de la classe.
+    
+    							$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+    							foreach ($report->links as $reportLink) {
+    								if ($reportLink->value !== null) {
+    									$noteSum += $reportLink->value;
+    									$noteCount++;
+    									if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
+    									if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
+    								}
+    							}
+    							if ($noteCount > 0) {
+    								$data['average_note'] = round($noteSum / $noteCount, 2);
+    								$data['lower_note'] = $lowerNote;
+    								$data['higher_note'] = $higherNote;
+    							};
+    
+    							if (count($report->links)) {
+    								$rc = $report->loadData($data);
+    								if ($rc == 'Integrity') throw new \Exception('View error');
+    								if ($rc == 'Duplicate') $error = $rc;
+    								else {
+    									if ($report->id) $rc = $report->update(null);
+    									else $rc = $report->add();
+    									if ($rc != 'OK') {
+    										$connection->rollback();
+    										$error = $rc;
+    									}
+    									// Save the note at the student level
+    									else foreach ($report->links as $reportLink) {
+    										if (!$reportLink->id) {
+    											$reportLink->note_id = $report->id;
+    											$rc = $reportLink->add();
+    										}
+    										if ($rc != 'OK') {
+    											$connection->rollback();
+    											$error = $rc;
+    											break;
+    										}
+    									}
+    								}
+    							}
+    						}
+    						if (!$error) {
+    							$connection->commit();
+    							$message = 'OK';
+    						}
+    					}
+    					catch (\Exception $e) {
+    						$connection->rollback();
+    						throw $e;
+    					}
+    				}
+    			}
+    		}
+    	}
+    
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'places' => $places,
+    		'current_school_period' => $current_school_period,
+    		'teachers' => $teachers,
+    		'type' => 'note',
+    		'accounts' => $accounts,
+    		'note' => $note,
+    		'csrfForm' => $csrfForm,
+    		'error' => $error,
+    		'message' => $message
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function planningV2Action()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('id');
+    	$account = Account::get($account_id);
+    	$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => ($account) ? $account->id : null), array('force_canonical' => true));
+    
+    	// Return the link list
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'eventsRoute' => $eventsRoute,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function generateAttendance($account, $begin, $place)
+    {
+    	// Retrieve the context and parameters
+    	$context = Context::getCurrent();
+    
+    	// From Query
+    	$groups = $account->groups;
+    
+    	if ($groups) $groups = explode(',', $groups);
+    	$end = date('Y-m-d'); /*$context->getConfig('student/property/school_year/end')*/;
+    
+    	$template = $context->getConfig('commitments/message/' . $account->type . '/attendance');
+    	$addressee = $this->params()->fromQuery('addressee');
+    	if ($addressee) $addressee = Vcard::get($addressee);
+    		
+    	// Retrieve the account description for the type
+    	$eventDescription = Event::getDescription('calendar');
+    	$accountDescription = Account::getDescription($account->type);
+    
+    	$months = array();
+    
+    	// Retrieve the attendance cumul by month
+    	if (!$groups) $events = Event::getList('calendar', ['property_2' => $account->property_7], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'matched_accounts', 'update_time', 'property_1', 'property_2', 'property_3']);
+    	else {
+    		$events = [];
+    		foreach ($groups as $group_id) {
+    			$cursor = Event::getList('calendar', ['groups' => $group_id], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'update_time', 'property_1', 'property_2', 'property_3']);
+    			foreach ($cursor as $event_id => $event) $events[$event_id] = $event;
+    		}
+    	}
+    	$attendances = EventPlanningViewHelper::displayPlanning($eventDescription, $events, $begin, $end);
+    	foreach($attendances as $attendance) {
+    		$key = substr($attendance['begin_date'], 0, 7);
+    		if (!array_key_exists($key, $months)) {
+    			$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
+    		}
+    		$months[$key]['attendances'][] = $attendance;
+    	}
+    
+    	// Retrieve the absence cumul by month
+    	$absences = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
+    	foreach($absences as $absence) {
+    		$key = substr($absence->begin_date, 0, 7);
+    		if (!array_key_exists($key, $months)) {
+    			$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
+    		}
+    		$months[$key]['absences'][] = $absence;
+    		$months[$key]['cumulativeDuration'] += $absence->duration;
+    	}
+    
+    	ksort($months);
+    	$monthsCopy = [];
+    	$sum['group'] = 0;
+    	$sum['individual'] = 0;
+    	$sum['total_presence'] = 0;
+    	$sum['health_absence'] = 0;
+    	$sum['vacation_absence'] = 0;
+    	$sum['necessity_absence'] = 0;
+    	$sum['business_absence'] = 0;
+    	$sum['other_absence'] = 0;
+    	$sum['total_absence'] = 0;
+    	foreach ($months as $month_id => $month) {
+    		$month['period'] = $context->localize(['01' => ['default' => 'Janvier'], '02' => ['default' => 'Février'], '03' => ['default' => 'Mars'], '04' => ['default' => 'Avril'], '05' => ['default' => 'Mai'], '06' => ['default' => 'Juin'], '07' => ['default' => 'Juillet'], '08' => ['default' => 'Août'], '09' => ['default' => 'Septembre'], '10' => ['default' => 'Octobre'], '11' => ['default' => 'Novembre'], '12' => ['default' => 'Décembre']][substr($month_id, 5, 2)]) . ' ' . substr($month_id, 0, 4);
+    		$month['group'] = 0;
+    		$month['individual'] = 0;
+    		$month['health_absence'] = 0;
+    		$month['vacation_absence'] = 0;
+    		$month['necessity_absence'] = 0;
+    		$month['business_absence'] = 0;
+    		$month['other_absence'] = 0;
+    			
+    		// Sum the attendance
+    		foreach ($month['attendances'] as $attendance) {
+    			$month['group'] += $attendance['duration'];
+    		}
+    		$month['total_presence'] = $month['group'] + $month['individual'];
+    
+    		// Sum the absences
+    		foreach ($month['absences'] as $absence) {
+    			if ($absence->motive == 'medical') $month['health_absence'] += $absence->duration;
+    			else $month['other_absence'] += $absence->duration;
+    		}
+    		$month['total_absence'] = $month['health_absence'] + $month['vacation_absence'] + $month['necessity_absence'] + $month['business_absence'] + $month['other_absence'];
+    
+    		// Subtract the cumulative absence time from the attendance
+    		if ($month['group'] > $month['total_absence']) $month['group'] -= $month['total_absence'];
+    		if ($month['total_presence'] > $month['total_absence']) $month['total_presence'] -= $month['total_absence'];
+    
+    		// Compute the sums
+    		$sum['group'] += $month['group'];
+    		$sum['total_presence'] += $month['total_presence'];
+    		$sum['health_absence'] += $month['health_absence'];
+    		$sum['other_absence'] += $month['other_absence'];
+    		$sum['total_absence'] += $month['total_absence'];
+    
+    		// Convert all the time values to hh:mm format
+    		$month['group'] = ((int) ($month['group'] / 60)) . 'h' . sprintf('%02u', $month['group'] % 60) . 'mn';
+    		$month['individual'] = ((int) ($month['individual'] / 60)) . 'h' . sprintf('%02u', $month['individual'] % 60) . 'mn';
+    		$month['total_presence'] = ((int) ($month['total_presence'] / 60)) . 'h' . sprintf('%02u', $month['total_presence'] % 60) . 'mn';
+    		$month['health_absence'] = ((int) ($month['health_absence'] / 60)) . 'h' . sprintf('%02u', $month['health_absence'] % 60) . 'mn';
+    		$month['vacation_absence'] = ((int) ($month['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $month['vacation_absence'] % 60) . 'mn';
+    		$month['necessity_absence'] = ((int) ($month['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $month['necessity_absence'] % 60) . 'mn';
+    		$month['business_absence'] = ((int) ($month['business_absence'] / 60)) . 'h' . sprintf('%02u', $month['business_absence'] % 60) . 'mn';
+    		$month['other_absence'] = ((int) ($month['other_absence'] / 60)) . 'h' . sprintf('%02u', $month['other_absence'] % 60) . 'mn';
+    		$month['total_absence'] = ((int) ($month['total_absence'] / 60)) . 'h' . sprintf('%02u', $month['total_absence'] % 60) . 'mn';
+    		$monthsCopy[] = $month;
+    	}
+    	$months = $monthsCopy;
+    
+    	// Convert all the summed time values to hh:mm format
+    	$sum['group'] = ((int) ($sum['group'] / 60)) . 'h' . sprintf('%02u', $sum['group'] % 60) . 'mn';
+    	$sum['individual'] = ((int) ($sum['individual'] / 60)) . 'h' . sprintf('%02u', $sum['individual'] % 60) . 'mn';
+    	$sum['total_presence'] = ((int) ($sum['total_presence'] / 60)) . 'h' . sprintf('%02u', $sum['total_presence'] % 60) . 'mn';
+    	$sum['health_absence'] = ((int) ($sum['health_absence'] / 60)) . 'h' . sprintf('%02u', $sum['health_absence'] % 60) . 'mn';
+    	$sum['vacation_absence'] = ((int) ($sum['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $sum['vacation_absence'] % 60) . 'mn';
+    	$sum['necessity_absence'] = ((int) ($sum['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $sum['necessity_absence'] % 60) . 'mn';
+    	$sum['business_absence'] = ((int) ($sum['business_absence'] / 60)) . 'h' . sprintf('%02u', $sum['business_absence'] % 60) . 'mn';
+    	$sum['other_absence'] = ((int) ($sum['other_absence'] / 60)) . 'h' . sprintf('%02u', $sum['other_absence'] % 60) . 'mn';
+    	$sum['total_absence'] = ((int) ($sum['total_absence'] / 60)) . 'h' . sprintf('%02u', $sum['total_absence'] % 60) . 'mn';
+    
+    	// Determine the addressee
+    	if (!$addressee) {
+    		if ($account->name != $account->n_last . ', ' . $account->n_first) $message['addressee_name'] = $account->name;
+    		if ($account->contact_1_status == 'invoice') $addressee = $account->contact_1;
+    		elseif ($account->contact_2_status == 'invoice') $addressee = $account->contact_2;
+    		elseif ($account->contact_3_status == 'invoice') $addressee = $account->contact_3;
+    		elseif ($account->contact_4_status == 'invoice') $addressee = $account->contact_4;
+    		elseif ($account->contact_5_status == 'invoice') $addressee = $account->contact_5;
+    	}
+    		
+    	if (!$addressee) {
+    		if ($account->contact_1_status == 'main') $addressee = $account->contact_1;
+    		elseif ($account->contact_2_status == 'main') $addressee = $account->contact_2;
+    		elseif ($account->contact_3_status == 'main') $addressee = $account->contact_3;
+    		elseif ($account->contact_4_status == 'main') $addressee = $account->contact_4;
+    		elseif ($account->contact_5_status == 'main') $addressee = $account->contact_5;
+    	}
+    	if (!$addressee) $addressee = $account->contact_1;
+    
+    	// Initialize the message
+    	$message = ['type' => $account->type];
+    	$message = ['identifier' => 'attendance'];
+    
+    	// Set the header data
+    	if ($place && $place->banner_src) {
+    		$message['headerData']['src'] = $place->banner_src;
+    		$message['headerData']['width'] = ($place->banner_width) ? $place->banner_width : $context->getConfig('corePlace')['properties']['banner_width']['maxValue'];
+    	}
+    	elseif (array_key_exists('advert', $context->getConfig('headerParams'))) {
+    		$message['headerData']['src'] = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['advert'];
+    		$message['headerData']['width'] = $context->getConfig('headerParams')['advert-width'];
+    	}
+    
+    	if ($place->getConfig('commitment/invoice_header')) $message['header'] = $place->getConfig('commitment/invoice_header');
+    	else $message['header'] = $context->getConfig('commitment/invoice_header');
+    
+    	// Add the data to merge with the template at printing time
+    
+    	$message['data'] = [];
+    	foreach ($template['sections'] as $sectionId => $section) {
+    		if ($sectionId == 'months') {
+    			$message['data']['months']['occurrence_number'] = count($months);
+    			$i = 0;
+    			foreach ($months as $month_id => $month) {
+    				foreach ($section['paragraphs'] as $column) {
+    
+    					// Feed the row data
+    					if (array_key_exists('params', $column)) foreach ($column['params'] as $prefixedPropertyId) {
+    						if (strpos($prefixedPropertyId, ':')) {
+    							$arrayPropertyId = explode(':', $prefixedPropertyId);
+    							$prefix = $arrayPropertyId[0];
+    							$propertyId = $arrayPropertyId[1];
+    						}
+    						else {
+    							$prefix = null;
+    							$propertyId = $prefixedPropertyId;
+    						}
+    
+    						$property = null;
+    						if ($prefix && array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
+    							$property = $accountDescription['properties'][$propertyId];
+    							$codedValue = $account->properties[$propertyId];
+    						}
+    						elseif (array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
+    							$property = $accountDescription['properties'][$propertyId];
+    							$codedValue = $account->properties[$propertyId];
+    						}
+    						else $codedValue = $month[$propertyId];
+    
+    						if ($property) {
+    							if ($property['type'] == 'select') $value = $context->localize($property['modalities'][$codedValue]);
+    							elseif ($property['type'] == 'multiselect') {
+    								$codes = $codedValue;
+    								if ($codes) $codes = explode(',', $codes);
+    								else $codes = [];
+    								$value = [];
+    								foreach ($codes as $code) $value[] = $context->localize($property['modalities'][$code]);
+    								$value = implode(',', $value);
+    							}
+    							elseif ($property['type'] == 'date') $value = $context->decodeDate($codedValue);
+    							elseif ($property['type'] == 'number') $value = $context->formatFloat($codedValue, 2);
+    							else $value = $codedValue;
+    							$message['data'][($prefix) ? $prefixedPropertyId . '_' . $i : $prefixedPropertyId] = $value;
+    						}
+    						else $message['data'][($prefix) ? $prefixedPropertyId . '_' . $i : $prefixedPropertyId] = $codedValue;
+    					}
+    				}
+    				$i++;
+    			}
+    
+    			// Feed the sum data
+    			foreach ($section['paragraphs'] as $column) {
+    				if (array_key_exists('sum', $column) && array_key_exists('params', $column['sum'])) foreach ($column['sum']['params'] as $prefixedPropertyId) {
+    					if (strpos($prefixedPropertyId, ':')) {
+    						$arrayPropertyId = explode(':', $prefixedPropertyId);
+    						$prefix = $arrayPropertyId[0];
+    						$propertyId = $arrayPropertyId[1];
+    					}
+    					else {
+    						$prefix = null;
+    						$propertyId = $prefixedPropertyId;
+    					}
+    
+    					$codedValue = $sum[$propertyId];
+    					$message['data'][$prefixedPropertyId] = $codedValue;
+    				}
+    			}
+    		}
+    		else {
+    			if ($section['class'] == 'table') {
+    				$message['data'][$sectionId]['occurrence_number'] = (array_key_exists('occurrence_number', $section)) ? $section['occurrence_number'] : 1;
+    			}
+    			foreach ($section['paragraphs'] as $paragraph) {
+    				if (array_key_exists('params', $paragraph)) foreach ($paragraph['params'] as $propertyId) {
+    					$message['data'][$propertyId] = null;
+    					if (array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
+    						$property = $accountDescription['properties'][$propertyId];
+    						if ($property['type'] == 'select') $value = $context->localize($property['modalities'][$account->properties[$propertyId]]);
+    						elseif ($property['type'] == 'multiselect') {
+    							$codes = $account->properties[$propertyId];
+    							if ($codes) $codes = explode(',', $codes);
+    							else $codes = [];
+    							$value = [];
+    							foreach ($codes as $code) $value[] = $context->localize($property['modalities'][$code]);
+    							$value = implode(',', $value);
+    						}
+    						elseif ($property['type'] == 'date') $value = $context->decodeDate($account->properties[$propertyId]);
+    						elseif ($property['type'] == 'number') $value = $context->formatFloat($account->properties[$propertyId], 2);
+    						else $value = $account->properties[$propertyId];
+    						$message['data'][$propertyId] = $value;
+    					}
+    				}
+    			}
+    		}
+    	}
+    	$message['data']['current_date'] = $context->decodeDate(date('Y-m-d'));
+    	$message['data']['study_manager_name'] = $place->getConfig('study_manager_name');
+    
+    	// Overright the addressee
+    	$message['data']['addressee_n_fn'] = '';
+    	if ($addressee->n_title || $addressee->n_last || $addressee->n_first) {
+    		if ($addressee->n_title) $message['data']['addressee_n_fn'] .= $addressee->n_title.' ';
+    		$message['data']['addressee_n_fn'] .= $addressee->n_last.' ';
+    		$message['data']['addressee_n_fn'] .= $addressee->n_first;
+    	}
+    	if ($addressee->adr_street) $message['data']['addressee_adr_street'] = $addressee->adr_street;
+    	if ($addressee->adr_extended) $message['data']['addressee_adr_extended'] = $addressee->adr_extended;
+    	if ($addressee->adr_post_office_box) $message['data']['customer_adr_post_office_box'] = $addressee->adr_post_office_box;
+    	if ($addressee->adr_zip) $message['data']['addressee_adr_zip'] = $addressee->adr_zip;
+    	if ($addressee->adr_city) $message['data']['addressee_adr_city'] = $addressee->adr_city;
+    	if ($addressee->adr_state) $message['data']['addressee_adr_state'] = $addressee->adr_state;
+    	if ($addressee->adr_country) $message['data']['addressee_adr_country'] = $addressee->adr_country;
+    
+    	// Set the legal footer
+    	$legal_footer_1 = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
+    	if ($legal_footer_1) $message['legal_footer_1'] = $legal_footer_1;
+    	$legal_footer_2 = ($place->legal_footer_2) ? $place->legal_footer_2 : ((array_key_exists('footer_2', $context->getConfig('headerParams'))) ? $context->getConfig('headerParams')['footer_2']['value'] : null);
+    	if ($legal_footer_2) $message['legal_footer_2'] = $legal_footer_2;
+    
+    	// Add the presentation template
+    	$message['template'] = $template;
+    
+    	return $message;
+    }
+    
+    public function generateAttendanceAction()
+    {
+    	// Retrieve the context and parameters
+    	$context = Context::getCurrent();
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+    	$place = Place::get($account->place_id);
+    	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
+    
+    	// Add the presentation template
+    	$attendance = $this->generateAttendance($account, $start_date, $place);
+    
+    	// Render the message in HTML
+    	$html = CommitmentMessageViewHelper::renderHtml($attendance, $place);
+    
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'account_id' => $account_id,
+    		'start_date' => $start_date,
+    		'attendance' => $attendance,
+    		'html' => $html,
     	));
     	$view->setTerminal(true);
     	return $view;
     }
     
-    public function addAbsenceV2Action()
+    public function downloadAttendanceAction()
     {
-    	return $this->addAbsenceAction();
+    	// Retrieve the context, parameters and data
+    	$context = Context::getCurrent();
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+    	$place = Place::get($account->place_id);
+    	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
+    
+    	// Add the presentation template
+    	$attendance = $this->generateAttendance($account, $start_date, $place);
+    
+    	// create new PDF document
+    	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    
+    	CommitmentMessageViewHelper::renderPdf($pdf, $attendance, $place);
+    
+    	$content = $pdf->Output($attendance['identifier'] . '-' . $context->getInstance()->caption . '-' . $account->n_fn . '.pdf', 'I');
+    	return $this->response;
     }
 
+    public function absenceV2Action()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+    	$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'begin_date', 'DESC', 'search', null);
+    	$absences = array();
+    	$absenceCount = 0;
+    	$cumulativeAbsence = 0;
+    	$latenesss = array();
+    	$latenessCount = 0;
+    	$cumulativeLateness = 0;
+    	foreach ($absLates as $absLate) {
+    		if ($absLate->category == 'absence') {
+    			$absences[] = $absLate;
+    			$absenceCount++;
+    			$cumulativeAbsence += $absLate->duration;
+    		}
+    		elseif ($absLate->category =='lateness') {
+    			$latenesss[] = $absLate;
+    			$latenessCount++;
+    			$cumulativeLateness += $absLate->duration;
+    		}
+    	}
+    
+    	$periods = array();
+    	$absLates = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
+    	foreach($absLates as $absLate) {
+    		$key = $absLate->school_year.'.'.$absLate->school_period;
+    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
+    		$periods[$key][] = $absLate;
+    	}
+    	krsort($periods);
+    
+    	// Return the link list
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'account' => $account,
+    		'periods' => $periods,
+    		'absences' => $absences,
+    		'absenceCount' => $absenceCount,
+    		'cumulativeAbsence' => $cumulativeAbsence,
+    		'latenesss' => $latenesss,
+    		'latenessCount' => $latenessCount,
+    		'cumulativeLateness' => $cumulativeLateness,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function homeworkV2Action()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+    	$type = $this->params()->fromQuery('type');
+    	$subject = $this->params()->fromQuery('subject');
+    	$date = $this->params()->fromQuery('date');
+    
+    	$filters = [];
+    	$filters['place_id'] = $account->place_id;
+    	$filters['class'] = $account->property_7;
+    	if ($subject) $filters['subject'] = $subject;
+    	if ($type == 'done-work') $filters['date'] = $date;
+    	elseif (in_array($type, ['todo-work', 'event'])) $filters['target_date'] = $date;
+    
+    	/*		$groups = [];
+    		foreach ($account->groups as $group_id => $unused) $groups[] = $group_id;*/
+    	//		if ($groups) $filters['groups'] = $groups;
+    
+    	$notes = Note::GetList('homework', $type, $filters, 'date', 'DESC', 'search', null);
+    	foreach ($notes as $note) {
+    		$documents = [];
+    		if ($note->document) {
+    			$documentIds = explode(',', $note->document);
+    			foreach ($documentIds as $document_id) {
+    				$document = Document::get($document_id);
+    				$documents[$document->id] = $document->getProperties();
+    			}
+    		}
+    		$note->properties['documents'] = $documents;
+    	}
+    
+    	// Return the link list
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'type' => $type,
+    		'subject' => $subject,
+    		'date' => $date,
+    		'account' => $account,
+    		'notes' => $notes,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function evaluationV2Action()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('id');
+    	$account = Account::get($account_id);
+    	$school_year = $context->getConfig('student/property/school_year/default');
+    	$place = Place::get($account->place_id);
+    	$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+    	$mock = $this->params()->fromRoute('mock');
+    
+    	$periods = array();
+    	$params = array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/);
+    	if ($mock) $params['level'] = "mock";
+    	$notes = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
+    	foreach($notes as $note) {
+    		$key = $note->school_year.'.'.$note->school_period;
+    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
+    		$periods[$key][] = $note;
+    	}
+    	krsort($periods);
+    
+    	// Return the link list
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'account' => $account,
+    		'periods' => $periods,
+    		'mock' => $mock,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function examV2Action()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('id');
+    	$account = Account::get($account_id);
+    	$place = Place::get($account->place_id);
+    
+    	$periods = array();
+    	$notes = NoteLink::GetList('exam', ['account_id' => $account->id], 'date', 'DESC', 'search');
+    	foreach($notes as $note) {
+    		$key = $note->school_year.'.'.$note->level;
+    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
+    		$periods[$key][] = $note;
+    	}
+    	krsort($periods);
+    	foreach ($periods as $periodId => &$period) {
+    		$school_year = substr($periodId, 0, 9);
+    		$level = substr($periodId, 10);
+    		$notes = NoteLink::GetList('note', ['account_id' => $account->id, 'school_year' => $school_year, 'level' => $level], 'date', 'DESC', 'search');
+    		foreach($notes as $note) {
+    			$period[] = $note;
+    		}
+    	}
+    
+    	// Return the link list
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'account' => $account,
+    		'periods' => $periods,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function reportV2Action()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('id');
+    	$account = Account::get($account_id);
+    
+    	$periods = array();
+    	$notes = NoteLink::GetList('report', array('account_id' => $account->id), 'date', 'DESC', 'search');
+    	foreach($notes as $note) {
+    		$key = $note->school_year.'.'.$note->school_period;
+    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
+    		$periods[$key][] = $note;
+    	}
+    	krsort($periods);
+    
+    	// Return the link list
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'account' => $account,
+    		'periods' => $periods,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
+    public function downloadAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    	$category = $this->params()->fromRoute('category');
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+    	$account->properties = $account->getProperties();
+    	if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
+    	elseif ($account->contact_3 && $account->contact_3->adr_street) $addressee = $account->contact_3;
+    	elseif ($account->contact_4 && $account->contact_4->adr_street) $addressee = $account->contact_4;
+    	elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
+    	else $addressee = $account->contact_1;
+    
+    	$school_year = $this->params()->fromRoute('school_year');
+    	if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
+    	$place = Place::get($account->place_id);
+    	$school_period = $this->params()->fromRoute('school_period');
+    	if (!$school_period) {
+    		$school_period = $this->params()->fromRoute('school_period');
+    		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
+    	}
+    	$level = $this->params()->fromRoute('level');
+    
+    	$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search', null);
+    	$absences = array();
+    	$latenesss = array();
+    	$cumulativeAbsence = 0;
+    	$cumulativeLateness = 0;
+    	$absenceCount = 0;
+    	$latenessCount = 0;
+    	foreach ($absLates as $absLate) {
+    		if ($absLate->category == 'absence') {
+    			$absences[] = $absLate;
+    			$cumulativeAbsence += $absLate->duration;
+    			$absenceCount++;
+    		}
+    		elseif ($absLate->category =='lateness') {
+    			$latenesss[] = $absLate;
+    			$cumulativeLateness += $absLate->duration;
+    			$latenessCount++;
+    		}
+    	}
+    	$date = null;
+    	$classSize = null;
+    	if ($category == 'report') {
+    		$averages = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
+    		foreach ($averages as $average) if ($average->subject == 'global') {
+    			$date = $average->date;
+    			$classSize = count(NoteLink::GetList($category, array('note_id' => $average->note_id), 'date', 'DESC', 'search'));
+    		}
+    	}
+    	else $averages = null;
+    
+    	$params = array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period);
+    	if ($level) $params['level'] = $level;
+    	$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+    	if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
+    
+    	// create new PDF document
+    	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize, $absLates, $level);
+    	 
+    	// Close and output PDF document
+    	// This method has several options, check the source code documentation for more information.
+    	$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->name.'.pdf', 'I');
+    	return $this->response;
+    }
+    
+    public function downloadExamAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    	$account_id = (int) $this->params()->fromRoute('account_id');
+    	$account = Account::get($account_id);
+    	$account->properties = $account->getProperties();
+    	if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
+    	elseif ($account->contact_3 && $account->contact_3->adr_street) $addressee = $account->contact_3;
+    	elseif ($account->contact_4 && $account->contact_4->adr_street) $addressee = $account->contact_4;
+    	elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
+    	else $addressee = $account->contact_1;
+    
+    	$school_year = $this->params()->fromRoute('school_year');
+    	if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
+    	$place = Place::get($account->place_id);
+    	$level = $this->params()->fromRoute('level');
+    
+    	$date = null;
+    
+    	$params = array('account_id' => $account_id, 'school_year' => $school_year, 'level' => $level);
+    	$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+    	if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
+    
+    	$classSize = null;
+    	$averages = NoteLink::GetList('exam', array('account_id' => $account_id, 'school_year' => $school_year, 'level' => $level), 'date', 'DESC', 'search');
+    	foreach ($averages as $average) if ($average->subject == 'global') {
+    		$date = $average->date;
+    		$classSize = count(NoteLink::GetList('exam', array('note_id' => $average->note_id), 'date', 'DESC', 'search'));
+    		$notes[] = $average;
+    	}
+    
+    	// create new PDF document
+    	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    
+    	PdfReportViewHelper::render('exam', $pdf, $place, $school_year, $level, $date, $account, $addressee, $notes, $notes, 0, 0, 0, 0, [], [], $classSize, [], $level);
+    		
+    	// Close and output PDF document
+    	// This method has several options, check the source code documentation for more information.
+    	$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->name.'.pdf', 'I');
+    	return $this->response;
+    }
+
+    public function nomad($request, $from, $place_identifier, $limit)
+    {
+    	$context = Context::getCurrent();
+    	$safe = $context->getConfig()['ppitUserSettings']['safe'];
+    	//    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?from='.$from.'&limit='.$limit;
+    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?where={"updatedAt":{"gte":"'.$from.'"},"schoolContactAcceptance":true}';
+    	$client = new Client(
+    			$url,
+    			array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
+    			);
+    	 
+    	$client->setHeaders(array(
+    		'Authorization' => $safe[$context->getInstance()->caption]['nomad'],
+    		'Accept-Encoding' => 'gzip,deflate',
+    	));
+    	$client->setMethod('GET');
+    	$response = $client->send();
+    	$body = $response->getBody();
+    	$leads = json_decode($body, true);
+    	foreach ($leads as $lead) {
+    		echo $lead['id']."\n";
+    
+    		// If the account exists, update it if the contact is a prospect (new status) and the existing account is a suspect
+    		$account = Account::get($lead['id'], 'identifier');
+    		if (!$account) {
+    			$vcard = Vcard::get($lead['email'], 'email');
+    			if ($vcard) $account = Account::get($vcard->id, 'contact_1_id');
+    		}
+    		if ($account && in_array($account->status, ['suspect', 'gone']) && $lead['type'] == 'sponsor') {
+    			$account->status = 'new';
+    			$account->callback_date = date('Y-m-d');
+    			$account->update(null);
+    			continue;
+    		}
+    
+    		$data = [];
+    		if ($place_identifier) $data['place_id'] = Place::get($place_identifier, 'identifier')->id;
+    		$data['identifier'] = $lead['id'];
+    		$data['status'] = (array_key_exists('type', $lead) && $lead['type'] == 'registration') ? 'suspect' : 'new';
+    		$data['origine'] = 'nomad';
+    		$data['callback_date'] = date('Y-m-d');
+    		foreach ($context->getConfig('core_account/nomad/p-pit-studies')['properties'] as $propertyId => $property) {
+    			if (array_key_exists($property, $lead)) $data[$propertyId] = $lead[$property];
+    		}
+    
+    		$levels = ['Terminale' => '1st', '1ère année' => '2nd', '2ème année' => '3rd', '3ème année' => '4th'];
+    		$data['property_10'] = (array_key_exists($lead['levelOfEducation'], $levels)) ? $levels[$lead['levelOfEducation']] : '';
+    
+    		$data['json_property_2'] = $lead['wishedDomain'];
+    		unset($lead['wishedDomain']);
+    		$data['json_property_3'] = $lead['engagements'];
+    		unset($lead['engagements']);
+    		if (array_key_exists('studyChoices', $lead)) {
+    			foreach ($lead['studyChoices'] as $group) {
+    				foreach ($group as $key => $value) {
+    					if ($key == 'name') {
+    						if ($value == 'Alternance') $data['property_15'] = 'part_time';
+    						elseif ($value == 'Formation initiale') $data['property_15'] = 'initial';
+    						else $data['property_15'] = $value;
+    					}
+    				}
+    			}
+    		}
+    		$data['json_property_1'] = $lead;
+    		$data['contact_history'] = 'P-Pit -> Nomad connector';
+    		$account = Account::instanciate('p-pit-studies');
+    		$account->loadAndAdd($data, Account::getConfig('p-pit-studies'));
+    	}
+    	return $this->response;
+    }
+    
+    public function nomadAction() {
+    
+    	$context = Context::getCurrent();
+    	 
+    	// Authentication
+    	if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+    		$this->getResponse()->setStatusCode('401');
+    		return $this->getResponse();
+    	}
+    	 
+    	$request = $this->params()->fromRoute('request');
+    	$date = $this->params()->fromQuery('date');
+    	if (!$date) $date = date('Y-m-d', strtotime(date('Y-m-d').' - 1 days'));
+    	echo 'Extraction date: ' . $date . "\n";
+    	$from = $this->params()->fromRoute('from', $date);
+    	$place_identifier = $this->params()->fromQuery('place_identifier', '');
+    	$limit = $this->params()->fromQuery('limit', 10);
+    	return $this->nomad($request, $from, $place_identifier, $limit);
+    }
+    
+    public function batchNomadAction() { // Deprecated
+    	$context = Context::getCurrent();
+    	$instance_id = $this->params()->fromRoute('instance_id');
+    	$context->updateFromInstanceId($instance_id);
+    	$request = $this->params()->fromRoute('request');
+    	$place_identifier = $this->params()->fromRoute('place_identifier', '');
+    	$limit = $this->params()->fromRoute('limit', 10);
+    	echo date('Y-m-d')."\n";
+    	return $this->nomad($request, date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')), $place_identifier, $limit);
+    }
+    
+/*	public function getConfigProperties($type) {
+		$context = Context::getCurrent();
+		$properties = array();
+		foreach($context->getConfig('core_account/'.$type)['properties'] as $propertyId) {
+			$property = $context->getConfig('core_account/'.$type.'/property/'.$propertyId);
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+			$properties[$propertyId] = $property;
+		}
+		return $properties;
+	}
+
+	public function getVcardProperties() {
+		$context = Context::getCurrent();
+		$properties = array();
+		foreach($context->getConfig('vcard/properties') as $propertyId => $property) {
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+			$properties[$propertyId] = $property;
+		}
+		return $properties;
+	}*/
+/*	
+	public function indexAction()
+    {
+    	$context = Context::getCurrent();
+    	$config = $context->getConfig();
+    	$app = $this->params()->fromRoute('app', 'p-pit-studies');
+    	$place = Place::get($context->getPlaceId());
+
+		$menu = $context->getConfig('menus/'.$app)['entries'];
+    	$currentEntry = $this->params()->fromQuery('entry');
+
+		if ($config['isDemoAccountUpdatable'] || $context->getInstanceId() == 0) $outOfStockCredits = false;
+		elseif ($context->getConfig('credit')['unlimitedCredits']) $outOfStockCredits = false;
+		else {
+			$credit = Credit::get('p-pit-communities', 'type');
+			if (!$credit) $outOfStockCredits = true;
+			else $outOfStockCredits = ($credit->quantity < 0);
+		}
+
+    	return new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getConfig(),
+    			'place' => $place,
+    			'applicationId' => 'p-pit-studies',
+    			'applicationName' => 'P-Pit Studies',
+    			'active' => 'application',
+    			'menu' => $menu,
+    			'currentEntry' => $currentEntry,
+    			'outOfStockCredits' => $outOfStockCredits,
+    	));
+    }*/
+/*    
+	public function studentHomeAction()
+    {
+    	$context = Context::getCurrent();
+    	$account_id = (int) $this->params()->fromRoute('account_id', 0);
+    	$account = Account::get($account_id);
+    	$place = Place::get($account->place_id);
+
+     	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getConfig(),
+     			'account' => $account,
+     			'place' => $place,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+	}*/
+/*
+    public function searchAction()
+    {
+    	return $this->searchV2Action();
+    }*/
+/*    
+    public function listAction()
+    {
+    	return $this->getList();
+    }*/
+/*
+    public function detailAction()
+    {
+    	return $this->detailV2Action();
+    }*/
+/*
+    public function groupAction()
+    {
+    	return $this->groupV2Action();
+    }*/
+/*
+    public function addAbsenceAction() {
+    	return $this->addAbsenceV2Action();
+    }*/
+/*    
     public function addEventAction() { // Deprecated
     
     	// Retrieve the context
@@ -639,8 +1912,8 @@ class StudentController extends AbstractActionController
     public function addEventV2Action()
     {
     	return $this->addEventAction();
-    }
-    
+    }*/
+/*    
     public function addNoteAction() {
 
     	// Retrieve the context
@@ -757,175 +2030,8 @@ class StudentController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
-
-    public function addNoteV2Action() {
-    
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-    	$places = Place::getList(array());
-    
-    	// Retrieve the type and class
-    	$type = $this->params()->fromRoute('type', null);
-    	$class = $this->params()->fromQuery('class', null);
-    
-    	$note = Note::instanciate('homework', $class);
-    	
-    	$note->class = $class;
-    
-    	$accounts = [];
-    	$accountIds = $this->params()->fromQuery('accounts');
-    	if ($accountIds) $accountIds = explode(',', $accountIds);
-    	else $accountIds = [];
-    	foreach ($accountIds as $account_id) {
-    		$account = Account::get($account_id);
-    		$accounts[$account_id] = $account;
-    	}
-    	$place = Place::get($account->place_id);
-    	$note->place_id = $account->place_id;
-
-		$document = null;
-		
-    	$done_observations = null;
-    	$todo_observations = null;
-    	$event_observations = null;
-    	 
-    	// Instanciate the csrf form
-    	$csrfForm = new CsrfForm();
-    	$csrfForm->addCsrfElement('csrf');
-    	$error = null;
-    	$message = null;
-    	$request = $this->getRequest();
-    	
-    	$school_periods = $place->getConfig('school_periods');
-    	$current_school_period = $context->getCurrentPeriod($school_periods);
-    	$note->school_period = $current_school_period;
-    
-    	if ($request->isPost()) {
-    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
-    		$csrfForm->setData($request->getPost());
-    
-    		if ($csrfForm->isValid()) { // CSRF check
-
-    			$document_id = $request->getPost('document');
-    			$document = Document::get($document_id);
-    			 
-    			// Load the note data
-    			$data = array();
-    			$data['place_id'] = $request->getPost('place_id');
-    			$data['category'] = 'homework';
-    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
-    			$data['school_period'] = $request->getPost('school_period');
-    			$data['class'] = $request->getPost('class');
-    			$data['subject'] = $request->getPost('subject');
-    			$data['date'] = $request->getPost('date');
-    			$data['target_date'] = $request->getPost('target_date');
-    			$data['document'] = $document_id;
-    			$data['comment'] = $request->getPost('comment');
-    
-    			// Atomically save
-    			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
-    			$connection->beginTransaction();
-    			try {
-    				 
-    				// Done work
-    				if ($request->getPost('done_observations')) {
-		    			$data['type'] = 'done-work';
-    					$data['observations'] = $request->getPost('done_observations');
-    					$done_observations = $data['observations'];
-    					$rc = $note->loadData($data);
-    					if ($rc != 'OK') throw new \Exception('View error');
-    
-    					$rc = $note->add();
-    					if ($rc != 'OK') $error = $rc;
-    
-    					// Save the note at the student level
-    					else foreach ($accounts as $account_id => $account) {
-    						$noteLink = NoteLink::instanciate($account_id, $note->id);
-    						$rc = $noteLink->add();
-    						if ($rc != 'OK') {
-    							$connection->rollback();
-    							$error = $rc;
-    						}
-    					}
-    				}
-    
-    				// Todo work
-    				if ($request->getPost('todo_observations')) {
-		    			$data['type'] = 'todo-work';
-    					$data['observations'] = $request->getPost('todo_observations');
-    					$todo_observations = $data['observations'];
-    					$rc = $note->loadData($data);
-    					if ($rc != 'OK') throw new \Exception('View error');
-    
-    					$rc = $note->add();
-    					if ($rc != 'OK') $error = $rc;
-    
-    					// Save the note at the student level
-    					else foreach ($accounts as $account_id => $account) {
-    						$noteLink = NoteLink::instanciate($account->id, $note->id);
-    						$rc = $noteLink->add();
-    						if ($rc != 'OK') {
-    							$connection->rollback();
-    							$error = $rc;
-    						}
-    					}
-    				}
-
-    				// Event
-    				if ($request->getPost('event_observations')) {
-    					$data['type'] = 'event';
-    					$data['observations'] = $request->getPost('event_observations');
-    					$event_observations = $data['observations'];
-    					$rc = $note->loadData($data);
-    					if ($rc != 'OK') throw new \Exception('View error');
-    				
-    					$rc = $note->add();
-    					if ($rc != 'OK') $error = $rc;
-    				
-    					// Save the note at the student level
-    					else foreach ($accounts as $account_id => $account) {
-    						$noteLink = NoteLink::instanciate($account->id, $note->id);
-    						$rc = $noteLink->add();
-    						if ($rc != 'OK') {
-    							$connection->rollback();
-    							$error = $rc;
-    						}
-    					}
-    				}
-    				
-    				if ($error) $connection->rollback();
-    				else {
-    					$connection->commit();
-    					$message = 'OK';
-    				}
-    			}
-    			catch (\Exception $e) {
-    				$connection->rollback();
-    				throw $e;
-    			}
-    		}
-    	}
-    
-    	$view = new ViewModel(array(
-    		'context' => $context,
-    		'config' => $context->getconfig(),
-    		'places' => $places,
-    		'type' => $type,
-    		'accounts' => $accounts,
-    		'note' => $note,
-    		'done_observations' => $done_observations,
-    		'todo_observations' => $todo_observations,
-    		'event_observations' => $event_observations,
-    		'document' => $document,
-    		'csrfForm' => $csrfForm,
-    		'error' => $error,
-    		'message' => $message
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-    }
-    
+    }*/
+/*    
     public function addEvaluationAction() {
     
     	// Retrieve the context
@@ -958,6 +2064,8 @@ class StudentController extends AbstractActionController
     	$select->where($where);
     	$cursor = Vcard::getTable()->selectWith($select);
     	$contact = null;
+    	
+    	// Todo : Search the teacher from core_account/teacher instead of vcard with 'teacher' role
     	$teachers = array();
     	foreach ($cursor as $contact) {
     		if (	!$account->place_id
@@ -976,7 +2084,6 @@ class StudentController extends AbstractActionController
     	$school_periods = $place->getConfig('school_periods');
     	$current_school_period = $context->getCurrentPeriod($school_periods);
     	$note->school_period = $current_school_period;
-//echo json_encode(Note::computePeriodAverages($note->place_id, $context->getConfig('student/property/school_year/default'), $class, 'Q1', 'global'), JSON_PRETTY_PRINT); exit;
 
     	// Instanciate the csrf form
 
@@ -1164,347 +2271,8 @@ class StudentController extends AbstractActionController
     	));
     	$view->setTerminal(true);
     	return $view;
-    }
-
-    public function addEvaluationV2Action() {
-    
-    	// Retrieve the context
-    	$context = Context::getCurrent();
-    	$places = Place::getList(array());
-    	 
-    	// Retrieve the class
-    	$class = $this->params()->fromQuery('class', null);
-
-    	$note = Note::instanciate('note', $class);
-    
-    	$accounts = [];
-    	$accountIds = $this->params()->fromQuery('accounts');
-    	if ($accountIds) $accountIds = explode(',', $accountIds);
-    	else $accountIds = [];
-    	foreach ($accountIds as $account_id) {
-    		$account = Account::get($account_id);
-    		$accounts[$account_id] = $account;
-    	}
-    
-    	$place = Place::get($account->place_id);
-    	$note->place_id = $account->place_id;
-    
-    	// Retrieve the teachers
-    	$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
-    	$where = new Where;
-    	$where->notEqualTo('status', 'deleted');
-    	$where->like('roles', '%teacher%');
-    	$select->where($where);
-    	$cursor = Vcard::getTable()->selectWith($select);
-    	$contact = null;
-    	$teachers = array();
-    	foreach ($cursor as $contact) {
-    		if (	!$account->place_id
-    				||	!array_key_exists('p-pit-admin', $contact->perimeters)
-    				|| 	!array_key_exists('place_id', $contact->perimeters['p-pit-admin'])) {
-    					$teachers[$contact->id] = $contact;
-    				}
-    				else {
-    					foreach ($contact->perimeters['p-pit-admin']['place_id'] as $place_id) {
-    						if ($account->place_id == $place_id) $teachers[$contact->id] = $contact;
-    					}
-    				}
-    	}
-    	if (array_key_exists($context->getContactId(), $teachers)) $note->teacher_id = $context->getContactId();
-    
-    	$school_periods = $place->getConfig('school_periods');
-    	$current_school_period = $context->getCurrentPeriod($school_periods);
-    	$note->school_period = $current_school_period;
-    	//echo json_encode(Note::computePeriodAverages($note->place_id, $context->getConfig('student/property/school_year/default'), $class, 'Q1', 'global'), JSON_PRETTY_PRINT); exit;
-    
-    	// Instanciate the csrf form
-    
-    	$request = $this->getRequest();
-    	$csrfForm = new CsrfForm();
-    	$csrfForm->addCsrfElement('csrf');
-    	$error = null;
-    	$message = null;
-    
-    	if ($request->isPost()) {
-    		$csrfForm->setInputFilter((new Csrf('csrf'))->getInputFilter());
-    		$csrfForm->setData($request->getPost());
-    
-    		if ($csrfForm->isValid()) { // CSRF check
-    
-    			// Load the input data
-    			$data = array();
-    			$data['status'] = 'current';
-    			$data['place_id'] = $request->getPost('place_id');
-    			if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
-    			if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
-    			$data['school_year'] = $context->getConfig('student/property/school_year/default');
-    			$data['school_period'] = $request->getPost('school_period');
-    			$data['class'] = $request->getPost('class');
-    			$teacher_id = $request->getPost('teacher_id');
-    			if ($teacher_id) {
-    				$teacher = $teachers[$teacher_id];
-    				$data['teacher_id'] = $teacher->id;
-    			}
-    			$data['level'] = $request->getPost('level');
-    			$data['subject'] = $request->getPost('subject');
-    			$data['date'] = $request->getPost('date');
-    			$data['reference_value'] = $request->getPost('reference_value');
-    			$data['weight'] = $request->getPost('weight');
-    			$data['observations'] = $request->getPost('observations');
-    			$data['comment'] = $request->getPost('comment');
-    			 
-    			// Retrieve the possibly existing evaluation (same year, class, period, subject, category and date)
-    			// So it is possible to add students to it, and recompute the class average
-    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', 'note', $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
-    			if ($previousNote) $note = $previousNote; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
-    			else $note->links = array();
-
-    			// Création uniquement
-    			// Create (or update) the note link that handles the note or average for each selected student
-    			foreach ($accounts as $account_id => $account) {
-    				$noteLink = NoteLink::instanciate($account->id, null);
-    				$value = $request->getPost('value_'.$account->id);
-    				if ($value == '') $value = null;
-    				$mention = $request->getPost('mention_'.$account->id);
-    				$assessment = $request->getPost('assessment_'.$account->id);
-    				$audit = [];
-    				if ($value !== null || $assessment) {
-    					$noteLink->value = $value;
-    					$noteLink->evaluation = $mention;
-    					$noteLink->assessment = $assessment;
-    					$noteLink->distribution = array();
-    					if (array_key_exists($noteLink->account_id, $note->links)) $note->links[$noteLink->account_id]->delete(null);
-    					$note->links[$noteLink->account_id] = $noteLink;
-    				}
-    			}
-    			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
-    			foreach ($note->links as $noteLink) {
-    				if ($noteLink->value !== null) {
-    					$noteSum += $noteLink->value;
-    					$noteCount++;
-    					if ($noteLink->value < $lowerNote) $lowerNote = $noteLink->value;
-    					if ($noteLink->value > $higherNote) $higherNote = $noteLink->value;
-    				}
-    			}
-    			if ($noteCount > 0) {
-    				$data['average_note'] = round($noteSum / $noteCount, 2);
-    				$data['lower_note'] = $lowerNote;
-    				$data['higher_note'] = $higherNote;
-    			};
-    			if (count($note->links)) {
-    				$rc = $note->loadData($data);
-    				if ($rc == 'Integrity') throw new \Exception('View error');
-    				if ($rc == 'Duplicate') $error = $rc;
-    				else {
-    
-    					// Atomically save
-    					$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
-    					$connection->beginTransaction();
-    					try {
-    						if ($note->id) $rc = $note->update(null);
-    						else $rc = $note->add();
-    						if ($rc != 'OK') {
-    							$connection->rollback();
-    							$error = $rc;
-    						}
-    						// Save the note at the student level
-    						else foreach ($note->links as $noteLink) {
-    							if (!$noteLink->id) {
-    								$noteLink->note_id = $note->id;
-    								$rc = $noteLink->add();
-    							}
-    							if ($rc != 'OK') {
-    								$connection->rollback();
-    								$error = $rc;
-    								break;
-    							}
-    						}
-    						if (!$error) {
-								// Create or update the reports, per subject and global
-
-								// Retrieve the possibly existing report (same year, class, period, subject)
-								// So it is possible to add students to it, and recompute the group average
-
-								$report = Note::instanciate('report', $class);
-								$report->place_id = $account->place_id;
-								if (array_key_exists($context->getContactId(), $teachers)) $report->teacher_id = $context->getContactId();
-    
-								$school_periods = $place->getConfig('school_periods');
-								$current_school_period = $context->getCurrentPeriod($school_periods);
-								$note->school_period = $current_school_period;
-
-								// Load the input data
-								$data['level'] = null;
-								$data['reference_value'] = 20;
-								$data['weight'] = 1;
-								$data['observations'] = null;
-								$data['comment'] = null;
-								$data['criteria'] = array();
-
-								// Compute the new subject average for the period
-								$newSubjectAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class'], $data['school_period'], $data['subject']);
-
-								$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], $data['subject']/*, $data['level'], $data['date']*/);
-								if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
-								else $report->links = array();
-								
-								foreach ($accounts as $account_id => $account) {
-									
-									// Compute the average only for evaluated students in the list
-									if (array_key_exists($account->id, $newSubjectAverages)) {
-										$reportLink = NoteLink::instanciate($account->id, null);
-										$audit = [];
-										$value = $newSubjectAverages[$account->id]['global']['note'];
-										$audit = $newSubjectAverages[$account->id]['global']['notes'];
-										$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
-										$reportLink->value = $value;
-										$reportLink->distribution = array();
-										foreach ($newSubjectAverages[$account->id] as $categoryId => $category) {
-											if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
-										}
-										$reportLink->audit = $audit;
-										if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
-										$report->links[$reportLink->account_id] = $reportLink;
-									}
-								}
-								$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
-								foreach ($report->links as $reportLink) {
-									if ($reportLink->value !== null) {
-										$noteSum += $reportLink->value;
-										$noteCount++;
-										if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
-										if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
-									}
-								}
-								if ($noteCount > 0) {
-									$data['average_note'] = round($noteSum / $noteCount, 2);
-									$data['lower_note'] = $lowerNote;
-									$data['higher_note'] = $higherNote;
-								};
-								if (count($report->links)) {
-									$rc = $report->loadData($data);
-									if ($rc == 'Integrity') throw new \Exception('View error');
-									if ($rc == 'Duplicate') $error = $rc;
-									else {
-										if ($report->id) $rc = $report->update(null);
-										else $rc = $report->add();
-										if ($rc != 'OK') {
-											$connection->rollback();
-											$error = $rc;
-										}
-										// Save the note at the student level
-										else foreach ($report->links as $reportLink) {
-											if (!$reportLink->id) {
-												$reportLink->note_id = $report->id;
-												$rc = $reportLink->add();
-											}
-											if ($rc != 'OK') {
-												$connection->rollback();
-												$error = $rc;
-												break;
-											}
-										}
-									}
-								}
-								
-								// Compute the new global average
-								$newGlobalAverages = Note::computePeriodAverages($data['place_id'], $data['school_year'], $data['class']);
-								$report->id = null;
-
-								$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $data['school_year'], $data['school_period'], 'global'/*, $data['level'], $data['date']*/);
-								if ($previousReport) $report = $previousReport; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
-								else $report->links = array();
-								
-								$data['subject'] = 'global';
-								
-								foreach ($accounts as $account_id => $account) {
-									if (array_key_exists($account->id, $newGlobalAverages)) {
-										$reportLink = NoteLink::instanciate($account->id, null);
-										$audit = [];
-	    			    				$value = $newGlobalAverages[$account->id]['global']['note'];
-										$audit = $newGlobalAverages[$account->id]['global']['notes'];
-										$value = $value * $data['reference_value'] / $context->getConfig('student/parameter/average_computation')['reference_value'];
-										$reportLink->value = $value;
-										$reportLink->distribution = array();
-										foreach ($newGlobalAverages[$account->id] as $categoryId => $category) {
-											if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
-										}
-										$reportLink->audit = $audit;
-										if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
-										$report->links[$reportLink->account_id] = $reportLink;
-									}
-								}
-								$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
-								foreach ($report->links as $reportLink) {
-									if ($reportLink->value !== null) {
-										$noteSum += $reportLink->value;
-										$noteCount++;
-										if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
-										if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
-									}
-								}
-								if ($noteCount > 0) {
-									$data['average_note'] = round($noteSum / $noteCount, 2);
-									$data['lower_note'] = $lowerNote;
-									$data['higher_note'] = $higherNote;
-								};
-								if (count($report->links)) {
-									$rc = $report->loadData($data);
-									if ($rc == 'Integrity') throw new \Exception('View error');
-									if ($rc == 'Duplicate') $error = $rc;
-									else {
-										if ($report->id) $rc = $report->update(null);
-										else $rc = $report->add();
-										if ($rc != 'OK') {
-											$connection->rollback();
-											$error = $rc;
-										}
-										// Save the note at the student level
-										else foreach ($report->links as $reportLink) {
-											if (!$reportLink->id) {
-												$reportLink->note_id = $report->id;
-												$rc = $reportLink->add();
-											}
-											if ($rc != 'OK') {
-												$connection->rollback();
-												$error = $rc;
-												break;
-											}
-										}
-									}
-								}
-    						}
-							if (!$error) {
-								$connection->commit();
-								$message = 'OK';
-							}
-    					}
-    					catch (\Exception $e) {
-    						$connection->rollback();
-    						throw $e;
-    					}
-    				}
-    			}
-    		}
-    	}
-    
-    	$view = new ViewModel(array(
-    		'context' => $context,
-    		'config' => $context->getconfig(),
-    		'places' => $places,
-    		'current_school_period' => $current_school_period,
-    		'teachers' => $teachers,
-    		'type' => 'note',
-    		'accounts' => $accounts,
-    		'note' => $note,
-    		'csrfForm' => $csrfForm,
-    		'error' => $error,
-    		'message' => $message
-    	));
-    	$view->setTerminal(true);
-    	return $view;
-    }
-        
+    }*/
+/*        
     public function addNotificationAction() {
     
     	// Retrieve the context
@@ -1741,26 +2509,8 @@ class StudentController extends AbstractActionController
 		));
 		$view->setTerminal(true);
 		return $view;
-	}
-
-	public function planningV2Action()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
-		$eventsRoute = $this->url()->fromRoute('studentEvent/planning', array('id' => ($account) ? $account->id : null), array('force_canonical' => true));
-
-		// Return the link list
-		$view = new ViewModel(array(
-				'context' => $context,
-				'eventsRoute' => $eventsRoute,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-	
+	}*/
+/*
 	public function fileAction()
 	{
 		$context = Context::getCurrent();
@@ -1800,340 +2550,8 @@ class StudentController extends AbstractActionController
 		$link = $dropboxClient->createTemporaryDirectLink($dropbox['folders']['students'].'/'.$document);
 		if ($link[0]) return $this->redirect()->toUrl($link[0]);
 		else return $this->response;
-	}
-
-	public function generateAttendance($account, $begin, $place)
-	{
-		// Retrieve the context and parameters
-		$context = Context::getCurrent();
-	
-		// From Query
-		$groups = $account->groups;
-
-		if ($groups) $groups = explode(',', $groups);
-		$end = date('Y-m-d'); /*$context->getConfig('student/property/school_year/end')*/;
-		
-		$template = $context->getConfig('commitments/message/' . $account->type . '/attendance');
-		$addressee = $this->params()->fromQuery('addressee');
-		if ($addressee) $addressee = Vcard::get($addressee);
-		 
-		// Retrieve the account description for the type
-    	$eventDescription = Event::getDescription('calendar');
-    	$accountDescription = Account::getDescription($account->type);
-    	 
-    	$months = array();
-
-		// Retrieve the attendance cumul by month
-		if (!$groups) $events = Event::getList('calendar', ['property_2' => $account->property_7], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'matched_accounts', 'update_time', 'property_1', 'property_2', 'property_3']);
-		else {
-			$events = [];
-			foreach ($groups as $group_id) {
-				$cursor = Event::getList('calendar', ['groups' => $group_id], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'update_time', 'property_1', 'property_2', 'property_3']);
-				foreach ($cursor as $event_id => $event) $events[$event_id] = $event;
-			}
-		}
-		$attendances = EventPlanningViewHelper::displayPlanning($eventDescription, $events, $begin, $end);
-		foreach($attendances as $attendance) {
-			$key = substr($attendance['begin_date'], 0, 7);
-			if (!array_key_exists($key, $months)) {
-				$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
-			}
-			$months[$key]['attendances'][] = $attendance;
-		}
-		
-		// Retrieve the absence cumul by month
-		$absences = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
-		foreach($absences as $absence) {
-			$key = substr($absence->begin_date, 0, 7);
-			if (!array_key_exists($key, $months)) {
-				$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
-			}
-			$months[$key]['absences'][] = $absence;
-			$months[$key]['cumulativeDuration'] += $absence->duration;
-		}
-
-		ksort($months);
-		$monthsCopy = [];
-		$sum['group'] = 0;
-		$sum['individual'] = 0;
-		$sum['total_presence'] = 0;
-		$sum['health_absence'] = 0;
-		$sum['vacation_absence'] = 0;
-		$sum['necessity_absence'] = 0;
-		$sum['business_absence'] = 0;
-		$sum['other_absence'] = 0;
-		$sum['total_absence'] = 0;
-		foreach ($months as $month_id => $month) {
-			$month['period'] = $context->localize(['01' => ['default' => 'Janvier'], '02' => ['default' => 'Février'], '03' => ['default' => 'Mars'], '04' => ['default' => 'Avril'], '05' => ['default' => 'Mai'], '06' => ['default' => 'Juin'], '07' => ['default' => 'Juillet'], '08' => ['default' => 'Août'], '09' => ['default' => 'Septembre'], '10' => ['default' => 'Octobre'], '11' => ['default' => 'Novembre'], '12' => ['default' => 'Décembre']][substr($month_id, 5, 2)]) . ' ' . substr($month_id, 0, 4);
-			$month['group'] = 0;
-			$month['individual'] = 0;
-			$month['health_absence'] = 0;
-			$month['vacation_absence'] = 0;
-			$month['necessity_absence'] = 0;
-			$month['business_absence'] = 0;
-			$month['other_absence'] = 0;
-			
-			// Sum the attendance
-			foreach ($month['attendances'] as $attendance) {
-				$month['group'] += $attendance['duration'];
-			}
-			$month['total_presence'] = $month['group'] + $month['individual'];
-				
-			// Sum the absences
-			foreach ($month['absences'] as $absence) {
-				if ($absence->motive == 'medical') $month['health_absence'] += $absence->duration;
-				else $month['other_absence'] += $absence->duration;
-			}
-			$month['total_absence'] = $month['health_absence'] + $month['vacation_absence'] + $month['necessity_absence'] + $month['business_absence'] + $month['other_absence'];
-
-			// Subtract the cumulative absence time from the attendance
-			if ($month['group'] > $month['total_absence']) $month['group'] -= $month['total_absence'];
-			if ($month['total_presence'] > $month['total_absence']) $month['total_presence'] -= $month['total_absence'];
-
-			// Compute the sums
-			$sum['group'] += $month['group'];
-			$sum['total_presence'] += $month['total_presence'];
-			$sum['health_absence'] += $month['health_absence'];
-			$sum['other_absence'] += $month['other_absence'];
-			$sum['total_absence'] += $month['total_absence'];
-
-			// Convert all the time values to hh:mm format
-			$month['group'] = ((int) ($month['group'] / 60)) . 'h' . sprintf('%02u', $month['group'] % 60) . 'mn';
-			$month['individual'] = ((int) ($month['individual'] / 60)) . 'h' . sprintf('%02u', $month['individual'] % 60) . 'mn';
-			$month['total_presence'] = ((int) ($month['total_presence'] / 60)) . 'h' . sprintf('%02u', $month['total_presence'] % 60) . 'mn';
-			$month['health_absence'] = ((int) ($month['health_absence'] / 60)) . 'h' . sprintf('%02u', $month['health_absence'] % 60) . 'mn';
-			$month['vacation_absence'] = ((int) ($month['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $month['vacation_absence'] % 60) . 'mn';
-			$month['necessity_absence'] = ((int) ($month['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $month['necessity_absence'] % 60) . 'mn';
-			$month['business_absence'] = ((int) ($month['business_absence'] / 60)) . 'h' . sprintf('%02u', $month['business_absence'] % 60) . 'mn';
-			$month['other_absence'] = ((int) ($month['other_absence'] / 60)) . 'h' . sprintf('%02u', $month['other_absence'] % 60) . 'mn';
-			$month['total_absence'] = ((int) ($month['total_absence'] / 60)) . 'h' . sprintf('%02u', $month['total_absence'] % 60) . 'mn';
-			$monthsCopy[] = $month;
-		}
-		$months = $monthsCopy;
-
-		// Convert all the summed time values to hh:mm format
-		$sum['group'] = ((int) ($sum['group'] / 60)) . 'h' . sprintf('%02u', $sum['group'] % 60) . 'mn';
-		$sum['individual'] = ((int) ($sum['individual'] / 60)) . 'h' . sprintf('%02u', $sum['individual'] % 60) . 'mn';
-		$sum['total_presence'] = ((int) ($sum['total_presence'] / 60)) . 'h' . sprintf('%02u', $sum['total_presence'] % 60) . 'mn';
-		$sum['health_absence'] = ((int) ($sum['health_absence'] / 60)) . 'h' . sprintf('%02u', $sum['health_absence'] % 60) . 'mn';
-		$sum['vacation_absence'] = ((int) ($sum['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $sum['vacation_absence'] % 60) . 'mn';
-		$sum['necessity_absence'] = ((int) ($sum['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $sum['necessity_absence'] % 60) . 'mn';
-		$sum['business_absence'] = ((int) ($sum['business_absence'] / 60)) . 'h' . sprintf('%02u', $sum['business_absence'] % 60) . 'mn';
-		$sum['other_absence'] = ((int) ($sum['other_absence'] / 60)) . 'h' . sprintf('%02u', $sum['other_absence'] % 60) . 'mn';
-		$sum['total_absence'] = ((int) ($sum['total_absence'] / 60)) . 'h' . sprintf('%02u', $sum['total_absence'] % 60) . 'mn';
-		
-		// Determine the addressee
-		if (!$addressee) {
-			if ($account->name != $account->n_last . ', ' . $account->n_first) $message['addressee_name'] = $account->name;
-			if ($account->contact_1_status == 'invoice') $addressee = $account->contact_1;
-			elseif ($account->contact_2_status == 'invoice') $addressee = $account->contact_2;
-			elseif ($account->contact_3_status == 'invoice') $addressee = $account->contact_3;
-			elseif ($account->contact_4_status == 'invoice') $addressee = $account->contact_4;
-			elseif ($account->contact_5_status == 'invoice') $addressee = $account->contact_5;
-		}
-		 
-		if (!$addressee) {
-			if ($account->contact_1_status == 'main') $addressee = $account->contact_1;
-			elseif ($account->contact_2_status == 'main') $addressee = $account->contact_2;
-			elseif ($account->contact_3_status == 'main') $addressee = $account->contact_3;
-			elseif ($account->contact_4_status == 'main') $addressee = $account->contact_4;
-			elseif ($account->contact_5_status == 'main') $addressee = $account->contact_5;
-		}
-		if (!$addressee) $addressee = $account->contact_1;
-	
-		// Initialize the message
-		$message = ['type' => $account->type];
-		$message = ['identifier' => 'attendance'];
-	
-		// Set the header data
-		if ($place && $place->banner_src) {
-			$message['headerData']['src'] = $place->banner_src;
-			$message['headerData']['width'] = ($place->banner_width) ? $place->banner_width : $context->getConfig('corePlace')['properties']['banner_width']['maxValue'];
-		}
-		elseif (array_key_exists('advert', $context->getConfig('headerParams'))) {
-			$message['headerData']['src'] = 'logos/'.$context->getInstance()->caption.'/'.$context->getConfig('headerParams')['advert'];
-			$message['headerData']['width'] = $context->getConfig('headerParams')['advert-width'];
-		}
-	
-		if ($place->getConfig('commitment/invoice_header')) $message['header'] = $place->getConfig('commitment/invoice_header');
-		else $message['header'] = $context->getConfig('commitment/invoice_header');
-	
-		// Add the data to merge with the template at printing time
-
-		$message['data'] = [];
-		foreach ($template['sections'] as $sectionId => $section) {
-			if ($sectionId == 'months') {
-				$message['data']['months']['occurrence_number'] = count($months);
-				$i = 0;
-				foreach ($months as $month_id => $month) {
-					foreach ($section['paragraphs'] as $column) {
-						
-						// Feed the row data
-						if (array_key_exists('params', $column)) foreach ($column['params'] as $prefixedPropertyId) {
-							if (strpos($prefixedPropertyId, ':')) {
-								$arrayPropertyId = explode(':', $prefixedPropertyId);
-								$prefix = $arrayPropertyId[0];
-								$propertyId = $arrayPropertyId[1];
-							}
-							else {
-								$prefix = null;
-								$propertyId = $prefixedPropertyId;
-							}
-		
-							$property = null;
-							if ($prefix && array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
-								$property = $accountDescription['properties'][$propertyId];
-								$codedValue = $account->properties[$propertyId];
-							}
-							elseif (array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
-								$property = $accountDescription['properties'][$propertyId];
-								$codedValue = $account->properties[$propertyId];
-							}
-							else $codedValue = $month[$propertyId];
-
-							if ($property) {
-								if ($property['type'] == 'select') $value = $context->localize($property['modalities'][$codedValue]);
-								elseif ($property['type'] == 'multiselect') {
-									$codes = $codedValue;
-									if ($codes) $codes = explode(',', $codes);
-									else $codes = [];
-									$value = [];
-									foreach ($codes as $code) $value[] = $context->localize($property['modalities'][$code]);
-									$value = implode(',', $value);
-								}
-								elseif ($property['type'] == 'date') $value = $context->decodeDate($codedValue);
-								elseif ($property['type'] == 'number') $value = $context->formatFloat($codedValue, 2);
-								else $value = $codedValue;
-								$message['data'][($prefix) ? $prefixedPropertyId . '_' . $i : $prefixedPropertyId] = $value;
-							}
-							else $message['data'][($prefix) ? $prefixedPropertyId . '_' . $i : $prefixedPropertyId] = $codedValue;
-						}
-					}
-					$i++;
-				}
-				
-				// Feed the sum data
-				foreach ($section['paragraphs'] as $column) {
-					if (array_key_exists('sum', $column) && array_key_exists('params', $column['sum'])) foreach ($column['sum']['params'] as $prefixedPropertyId) {
-						if (strpos($prefixedPropertyId, ':')) {
-							$arrayPropertyId = explode(':', $prefixedPropertyId);
-							$prefix = $arrayPropertyId[0];
-							$propertyId = $arrayPropertyId[1];
-						}
-						else {
-							$prefix = null;
-							$propertyId = $prefixedPropertyId;
-						}
-	
-						$codedValue = $sum[$propertyId];
-						$message['data'][$prefixedPropertyId] = $codedValue;
-					}
-				}
-			}
-			else {
-				if ($section['class'] == 'table') {
-					$message['data'][$sectionId]['occurrence_number'] = (array_key_exists('occurrence_number', $section)) ? $section['occurrence_number'] : 1;
-				}
-				foreach ($section['paragraphs'] as $paragraph) {
-					if (array_key_exists('params', $paragraph)) foreach ($paragraph['params'] as $propertyId) {
-						$message['data'][$propertyId] = null;
-						if (array_key_exists($propertyId, $account->properties) && $account->properties[$propertyId]) {
-							$property = $accountDescription['properties'][$propertyId];
-							if ($property['type'] == 'select') $value = $context->localize($property['modalities'][$account->properties[$propertyId]]);
-							elseif ($property['type'] == 'multiselect') {
-								$codes = $account->properties[$propertyId];
-								if ($codes) $codes = explode(',', $codes);
-								else $codes = [];
-								$value = [];
-								foreach ($codes as $code) $value[] = $context->localize($property['modalities'][$code]);
-								$value = implode(',', $value);
-							}
-							elseif ($property['type'] == 'date') $value = $context->decodeDate($account->properties[$propertyId]);
-							elseif ($property['type'] == 'number') $value = $context->formatFloat($account->properties[$propertyId], 2);
-							else $value = $account->properties[$propertyId];
-							$message['data'][$propertyId] = $value;
-						}
-					}
-				}
-			}
-		}
-		$message['data']['current_date'] = $context->decodeDate(date('Y-m-d'));
-		$message['data']['study_manager_name'] = $place->getConfig('study_manager_name');
-		
-		// Overright the addressee
-		$message['data']['addressee_n_fn'] = '';
-		if ($addressee->n_title || $addressee->n_last || $addressee->n_first) {
-			if ($addressee->n_title) $message['data']['addressee_n_fn'] .= $addressee->n_title.' ';
-			$message['data']['addressee_n_fn'] .= $addressee->n_last.' ';
-			$message['data']['addressee_n_fn'] .= $addressee->n_first;
-		}
-		if ($addressee->adr_street) $message['data']['addressee_adr_street'] = $addressee->adr_street;
-		if ($addressee->adr_extended) $message['data']['addressee_adr_extended'] = $addressee->adr_extended;
-		if ($addressee->adr_post_office_box) $message['data']['customer_adr_post_office_box'] = $addressee->adr_post_office_box;
-		if ($addressee->adr_zip) $message['data']['addressee_adr_zip'] = $addressee->adr_zip;
-		if ($addressee->adr_city) $message['data']['addressee_adr_city'] = $addressee->adr_city;
-		if ($addressee->adr_state) $message['data']['addressee_adr_state'] = $addressee->adr_state;
-		if ($addressee->adr_country) $message['data']['addressee_adr_country'] = $addressee->adr_country;
-	
-		// Set the legal footer
-		$legal_footer_1 = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
-		if ($legal_footer_1) $message['legal_footer_1'] = $legal_footer_1;
-		$legal_footer_2 = ($place->legal_footer_2) ? $place->legal_footer_2 : ((array_key_exists('footer_2', $context->getConfig('headerParams'))) ? $context->getConfig('headerParams')['footer_2']['value'] : null);
-		if ($legal_footer_2) $message['legal_footer_2'] = $legal_footer_2;
-	
-		// Add the presentation template
-		$message['template'] = $template;
-		
-		return $message;
-	}
-	
-	public function generateAttendanceAction()
-	{
-		// Retrieve the context and parameters
-		$context = Context::getCurrent();
-		$account_id = (int) $this->params()->fromRoute('account_id');
-		$account = Account::get($account_id);
-		$place = Place::get($account->place_id);
-		$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
-		
-		// Add the presentation template
-		$attendance = $this->generateAttendance($account, $start_date, $place);
-		
-		// Render the message in HTML
-		$html = CommitmentMessageViewHelper::renderHtml($attendance, $place);
-
-		$view = new ViewModel(array(
-			'context' => $context,
-			'account_id' => $account_id,
-			'start_date' => $start_date,
-			'attendance' => $attendance,
-			'html' => $html,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-
-	public function downloadAttendanceAction()
-	{
-		// Retrieve the context, parameters and data
-		$context = Context::getCurrent();
-		$account_id = (int) $this->params()->fromRoute('account_id');
-		$account = Account::get($account_id);
-		$place = Place::get($account->place_id);
-		$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
-		
-		// Add the presentation template
-		$attendance = $this->generateAttendance($account, $start_date, $place);
-		
-		// create new PDF document
-		$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-	
-		CommitmentMessageViewHelper::renderPdf($pdf, $attendance, $place);
-	
-		$content = $pdf->Output($attendance['identifier'] . '-' . $context->getInstance()->caption . '-' . $account->n_fn . '.pdf', 'I');
-		return $this->response;
-	}
-	
+	}*/
+/*	
 	public function absenceAction()
 	{
 		// Retrieve the context
@@ -2185,61 +2603,8 @@ class StudentController extends AbstractActionController
 		));
 		$view->setTerminal(true);
 		return $view;
-	}
-
-	public function absenceV2Action()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = (int) $this->params()->fromRoute('account_id');
-		$account = Account::get($account_id);
-		$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'begin_date', 'DESC', 'search', null);
-		$absences = array();
-		$absenceCount = 0;
-		$cumulativeAbsence = 0;
-		$latenesss = array();
-		$latenessCount = 0;
-		$cumulativeLateness = 0;
-		foreach ($absLates as $absLate) {
-			if ($absLate->category == 'absence') {
-				$absences[] = $absLate;
-				$absenceCount++;
-				$cumulativeAbsence += $absLate->duration;
-			}
-			elseif ($absLate->category =='lateness') {
-				$latenesss[] = $absLate;
-				$latenessCount++;
-				$cumulativeLateness += $absLate->duration;
-			}
-		}
-	
-		$periods = array();
-		$absLates = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
-		foreach($absLates as $absLate) {
-			$key = $absLate->school_year.'.'.$absLate->school_period;
-			if (!array_key_exists($key, $periods)) $periods[$key] = array();
-			$periods[$key][] = $absLate;
-		}
-		krsort($periods);
-	
-		// Return the link list
-		$view = new ViewModel(array(
-			'context' => $context,
-			'config' => $context->getconfig(),
-			'account' => $account,
-			'periods' => $periods,
-			'absences' => $absences,
-			'absenceCount' => $absenceCount,
-			'cumulativeAbsence' => $cumulativeAbsence,
-			'latenesss' => $latenesss,
-			'latenessCount' => $latenessCount,
-			'cumulativeLateness' => $cumulativeLateness,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-	
+	}*/
+/*	
 	public function homeworkAction()
 	{
 		// Retrieve the context
@@ -2259,56 +2624,8 @@ class StudentController extends AbstractActionController
 		));
 		$view->setTerminal(true);
 		return $view;
-	}
-	
-	public function homeworkV2Action()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = $this->params()->fromRoute('account_id');
-		$account = Account::get($account_id);
-		$type = $this->params()->fromQuery('type');
-		$subject = $this->params()->fromQuery('subject');
-		$date = $this->params()->fromQuery('date');
-
-		$filters = [];
-		$filters['place_id'] = $account->place_id;
-		$filters['class'] = $account->property_7;
-		if ($subject) $filters['subject'] = $subject;
-		if ($type == 'done-work') $filters['date'] = $date;
-		elseif (in_array($type, ['todo-work', 'event'])) $filters['target_date'] = $date;
-		
-/*		$groups = [];
-		foreach ($account->groups as $group_id => $unused) $groups[] = $group_id;*/
-//		if ($groups) $filters['groups'] = $groups;
-		
-		$notes = Note::GetList('homework', $type, $filters, 'date', 'DESC', 'search', null);
-		foreach ($notes as $note) {
-			$documents = [];
-			if ($note->document) {
-				$documentIds = explode(',', $note->document);
-				foreach ($documentIds as $document_id) {
-					$document = Document::get($document_id);
-					$documents[$document->id] = $document->getProperties();
-				}
-			}
-			$note->properties['documents'] = $documents;
-		}
-
-		// Return the link list
-		$view = new ViewModel(array(
-			'context' => $context,
-			'type' => $type,
-			'subject' => $subject,
-			'date' => $date,
-			'account' => $account,
-			'notes' => $notes,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-
+	}*/
+/*
 	public function progressAction()
 	{
 		// Retrieve the context
@@ -2342,7 +2659,7 @@ class StudentController extends AbstractActionController
 		$mock = $this->params()->fromRoute('mock');
 
 		$periods = array();
-		$params = array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/);
+		$params = array('account_id' => $account->id); //, 'school_year' => $school_year, 'school_period' => $school_period);
 		if ($mock) $params['level'] = "mock";
 		$notes = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
 		foreach($notes as $note) {
@@ -2362,43 +2679,8 @@ class StudentController extends AbstractActionController
 		));
 		$view->setTerminal(true);
 		return $view;
-	}
-
-	public function evaluationV2Action()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
-		$school_year = $context->getConfig('student/property/school_year/default');
-		$place = Place::get($account->place_id);
-		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-		$mock = $this->params()->fromRoute('mock');
-
-		$periods = array();
-		$params = array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/);
-		if ($mock) $params['level'] = "mock";
-		$notes = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
-		foreach($notes as $note) {
-			$key = $note->school_year.'.'.$note->school_period;
-			if (!array_key_exists($key, $periods)) $periods[$key] = array();
-			$periods[$key][] = $note;
-		}
-		krsort($periods);
-		
-		// Return the link list
-		$view = new ViewModel(array(
-				'context' => $context,
-				'config' => $context->getconfig(),
-				'account' => $account,
-				'periods' => $periods,
-				'mock' => $mock,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-	
+	}*/
+/*	
 	public function examAction()
 	{
 		// Retrieve the context
@@ -2434,45 +2716,8 @@ class StudentController extends AbstractActionController
 		));
 		$view->setTerminal(true);
 		return $view;
-	}
-
-	public function examV2Action()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
-		$place = Place::get($account->place_id);
-	
-		$periods = array();
-		$notes = NoteLink::GetList('exam', ['account_id' => $account->id], 'date', 'DESC', 'search');
-		foreach($notes as $note) {
-			$key = $note->school_year.'.'.$note->level;
-			if (!array_key_exists($key, $periods)) $periods[$key] = array();
-			$periods[$key][] = $note;
-		}
-		krsort($periods);
-		foreach ($periods as $periodId => &$period) {
-			$school_year = substr($periodId, 0, 9);
-			$level = substr($periodId, 10);
-			$notes = NoteLink::GetList('note', ['account_id' => $account->id, 'school_year' => $school_year, 'level' => $level], 'date', 'DESC', 'search');
-			foreach($notes as $note) {
-				$period[] = $note;
-			}
-		}
-
-		// Return the link list
-		$view = new ViewModel(array(
-			'context' => $context,
-			'config' => $context->getconfig(),
-			'account' => $account,
-			'periods' => $periods,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-	
+	}*/
+/*	
 	public function reportAction()
 	{
 		// Retrieve the context
@@ -2499,148 +2744,8 @@ class StudentController extends AbstractActionController
 		));
 		$view->setTerminal(true);
 		return $view;
-	}
-
-	public function reportV2Action()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-	
-		$account_id = (int) $this->params()->fromRoute('id');
-		$account = Account::get($account_id);
-	
-		$periods = array();
-		$notes = NoteLink::GetList('report', array('account_id' => $account->id), 'date', 'DESC', 'search');
-		foreach($notes as $note) {
-			$key = $note->school_year.'.'.$note->school_period;
-			if (!array_key_exists($key, $periods)) $periods[$key] = array();
-			$periods[$key][] = $note;
-		}
-		krsort($periods);
-
-		// Return the link list
-		$view = new ViewModel(array(
-				'context' => $context,
-				'config' => $context->getconfig(),
-				'account' => $account,
-				'periods' => $periods,
-		));
-		$view->setTerminal(true);
-		return $view;
-	}
-	
-	public function downloadAction()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-		$category = $this->params()->fromRoute('category');
-		$account_id = (int) $this->params()->fromRoute('account_id');
-		$account = Account::get($account_id);
-		$account->properties = $account->getProperties();
-		if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
-		elseif ($account->contact_3 && $account->contact_3->adr_street) $addressee = $account->contact_3;
-		elseif ($account->contact_4 && $account->contact_4->adr_street) $addressee = $account->contact_4;
-		elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
-		else $addressee = $account->contact_1;
-		
-		$school_year = $this->params()->fromRoute('school_year');
-		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
-		$place = Place::get($account->place_id);
-		$school_period = $this->params()->fromRoute('school_period');
-		if (!$school_period) {
-			$school_period = $this->params()->fromRoute('school_period');
-			$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
-		}
-		$level = $this->params()->fromRoute('level');
-
-		$absLates = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search', null);
-		$absences = array();
-		$latenesss = array();
-		$cumulativeAbsence = 0;
-		$cumulativeLateness = 0;
-		$absenceCount = 0;
-		$latenessCount = 0;
-		foreach ($absLates as $absLate) {
-			if ($absLate->category == 'absence') {
-				$absences[] = $absLate;
-				$cumulativeAbsence += $absLate->duration;
-				$absenceCount++;
-			}
-			elseif ($absLate->category =='lateness') {
-				$latenesss[] = $absLate;
-				$cumulativeLateness += $absLate->duration;
-				$latenessCount++;
-			}
-		}
-		$date = null;
-		$classSize = null;
-		if ($category == 'report') {
-			$averages = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
-			foreach ($averages as $average) if ($average->subject == 'global') {
-				$date = $average->date;
-				$classSize = count(NoteLink::GetList($category, array('note_id' => $average->note_id), 'date', 'DESC', 'search'));
-			}
-		}
-		else $averages = null;
-
-		$params = array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period);
-		if ($level) $params['level'] = $level;
-		$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
-		if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
-		
-    	// create new PDF document
-    	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-    	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize, $absLates, $level);
-    	
-    	// Close and output PDF document
-    	// This method has several options, check the source code documentation for more information.
-    	$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->name.'.pdf', 'I');
-    	return $this->response;
-	}
-
-	public function downloadExamAction()
-	{
-		// Retrieve the context
-		$context = Context::getCurrent();
-		$account_id = (int) $this->params()->fromRoute('account_id');
-		$account = Account::get($account_id);
-		$account->properties = $account->getProperties();
-		if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
-		elseif ($account->contact_3 && $account->contact_3->adr_street) $addressee = $account->contact_3;
-		elseif ($account->contact_4 && $account->contact_4->adr_street) $addressee = $account->contact_4;
-		elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
-		else $addressee = $account->contact_1;
-	
-		$school_year = $this->params()->fromRoute('school_year');
-		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
-		$place = Place::get($account->place_id);
-		$level = $this->params()->fromRoute('level');
-	
-		$date = null;
-	
-		$params = array('account_id' => $account_id, 'school_year' => $school_year, 'level' => $level);
-		$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
-		if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
-
-		$classSize = null;
-		$averages = NoteLink::GetList('exam', array('account_id' => $account_id, 'school_year' => $school_year, 'level' => $level), 'date', 'DESC', 'search');
-		foreach ($averages as $average) if ($average->subject == 'global') {
-			$date = $average->date;
-			$classSize = count(NoteLink::GetList('exam', array('note_id' => $average->note_id), 'date', 'DESC', 'search'));
-			$notes[] = $average;
-		}
-	
-		// create new PDF document
-		$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-	
-		PdfReportViewHelper::render('exam', $pdf, $place, $school_year, $level, $date, $account, $addressee, $notes, $notes, 0, 0, 0, 0, [], [], $classSize, [], $level);
-		 
-		// Close and output PDF document
-		// This method has several options, check the source code documentation for more information.
-		$content = $pdf->Output('school-report-'.$context->getInstance()->caption.'-'.$account->name.'.pdf', 'I');
-		return $this->response;
-	}
-	
+	}*/
+/*	
 	public function dropboxLinkAction()
 	{
 		$context = Context::getCurrent();
@@ -2651,8 +2756,8 @@ class StudentController extends AbstractActionController
 		$link = $dropboxClient->createTemporaryDirectLink($dropbox['folders']['schooling'].'/'.$document);
 		if ($link[0]) return $this->redirect()->toUrl($link[0]);
 		else return $this->response;
-	}
-	
+	}*/
+/*	
 	public function letter($template, $data, $logo_src, $logo_width, $logo_height, $footer)
 	{
 		// Retrieve the context
@@ -2671,19 +2776,19 @@ class StudentController extends AbstractActionController
 		$logo .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['logo'].'"/>';
 		$logo .= "</v:shape>\n</w:pict>\n";
 
-/*		$noImage = 2; //on incrémentera pour chaque image différente
-		$extImage = explode(".",$context->getConfig('headerParams')['footer-img']);
-		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
+//		$noImage = 2; //on incrémentera pour chaque image différente
+//		$extImage = explode(".",$context->getConfig('headerParams')['footer-img']);
+//		$extImage = $extImage[count($extImage)-1]; //on récupère l'extension de l'image
 //		$footer = $context->getConfig('headerParams')['footer']['value'];
-		$footer = "<w:pict>\n";
-		$footer .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
-		$content = file_get_contents('public/logos/'.$context->getConfig('headerParams')['footer-img']);
-		$footer .= base64_encode($content);
-		$footer .= "\n</w:binData>\n";
-		$footer .= '<v:shape id="_x0000_i' . $noImage
-		. '" type="#_x0000_t75" style="width:'.$context->getConfig('headerParams')['footer-width'].'pt;height:'.$context->getConfig('headerParams')['footer-height'].'pt">'."\n";
-		$footer .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['footer-img'].'"/>';
-		$footer .= "</v:shape>\n</w:pict>\n";*/
+//		$footer = "<w:pict>\n";
+//		$footer .= '<w:binData w:name="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" xml:space="preserve">';
+//		$content = file_get_contents('public/logos/'.$context->getConfig('headerParams')['footer-img']);
+//		$footer .= base64_encode($content);
+//		$footer .= "\n</w:binData>\n";
+//		$footer .= '<v:shape id="_x0000_i' . $noImage
+//		. '" type="#_x0000_t75" style="width:'.$context->getConfig('headerParams')['footer-width'].'pt;height:'.$context->getConfig('headerParams')['footer-height'].'pt">'."\n";
+//		$footer .= '<v:imagedata src="wordml://03000'.str_pad($noImage,3,"0",STR_PAD_LEFT).'.'.$extImage.'" o:title="'.$context->getConfig('headerParams')['footer-img'].'"/>';
+//		$footer .= "</v:shape>\n</w:pict>\n";
 		
 		DocumentTemplate::$letterTemplate = str_replace("@LOGO@", $logo, DocumentTemplate::$letterTemplate);
 		DocumentTemplate::$letterTemplate = str_replace("@FOOTER@", $footer, DocumentTemplate::$letterTemplate);
@@ -3201,142 +3306,5 @@ class StudentController extends AbstractActionController
     	}
 		$footer = ($place->legal_footer) ? $place->legal_footer : $context->getConfig('headerParams')['footer']['value'];
     	return $this->letter($template, $data, $logo_src, $logo_width, $logo_height, $footer);
-    }
-    
-    public function nomad($request, $from, $place_identifier, $limit)
-    {
-    	$context = Context::getCurrent();
-    	$safe = $context->getConfig()['ppitUserSettings']['safe'];
-//    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?from='.$from.'&limit='.$limit;
-    	$url = 'https://v1.adam.nomadeducation.fr/'.$request.'?where={"updatedAt":{"gte":"'.$from.'"},"schoolContactAcceptance":true}';
-    	$client = new Client(
-    		$url,
-    		array('adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30)
-    	);
-    	
-		$client->setHeaders(array(
-			'Authorization' => $safe[$context->getInstance()->caption]['nomad'],
-			'Accept-Encoding' => 'gzip,deflate',
-		));
-    	$client->setMethod('GET');
-    	$response = $client->send();
-    	$body = $response->getBody();
-    	$leads = json_decode($body, true);
-    	foreach ($leads as $lead) {
-    		echo $lead['id']."\n";
-    		
-    		// If the account exists, update it if the contact is a prospect (new status) and the existing account is a suspect
-    		$account = Account::get($lead['id'], 'identifier');
-    		if (!$account) {
-	    		$vcard = Vcard::get($lead['email'], 'email');
-	    		if ($vcard) $account = Account::get($vcard->id, 'contact_1_id');
-    		}
-    		if ($account && in_array($account->status, ['suspect', 'gone']) && $lead['type'] == 'sponsor') {
-    			$account->status = 'new';
-    			$account->callback_date = date('Y-m-d');
-    			$account->update(null);
-    			continue;
-    		}
-    		
-    		$data = [];
-    		if ($place_identifier) $data['place_id'] = Place::get($place_identifier, 'identifier')->id;
-    		$data['identifier'] = $lead['id'];
-    		$data['status'] = (array_key_exists('type', $lead) && $lead['type'] == 'registration') ? 'suspect' : 'new';
-    		$data['origine'] = 'nomad';
-    		$data['callback_date'] = date('Y-m-d');
-    		foreach ($context->getConfig('core_account/nomad/p-pit-studies')['properties'] as $propertyId => $property) {
-    			if (array_key_exists($property, $lead)) $data[$propertyId] = $lead[$property];
-    		}
-
-    		$levels = ['Terminale' => '1st', '1ère année' => '2nd', '2ème année' => '3rd', '3ème année' => '4th'];
-    		$data['property_10'] = (array_key_exists($lead['levelOfEducation'], $levels)) ? $levels[$lead['levelOfEducation']] : '';
-    		
-    		$data['json_property_2'] = $lead['wishedDomain'];
-    		unset($lead['wishedDomain']);
-    		$data['json_property_3'] = $lead['engagements'];
-    		unset($lead['engagements']);
-    		if (array_key_exists('studyChoices', $lead)) {
-    			foreach ($lead['studyChoices'] as $group) {
-	    			foreach ($group as $key => $value) {
-	    				if ($key == 'name') {
-			    			if ($value == 'Alternance') $data['property_15'] = 'part_time';
-			    			elseif ($value == 'Formation initiale') $data['property_15'] = 'initial';
-			    			else $data['property_15'] = $value;
-	    				}
-	    			}
-    			}
-    		}
-    		$data['json_property_1'] = $lead;
-   			$data['contact_history'] = 'P-Pit -> Nomad connector';
-   			$account = Account::instanciate('p-pit-studies');
-			$account->loadAndAdd($data, Account::getConfig('p-pit-studies'));
-    	}
-    	return $this->response;
-    }
-    
-    public function nomadAction() {
-    		
-    	$context = Context::getCurrent();
-    	
-		// Authentication
-		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
-			$this->getResponse()->setStatusCode('401');
-			return $this->getResponse();
-		}
-    	
-		$request = $this->params()->fromRoute('request');
-		$date = $this->params()->fromQuery('date');
-		if (!$date) $date = date('Y-m-d', strtotime(date('Y-m-d').' - 1 days'));
-		echo 'Extraction date: ' . $date . "\n";
-		$from = $this->params()->fromRoute('from', $date);
-    	$place_identifier = $this->params()->fromQuery('place_identifier', '');
-    	$limit = $this->params()->fromQuery('limit', 10);
-    	return $this->nomad($request, $from, $place_identifier, $limit);
-    }
-    
-    public function batchNomadAction() { // Deprecated
-    	$context = Context::getCurrent();
-    	$instance_id = $this->params()->fromRoute('instance_id');
-		$context->updateFromInstanceId($instance_id);
-    	$request = $this->params()->fromRoute('request');
-    	$place_identifier = $this->params()->fromRoute('place_identifier', '');
-    	$limit = $this->params()->fromRoute('limit', 10);
-    	echo date('Y-m-d')."\n";
-    	return $this->nomad($request, date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')), $place_identifier, $limit);
-    }
-
-	// Reprise Nomad ESI (12/2018)
-
-    public function nomadFixAction()
-    {
-    	$context = Context::getCurrent();
-    	$leads = Account::getList('p-pit-studies', ['origine' => 'nomad'], '-id', 2000);
-    	$levels = array();
-    	$domains = array();
-    	foreach ($leads as $lead) {
-    		if ($lead->json_property_1) {
-    			if (array_key_exists('levelOfEducation', $lead->json_property_1)) $levels[$lead->json_property_1['levelOfEducation']] = null;
-    			if (is_array(current($lead->json_property_2)) && array_key_exists('name', current($lead->json_property_2))) $domains[current($lead->json_property_2)['name']] = null;
-    		}
-    	}
-    	print_r($levels);
-    	print_r($domains);
-    	return $this->response;
-    }
-    
-	public function cleanUserPerimeterAction()
-	{
-    	$select = Vcard::getTable()->getSelect();
-    	$where = new Where;
-    	$where->like('roles', '%manager%');
-    	$where->like('perimeters', '%property_7%');
-    	$select->where($where);
-    	$cursor = Vcard::getTable()->selectWith($select);
-    	foreach ($cursor as $vcard) {
-//    		unset($vcard->perimeters['p-pit-studies']['property_7']);
-    		echo $vcard->id.' '.$vcard->n_fn.' '.json_encode($vcard->roles, JSON_PRETTY_PRINT).' '.json_encode($vcard->perimeters, JSON_PRETTY_PRINT)."\n";
-//    		$vcard->update(null);
-    	}
-    	return $this->response;
-    }
+    }*/
 }

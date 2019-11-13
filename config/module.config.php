@@ -13,13 +13,13 @@ return array_merge(
         	'PpitStudies\Controller\Absence' => 'PpitStudies\Controller\AbsenceController',
         	'PpitStudies\Controller\Event' => 'PpitStudies\Controller\EventController',
         	'PpitStudies\Controller\Note' => 'PpitStudies\Controller\NoteController',
-        	'PpitStudies\Controller\Notification' => 'PpitStudies\Controller\NotificationController',
-        	'PpitStudies\Controller\Planning' => 'PpitStudies\Controller\PlanningController',
-        	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
+//        	'PpitStudies\Controller\Notification' => 'PpitStudies\Controller\NotificationController',
+//        	'PpitStudies\Controller\Planning' => 'PpitStudies\Controller\PlanningController',
+//        	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
         ),
     ),
-
+/*
 	'console' => array(
 			'router' => array(
 					'routes' => array(
@@ -34,7 +34,7 @@ return array_merge(
 							),
 					),
 			),
-	),
+	),*/
 		
     'router' => array(
         'routes' => array(
@@ -49,7 +49,7 @@ return array_merge(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-        						'index' => array(
+/*        						'index' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/index[/:app]',
@@ -57,7 +57,7 @@ return array_merge(
         												'action' => 'index',
         										),
         								),
-        						),
+        						),*/
         						'indexV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -67,7 +67,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'search' => array(
+/*	       						'search' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/search',
@@ -75,7 +75,7 @@ return array_merge(
         												'action' => 'search',
         										),
         								),
-        						),
+        						),*/
 	       						'searchV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -85,7 +85,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'list' => array(
+/*	       						'list' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/list',
@@ -93,7 +93,7 @@ return array_merge(
         												'action' => 'list',
         										),
         								),
-        						),
+        						),*/
 	       						'listV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -133,7 +133,7 @@ return array_merge(
         										),
         								),
         						),*/
-	       						'update' => array(
+/*	       						'update' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/update[/:id][/:act]',
@@ -144,7 +144,7 @@ return array_merge(
 		        										'action' => 'update',
 		        								),
 		        						),
-		        				),
+		        				),*/
 	       						'updateV2' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -168,7 +168,7 @@ return array_merge(
 		        				),
 	       		),
             ),
-        	'planning' => array(
+/*        	'planning' => array(
                 'type'    => 'literal',
                 'options' => array(
                     'route'    => '/planning',
@@ -189,7 +189,7 @@ return array_merge(
             						),
             				),
             		),
-        	),
+        	),*/
         	'studentEvent' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -201,7 +201,7 @@ return array_merge(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-        						'index' => array(
+/*        						'index' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/index',
@@ -227,7 +227,7 @@ return array_merge(
         												'action' => 'list',
         										),
         								),
-        						),
+        						),*/
         						'planning' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -240,7 +240,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'export' => array(
+/*	       						'export' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/export',
@@ -272,7 +272,7 @@ return array_merge(
 				                            'action' => 'delete',
 				                        ),
 				                    ),
-				                ),
+				                ),*/
 	       		),
             ),
         	'note' => array(
@@ -286,7 +286,7 @@ return array_merge(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-        						'index' => array(
+/*        						'index' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/index[/:app][/:category][/:type]',
@@ -294,7 +294,7 @@ return array_merge(
         												'action' => 'index',
         										),
         								),
-        						),
+        						),*/
         						'indexV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -304,7 +304,7 @@ return array_merge(
         										),
         								),
         						),
-				       			'search' => array(
+/*				       			'search' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/search[/:category][/:type]',
@@ -312,7 +312,7 @@ return array_merge(
         												'action' => 'search',
         										),
         								),
-        						),
+        						),*/
 				       			'searchV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -322,7 +322,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'list' => array(
+/*	       						'list' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/list[/:category][/:type]',
@@ -330,7 +330,7 @@ return array_merge(
         												'action' => 'list',
         										),
         								),
-        						),
+        						),*/
 	       						'listV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -379,7 +379,7 @@ return array_merge(
         										),
         								),
         						),*/
-	       						'update' => array(
+/*	       						'update' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/update[/:id][/:act]',
@@ -390,7 +390,7 @@ return array_merge(
 		        										'action' => 'update',
 		        								),
 		        						),
-		        				),
+		        				),*/
 	       						'updateV2' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -403,7 +403,7 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-	       						'updateEvaluation' => array(
+/*	       						'updateEvaluation' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/update-evaluation[/:id][/:act]',
@@ -414,7 +414,7 @@ return array_merge(
 		        										'action' => 'updateEvaluation',
 		        								),
 		        						),
-		        				),
+		        				),*/
 	       						'updateEvaluationV2' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -438,7 +438,7 @@ return array_merge(
 			       				),
 	       		),
             ),
-        	'studentNotification' => array(
+/*        	'studentNotification' => array(
                 'type'    => 'literal',
                 'options' => array(
                     'route'    => '/student-notification',
@@ -510,7 +510,7 @@ return array_merge(
 				                    ),
 				                ),
 	       		),
-            ),
+            ),*/
         	'planning' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -533,7 +533,7 @@ return array_merge(
             				),
             		),
         	),
-        	'progress' => array(
+/*        	'progress' => array(
                 'type'    => 'literal',
                 'options' => array(
                     'route'    => '/progress',
@@ -605,7 +605,7 @@ return array_merge(
 				                    ),
 				                ),
 	       		),
-            ),
+            ),*/
         	'student' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -617,7 +617,7 @@ return array_merge(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-        						'index' => array(
+/*        						'index' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/index[/:app]',
@@ -625,7 +625,7 @@ return array_merge(
         												'action' => 'index',
         										),
         								),
-        						),
+        						),*/
         						'indexV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -635,7 +635,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'studentHome' => array(
+/*	       						'studentHome' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/student-home[/:account_id]',
@@ -646,7 +646,7 @@ return array_merge(
         												'action' => 'studentHome',
         										),
         								),
-        						),
+        						),*/
 	       						'studentHomeV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -668,7 +668,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'search' => array(
+/*	       						'search' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/search',
@@ -676,7 +676,7 @@ return array_merge(
         												'action' => 'search',
         										),
         								),
-        						),
+        						),*/
 	       						'searchV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -686,7 +686,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'list' => array(
+/*	       						'list' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/list',
@@ -694,7 +694,7 @@ return array_merge(
         												'action' => 'list',
         										),
         								),
-        						),
+        						),*/
 	       						'listV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -713,7 +713,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'detail' => array(
+/*	       						'detail' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/detail[/:id]',
@@ -724,7 +724,7 @@ return array_merge(
 		        										'action' => 'detail',
 		        								),
 		        						),
-		        				),
+		        				),*/
 	       						'detailV2' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -737,7 +737,7 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-	       						'group' => array(
+/*	       						'group' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/group[:type]',
@@ -745,7 +745,7 @@ return array_merge(
         												'action' => 'group',
         										),
         								),
-        						),
+        						),*/
 	       						'groupV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -755,7 +755,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'addAbsence' => array(
+/*	       						'addAbsence' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-absence[/:type]',
@@ -763,7 +763,7 @@ return array_merge(
         												'action' => 'addAbsence',
         										),
         								),
-        						),
+        						),*/
 	       						'addAbsenceV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -773,7 +773,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'addEvent' => array(
+/*	       						'addEvent' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-event[/:category]',
@@ -790,8 +790,8 @@ return array_merge(
         												'action' => 'addEventV2',
         										),
         								),
-        						),
-	       						'addNote' => array(
+        						),*/
+/*	       						'addNote' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-note[/:type][/:class]',
@@ -799,7 +799,7 @@ return array_merge(
         												'action' => 'addNote',
         										),
         								),
-        						),
+        						),*/
 	       						'addNoteV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -809,7 +809,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'addEvaluation' => array(
+/*	       						'addEvaluation' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-evaluation[/:type][/:class]',
@@ -817,7 +817,7 @@ return array_merge(
         												'action' => 'addEvaluation',
         										),
         								),
-        						),
+        						),*/
 	       						'addEvaluationV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -827,7 +827,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'addNotification' => array(
+/*	       						'addNotification' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/add-notification[/:category]',
@@ -886,7 +886,7 @@ return array_merge(
         												'action' => 'planning',
         										),
         								),
-        						),
+        						),*/
 	       						'planningV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -899,7 +899,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'file' => array(
+/*	       						'file' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/file[/:id]',
@@ -922,7 +922,7 @@ return array_merge(
         												'action' => 'absence',
         										),
         								),
-        						),
+        						),*/
 	       						'absenceV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -935,7 +935,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'evaluation' => array(
+/*	       						'evaluation' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/evaluation[/:id][/:mock]',
@@ -946,7 +946,7 @@ return array_merge(
         												'action' => 'evaluation',
         										),
         								),
-        						),
+        						),*/
 	       						'evaluationV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -959,7 +959,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'exam' => array(
+/*	       						'exam' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/exam[/:id]',
@@ -970,7 +970,7 @@ return array_merge(
         												'action' => 'exam',
         										),
         								),
-        						),
+        						),*/
 	       						'examV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1007,7 +1007,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'homework' => array(
+/*	       						'homework' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/homework[/:id]',
@@ -1018,7 +1018,7 @@ return array_merge(
         												'action' => 'homework',
         										),
         								),
-        						),
+        						),*/
 	       						'homeworkV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1031,7 +1031,7 @@ return array_merge(
         										),
         								),
         						),
-	       						'report' => array(
+/*	       						'report' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/report[/:id]',
@@ -1042,7 +1042,7 @@ return array_merge(
         												'action' => 'report',
         										),
         								),
-        						),
+        						),*/
 	       						'reportV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1079,7 +1079,7 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-	       						'dropboxLink' => array(
+/*	       						'dropboxLink' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/dropbox-link[/:document]',
@@ -1147,31 +1147,13 @@ return array_merge(
 		        										'action' => 'commitment',
 		        								),
 		        						),
-		        				),
+		        				),*/
 	       						'nomad' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/nomad[/:request][/:from]',
 		        								'defaults' => array(
 		        										'action' => 'nomad',
-		        								),
-		        						),
-		        				),
-	       						'nomadFix' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/nomad-fix',
-		        								'defaults' => array(
-		        										'action' => 'nomadFix',
-		        								),
-		        						),
-		        				),
-	       						'cleanUserPerimeter' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/clean-user-perimeter',
-		        								'defaults' => array(
-		        										'action' => 'cleanUserPerimeter',
 		        								),
 		        						),
 		        				),
@@ -1185,119 +1167,118 @@ return array_merge(
 			'BjyAuthorize\Guard\Route' => array(
 
 				array('route' => 'absence', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'absence/index', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'absence/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'absence/search', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'absence/search', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/searchV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/listV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/get', 'roles' => array('user')),
 				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher')),
 //				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/updateV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/reprise', 'roles' => array('admin')),
-				
+/*				
 				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher')),*/
             	array('route' => 'studentEvent/planning', 'roles' => array('user')),
-				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher')),
+/*				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher')),*/
 
 				array('route' => 'note', 'roles' => array('manager', 'teacher')),
-				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/indexV2', 'roles' => array('manager', 'teacher')),
-				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/searchV2', 'roles' => array('manager', 'teacher')),
-				array('route' => 'note/list', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'note/list', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/listV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/get', 'roles' => array('manager', 'user')),
 				array('route' => 'note/export', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/exportCsv', 'roles' => array('admin')),
 //				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
-				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateV2', 'roles' => array('manager', 'teacher')),
-				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateEvaluationV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
-						
+/*						
 				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'studentNotification/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'studentNotification/search', 'roles' => array('manager', 'coach', 'teacher')),
             	array('route' => 'studentNotification/list', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'studentNotification/export', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'studentNotification/update', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher')),
-
+				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher')),*/
+/*
 				array('route' => 'planning', 'roles' => array('manager')),
-				array('route' => 'planning/index', 'roles' => array('manager')),
-
+				array('route' => 'planning/index', 'roles' => array('manager')),*/
+/*
 				array('route' => 'progress', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/index', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/search', 'roles' => array('manager', 'coach')),
             	array('route' => 'progress/list', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/export', 'roles' => array('manager', 'coach')),
 				array('route' => 'progress/update', 'roles' => array('manager', 'coach')),
-				array('route' => 'progress/delete', 'roles' => array('manager', 'coach')),
-
+				array('route' => 'progress/delete', 'roles' => array('manager', 'coach')),*/
 
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
-				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/studentHome', 'roles' => array('user')),
+//				array('route' => 'student/studentHome', 'roles' => array('user')),
 				array('route' => 'student/studentHomeV2', 'roles' => array('user')),
-				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/searchV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/export', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher')),
+//            	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher')),
             	array('route' => 'student/listV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/detailV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/groupV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/addAbsenceV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/addEventV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/addNote', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/addEventV2', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/addNote', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addNoteV2', 'roles' => array('manager', 'teacher')),
-				array('route' => 'student/addEvaluation', 'roles' => array('manager', 'teacher')),
+//				array('route' => 'student/addEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addEvaluationV2', 'roles' => array('manager', 'teacher')),
-				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/addNotificationV2', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
-				array('route' => 'student/addProgressV2', 'roles' => array('manager', 'coach')),
-				array('route' => 'student/dashboard', 'roles' => array('user')),
-				array('route' => 'student/planning', 'roles' => array('guest')),
+//				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher')),
+//				array('route' => 'student/addNotificationV2', 'roles' => array('manager', 'coach', 'teacher')),*/
+//				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
+//				array('route' => 'student/addProgressV2', 'roles' => array('manager', 'coach')),
+//				array('route' => 'student/dashboard', 'roles' => array('user')),
+//				array('route' => 'student/planning', 'roles' => array('guest')),
 				array('route' => 'student/planningV2', 'roles' => array('user')),
 				array('route' => 'student/file', 'roles' => array('guest')),
-				array('route' => 'student/absence', 'roles' => array('guest')),
+//				array('route' => 'student/absence', 'roles' => array('guest')),
 				array('route' => 'student/absenceV2', 'roles' => array('user')),
-				array('route' => 'student/homework', 'roles' => array('guest')),
+//				array('route' => 'student/homework', 'roles' => array('guest')),
 				array('route' => 'student/homeworkV2', 'roles' => array('user')),
-				array('route' => 'student/evaluation', 'roles' => array('guest')),
+//				array('route' => 'student/evaluation', 'roles' => array('guest')),
 				array('route' => 'student/evaluationV2', 'roles' => array('guest')),
-				array('route' => 'student/exam', 'roles' => array('guest')),
+//				array('route' => 'student/exam', 'roles' => array('guest')),
 				array('route' => 'student/examV2', 'roles' => array('guest')),
 				array('route' => 'student/generateAttendance', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/downloadAttendance', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-				array('route' => 'student/report', 'roles' => array('guest')),
+//				array('route' => 'student/report', 'roles' => array('guest')),
 				array('route' => 'student/reportV2', 'roles' => array('guest')),
 				array('route' => 'student/download', 'roles' => array('guest')),
 				array('route' => 'student/downloadExam', 'roles' => array('guest')),
-				array('route' => 'student/dropboxLink', 'roles' => array('guest')),
-				array('route' => 'student/letter', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-				array('route' => 'student/confirmation', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-				array('route' => 'student/attestation', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-				array('route' => 'student/acknowledgement', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-				array('route' => 'student/commitment', 'roles' => array('operational_management', 'sales_manager', 'manager')),
+//				array('route' => 'student/dropboxLink', 'roles' => array('guest')),
+//				array('route' => 'student/letter', 'roles' => array('operational_management', 'sales_manager', 'manager')),
+//				array('route' => 'student/confirmation', 'roles' => array('operational_management', 'sales_manager', 'manager')),
+//				array('route' => 'student/attestation', 'roles' => array('operational_management', 'sales_manager', 'manager')),
+//				array('route' => 'student/acknowledgement', 'roles' => array('operational_management', 'sales_manager', 'manager')),
+//				array('route' => 'student/commitment', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/nomad', 'roles' => array('guest')),
-				array('route' => 'student/nomadFix', 'roles' => array('admin')),
-				array('route' => 'student/cleanUserPerimeter', 'roles' => array('admin')),
+//				array('route' => 'student/nomadFix', 'roles' => array('admin')),
+//				array('route' => 'student/cleanUserPerimeter', 'roles' => array('admin')),
 			)
 		)
 	),
@@ -2898,7 +2879,7 @@ return array_merge(
 			'opening_date' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
 //			'first_activation_date' => array('mandatory' => false),
-			'date_4' => array('mandatory' => false),
+			'date_4' => array('readonly' => true),
 			'date_5' => array('mandatory' => false),
 			'origine' => array('mandatory' => false),
 			'property_12' => array('mandatory' => false),
@@ -3479,7 +3460,7 @@ table.note-report td {
 					'place_id' => 'select',
 			)
 	),
-		
+/*		
 	'commitmentNotification/p-pit-studies' => array(
 			'category' => array(
 					'news_flash' => array(
@@ -3488,9 +3469,9 @@ table.note-report td {
 					'sport' => array(
 							'labels' => array('en_US' => 'Sport', 'fr_FR' => 'Sport'),
 					),
-/*					'schooling' => array(
-							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
-					),*/
+//					'schooling' => array(
+//							'labels' => array('en_US' => 'Schooling', 'fr_FR' => 'Scolarité'),
+//					),
 					'boarding_school' => array(
 							'labels' => array('en_US' => 'Boarding school', 'fr_FR' => 'Internat'),
 					),
@@ -3530,7 +3511,7 @@ table.note-report td {
 					'property_4' => 'select',
 					'place_id' => 'select',
 			)
-	),
+	),*/
 
 	'student/parameter/average_computation' => array(
 			'reference_value' => 20,

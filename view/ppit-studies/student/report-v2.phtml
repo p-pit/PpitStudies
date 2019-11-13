@@ -58,8 +58,10 @@ table.note-report tr.period {
 	            <div class="container card-block" style="color: #686868">
 	                <!--Title-->
 	                <h4 class="card-title mt-3" style="text-align: center">
+      <?php if (array_key_exists($school_year, $context->getConfig('student/property/school_year')['modalities'])) : ?>
 	                	<?php echo $context->localize($context->getConfig('student/property/school_year')['labels']) ?>:
 	                	<?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?> &mdash;
+      <?php endif;?>
 	                	<?php echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
 	                	<?php if (!$visible) echo '('.$this->translate('Non yet visible', 'ppit-studies', $context->getLocale()).')' ?>
 	                </h4>

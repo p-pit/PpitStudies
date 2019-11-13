@@ -10,7 +10,7 @@ use PpitCore\Form\CsrfForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class NotificationController extends AbstractActionController
+class NotificationController_old extends AbstractActionController
 {
     public function indexAction()
     {

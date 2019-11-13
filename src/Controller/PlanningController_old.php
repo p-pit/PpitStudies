@@ -25,7 +25,7 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use ZendDeveloperTools\Collector\EventCollectorInterface;
 
-class PlanningController extends AbstractActionController
+class PlanningController_old extends AbstractActionController
 {
     public function indexAction()
     {

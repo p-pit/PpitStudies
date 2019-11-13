@@ -15,7 +15,7 @@ use Zend\View\Model\JsonModel;
 
 class EventController extends AbstractActionController
 {
-    public function indexAction()
+/*    public function indexAction()
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
@@ -111,7 +111,7 @@ class EventController extends AbstractActionController
     public function listAction()
     {
     	return $this->getList();
-    }
+    }*/
 
     public function planningAction()
     {
@@ -145,7 +145,7 @@ class EventController extends AbstractActionController
     	);
     	return new JsonModel($result);
     }
-    
+/*    
     public function getAction()
     {
     	return new JsonModel($this->getList()->events);

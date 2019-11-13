@@ -160,17 +160,17 @@ function getStudentList(params) {
 }
 
 // Retrieve the events
-function getEvents(id) {
+/*function getEvents(id) {
 
 	// Execute the ajax request
-	route = '<?php echo $this->url('studentEvent/planning') ?>?account_id=' + id;
+	route = '<?php //echo $this->url('studentEvent/planning') ?>?account_id=' + id;
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php //echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 		    $('#calendar').fullCalendar({
-		    	lang: '<?php echo substr($context->getLocale(), 0, 2) ?>',
+		    	lang: '<?php //echo substr($context->getLocale(), 0, 2) ?>',
 		        defaultView: 'agendaWeek',
 		        minTime: '08:00:00'
 		    });
@@ -178,14 +178,14 @@ function getEvents(id) {
 
 			jQuery.each(obj.planning, function (name, value) {
 				var color = 'lightBlue', textColor = 'black';			
-<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-	<?php foreach ($category['color'] as $color => $unused) : ?>
-				if (value.properties['category'] == '<?php echo $categoryId ?>') {
-					color = '<?php echo $color ?>';
+<?php //foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+	<?php //foreach ($category['color'] as $color => $unused) : ?>
+				if (value.properties['category'] == '<?php //echo $categoryId ?>') {
+					color = '<?php //echo $color ?>';
 					textColor = 'white';
 				}
-	<?php endforeach;?>
-<?php endforeach;?>
+	<?php //endforeach;?>
+<?php //endforeach;?>
 
 				var title = '';
 				if (value.properties['property_3']) title += value.properties['property_3'];
@@ -205,14 +205,14 @@ function getEvents(id) {
 
 			jQuery.each(obj.events, function (name, value) {
 				var color = 'lightBlue', textColor = 'black';			
-<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-	<?php foreach ($category['color'] as $color => $unused) : ?>
-				if (value.category == '<?php echo $categoryId ?>') {
-					color = '<?php echo $color ?>';
+<?php //foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+	<?php //foreach ($category['color'] as $color => $unused) : ?>
+				if (value.category == '<?php //echo $categoryId ?>') {
+					color = '<?php //echo $color ?>';
 					textColor = 'white';
 				}
-	<?php endforeach;?>
-<?php endforeach;?>
+	<?php //endforeach;?>
+<?php //endforeach;?>
 
 				var event={
 					id:value.id,
@@ -227,10 +227,10 @@ function getEvents(id) {
 		}
 	}
 	xhttp.send();
-}
+}*/
 
 // Load the detail panel
-function connectNewsFlashTab(route, id) {
+/*function connectNewsFlashTab(route, id) {
 
 	// Execute the ajax request
 	xhttp = new XMLHttpRequest();
@@ -243,7 +243,7 @@ function connectNewsFlashTab(route, id) {
 		}
 	}
 	xhttp.send();
-}
+}*/
 
 // Load the detail panel
 function connectStudentTab(route) {
@@ -357,7 +357,7 @@ function getStudentHome(id) {
 <?php 
 $properties = array();
 $properties['category'] = array('type' => 'select', 'mandatory' => true);
-//$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
+$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
 $properties['motive'] = array('type' => 'select', 'mandatory' => false);
 $properties['begin_date'] = array('type' => 'date', 'mandatory' => true);
 $properties['end_date'] = array('type' => 'date', 'mandatory' => false);
@@ -469,7 +469,7 @@ function getAdd<?php echo $typeId?>Absence() {
 //////////////////////
 
 <?php 
-$properties = array();
+/*$properties = array();
 
 $properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
 $properties['begin_h'] = array('type' => 'select', 'mandatory' => false);
@@ -480,9 +480,9 @@ $properties['end_m'] = array('type' => 'select', 'mandatory' => false);
 $properties['location'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
 $properties['title'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
 $properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
-echo $this->partial('/partials/check-update-properties', array('entity' => 'Event', 'context' => $context, 'properties' => $properties)) 
+echo $this->partial('/partials/check-update-properties', array('entity' => 'Event', 'context' => $context, 'properties' => $properties)) */
 ?>
-
+/*
 function postAddEventForm(category)
 {
 		// Check validity
@@ -491,15 +491,15 @@ function postAddEventForm(category)
 		if (validity) {
             var xhttp = new XMLHttpRequest();
             var route, target;
-            route = '<?php echo $this->url('student/addEventV2') ?>/' + category;
+            route = '<?php //echo $this->url('student/addEventV2') ?>/' + category;
             target = 'grouped-action-panel';
-/*
-			var criteriaNumber = $('#group-nb-criteria').val();
-			for (i = 0; i < criteriaNumber; i++) {
-				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-			}
-			formData.append('nb-criteria', i);*/
+
+//			var criteriaNumber = $('#group-nb-criteria').val();
+//			for (i = 0; i < criteriaNumber; i++) {
+//				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+//				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+//			}
+//			formData.append('nb-criteria', i);
 
 	  	    route += '&accounts=';
 	  	    let first = true;
@@ -516,9 +516,9 @@ function postAddEventForm(category)
             var formData = new FormData();
 			
 			// Get the properties values
-<?php foreach ($properties as $propertyId => $property) : ?>
-				formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
-<?php endforeach ?>
+<?php //foreach ($properties as $propertyId => $property) : ?>
+				formData.append('<?php //echo $propertyId ?>', document.getElementById('<?php //echo $propertyId ?>').value);
+<?php //endforeach ?>
 
 			xhttp.open('POST', route, true);
 			// Set up a handler for when the request finishes.
@@ -536,14 +536,14 @@ function postAddEventForm(category)
 function getAddEvent(category) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addEventV2') ?>/' + category;
-/*
-	var criteriaNumber = $('#group-nb-criteria').val();
-	for (i = 0; i < criteriaNumber; i++) {
-		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-	}
-	formData.append('nb-criteria', i);*/
+	var route = '<?php //echo $this->url('student/addEventV2') ?>/' + category;
+
+//	var criteriaNumber = $('#group-nb-criteria').val();
+//	for (i = 0; i < criteriaNumber; i++) {
+//		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
+//		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
+//	}
+//	formData.append('nb-criteria', i);
 
       route += '&accounts=';
       let first = true;
@@ -558,7 +558,7 @@ function getAddEvent(category) {
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php //echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
 
@@ -576,7 +576,7 @@ function getAddEvent(category) {
 	// Highlight the clicked button (and only it in its class)
 	$('.action-btn').removeClass('active');
 	$('#' + category + '-event-add-anchor').addClass('active');
-}
+}*/
 
 /////////////////////
 // student/addNote //
@@ -996,7 +996,7 @@ function postAddNotificationForm(category)
 		if (validity) {
             var xhttp = new XMLHttpRequest();
             var route, target;
-            route = '<?php echo $this->url('student/addNotificationV2') ?>/' + category;
+            route = '<?php //echo $this->url('student/addNotificationV2') ?>/' + category;
             target = 'grouped-action-panel';
 /*
 			var criteriaNumber = $('#group-nb-criteria').val();
@@ -1047,7 +1047,7 @@ function postAddNotificationForm(category)
 function getAddNotification(category) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addNotificationV2') ?>/' + category;
+	var route = '<?php //echo $this->url('student/addNotificationV2') ?>/' + category;
 /*
 	var criteriaNumber = $('#group-nb-criteria').val();
 	for (i = 0; i < criteriaNumber; i++) {
@@ -1125,7 +1125,7 @@ function postAddProgressForm(sport)
 		if (validity) {
             var xhttp = new XMLHttpRequest();
             var route, target;
-            route = '<?php echo $this->url('student/addProgressV2') ?>/' + sport;
+            route = '<?php //echo $this->url('student/addProgressV2') ?>/' + sport;
             target = 'grouped-action-panel';
 /*
 			var criteriaNumber = $('#group-nb-criteria').val();
@@ -1171,7 +1171,7 @@ function postAddProgressForm(sport)
 function getAddProgress(sport) {
 	
 	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('student/addProgressV2') ?>/' + sport;
+	var route = '<?php //echo $this->url('student/addProgressV2') ?>/' + sport;
 
 	xhttp.open('GET', route, true);
 	xhttp.onreadystatechange = function() {
@@ -1303,19 +1303,19 @@ function getStudentGroup() {
 			});
 <?php endforeach;?>
 
-<?php foreach ($context->getConfig('commitmentNotification/p-pit-studies')['category'] as $categoryId => $category) : ?>
-			$('#<?php echo $categoryId ?>-notification-add-anchor').click(function () { 
+<?php //foreach ($context->getConfig('commitmentNotification/p-pit-studies')['category'] as $categoryId => $category) : ?>
+/*			$('#<?php //echo $categoryId ?>-notification-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddNotification('<?php echo $categoryId ?>'); 
-			});
-<?php endforeach;?>
+				getAddNotification('<?php //echo $categoryId ?>'); 
+			});*/
+<?php //endforeach;?>
 
-<?php foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-			$('#<?php echo $categoryId ?>-event-add-anchor').click(function () { 
+<?php //foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
+/*			$('#<?php //echo $categoryId ?>-event-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddEvent('<?php echo $categoryId ?>'); 
-			});
-<?php endforeach;?>
+				getAddEvent('<?php //echo $categoryId ?>'); 
+			});*/
+<?php //endforeach;?>
 
 			$('#note-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();

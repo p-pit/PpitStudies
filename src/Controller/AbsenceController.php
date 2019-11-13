@@ -15,7 +15,7 @@ use Zend\View\Model\ViewModel;
 
 class AbsenceController extends AbstractActionController
 {
-    public function indexAction()
+ /*   public function indexAction()
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
@@ -39,7 +39,7 @@ class AbsenceController extends AbstractActionController
     			'currentEntry' => $currentEntry,
     			'places' => Place::getList(array()),
     	));
-    }
+    }*/
     
     public function indexV2Action()
     {
@@ -112,28 +112,28 @@ class AbsenceController extends AbstractActionController
     	return $filters;
     }
 
-    public function searchAction()
+    public function searchV2Action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-
+    
     	$description = Absence::getConfig();
-    	 
+    
     	// Return the link list
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getconfig(),
-    			'places' => Place::getList(array()),
-    			'description' => $description,
+    		'context' => $context,
+    		'config' => $context->getconfig(),
+    		'places' => Place::getList(array()),
+    		'description' => $description,
     	));
     	$view->setTerminal(true);
     	return $view;
     }
-
-    public function searchV2Action()
+/*    
+    public function searchAction()
     {
-    	return $this->searchAction();
-    }
+    	return $this->searchV2Action();
+    }*/
     
     public function getList()
     {
@@ -164,11 +164,11 @@ class AbsenceController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
+/*    
     public function listAction()
     {
     	return $this->getList();
-    }
+    }*/
 
     public function listV2Action()
     {
@@ -211,8 +211,8 @@ class AbsenceController extends AbstractActionController
     	echo json_encode($absences, JSON_PRETTY_PRINT);
     	return $this->getResponse();
     }
-    
-    public function updateAction()
+
+    public function updateV2Action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -290,11 +290,11 @@ class AbsenceController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-
-    public function updateV2Action()
+/*
+    public function updateAction()
     {
-    	return $this->updateAction();
-    }
+    	return $this->updateV2Action();
+    }*/
     
 	public function repriseAction()
 	{
