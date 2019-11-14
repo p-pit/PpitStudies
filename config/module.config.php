@@ -2758,7 +2758,7 @@ return array_merge(
 			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time'
 		),
 		'order' => 'n_fn',
-		'options' => ['internal_identifier' => true],
+		'options' => ['internal_identifier' => true, 'unique_key' => true /*['n_fn', 'n_last', 'email', 'tel_cell']*/],
 	),
 
 	'core_account/index/p-pit-studies' => array(
