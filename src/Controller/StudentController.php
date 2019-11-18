@@ -1027,12 +1027,14 @@ class StudentController extends AbstractActionController
     	$absences = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
 
     	foreach($absences as $absence) {
-    		$key = substr($absence->begin_date, 0, 7);
-    		if (!array_key_exists($key, $months)) {
-    			$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
+    		if ($absence->begin_date >= $begin && $absence->end_date <= $end) {
+	    		$key = substr($absence->begin_date, 0, 7);
+	    		if (!array_key_exists($key, $months)) {
+	    			$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
+	    		}
+	    		$months[$key]['absences'][] = $absence;
+	    		$months[$key]['cumulativeDuration'] += $absence->duration;
     		}
-    		$months[$key]['absences'][] = $absence;
-    		$months[$key]['cumulativeDuration'] += $absence->duration;
     	}
     
     	ksort($months);
