@@ -984,7 +984,7 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
-    public function generateAttendance($account, $begin, $place)
+    public function generateAttendance($account, $begin, $end, $place)
     {
     	// Retrieve the context and parameters
     	$context = Context::getCurrent();
@@ -993,7 +993,6 @@ class StudentController extends AbstractActionController
     	$groups = $account->groups;
     
     	if ($groups) $groups = explode(',', $groups);
-    	$end = date('Y-m-d'); /*$context->getConfig('student/property/school_year/end')*/;
     
     	$template = $context->getConfig('commitments/message/' . $account->type . '/attendance');
     	$addressee = $this->params()->fromQuery('addressee');
@@ -1277,9 +1276,10 @@ class StudentController extends AbstractActionController
     	$account = Account::get($account_id);
     	$place = Place::get($account->place_id);
     	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
-    
+    	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
+    	 
     	// Add the presentation template
-    	$attendance = $this->generateAttendance($account, $start_date, $place);
+    	$attendance = $this->generateAttendance($account, $start_date, $end_date, $place);
     
     	// Render the message in HTML
     	$html = CommitmentMessageViewHelper::renderHtml($attendance, $place);
@@ -1288,6 +1288,7 @@ class StudentController extends AbstractActionController
     		'context' => $context,
     		'account_id' => $account_id,
     		'start_date' => $start_date,
+    		'end_date' => $end_date,
     		'attendance' => $attendance,
     		'html' => $html,
     	));
@@ -1303,9 +1304,10 @@ class StudentController extends AbstractActionController
     	$account = Account::get($account_id);
     	$place = Place::get($account->place_id);
     	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
-    
+    	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
+    	 
     	// Add the presentation template
-    	$attendance = $this->generateAttendance($account, $start_date, $place);
+    	$attendance = $this->generateAttendance($account, $start_date, $end_date, $place);
     
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

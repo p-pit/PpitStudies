@@ -986,7 +986,7 @@ return array_merge(
 	       						'generateAttendance' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/generate-attendance[/:account_id][/:start_date]',
+        										'route' => '/generate-attendance[/:account_id][/:start_date][/:end_date]',
         										'constraints' => array(
         												'account_id' => '[0-9]*',
         										),
@@ -998,7 +998,7 @@ return array_merge(
 	       						'downloadAttendance' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/download-attendance[/:account_id][/:start_date]',
+        										'route' => '/download-attendance[/:account_id][/:start_date][/:end_date]',
         										'constraints' => array(
         												'account_id' => '[0-9]*',
         										),
