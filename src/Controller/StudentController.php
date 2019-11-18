@@ -1014,7 +1014,7 @@ class StudentController extends AbstractActionController
     		}
     	}
     	$attendances = EventPlanningViewHelper::displayPlanning($eventDescription, $events, $begin, $end);
-var_dump($attendances);
+
     	foreach($attendances as $attendance) {
     		$key = substr($attendance['begin_date'], 0, 7);
     		if (!array_key_exists($key, $months)) {
