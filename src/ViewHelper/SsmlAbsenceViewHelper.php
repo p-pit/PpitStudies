@@ -57,8 +57,8 @@ class SsmlAbsenceViewHelper
 							$values = explode(',', $absence->properties[$propertyId]);
 							$decodedValues = [];
 							foreach ($values as $value) if (array_key_exists('modalities', $property) && array_key_exists($value, $property['modalities'])) $decodedValues[] = $context->localize($property['modalities'][$value]);
+							$sheet->setCellValue($column.$j, implode(',', $decodedValues));
 						}
-						$sheet->setCellValue($column.$j, implode(',', $decodedValues));
 					}
 					else $sheet->setCellValue($column.$j, $absence->properties[$propertyId]);
 				}
