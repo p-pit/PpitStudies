@@ -1005,11 +1005,11 @@ class StudentController extends AbstractActionController
     	$months = array();
     
     	// Retrieve the attendance cumul by month
-    	if (!$groups) $events = Event::getList('calendar', ['property_2' => $account->property_7], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'matched_accounts', 'update_time', 'property_1', 'property_2', 'property_3']);
+    	if (!$groups) $events = Event::getList('calendar', ['begin_date' => $begin, 'end_date' => $end, 'property_2' => $account->property_7], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'matched_accounts', 'update_time', 'property_1', 'property_2', 'property_3']);
     	else {
     		$events = [];
     		foreach ($groups as $group_id) {
-    			$cursor = Event::getList('calendar', ['groups' => $group_id], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'update_time', 'property_1', 'property_2', 'property_3']);
+    			$cursor = Event::getList('calendar', ['begin_date' => $begin, 'end_date' => $end, 'groups' => $group_id], '-update_time', null, ['id', 'type', 'place_id', 'category', 'caption', 'location', 'account_id', 'begin_date', 'end_date', 'begin_time', 'end_time', 'exception_dates', 'day_of_week', 'day_of_month', 'update_time', 'property_1', 'property_2', 'property_3']);
     			foreach ($cursor as $event_id => $event) $events[$event_id] = $event;
     		}
     	}
