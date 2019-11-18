@@ -1022,7 +1022,7 @@ class StudentController extends AbstractActionController
     		}
     		$months[$key]['attendances'][] = $attendance;
     	}
-var_dump($months);    
+    
     	// Retrieve the absence cumul by month
     	$absences = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
 
