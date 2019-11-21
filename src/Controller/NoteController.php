@@ -708,7 +708,7 @@ class NoteController extends AbstractActionController
 		    					$connection->rollback();
 		    					$error = $rc;
 		    				}
-		    				if (!$error) {
+		    				if (!$error && $note->type != 'report') {
 		    					// Create or update the reports, per subject and global
 		    					
 		    					// Retrieve the possibly existing report (same year, class, period, subject)
@@ -862,7 +862,8 @@ class NoteController extends AbstractActionController
 		    							}
 		    						}
 		    					}
-		    					 
+		    				}
+		    				if (!$error) {
 		    					$connection->commit();
 		    					$message = 'OK';
 		    				}

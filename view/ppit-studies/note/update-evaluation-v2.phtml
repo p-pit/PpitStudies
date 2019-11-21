@@ -272,7 +272,7 @@ else $modalities = $context->getConfig('student/property/school_subject')['modal
 	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
 	<?php foreach ($context->getConfig('student/property/reportMention')['modalities'] as $categoryId => $category) : ?>
 		<?php $context->localize($caption = $category); ?>
-	    			<option value="<?php echo $categoryId ?>" <?php if ($noteLink->value == $categoryId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
+	    			<option value="<?php echo $categoryId ?>" <?php if ($noteLink->evaluation == $categoryId) echo 'selected="selected"' ?>><?php echo $context->localize($caption) ?></option>
 	<?php endforeach;?>
 	    		</select>
 <?php endif?>
