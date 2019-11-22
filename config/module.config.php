@@ -4439,6 +4439,127 @@ table.note-report tr.period {
 		'description' => 'N',
 		'value' => 'O',
 	),
+
+	// Absence event
+
+	// Properties between property_1 and property_10 are loaded with their counterpartin the calendar event
+
+	'event/absence/property/account_id' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'account_type' => 'p-pit-studies',
+		'labels' => array(
+			'en_US' => 'Student',
+			'fr_FR' => 'Étudiant',
+		),
+	),
+	
+	'event/absence/property/property_1' => array('definition' => 'student/property/school_year'),
+	'event/absence/property/property_2' => array('definition' => 'student/property/school_period'),
+	'event/absence/property/property_3' => array('definition' => 'student/property/school_subject'),
+	
+	// Properties starting from property_11 are reserved for absence specific data
+
+	'event/absence/property/property_11' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => ['definition' => 'inline'],
+		'labels' => array(
+			'en_US' => 'Slot',
+			'fr_FR' => 'Créneau',
+		),
+	),
+
+	'event/absence/property/property_12' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+				'medical' => array('en_US' => 'Medical', 'fr_FR' => 'Médical'),
+				'training' => array('en_US' => 'Training', 'fr_FR' => 'Entrainement'),
+				'competition' => array('en_US' => 'Tournament / Competition', 'fr_FR' => 'Tournoi / Compétition'),
+				'spectacle' => array('en_US' => 'Spectacle', 'fr_FR' => 'Spectacle'),
+				'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
+				'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
+				'repetition' => array('en_US' => 'Repetition', 'fr_FR' => 'Répétition'),
+				'exclusion' => array('en_US' => 'Exclusion', 'fr_FR' => 'Exclusion'),
+				'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
+		),
+		'labels' => array(
+			'en_US' => 'Motive',
+			'fr_FR' => 'Motif',
+		),
+	),
+	
+	'event/absence' => array(
+		'statuses' => array(),
+		'dimensions' => array(),
+		'indicators' => array(),
+		'properties' => array(
+			'status', 'type', 'place_id', 'place_caption', 'account_id',
+			'begin_date', 'end_date', 'begin_time', 'end_time',
+			'property_1', 'property_2', 'property_3', 'property_11', 'property_12',
+			'update_time',
+		),
+	),
+	
+	'event/index/absence' => array(
+		'title' => array('default' => 'Planning', 'fr_FR' => 'Planning'),
+	),
+	
+	'event/search/absence' => array(
+		'title' => array('default' => 'Planning', 'fr_FR' => 'Planning'),
+		'todoTitle' => array('default' => 'recent', 'fr_FR' => 'récents'),
+		'searchTitle' => array('default' => 'search', 'fr_FR' => 'recherche'),
+		'properties' => array(
+			'place_id' => ['multiple' => true],
+			'property_1' => ['default' => 'student/property/school_year/default', 'multiple' => true],
+			'property_2' => ['multiple' => true],
+			'property_3' => ['multiple' => true],
+			'account_id' => ['multiple' => true],
+			'begin_date' => ['multiple' => true],
+		),
+	),
+	
+	'event/list/absence' => array(
+		'place_id' => [],
+		'property_1' => [],
+		'account_id' => [],
+		'property_2' => [],
+		'property_3' => [],
+		'property_12' => [],
+		'begin_date' => [],
+		'begin_time' => [],
+		'end_time' => [],
+		'update_time' => [],
+	),
+	
+	'event/update/absence' => array(
+		'place_id' => ['readonly' => true],
+		'account_id' => ['readonly' => true],
+		'property_1' => ['readonly' => true],
+		'property_2' => ['readonly' => true],
+		'property_3' => ['readonly' => true],
+		'begin_date' => ['readonly' => true],
+		'end_date' => ['readonly' => true],
+		'begin_time' => ['readonly' => true],
+		'end_time' => ['readonly' => true],
+		'property_12' => [],
+	),
+	
+	'event/export/absence' => array(
+		'place_id' => 'A',
+		'account_id' => 'B',
+		'property_1' => 'C',
+		'property_2' => 'D',
+		'property_3' => 'E',
+		'begin_date' => 'F',
+		'end_date' => 'G',
+		'begin_time' => 'H',
+		'end_time' => 'I',
+		'property_12' => 'J',
+	),
+	
+	// To be progressively replaced by event/absence
 	
 	'absence' => array(
 			'types' => array(
