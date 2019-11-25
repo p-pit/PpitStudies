@@ -50,11 +50,12 @@
             <div class="input-group-prepend">
               <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-<?php echo $propertyId ?>"><?php echo $label ?></button>
             </div>
-            <select class="form-control search_input search_input_select <?php if ($multiple) echo 'selectpicker search_selectpicker' ?>" id="search-<?php echo $propertyId ?>" <?php if ($multiple) echo 'data-none-selected-text' ?> <?php if ($multiple) echo 'multiple' ?>>
+            <select class="form-control search_input search_input_select" id="search-<?php echo $propertyId ?>">
               <option value=""></option>
 		<?php foreach ($property['modalities'] as $modalityId => $modality) : ?>
               <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>
 		<?php endforeach;?>
+              <option value="global"><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></option>
             </select>
           </div>
 

@@ -723,6 +723,7 @@ class NoteController extends AbstractActionController
 		    					$note->school_period = $current_school_period;
 		    					
 		    					// Load the input data
+		    					unset($data['date']);
 		    					$data['level'] = null;
 		    					$data['reference_value'] = 20;
 		    					$data['weight'] = 1;
