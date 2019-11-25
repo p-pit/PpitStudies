@@ -50,7 +50,7 @@ table.note-report tr.period {
 	$school_period = $params[1];
 	$visible = false;
 	foreach ($period as $averagePerSubject) {
-		if ($averagePerSubject->subject == 'global' && $averagePerSubject->date <= date('Y-m-d')) $visible = true;
+		if ($averagePerSubject->subject == 'global' && $averagePerSubject->date && $averagePerSubject->date <= date('Y-m-d')) $visible = true;
 	}
 	?>
 	<?php if ($context->hasRole('manager') || $context->hasRole('teacher') || $visible) : ?>	
