@@ -739,7 +739,8 @@ class NoteController extends AbstractActionController
 		    					else $report->links = array();
 		    					
 				    			foreach ($note->links as $noteLink) {
-		    						$reportLink = NoteLink::instanciate($noteLink->account_id, null);
+		    						if (array_key_exists($noteLink->account_id, $report->links)) $reportLink = $report->links[$noteLink->account_id];
+    								else $reportLink = NoteLink::instanciate($noteLink->account_id, null);
 		    						$audit = [];
 		    						$value = $newSubjectAverages[$noteLink->account_id]['global']['note'];
 		    						$audit = $newSubjectAverages[$noteLink->account_id]['global']['notes'];
@@ -750,11 +751,11 @@ class NoteController extends AbstractActionController
 		    							if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
 		    						}
 		    						$reportLink->audit = $audit;
-		    						if (array_key_exists($reportLink->account_id, $report->links) && $report->links[$reportLink->account_id]->id) {
+/*		    						if (array_key_exists($reportLink->account_id, $report->links) && $report->links[$reportLink->account_id]->id) {
 		    							$report->links[$reportLink->account_id]->delete(null);
 		    							unset($report->links[$reportLink->account_id]);
-		    						}
-		    						$report->links[$reportLink->account_id] = $reportLink;
+		    						}*/
+		    						if (!array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id] = $reportLink;
 		    					}
 		    					$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
 		    					foreach ($report->links as $reportLink) {
@@ -787,6 +788,7 @@ class NoteController extends AbstractActionController
 		    									$reportLink->note_id = $report->id;
 		    									$rc = $reportLink->add();
 		    								}
+		    								else $rc = $reportLink->update(null);
 		    								if ($rc != 'OK') {
 		    									$connection->rollback();
 		    									$error = $rc;
@@ -807,7 +809,8 @@ class NoteController extends AbstractActionController
 		    					$data['subject'] = 'global';
 		    					
 				    			foreach ($note->links as $noteLink) {
-		    						$reportLink = NoteLink::instanciate($noteLink->account_id, null);
+		    						if (array_key_exists($noteLink->account_id, $report->links)) $reportLink = $report->links[$noteLink->account_id];
+    								else $reportLink = NoteLink::instanciate($noteLink->account_id, null);
 		    						$audit = [];
 		    						$value = $newGlobalAverages[$noteLink->account_id]['global']['note'];
 		    						$audit = $newGlobalAverages[$noteLink->account_id]['global']['notes'];
@@ -818,10 +821,10 @@ class NoteController extends AbstractActionController
 		    							if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
 		    						}
 		    						$reportLink->audit = $audit;
-		    						if (array_key_exists($reportLink->account_id, $report->links) && $report->links[$reportLink->account_id]->id) {
+/*		    						if (array_key_exists($reportLink->account_id, $report->links) && $report->links[$reportLink->account_id]->id) {
 		    							$report->links[$reportLink->account_id]->delete(null);
 		    							unset($report->links[$reportLink->account_id]);
-		    						}
+		    						}*/
 		    						$report->links[$reportLink->account_id] = $reportLink;
 		    					}
 		    					$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
@@ -855,6 +858,7 @@ class NoteController extends AbstractActionController
 		    									$reportLink->note_id = $report->id;
 		    									$rc = $reportLink->add();
 		    								}
+		    								else $rc = $reportLink->update(null);
 		    								if ($rc != 'OK') {
 		    									$connection->rollback();
 		    									$error = $rc;

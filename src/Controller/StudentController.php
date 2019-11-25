@@ -796,7 +796,8 @@ class StudentController extends AbstractActionController
     									
     								// Compute the average only for evaluated students in the list
     								if (array_key_exists($account->id, $newSubjectAverages)) {
-    									$reportLink = NoteLink::instanciate($account->id, null);
+    									if (array_key_exists($account_id, $report->links)) $reportLink = $report->links[$account_id];
+    									else $reportLink = NoteLink::instanciate($account->id, null);
     									$audit = [];
     									$value = $newSubjectAverages[$account->id]['global']['note'];
     									$audit = $newSubjectAverages[$account->id]['global']['notes'];
@@ -810,8 +811,8 @@ class StudentController extends AbstractActionController
     
     									// todo: not delete and add. Update instead
     
-    									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
-    									$report->links[$reportLink->account_id] = $reportLink;
+//    									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+    									if (!array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id] = $reportLink;
     								}
     							}
     
@@ -849,6 +850,7 @@ class StudentController extends AbstractActionController
     											$reportLink->note_id = $report->id;
     											$rc = $reportLink->add();
     										}
+    										else $rc = $reportLink->update(null);
     										if ($rc != 'OK') {
     											$connection->rollback();
     											$error = $rc;
@@ -874,7 +876,8 @@ class StudentController extends AbstractActionController
     
     							foreach ($accounts as $account_id => $account) {
     								if (array_key_exists($account->id, $newGlobalAverages)) {
-    									$reportLink = NoteLink::instanciate($account->id, null);
+    									if (array_key_exists($account_id, $report->links)) $reportLink = $report->links[$reportLink->account_id];
+    									else $reportLink = NoteLink::instanciate($account->id, null);
     									$audit = [];
     									$value = $newGlobalAverages[$account->id]['global']['note'];
     									$audit = $newGlobalAverages[$account->id]['global']['notes'];
@@ -885,11 +888,9 @@ class StudentController extends AbstractActionController
     										if ($categoryId != 'global') $reportLink->distribution[$categoryId] = $category['note'];
     									}
     
-    									// todo: not delete and add. Update instead
-    
     									$reportLink->audit = $audit;
-    									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
-    									$report->links[$reportLink->account_id] = $reportLink;
+//    									if (array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id]->delete(null);
+    									if (!array_key_exists($reportLink->account_id, $report->links)) $report->links[$reportLink->account_id] = $reportLink;
     								}
     							}
     
@@ -927,6 +928,7 @@ class StudentController extends AbstractActionController
     											$reportLink->note_id = $report->id;
     											$rc = $reportLink->add();
     										}
+    										else $rc = $reportLink->update(null);
     										if ($rc != 'OK') {
     											$connection->rollback();
     											$error = $rc;
