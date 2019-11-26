@@ -724,6 +724,7 @@ class NoteController extends AbstractActionController
 		    					
 		    					// Load the input data
 		    					unset($data['date']);
+		    					unset($data['teacher_id']);
 		    					$data['level'] = null;
 		    					$data['reference_value'] = 20;
 		    					$data['weight'] = 1;
