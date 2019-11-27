@@ -1027,8 +1027,8 @@ class StudentController extends AbstractActionController
     		$months[$key]['attendances'][] = $attendance;
     	}
     
-    	// Retrieve the absence cumul by month
-/*    	$absences = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
+    	// Retrieve the absence cumul by month from the absences input manually 
+    	$absences = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
 
     	foreach($absences as $absence) {
     		if ($absence->begin_date >= $begin && $absence->end_date <= $end) {
@@ -1036,12 +1036,12 @@ class StudentController extends AbstractActionController
 	    		if (!array_key_exists($key, $months)) {
 	    			$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
 	    		}
-	    		$months[$key]['absences'][] = $absence;
+	    		$months[$key]['absences'][] = ['duration' => $absence->duration, 'motive' => $absence->motive];
 	    		$months[$key]['cumulativeDuration'] += $absence->duration;
     		}
-    	}*/
+    	}
 
-    	// Retrieve the absence cumul by month
+    	// Complete the absence cumul by month from the absences generated from the attendance
     	$absences = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
     	
     	foreach($absences as $absence) {
@@ -1050,17 +1050,16 @@ class StudentController extends AbstractActionController
     			if (!array_key_exists($key, $months)) {
     				$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
     			}
-    			$months[$key]['absences'][] = $absence;
-				if ($absence->end_time > $absence->begin_time) {
+    			if ($absence->end_time > $absence->begin_time) {
 					$startHour = (int) substr($absence->begin_time, 0, 2);
 					$startMin = (int) substr($absence->begin_time, 3, 2);
 					$start = $startHour * 60 + $startMin;
 					$endHour = (int) substr($absence->end_time, 0, 2);
 					$endMin = (int) substr($absence->end_time, 3, 2);
 					$end = $endHour * 60 + $endMin;
-					$absence->properties['duration'] = $end - $start;
-				}
-    			$months[$key]['cumulativeDuration'] += $absence->properties['duration'];
+	    			$months[$key]['absences'][] = ['duration' => $end - $start, 'motive' => $absence->property_12];
+    				$months[$key]['cumulativeDuration'] += $end - $start;
+    			}
     		}
     	}
     	 
@@ -1093,9 +1092,8 @@ class StudentController extends AbstractActionController
     
     		// Sum the absences
     		foreach ($month['absences'] as $absence) {
-//    			if ($absence->motive == 'medical') $month['health_absence'] += $absence->duration;
-    			if ($absence->property_12 == 'medical') $month['health_absence'] += $absence->properties['duration'];
-    			else $month['other_absence'] += $absence->properties['duration'];
+    			if ($absence['motive'] == 'medical') $month['health_absence'] += $absence['duration'];
+    			else $month['other_absence'] += $absence['duration'];
     		}
     		$month['total_absence'] = $month['health_absence'] + $month['vacation_absence'] + $month['necessity_absence'] + $month['business_absence'] + $month['other_absence'];
     
