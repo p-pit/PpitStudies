@@ -1585,7 +1585,9 @@ class StudentController extends AbstractActionController
     	$absLates = [];
 
     	// Retrieve the manual absences
-    	$cursor = Absence::getList(null, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search', null);
+    	$filter = ['account_id' => $account_id, 'school_year' => $school_year];
+    	if ($school_period) $filter['school_period'] = $school_period;
+    	$cursor = Absence::getList(null, $filter, 'date', 'DESC', 'search', null);
     	foreach ($cursor as $absLate) {
     		if ($absLate->category == 'absence') {
     			$absences[] = $absLate;
