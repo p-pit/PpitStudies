@@ -32,29 +32,29 @@ class PdfAbsenceTableViewHelper
 	    $subject = null;
 	    foreach ($absLates as $absLate) {
 	    	$period = '';
-			if ($absLate->end_date > $absLate->begin_date) {
+			if ($absLate['end_date'] > $absLate['begin_date']) {
 				$period .= $translator->translate('From the', 'ppit-studies', $context->getLocale());
-				$period .= ' <strong>'.$context->decodeDate($absLate->begin_date).'</strong><br>';
+				$period .= ' <strong>'.$context->decodeDate($absLate['begin_date']).'</strong><br>';
 				$period .= $translator->translate('to the', 'ppit-studies', $context->getLocale());
-				$period .= ' <strong>'.$context->decodeDate($absLate->end_date).'</strong>';
+				$period .= ' <strong>'.$context->decodeDate($absLate['end_date']).'</strong>';
 			}
 			else {
-				$period .= $context->decodeDate($absLate->begin_date);
+				$period .= $context->decodeDate($absLate['begin_date']);
 			}
 			$duration = '';
-			if ($absLate->duration) {
-				if ((int)($absLate->duration/60)) $duration .= ((int)($absLate->duration/60)).'h';
-				if ($absLate->duration%60) $duration .= sprintf('%02u', $absLate->duration%60).'mn';
+			if ($absLate['duration']) {
+				if ((int)($absLate['duration'] / 60)) $duration .= ((int)($absLate['duration'] / 60)).'h';
+				if ($absLate['duration'] % 60) $duration .= sprintf('%02u', $absLate['duration'] % 60).'mn';
 			}
 	    	$rows.= sprintf(
 	   				$context->getConfig('student/report/absenceRow')['html'], 
 	    			'',
-					$translator->translate((($absLate->category == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()),
-	    			($absLate->subject) ? $context->localize($context->getConfig('student/property/school_subject')['modalities'][$absLate->subject]) : '',
+					$translator->translate((($absLate['category'] == 'absence') ? 'Absence' : 'Lateness'), 'ppit-studies', $context->getLocale()),
+	    			($absLate['subject']) ? $context->localize($context->getConfig('student/property/school_subject')['modalities'][$absLate['subject']]) : '',
 					$period,
 	    			$duration,
-	    			(($absLate->motive) ? $context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate->motive]) : ''),
-	    			(($absLate->observations) ? $absLate->observations : '')
+	    			(($absLate['motive']) ? $context->localize($context->getConfig('absence/property/motive')['modalities'][$absLate['motive']]) : ''),
+	    			(($absLate['observations']) ? $absLate['observations'] : '')
 	   		);
 	    }
 

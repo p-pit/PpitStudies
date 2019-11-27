@@ -204,6 +204,21 @@ function showCalendar(route, target) {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4) {
       document.getElementById(target).innerHTML = xhttp.responseText;
+
+      $('#absence-statement-anchor').click(function () {
+    	let route = '<?php echo $this->url('student/absenceV2', ['account_id' => $profile->id]) ?>?';
+        let xhttp2 = new XMLHttpRequest();
+        xhttp2.open("GET", route, true);
+        xhttp2.onreadystatechange = function() {
+          if (xhttp2.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+          if (xhttp2.readyState == 4 && xhttp2.status == 200) {
+            $('#student-homework-content').html(xhttp2.responseText);
+            $('#student-homework-modal').modal('show');
+          }
+        }
+        xhttp2.send();
+      });
+
       createCalendar(function (info) {
         let entry = info.event.extendedProps;
         if (entry.entryType == 'homework') {
@@ -222,7 +237,7 @@ function showCalendar(route, target) {
 	              $('#student-homework-modal').modal('show');
 	          }
 	        }
-          xhttp2.send();
+            xhttp2.send();
         }
         else if (entry.entryType == 'absence') {
           let route = '<?php echo $this->url('student/absenceV2', ['account_id' => $profile->id]) ?>?';
@@ -255,7 +270,8 @@ function showCalendar(route, target) {
 showStatic('<?php echo $route ?>', '<?php echo $tabId ?>-panel');
     <?php elseif ($tab['type'] == 'calendar') : ?>
 showCalendar('<?php echo $this->url($tab['route'], array('id' => $profile->id)) ?>', '<?php echo $tabId ?>-panel');
-    <?php endif;?>
+
+	<?php endif;?>
 <?php endforeach;?>
 
 <?php if ($message == 'Already activated') : ?>

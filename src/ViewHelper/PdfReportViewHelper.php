@@ -118,7 +118,9 @@ class PdfReportViewHelper
     	elseif ($category == 'absence') {
     		$text = '<div style="text-align: center"><strong>Relevé d\'absences au '.$context->decodeDate(date('Y-m-d'));
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-    		$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]).'</strong></div>';
+    		$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]);
+    		if ($school_period) $text .= ' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]);
+    		$text .= '</strong></div>';
     	}
     	else {
     		$text = '<div style="text-align: center"><strong>'.(($mock) ? 'Epreuve blanche' : 'Relevé de notes').' au '.$context->decodeDate(date('Y-m-d'));

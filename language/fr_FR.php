@@ -3,6 +3,7 @@
 		'2nd legal representant' => '2nd représentant légal',
 		'Absence' => 'Absence',
 		'Absence/Lateness' => 'Absence/Retard',
+		'Absence statement' => 'Relevé d’absences',
 		'Absences' => 'Absences',
 		'Add a student file' => 'Ajouter un dossier élève',
 		'Any center' => 'Tout centre',
