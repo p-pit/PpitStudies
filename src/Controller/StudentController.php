@@ -601,11 +601,12 @@ class StudentController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     	$places = Place::getList(array());
+    	$type = $this->params()->fromRoute('type');
     
     	// Retrieve the class
     	$class = $this->params()->fromQuery('class', null);
     
-    	$note = Note::instanciate('note', $class);
+    	$note = Note::instanciate($type, $class);
     
     	$accounts = [];
     	$accountIds = $this->params()->fromQuery('accounts');
@@ -877,7 +878,7 @@ class StudentController extends AbstractActionController
     
     							foreach ($accounts as $account_id => $account) {
     								if (array_key_exists($account->id, $newGlobalAverages)) {
-    									if (array_key_exists($account_id, $report->links)) $reportLink = $report->links[$reportLink->account_id];
+    									if (array_key_exists($account_id, $report->links)) $reportLink = $report->links[$account_id];
     									else $reportLink = NoteLink::instanciate($account->id, null);
     									$audit = [];
     									$value = $newGlobalAverages[$account->id]['global']['note'];
