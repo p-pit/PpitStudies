@@ -1340,16 +1340,6 @@ return array_merge(
 							'fr_FR' => 'Planning',
 						),
 					),
-/*					'planning' => array(
-							'route' => 'event/calendar',
-							'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'planning'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-time',
-							'label' => array(
-									'en_US' => 'Planning',
-									'fr_FR' => 'Planning',
-							),
-					),*/
 					'absence' => array(
 							'route' => 'absence/indexV2',
 							'params' => array('type' => '', 'entryId' => 'absence'),
@@ -1409,17 +1399,7 @@ return array_merge(
 									'fr_FR' => 'Inscriptions',
 							),
 					),
-					'user' => array(
-						'route' => 'user/index',
-						'params' => array('app' => 'p-pit-studies'),
-						'glyphicon' => 'glyphicon-user',
-						'urlParams' => array(),
-						'label' => array(
-							'en_US' => 'Trainers',
-							'fr_FR' => 'Formateurs',
-						),
-					),
-/*					'teacher' => array(
+					'teacher' => array(
 							'route' => 'account/indexAlt',
 							'params' => array('entry' => 'account', 'type' => 'teacher', 'app' => 'p-pit-studies', 'entryId' => 'teacher'),
 							'glyphicon' => 'glyphicon-user',
@@ -1427,7 +1407,7 @@ return array_merge(
 									'en_US' => 'Trainers',
 									'fr_FR' => 'Formateurs',
 							),
-					),*/
+					),
 					'group' => array(
 							'route' => 'account/indexAlt',
 							'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-studies', 'entryId' => 'group'),
@@ -4357,7 +4337,7 @@ table.note-report tr.period {
 		'properties' => array(
 			'place_id' => ['multiple' => true],
 			'property_1' => ['default' => 'student/property/school_year/default', 'multiple' => true],
-			'groups' => [],
+			'groups' => ['multiple' => true],
 			'property_2' => ['multiple' => true],
 //			'n_fn' => [],
 			'property_3' => ['multiple' => true],
@@ -4369,7 +4349,8 @@ table.note-report tr.period {
 		'place_id' => [],
 		'property_1' => [],
 		'n_fn' => [],
-		'property_2' => [],
+//		'property_2' => [],
+		'groups' => [],
 		'property_3' => [],
 		'property_4' => [],
 		'category' => [],
@@ -4428,7 +4409,8 @@ table.note-report tr.period {
 		'place_id' => 'C',
 		'property_1' => 'D',
 		'n_fn' => 'E',
-		'property_2' => 'F',
+//		'property_2' => 'F',
+		'groups' => 'F',
 		'property_3' => 'G',
 		'property_4' => 'H',
 		'category' => 'I',
