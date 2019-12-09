@@ -3815,6 +3815,7 @@ table.note-report td {
 					'hg_geopolitique_science_politique' => array('default' => 'HG, géopolitique, sciences politiques'),
 					'science_politique' => array('default' => 'Sciences politiques'),
 					'civics' => array('en_US' => 'Civics', 'fr_FR' => 'Instruction civique'),
+					'moral_and_civics' => array('default' => 'Enseignement moral et civique'),
 					'physics-chemistry' => array('en_US' => 'Physics/chemistry', 'fr_FR' => 'Physique/chimie'),
 					'life-science' => array('en_US' => 'Life sciences', 'fr_FR' => 'SVT'),
 					'svt_techno' => array('default' => 'SVT techno'),
