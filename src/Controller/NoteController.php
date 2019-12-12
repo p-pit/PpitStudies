@@ -983,6 +983,8 @@ class NoteController extends AbstractActionController
 		$deleted = [];
 		foreach ($noteLinks as $noteLink) {
 			$nUplets = NoteLink::getList('report', ['school_year' => $school_year, 'account_id' => $noteLink->account_id, 'school_period' => $noteLink->school_period, 'subject' => $noteLink->subject], 'id', 'ASC', 'search');
+
+			echo count($nUplets > 1) . "\n";
 			if (count($nUplets > 1)) {
 				$hasComment = null;
 				$hasConsistentClass = null;
