@@ -987,7 +987,7 @@ class NoteController extends AbstractActionController
 				$hasConsistentClass = null;
 				foreach ($nUplets as $row) {
 					if (!$hasConsistentClass && $row->class == $row->account_class) $hasConsistentClass = $row;
-					if (!$hasComment && $row->assessement) {
+					if (!$hasComment && $row->assessment) {
 						$hasComment = $row;
 						if ($row->class == $row->account_class) $hasConsistentClass = $row;
 					}
