@@ -976,7 +976,7 @@ class NoteController extends AbstractActionController
 		foreach ($cursor as $noteLink) {
 			if ($noteLink->class != $noteLink->account_class) {
 				$noteLinks[$noteLink->id] = $noteLink;
-//				echo $noteLink->id . ';' . $noteLink->note_id . ';' . $noteLink->place_id . ';' . $noteLink->account_id . ';' . $noteLink->name . ';' . $noteLink->school_period . ';' . $noteLink->class . ';' . $noteLink->account_class . ';' . $noteLink->subject . ';' . (($noteLink->assessment) ? 'Commentaire...' : '') . ';' . "\n";
+//				echo $noteLink->id . ';' . $noteLink->note_id . ';' . $noteLink->place_id . ';' . $noteLink->account_id . ';' . $noteLink->name . ';' . $noteLink->school_period . ';' . $noteLink->class . ';' . $noteLink->account_class . ';' . $noteLink->subject . ';' . (($noteLink->assessment) ? 'Commentaire...' : '') . ';' . $noteLink->evaluation . ';' . "\n";
 			}
 		}
 		
@@ -991,13 +991,29 @@ class NoteController extends AbstractActionController
 						$hasComment = $row;
 						if ($row->class == $row->account_class) $hasConsistentClass = $row;
 					}
-					echo $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->class . ';' . $row->account_class . ';' . (($row->assessment) ? 'Commentaire...' : '') . ';' . "\n";
+					echo $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->class . ';' . $row->account_class . ';' . (($row->assessment) ? 'Commentaire...' : '') . ';' . $row->evaluation . ';' . "\n";
 				}
 				if ($hasConsistentClass) $row = $hasConsistentClass;
 				elseif ($hasComment) $row = $hasComment;
 				if (!$row->assessment && $hasComment) $row->assessment = $hasComment->assessment;
-				echo $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->class . ';' . $row->account_class . ';' . (($row->assessment) ? 'Commentaire...' : '') . ';' . "\n";
+				if (!$row->evaluation && $hasComment) $row->evaluation = $hasComment->evaluation;
+
+				// Delete the rows except the one that is kept
+				$kept = $row;
+				$deleted = [];
+				foreach ($nUplets as $row) {
+					if ($row != $kept) {
+						$deleted[] = $row->id;
+						echo 'Deleting ' . $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->class . ';' . $row->account_class . ';' . (($row->assessment) ? 'Commentaire...' : '') . ';' . $row->evaluation . ';' . "\n";
+//						$row->delete(null);
+					}
+					else {
+//						$row->update(null);
+						echo 'Updating ' . $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->class . ';' . $row->account_class . ';' . (($row->assessment) ? 'Commentaire...' : '') . ';' . $row->evaluation . ';' . "\n";
+					}
+				}
 				echo "\n";
+				echo implode(',', $deleted) . "\n";
 			}
 		}
 		return $this->response;
