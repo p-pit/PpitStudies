@@ -981,5 +981,6 @@ class NoteController extends AbstractActionController
 				echo "\n";
 			}
 		}
+		return $this->response;
 	}
 }
