@@ -976,7 +976,7 @@ class NoteController extends AbstractActionController
 		foreach ($cursor as $noteLink) {
 			if ($noteLink->class != $noteLink->account_class) {
 				$noteLinks[$noteLink->id] = $noteLink;
-				echo $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->account_name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->assessment . ';' . "\n";
+				echo $noteLink->id . ';' . $noteLink->note_id . ';' . $noteLink->place_id . ';' . $noteLink->account_id . ';' . $noteLink->account_name . ';' . $noteLink->school_period . ';' . $noteLink->subject . ';' . $noteLink->assessment . ';' . "\n";
 			}
 		}
 		return $this->response;
