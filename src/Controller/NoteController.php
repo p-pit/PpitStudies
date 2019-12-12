@@ -983,9 +983,20 @@ class NoteController extends AbstractActionController
 		foreach ($noteLinks as $noteLink) {
 			$nUplets = NoteLink::getList('report', ['school_year' => $school_year, 'account_id' => $noteLink->account_id, 'school_period' => $noteLink->school_period, 'subject' => $noteLink->subject], 'id', 'ASC', 'search');
 			if (count($nUplets > 1)) {
+				$hasComment = null;
+				$hasConsistentClass = null;
 				foreach ($nUplets as $row) {
+					if (!$hasConsistentClass && $row->class == $row->account_class) $hasConsistentClass = $row;
+					if (!$hasComment && $row->assessement) {
+						$hasComment = $row;
+						if ($row->class == $row->account_class) $hasConsistentClass = $row;
+					}
 					echo $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->class . ';' . $row->account_class . ';' . (($row->assessment) ? 'Commentaire...' : '') . ';' . "\n";
 				}
+				if ($hasConsistentClass) $row = $hasConsistentClass;
+				elseif ($hasComment) $row = $hasComment;
+				if (!$row->assessment && $hasComment) $row->assessment = $hasComment->assessment;
+				echo $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->class . ';' . $row->account_class . ';' . (($row->assessment) ? 'Commentaire...' : '') . ';' . "\n";
 				echo "\n";
 			}
 		}
