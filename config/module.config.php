@@ -3875,6 +3875,10 @@ table.note-report td {
 					'spe-pse' => array('en_US' => 'PSE specialty', 'fr_FR' => 'Spécialité PSE'),
 					'spe-bac-pro' => array('en_US' => 'Bac pro specialty', 'fr_FR' => 'Spécialité Bac Pro'),
 
+					'relation_client_digitalisation' => array('default' => 'Relation client à distance et digitalisation', 'classes' => ['bts_ndrc']),
+					'relation_client_reseau' => array('default' => 'Relation client et animation des réseaux', 'classes' => ['bts_ndrc']),
+					'relation_client_vente' => array('default' => 'Relation client et négociation vente', 'classes' => ['bts_ndrc']),
+				
 					'physio_pathologie' => array('en_US' => 'Physio-pathology', 'fr_FR' => 'Physio-pathologie'),
 					'medico-social' => array('en_US' => 'Medico-social', 'fr_FR' => 'Sciences médico-sociales'),
 					'nutrition' => array('en_US' => 'Biologics and nutrition', 'fr_FR' => 'Biologie et nutrition'),
@@ -4068,11 +4072,11 @@ table.note-report td {
 			'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 			'params' => array('birth_date'),
 		),
-		array(
+/*		array(
 			'left' => array('en_US' => 'Class size', 'fr_FR' => 'Effectif'),
 			'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 			'params' => array('class_size'),
-		),
+		),*/
 	),
 
 	'student/report/detailHeader' => array(
