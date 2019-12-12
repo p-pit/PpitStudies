@@ -980,6 +980,7 @@ class NoteController extends AbstractActionController
 			}
 		}
 		
+		$deleted = [];
 		foreach ($noteLinks as $noteLink) {
 			$nUplets = NoteLink::getList('report', ['school_year' => $school_year, 'account_id' => $noteLink->account_id, 'school_period' => $noteLink->school_period, 'subject' => $noteLink->subject], 'id', 'ASC', 'search');
 			if (count($nUplets > 1)) {
@@ -1000,7 +1001,6 @@ class NoteController extends AbstractActionController
 
 				// Delete the rows except the one that is kept
 				$kept = $row;
-				$deleted = [];
 				foreach ($nUplets as $row) {
 					if ($row != $kept) {
 						$deleted[] = $row->id;
@@ -1013,9 +1013,9 @@ class NoteController extends AbstractActionController
 					}
 				}
 				echo "\n";
-				echo implode(',', $deleted) . "\n";
 			}
 		}
+		echo implode(',', $deleted) . "\n";
 		return $this->response;
 	}
 }
