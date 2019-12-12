@@ -29,6 +29,7 @@ class NoteLink
     public $n_fn;
     public $user_n_fn;
     public $name;
+    public $account_class;
     public $note_status;
     public $category;
     public $type;
@@ -77,6 +78,7 @@ class NoteLink
         $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
         $this->user_n_fn = (isset($data['user_n_fn'])) ? $data['user_n_fn'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null; // Deprecated
+        $this->account_class = (isset($data['account_class'])) ? $data['account_class'] : null; // Deprecated
         $this->note_status = (isset($data['note_status'])) ? $data['note_status'] : null;
         $this->category = (isset($data['category'])) ? $data['category'] : null;
         $this->type = (isset($data['type'])) ? $data['type'] : null;
@@ -116,6 +118,7 @@ class NoteLink
     	$data['n_fn'] =  $this->n_fn;
     	$data['user_n_fn'] =  $this->user_n_fn;
     	$data['name'] =  $this->name;
+    	$data['account_class'] =  $this->account_class;
     	$data['note_status'] =  $this->note_status;
     	$data['category'] =  $this->category;
     	$data['type'] =  $this->type;
@@ -148,6 +151,7 @@ class NoteLink
     	unset($data['n_fn']);
     	unset($data['user_n_fn']);
     	unset($data['name']);
+    	unset($data['account_class']);
     	unset($data['note_status']);
     	unset($data['category']);
     	unset($data['type']);
@@ -176,7 +180,7 @@ class NoteLink
     		->order(array($major.' '.$dir, 'date DESC', 'type ASC'))
     		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
-    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name'), 'left')
+    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'class' => 'property_7'), 'left')
     		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('n_fn'), 'left');
     	$where = new Where;
     	$where->notEqualTo('student_note_link.status', 'deleted');

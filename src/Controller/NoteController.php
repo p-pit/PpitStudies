@@ -971,7 +971,9 @@ class NoteController extends AbstractActionController
 		$context= Context::getCurrent();
 		$school_year = $this->params()->fromQuery('school_year', '2019-2020');
 		
-		$noteLinks = NoteLink::getList('report', ['school_year' => $school_year], 'id', 'ASC', 'search');
+		$cursor = NoteLink::getList('report', ['school_year' => $school_year], 'id', 'ASC', 'search');
+		$noteLinks = [];
+		foreach ($cursor as $noteLink) if ($noteLink->class != $noteLink->account_class) $noteLinks[$noteLink->id] = $noteLink;
 		foreach ($noteLinks as $noteLink) {
 			$nUplets = NoteLink::getList('report', ['school_year' => $school_year, 'account_id' => $noteLink->account_id, 'school_period' => $noteLink->school_period, 'subject' => $noteLink->subject], 'id', 'ASC', 'search');
 			if (count($nUplets > 1)) {
