@@ -898,83 +898,6 @@ class NoteController extends AbstractActionController
     	return $view;
     }
 /*
-    public function updateEvaluationAction()
-    {
-    	return $this->updateEvaluationV2Action();
-    }*/
-    
-/*    
-    public function repriseAction()
-    {
-    	$context = Context::getCurrent();
-    	$select = NoteLink::getTable()->getSelect()
-    		->join('student_note', 'student_note.id = student_note_link.note_id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date'), 'left')
-    		->join('core_vcard', 'core_vcard.id = student_note.teacher_id', array('n_fn'), 'left')
-			->join('core_user', 'core_user.user_id = student_note_link.update_user', array(), 'left')
-			->join(array('user_vcard' => 'core_vcard'), 'user_vcard.id = core_user.vcard_id', array('user_n_fn' => 'n_fn'), 'left')
-    		->join('core_account', 'core_account.id = student_note_link.account_id', array('name'), 'left')
-    		->join(array('student_vcard' => 'core_vcard'), 'student_vcard.id = core_account.contact_1_id', array('name' => 'n_fn'), 'left')
-    		->order(array('student_note.type', 'student_note.id', 'student_note_link.account_id'));
-		$where = new Where;
-		$where->equalTo('student_note.status', 'current');
-		$where->equalTo('student_note.category', 'evaluation');
-		$select->where($where);
-		$cursor = NoteLink::getTable()->selectWith($select);
-		header('Content-Type: text/csv; charset=utf-8');
-		header("Content-disposition: filename=order-".date('Y-m-d').".csv");
-		echo "\xEF\xBB\xBF";
-		echo 'id;note_id;Professeur;Professeur initial;account_id;Elève;Type;Année scolaire;Type d\'évaluation;Classe;Période;Matière;Date;Note;Appréciation;'."\n";
-		$previousKey = '';
-		$previousLink = null;
-		$lastPrinted = null;
-		foreach ($cursor as $noteLink) {
-			$key = $noteLink->type.'_'.$noteLink->note_id.'_'.$noteLink->account_id;
-//			if (!$noteLink->subject) {
-			if ($key == $previousKey) {
-				if ($previousLink && $previousLink->id != $lastPrinted) {
-					echo
-					$previousLink->id.';'.
-					$previousLink->note_id.';'.
-					$previousLink->n_fn.';'.
-					$previousLink->user_n_fn.';'.
-					$previousLink->account_id.';'.
-					$previousLink->name.';'.
-					$previousLink->type.';'.
-					$previousLink->school_year.';'.
-					((!$previousLink->level) ? $previousLink->level : $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$previousLink->level])).';'.
-					((!$previousLink->class) ? $previousLink->class : $context->localize($context->getConfig('student/property/class')['modalities'][$previousLink->class])).';'.
-					$previousLink->school_period.';'.
-					(($previousLink->subject == 'global') ? $previousLink->subject : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$previousLink->subject])).';'.
-					$previousLink->date.';'.
-					$previousLink->value.';'.
-					$previousLink->assessment.';'.
-					"\n";
-				}
-				$lastPrinted = $noteLink->id;
-	    		echo 
-	      		$noteLink->id.';'.
-	      		$noteLink->note_id.';'.
-	      		$noteLink->n_fn.';'.
-	    		$noteLink->user_n_fn.';'.
-	    		$noteLink->account_id.';'.
-	    		$noteLink->name.';'.
-	    		$noteLink->type.';'.
-	    		$noteLink->school_year.';'.
-	    		((!$noteLink->level) ? $noteLink->level : $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$noteLink->level])).';'.
-	    		((!$noteLink->class) ? $noteLink->class : $context->localize($context->getConfig('student/property/class')['modalities'][$noteLink->class])).';'.
-	    		$noteLink->school_period.';'.
-	    		(($noteLink->subject == 'global') ? $noteLink->subject : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$noteLink->subject])).';'.
-	    		$noteLink->date.';'.
-	    		$noteLink->value.';'.
-	    		$noteLink->assessment.';'.
-	    		"\n";
-			}
-			$previousKey = $key;
-			$previousLink = $noteLink;
-    	}
-    	return $this->response;
-    }*/
-/*
     public function repriseAction()
     {
     	$context = Context::getCurrent();
@@ -992,7 +915,7 @@ class NoteController extends AbstractActionController
 	    }
 	    return $this->response;
     }*/
-
+/*
 	    public function repriseAction()
 	    {
 	    	$context = Context::getCurrent();
@@ -1011,21 +934,6 @@ class NoteController extends AbstractActionController
 		    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
 	    					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
 		    				$cursor = NoteLink::getTable()->selectWith($select);
-/*		    	if ($note->subject == 'global') {
-		    		foreach($cursor as $noteLink) {
-						$value = $noteLink->computeStudentAverage($note->school_year, $note->school_period);
-						$value = round($value * $note->reference_value / 20, 2);
-//						$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
-    					if ($value != $noteLink->value) {
-							print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: '.$noteLink->account_id.' '.$note->class.' '.$note->subject."\n");
-							print_r('New: '.$value."\n");
-							print_r('Old: '.$noteLink->value."\n");
-							$noteLink->value = $value;
-//							$noteLink->update(null);
-			    		}
-		    		}
-		    	}
-		    	else {*/
 		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
 			    	foreach($cursor as $noteLink) {
 //						$note->links[] = $noteLink;
@@ -1055,5 +963,23 @@ class NoteController extends AbstractActionController
 //		    	}
 	    	}
 	    	return $this->response;
-	    }
+	    }*/
+
+    // Identify n-uplets of average for a same account + school year + period + subject, regardless of the class => Keep the one that has an assessment
+	public function repriseAction()
+	{
+		$context= Context::getCurrent();
+		$school_year = $this->params()->fromQuery('school_year', '2019-2020');
+		
+		$noteLinks = NoteLink::getList('report', ['school_year' => $school_year], 'id', 'ASC', 'search');
+		foreach ($noteLinks as $noteLink) {
+			$nUplets = NoteLink::getList('report', ['school_year' => $school_year, 'account_id' => $noteLink->account_id, 'school_period' => $noteLink->school_period, 'subject' => $noteLink->subject], 'id', 'ASC', 'search');
+			if (count($nUplets > 1)) {
+				foreach ($nUplets as $row) {
+					echo $row->id . ';' . $row->note_id . ';' . $row->place_id . ';' . $row->account_id . ';' . $row->account_name . ';' . $row->school_period . ';' . $row->subject . ';' . $row->assessment . ';' . "\n";
+				}
+				echo "\n";
+			}
+		}
+	}
 }
