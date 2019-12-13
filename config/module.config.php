@@ -1341,14 +1341,14 @@ return array_merge(
 						),
 					),
 					'absence' => array(
-							'route' => 'absence/indexV2',
-							'params' => array('type' => '', 'entryId' => 'absence'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-hourglass',
-							'label' => array(
-									'en_US' => 'Absences/Lateness',
-									'fr_FR' => 'Absences/Retards',
-							),
+						'route' => 'event/indexAlt',
+						'params' => array('type' => 'absence', 'entryId' => 'absence'),
+						'urlParams' => array(),
+						'glyphicon' => 'glyphicon-hourglass',
+						'label' => array(
+							'en_US' => 'Absences',
+							'fr_FR' => 'Absences',
+						),
 					),
 					'homework' => array(
 							'route' => 'note/indexV2',
@@ -4488,7 +4488,7 @@ table.note-report tr.period {
 		'dimensions' => array(),
 		'indicators' => array(),
 		'properties' => array(
-			'status', 'type', 'place_id', 'place_caption', 'account_id',
+			'status', 'type', 'place_id', 'place_caption', 'account_id', 'n_fn',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
 			'property_1', 'property_2', 'property_3', 'property_11', 'property_12',
 			'update_time',
@@ -4538,6 +4538,40 @@ table.note-report tr.period {
 		'end_time' => ['readonly' => true],
 		'property_12' => [],
 	),
+
+	'event/group/absence' => [
+		'title' => ['default' => 'Selected absences', 'fr_FR' => 'Absences sélectionnées'],
+		'checklist' => ['format' => '%s - %s %s', 'params' => ['n_fn', 'property_3', 'begin_date']],
+	],
+
+	'event/notify/absence' => [
+		'title' => ['default' => 'Notify absences', 'fr_FR' => 'Notifier des absences'],
+		'cci' => ['contact@p-pit.fr' => 'contact@p-pit.fr'],
+		'from_mail' => 'contact@p-pit.fr',
+		'from_name' => 'Le support P-Pit',
+		'subject' => [
+			'text' => ['default' => '%s - Absence', 'fr_FR' => '%s - Absence'],
+			'params' => ['place_caption'],
+		],
+		'body' => [
+			'text' => [
+				'default' => '<p>Hello,</p>
+<p>We inform you about the absence(s) of %s detailed below.</p>
+<p>Should you need any additional information, please do not hesitate to contact us.</p>
+',
+				'fr_FR' => '<p>Bonjour,</p>
+<p>Nous vous informons de(s) (l’)absence(s) de %s détaillée(s) ci-après.</p>
+<p>Si vous avez besoin d’informations complémentaires, n’hésitez-pas à nous contacter.</p>
+',
+			],
+			'params' => ['n_fn'],
+			'event_text' => [
+				'default' => '<p style="text-align: center"><strong>Subject: %s &mdash; %s %s (%s) &mdash; Motivation: %s</strong></p>',
+				'fr_FR' => '<p style="text-align: center"><strong>Sujet: %s &mdash; %s %s (%s) &mdash; Justification : %s</strong></p>',
+			],
+			'event_params' => ['property_3', 'begin_date', 'begin_time', 'duration', 'property_12'],
+		],
+	],
 	
 	'event/export/absence' => array(
 		'place_id' => 'A',
