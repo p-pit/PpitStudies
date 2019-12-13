@@ -508,7 +508,7 @@ class Note
 		}
     	if (array_key_exists('observations', $data)) {
 		    $this->observations = $data['observations'];
-		    if (strlen($this->observations) > 2047) return 'Integrity';
+		    if (strlen($this->observations) > 65535) return 'Integrity';
 		}
         if (array_key_exists('document', $data)) {
     		$this->document = trim(strip_tags($data['document']));
