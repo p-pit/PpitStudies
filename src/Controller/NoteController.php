@@ -915,7 +915,7 @@ class NoteController extends AbstractActionController
 	    }
 	    return $this->response;
     }*/
-/*
+
 	    public function repriseAction()
 	    {
 	    	$context = Context::getCurrent();
@@ -963,10 +963,10 @@ class NoteController extends AbstractActionController
 //		    	}
 	    	}
 	    	return $this->response;
-	    }*/
+	    }
 
     // Identify n-uplets of average for a same account + school year + period + subject, regardless of the class => Keep the one that has an assessment
-	public function repriseAction()
+/*	public function repriseAction()
 	{
 		$context= Context::getCurrent();
 		$school_year = $this->params()->fromQuery('school_year', '2019-2020');
@@ -1015,5 +1015,5 @@ class NoteController extends AbstractActionController
 		}
 		echo implode(',', $deleted) . "\n";
 		return $this->response;
-	}
+	}*/
 }
