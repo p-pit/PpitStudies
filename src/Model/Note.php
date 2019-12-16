@@ -307,7 +307,7 @@ class Note
     			$globalWeight += $note['weight'];*/
     		}
     		if ($globalWeight != 0) {
-    			$average /= $globalWeight * 20;
+    			$average = $average / $globalWeight * 20;
 	    		$categoryAverages[$account_id]['global'] = array('note' => $average, 'notes' => $notes);
     		}
     	}
