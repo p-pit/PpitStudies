@@ -318,11 +318,13 @@ class Note
 	    		$average = 0;
 	    		$globalWeight = 0;
 	    		foreach ($notes as $note) {
-	    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
-	    			$globalWeight += $note['weight'];
+	    			$average += $note['note'] * $note['weight'];
+	    			$globalWeight += $note['reference_value'] * $note['weight'];
+/*	    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
+	    			$globalWeight += $note['weight'];*/
 	    		}
 	    		if ($globalWeight != 0) {
-	    			$average /= $globalWeight;
+	    			$average = $average / $globalWeight * 20;
 		    		$categoryAverages[$account_id][$categoryId] = array('note' => $average, 'notes' => $notes);
 	    		}
     		}

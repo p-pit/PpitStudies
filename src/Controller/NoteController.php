@@ -928,15 +928,14 @@ class NoteController extends AbstractActionController
 	    	if ($school_year) $where['school_year'] = $school_year;
 	    	if ($school_period) $where['school_period'] = $school_period;
 	    	foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
-//		    	$note->links = array();
-		    	$select = NoteLink::getTable()->getSelect()
-		    				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
-		    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
-	    					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
-		    				$cursor = NoteLink::getTable()->selectWith($select);
+	    		if ($note->subject != 'global') {
+			    	$select = NoteLink::getTable()->getSelect()
+			    				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
+			    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
+		    					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
+			    				$cursor = NoteLink::getTable()->selectWith($select);
 		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
 			    	foreach($cursor as $noteLink) {
-//						$note->links[] = $noteLink;
 						$audit = array();
 						$distribution = array();
 						if (array_key_exists($noteLink->account_id, $computedAverages)) {
@@ -960,7 +959,7 @@ class NoteController extends AbstractActionController
 							}
 						}
 					}
-//		    	}
+		    	}
 	    	}
 	    	return $this->response;
 	    }

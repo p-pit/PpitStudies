@@ -777,7 +777,8 @@ class StudentController extends AbstractActionController
 		    					unset($data['date']);
 		    					unset($data['teacher_id']);
 		    					$data['level'] = null;
-    							$data['weight'] = 1;
+    							$data['reference_value'] = 20;
+		    					$data['weight'] = 1;
     							$data['observations'] = null;
     							$data['comment'] = null;
     							$data['criteria'] = array();
