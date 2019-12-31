@@ -34,6 +34,48 @@ use Zend\View\Model\ViewModel;
 
 class StudentController extends AbstractActionController
 {
+    public function indexAction()
+    {
+    	$context = Context::getCurrent();
+    	$config = $context->getConfig();
+    	$place = Place::get($context->getPlaceId());
+
+    	// Transient: Serialize a list of the entries from all menus
+    	$menuEntries = [];
+    	foreach ($context->getApplications() as $applicationId => $application) {
+    		if ($context->getConfig('menus/'.$applicationId)) {
+    			foreach ($context->getConfig('menus/' . $applicationId)['entries'] as $entryId => $entryDef) {
+    				$menuEntries[$entryId] = ['menuId' => $applicationId, 'menu' => $application, 'definition' => $entryDef];
+    			}
+    		}
+    	}
+    	$tab = $this->params()->fromRoute('entryId', 'student');
+
+    	// Retrieve the application
+    	$app = $menuEntries[$tab]['menuId'];
+    	$applicationName = $context->localize($menuEntries[$tab]['menu']['labels']);
+
+    	// Feed the layout
+    	$this->layout('/layout/core-layout');
+    	$this->layout()->setVariables(array(
+    		'context' => Context::getCurrent(),
+    		'title' => ['default' => 'Elèves/classes'],
+    		'place' => $place,
+    		'tab' => $tab,
+    		'app' => $app,
+    		'active' => 'application',
+    		'applicationName' => $applicationName,
+			'pageScripts' => '/ppit-studies/student/scripts',
+    	));
+
+    	$view = new ViewModel(array(
+    			'context' => $context,
+    			'config' => $context->getConfig(),
+    			'place' => $place,
+    	));
+		return $view;
+    }
+    
     public function indexV2Action()
     {
     	$context = Context::getCurrent();
@@ -220,13 +262,17 @@ class StudentController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     	$groups = Account::getList('group', [], '+name', null);
-    	 
+    	$myAccount = Account::get($context->getContactId(), 'contact_1_id');
+    	if ($myAccount && $myAccount->groups) $myGroups = explode(',', $myAccount->groups);
+    	else $myGroups = [];
+    	
     	// Return the link list
     	$view = new ViewModel(array(
     		'context' => $context,
     		'config' => $context->getconfig(),
     		'places' => Place::getList(array()),
     		'groups' => $groups,
+    		'myGroups' => $myGroups,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -302,8 +348,8 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-
-    public function groupV2Action()
+    
+    public function groupAction()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -337,6 +383,11 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
+    public function groupV2Action()
+    {
+    	return $this->groupAction();
+    }
+    
     public function addAbsenceV2Action()
     {
     	// Retrieve the context
@@ -595,7 +646,7 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-
+    
     public function addEvaluationV2Action() {
     
     	// Retrieve the context
@@ -835,7 +886,7 @@ class StudentController extends AbstractActionController
     								$data['lower_note'] = $lowerNote;
     								$data['higher_note'] = $higherNote;
     							};
-    
+
     							if (count($report->links)) {
     								$rc = $report->loadData($data);
     								if ($rc == 'Integrity') throw new \Exception('View error');
@@ -1873,11 +1924,6 @@ class StudentController extends AbstractActionController
     public function detailAction()
     {
     	return $this->detailV2Action();
-    }*/
-/*
-    public function groupAction()
-    {
-    	return $this->groupV2Action();
     }*/
 /*
     public function addAbsenceAction() {

@@ -1,0 +1,199 @@
+<div class="panel panel-default">
+	<div class="panel-heading" style="background:  <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
+		<strong><?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale()) ?></strong>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Return to list', 'ppit-core', $context->getLocale()) ?>" id="remove-anchor_0">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		 </div>
+	</div>
+	<div class="panel-body">
+		<form class="form-horizontal">
+		<input type="hidden" id="group-nb-criteria" value="<?php //echo count($criteria) ?>" />
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Selected criteria', 'ppit-commitment', $context->getLocale()) ?></label>
+			<div class="col-sm-7">&nbsp;</div>
+		</div>
+
+<?php /*$i = 0; foreach ($criteria as $criterionId => $criterionValue) : ?>
+	<?php
+	$property = $context->getConfig('core_account/p-pit-studies/property/'.$criterionId);
+	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+	$label = $property['labels'][$context->getLocale()];
+	if ($criterionId == 'place_id') $value = $places[$criterionValue]->caption; 
+	elseif ($property['type'] == 'select') $value = $property['modalities'][$criterionValue][$context->getLocale()];
+	else $value = $criterionValue;*/
+	?>
+		<input type="hidden" id="group-criterion-id_<?php //echo $i ?>" value="<?php //echo $criterionId ?>" />
+
+<!--		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php //echo $label ?></label>
+			<div class="col-sm-7">
+				<input class="form-control" id="group-criterion_<?php //echo $i ?>" disabled="disabled" value="<?php echo $value ?>" />
+			</div>
+		</div> -->
+	
+<?php /*$i++; endforeach;*/?>
+
+		<hr>
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Selected students', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">&nbsp;</div>
+		</div>
+
+		<input type="hidden" id="group-nb-account" value="<?php echo count($accounts) ?>" />
+
+<?php $i = 0; foreach ($accounts as $account) : ?>
+	
+		<input type="hidden"  id="group-account_<?php echo $i ?>" value="<?php echo $account->id ?>" />
+
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+				<input class="form-control" disabled="disabled" value="<?php echo $account->contact_1->n_fn ?>" />
+			</div>
+		</div>
+
+<?php $i++; endforeach;?>
+	
+		<div>&nbsp;</div>
+
+<?php if ($context->isDemoModeActive()) : ?>
+		<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/group/tabs'][$context->getLocale()] ?>">
+		    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+		</a>
+<?php endif;?>	
+			
+		<ul class="nav nav-tabs">
+<?php if ($context->hasRole('manager')) : ?>
+		  <li data-toggle="tab" class="group-tab" id="news_flash-tab"><a><?php echo $this->translate('News flash', 'ppit-studies', $context->getLocale()) ?></a></li>
+<?php endif;?>
+
+<?php if ($context->hasRole('manager') || $context->hasRole('coach')) : ?>
+		  <li data-toggle="tab" class="group-tab"><a id="sport-tab"><?php echo $this->translate('Sport', 'ppit-studies', $context->getLocale()) ?></a></li>
+<?php endif;?>
+
+<?php if ($context->hasRole('manager') || $context->hasRole('teacher')) : ?>
+		  <li data-toggle="tab" class="group-tab active"><a id="schooling-tab"><?php echo $this->translate('Schooling', 'ppit-studies', $context->getLocale()) ?></a></li>
+<?php endif;?>
+		</ul>
+	
+		<div>&nbsp;</div>
+
+		<div class="group-panel" id="news_flash-panel">
+
+<?php if ($context->isDemoModeActive()) : ?>
+		<a class="tip" href="#" title="<?php echo $context->getConfig('demo')['student/group/navigation'][$context->getLocale()] ?>">
+		    <img src="<?php echo $this->basePath('img/tip.png') ?>" width="20" />
+		</a>
+<?php endif;?>	
+
+<?php if (array_key_exists('news_flash', $context->getConfig('absence')['types'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="news_flash-absence-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('news_flash', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="news_flash-notification-add-anchor" title="<?php echo $this->translate('Add', 'ppit-core', $context->getlocale()) ?>">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Notification', 'ppit-commitment', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('news_flash', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="news_flash-event-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Appointments', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+		</div>
+
+		<div class="group-panel" id="sport-panel">
+			<button type="button" class="btn btn-default action-btn" id="progress-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Sport progress', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php if (array_key_exists('sport', $context->getConfig('absence')['types'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="sport-absence-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('sport', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="sport-notification-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Notification', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('sport', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="sport-event-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Appointment', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+		</div>
+
+		<div class="group-panel" id="schooling-panel">
+			<button type="button" class="btn btn-default action-btn" id="note-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Homework notebook', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php if (array_key_exists('schooling', $context->getConfig('absence')['types'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="schooling-absence-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+			<button type="button" class="btn btn-default action-btn" <?php if (!$context->hasRole('admin') && !$current_school_period) echo 'disabled' ?> id="evaluation-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+			<button type="button" class="btn btn-default action-btn" id="report-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Report', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php if ($context->hasRole('manager')) : ?>
+			<button type="button" class="btn btn-default action-btn" id="exam-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Mock exam', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('schooling', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="schooling-event-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Appointment', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+		</div>
+		
+		<div class="group-panel" id="boarding_school-panel">
+<?php if (array_key_exists('boarding_school', $context->getConfig('absence')['types'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="boarding_school-absence-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('boarding_school', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="news_flash-notification-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Notification', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('boarding_school', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="boarding_school-event-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Appointment', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+		</div>
+		
+		<div class="group-panel" id="medical-panel">
+<?php if (array_key_exists('medical', $context->getConfig('absence')['types'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="medical-absence-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Absence/Lateness', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('medical', $context->getConfig('commitmentNotification/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="medical-notification-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Notification', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+<?php if (array_key_exists('medical', $context->getConfig('commitmentEvent/p-pit-studies')['category'])) : ?>
+			<button type="button" class="btn btn-default action-btn" id="medical-event-add-anchor">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo $this->translate('Appointment', 'ppit-studies', $context->getLocale()) ?>
+			</button>
+<?php endif;?>
+		</div>
+	
+		<div>&nbsp;</div>
+		</form>
+
+		<div id="grouped-action-panel"></div>
+	</div>
+</div>
+	

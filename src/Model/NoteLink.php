@@ -1,8 +1,10 @@
 <?php
 namespace PpitStudies\Model;
 
+use PpitCore\Model\Account;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
+use PpitCore\Model\Place;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
@@ -11,7 +13,111 @@ use Zend\Filter\StripTags;
 
 class NoteLink
 {
-    public $id;
+	public static $model = [
+		'entities' => [
+			'student_note_link' => 	['table' => 'student_note_link'],
+			'student_note' => 		['table' => 'student_note', 'foreign_key' => 'student_note_link.note_id'],
+			'core_account' => 		['table' => 'core_account', 'foreign_key' => 'student_note_link.account_id'],
+			'core_place' => 		['table' => 'core_place', 'foreign_key' => 'core_account.place_id'],
+			'core_vcard' => 		['table' => 'core_vcard', 'foreign_key' => 'core_account.contact_1_id'],
+		],
+		'properties' => [
+			'id' => 				['entity' => 'student_note_link', 'column' => 'id'],
+			'status' => 			['entity' => 'student_note_link', 'column' => 'status'],
+			'account_id' => 		['entity' => 'student_note_link', 'column' => 'account_id'],
+			'note_id' => 			['entity' => 'student_note_link', 'column' => 'note_id'],
+			'value' => 				['entity' => 'student_note_link', 'column' => 'value'],
+			'distribution' => 		['entity' => 'student_note_link', 'column' => 'distribution'],
+			'evaluation' => 		['entity' => 'student_note_link', 'column' => 'evaluation'],
+			'assessment' => 		['entity' => 'student_note_link', 'column' => 'assessment'],
+			'distribution' => 		['entity' => 'student_note_link', 'column' => 'distribution'],
+			'update_time' => 		['entity' => 'student_note_link', 'column' => 'update_time'],
+			'place_id' => 			['entity' => 'core_account', 'column' => 'place_id'],
+			'place_caption' => 		['entity' => 'core_place', 'column' => 'caption'],
+			'n_fn' => 				['entity' => 'core_vcard', 'column' => 'n_fn'],
+			'name' => 				['entity' => 'core_account', 'column' => 'name'],
+			'note_status' => 		['entity' => 'student_note', 'column' => 'status'],
+			'category' => 			['entity' => 'student_note', 'column' => 'category'],
+			'type' => 				['entity' => 'student_note', 'column' => 'type'],
+			'school_year' => 		['entity' => 'student_note', 'column' => 'school_year'],
+			'level' => 				['entity' => 'student_note', 'column' => 'level'],
+			'group_id' => 			['entity' => 'student_note', 'column' => 'group_id'],
+			'school_period' => 		['entity' => 'student_note', 'column' => 'school_period'],
+			'subject' => 			['entity' => 'student_note', 'column' => 'subject'],
+			'teacher_id' => 		['entity' => 'student_note', 'column' => 'teacher_id'],
+			'date' => 				['entity' => 'student_note', 'column' => 'date'],
+			'target_date' => 		['entity' => 'student_note', 'column' => 'target_date'],
+			'reference_value' => 	['entity' => 'student_note', 'column' => 'reference_value'],
+			'weight' => 			['entity' => 'student_note', 'column' => 'weight'],
+			'observations' => 		['entity' => 'student_note', 'column' => 'observations'],
+			'lower_note' => 		['entity' => 'student_note', 'column' => 'lower_note'],
+			'higher_note' => 		['entity' => 'student_note', 'column' => 'higher_note'],
+			'average_note' => 		['entity' => 'student_note', 'column' => 'average_note'],
+		],
+	];
+
+	/**
+	 * Returns a dictionary of each property associated with its description contextual to the current instance config.
+	 */
+	public static function getConfig() {
+	
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		// If no description is found for the given type retrieve the properties description for the generic type
+		$description = $context->getConfig('note_link/generic');
+	
+		// Construct the resulting dictionary for each defined property
+		$properties = array();
+		foreach($description['properties'] as $propertyId) {
+
+			// Retrieve the property description according to the given type, defaulting to the generic type
+			$property = $context->getConfig('note_link/generic/property/'.$propertyId);
+	
+			// Overwrite the description with the referred description for non-inline property definition
+			$propertyType = (array_key_exists('type', $property)) ? $property['type'] : null;
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+			if ($propertyType) $property['type'] = $propertyType;
+	
+			if (!array_key_exists('private', $property)) $property['private'] = false;
+				
+			// Cache the place list retrieved from the database for the current instance in the place_id property description
+			if ($propertyId == 'place_id') {
+				$property['modalities'] = [];
+				foreach (Place::getList(array()) as $place) $property['modalities'][$place->id] = $place->caption;
+			}
+
+			// Cache the accounts retrieved from the database for the current instance in the account_id property description
+			elseif ($propertyId == 'account_id') {
+				$property['modalities'] = [];
+				foreach (Account::getList('p-pit-studies', ['status' => 'active,retention'], '+name', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name];
+			}
+				
+			// Cache the groups retrieved from the database for the current instance in the group_id property description
+			elseif ($propertyId == 'group_id') {
+				$property['modalities'] = [];
+				foreach (Account::getList('group', [], '+name', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name];
+			}
+	
+			// Cache the referred modalities definition for modalities not defined inline
+			elseif (in_array($property['type'], ['select', 'multiselect']) && array_key_exists('definition', $property['modalities']) && $property['modalities']['definition'] != 'inline') {
+				$definition = $context->getConfig($property['modalities']['definition']);
+				$property['modalities'] = [];
+				foreach ($definition as $modalityId => $modality) {
+					$property['modalities'][$modalityId] = $modality['labels'];
+				}
+			}
+	
+			$properties[$propertyId] = $property;
+		}
+	
+		// Return the dictionary
+		return $properties;
+	}
+	
+	// For compatibility
+	
+	public $id;
     public $instance_id;
     public $status;
     public $account_id;
@@ -27,24 +133,26 @@ class NoteLink
     public $place_id;
     public $place_caption;
     public $n_fn;
-    public $user_n_fn;
+    public $user_n_fn; // Deprecated
     public $name;
-    public $account_class;
+    public $account_class; // Deprecated
     public $note_status;
     public $category;
     public $type;
     public $school_year;
     public $level;
-    public $class;
+    public $group_id;
+    public $class; // Deprecated
     public $school_period;
     public $subject;
+    public $teacher_id;
     public $date;
     public $target_date;
     public $reference_value;
     public $weight;
     public $observations;
     public $document;
-    public $criteria;
+    public $criteria; // Deprecated
     public $lower_note;
     public $higher_note;
     public $average_note;
@@ -84,9 +192,11 @@ class NoteLink
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
-        $this->class = (isset($data['class'])) ? $data['class'] : null;
+        $this->group_id = (isset($data['group_id'])) ? $data['group_id'] : null;
+        $this->class = (isset($data['class'])) ? $data['class'] : null; // Deprecated
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
+        $this->teacher_id = (isset($data['teacher_id'])) ? $data['teacher_id'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
         $this->target_date = (isset($data['target_date'])) ? $data['target_date'] : null;
         $this->reference_value = (isset($data['reference_value'])) ? $data['reference_value'] : null;
@@ -124,9 +234,11 @@ class NoteLink
     	$data['type'] =  $this->type;
     	$data['school_year'] =  $this->school_year;
     	$data['level'] =  $this->level;
-    	$data['class'] =  $this->class;
+    	$data['group_id'] =  $this->group_id;
+    	$data['class'] =  $this->class; // Deprecated
     	$data['school_period'] =  $this->school_period;
     	$data['subject'] =  $this->subject;
+    	$data['teacher_id'] =  $this->teacher_id;
     	$data['date'] =  $this->date;
     	$data['target_date'] =  $this->target_date;
     	$data['reference_value'] =  $this->reference_value;
@@ -157,9 +269,11 @@ class NoteLink
     	unset($data['type']);
     	unset($data['school_year']);
     	unset($data['level']);
-    	unset($data['class']);
+    	unset($data['group_id']);
+    	unset($data['class']); // Deprecated
     	unset($data['school_period']);
     	unset($data['subject']);
+    	unset($data['teacher_id']);
     	unset($data['date']);
     	unset($data['target_date']);
     	unset($data['reference_value']);
@@ -178,7 +292,7 @@ class NoteLink
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
     		->order(array($major.' '.$dir, 'date DESC', 'type ASC'))
-    		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
+    		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id' , 'class', 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
     		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_class' => 'property_7'), 'left')
     		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('n_fn'), 'left');
@@ -192,8 +306,11 @@ class NoteLink
     	else {
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
-    			if ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
+    			if ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
+    			elseif ($propertyId == 'group_id') $where->equalTo('student_note.group_id', $params[$propertyId]);
     			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
+    			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
+    			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
     			elseif ($propertyId == 'level') $where->like('student_note.level', '%'.$params[$propertyId].'%');
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
@@ -220,6 +337,7 @@ class NoteLink
     	$noteLink->class = $note->class;
     	$noteLink->school_period = $note->school_period;
     	$noteLink->subject = $note->subject;
+    	$noteLink->teacher_id = $note->teacher_id;
     	$noteLink->date = $note->date;
     	$noteLink->target_date = $note->target_date;
     	$noteLink->reference_value = $note->reference_value;
@@ -266,7 +384,7 @@ class NoteLink
     	return $globalAverage;
     }
     
-    public static function instanciate($account_id = null, $note_id)
+    public static function instanciate($account_id = null, $note_id = null)
     {
 		$noteLink = new NoteLink;
 		$noteLink->status = 'new';
@@ -274,9 +392,111 @@ class NoteLink
 		$noteLink->note_id = $note_id;
 		$noteLink->distribution = array();
 		$noteLink->audit = array();
+		$noteLink->properties = $noteLink->getProperties();
 		return $noteLink;
     }
 
+	public static function validate($data)
+	{
+		$context = Context::getCurrent();
+		$result = [];
+		$errors = [];
+	
+		// Retrieve the properties description for the given account type
+		$configProperties = NoteLink::getConfig();
+	
+		// Iterates on the given pairs of property => value
+		foreach ($data as $propertyId => $value) {
+	
+			// Check that this property is managed
+			if (array_key_exists($propertyId, $configProperties)) {
+	
+				// Retrieve the property description for the given type
+				$property = $configProperties[$propertyId];
+	
+				// Suppress white spaces and tags in the string values
+				if (in_array($property['type'], ['array', 'key_value', 'structure'])) $value = $data[$propertyId];
+				else $value = trim(strip_tags($data[$propertyId]));
+	
+				// Check for maximum sizes
+				if (in_array($property['type'], ['input', 'select', 'multiselect'])) {
+					if (strlen($value) > 255) $errors[$propertyId] = "$propertyId should not be longer than 255 characters";
+				}
+				elseif (in_array($property['type'], ['textarea', 'log'])) {
+					$maxLength = (array_key_exists('max_length', $property)) ? $property['max_length'] : 2047;
+					if (strlen($value) > $maxLength) $errors[$propertyId] = "$propertyId should not be longer than $maxLength characters";
+				}
+	
+				// Check for date validity
+				elseif (in_array($property['type'], ['date'])) {
+					if ($value && (strlen($value) < 10 || !checkdate(substr($value, 5, 2), substr($value, 8, 2), substr($value, 0, 4)))) $errors[$propertyId] = "$propertyId should be a valid date according to the format yyyy-mm-dd";
+				}
+	
+				// Check for time validity
+				elseif (in_array($property['type'], ['time'])) {
+					if ($value && !Account::checktime($value)) $errors[$propertyId] = "$propertyId should be a valid time according to the format hh:mm:ss";
+				}
+				elseif (in_array($property['type'], ['datetime'])) {
+					if ($value && (!checkdate(substr($value, 5, 2), substr($value, 8, 2), substr($value, 0, 4)) || !Account::checktime(substr($value, 11, 8)))) $errors[$propertyId] = "$propertyId should be a valid date & time according to the format yyyy-mm-dd hh:mm:ss";
+				}
+	
+				elseif ($property['type'] == 'id') $value = (int) $value;
+	
+				// Cast number to int or float depending on the precision defined for this property
+				elseif ($property['type'] == 'number') {
+					if (array_key_exists('precision', $property) && $property['precision'] > 0) $value = (float) $value;
+					else $value = (int) $value;
+				}
+	
+				// Private data protection
+				if ($property['private'] && $value) {
+					$value = $context->getSecurityAgent()->protectPrivateDataV2($value);
+				}
+	
+				$result[$propertyId] = $value;
+			}
+		}
+	
+		// Return either the errors or the resulting data if no error
+		return ($errors) ? ['errors' => $errors] : ['data' => $result];
+	}
+	
+    public function loadData($data)
+    {
+    	$context = Context::getCurrent();
+    	$errors = [];
+    
+    	$auditRow = [
+    		'time' => Date('Y-m-d G:i:s'),
+    		'n_fn' => $context->getFormatedName(),
+    	];
+    	$configProperties = NoteLink::getConfig();
+    
+    	$validation = NoteLink::validate($data);
+    	foreach ($validation as $resultType => $result) {
+    		if ($resultType == 'errors') return 'Integrity';
+    		if ($resultType == 'data') $data = $result;
+    	}
+    
+    	foreach ($data as $propertyId => $value) {
+    
+    		// Retrieve the property description for the given type
+    		$property = $configProperties[$propertyId];
+    
+    		if ($propertyId == 'status') $this->status = $value;
+    		elseif ($propertyId == 'account_id') $this->account_id = $value;
+    		elseif ($propertyId == 'note_id') $this->note_id = $value;
+    		elseif ($propertyId == 'value') $this->value = $value;
+    		elseif ($propertyId == 'evaluation') $this->evaluation = $value;
+    		elseif ($propertyId == 'assessment') $this->assessment = $value;
+
+    		if ($propertyId && $this->getProperties()[$propertyId] != $value) $auditRow[$propertyId] = $value;
+    	}
+    
+    	$this->audit[] = $auditRow;
+    	return 'OK';
+    }
+    
     public function add()
     {
     	$context = Context::getCurrent();

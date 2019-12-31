@@ -13,7 +13,7 @@ use PpitCore\Model\Context;
 
 class SsmlNoteViewHelper
 {
-	public static function formatXls($workbook, $view)
+	public static function formatXls($workbook, $view, $groups)
 	{
 		$context = Context::getCurrent();
 		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
@@ -49,7 +49,10 @@ class SsmlNoteViewHelper
 				$property = $context->getConfig('note')['properties'][$propertyId];
 				if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 				if ($property) {
-					if ($property['type'] == 'date') $sheet->setCellValue($column.$j, $context->decodeDate($noteLink->getProperties()[$propertyId]));
+					if ($propertyId == 'group_id') {
+						if ($noteLink->getProperties()[$propertyId]) $sheet->setCellValue($column.$j, $groups[$noteLink->getProperties()[$propertyId]]->name);
+					}
+					elseif ($property['type'] == 'date') $sheet->setCellValue($column.$j, $context->decodeDate($noteLink->getProperties()[$propertyId]));
 					elseif ($property['type'] == 'number') {
 						$sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');

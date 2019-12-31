@@ -5,6 +5,7 @@ use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
 use PpitCore\Model\Vcard;
+use PpitStudies\Model\NoteLink;
 use Zend\Db\Sql\Where;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
@@ -22,8 +23,7 @@ class Note
     public $type;
     public $school_year;
     public $level;
-    public $class;
-    public $groups;
+    public $group_id;
     public $school_period;
     public $subject;
     public $date;
@@ -47,6 +47,10 @@ class Note
     public $links;
     public $comment;
     public $properties;
+
+    // Deprecated
+    public $class;
+    public $groups;
     
     protected $inputFilter;
 
@@ -69,8 +73,7 @@ class Note
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
-        $this->class = (isset($data['class'])) ? $data['class'] : null;
-        $this->groups = (isset($data['groups'])) ? $data['groups'] : null;
+        $this->group_id = (isset($data['group_id'])) ? $data['group_id'] : null;
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->date = (isset($data['date'])) ? $data['date'] : null;
@@ -89,6 +92,10 @@ class Note
  
     	// Joined properties
         $this->teacher_n_fn = (isset($data['teacher_n_fn'])) ? $data['teacher_n_fn'] : null;
+    
+        // Deprecated
+        $this->class = (isset($data['class'])) ? $data['class'] : null;
+        $this->groups = (isset($data['groups'])) ? $data['groups'] : null;
     }
 
     public function getProperties()
@@ -102,8 +109,7 @@ class Note
     	$data['type'] = $this->type;
     	$data['school_year'] = $this->school_year;
     	$data['level'] = $this->level;
-    	$data['class'] = $this->class;
-    	$data['groups'] = $this->groups;
+    	$data['group_id'] = $this->group_id;
     	$data['school_period'] = $this->school_period;
     	$data['subject'] = $this->subject;
     	$data['date'] =  ($this->date) ? $this->date : null;
@@ -118,6 +124,10 @@ class Note
     	$data['lower_note'] = ($this->lower_note) ? $this->lower_note : null;
     	$data['higher_note'] = ($this->higher_note) ? $this->higher_note : null;
     
+    	// Deprecated
+    	$data['class'] = $this->class;
+    	$data['groups'] = $this->groups;
+    	 
     	return $data;
     }
     
@@ -133,8 +143,7 @@ class Note
     	$data['type'] = $this->type;
     	$data['school_year'] = $this->school_year;
     	$data['level'] = $this->level;
-    	$data['class'] = $this->class;
-    	$data['groups'] = $this->groups;
+    	$data['group_id'] = (int) $this->group_id;
     	$data['school_period'] = $this->school_period;
     	$data['subject'] = $this->subject;
     	$data['date'] =  ($this->date) ? $this->date : null;
@@ -150,6 +159,10 @@ class Note
     	$data['higher_note'] = ($this->higher_note) ? $this->higher_note : null;
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
 
+    	// Deprecated
+    	$data['class'] = $this->class;
+    	$data['groups'] = $this->groups;
+    	 
     	return $data;
     }
     
@@ -175,7 +188,10 @@ class Note
     		foreach ($params as $propertyId => $property) {
     			if ($propertyId == 'type') $where->equalTo('student_note.type', $params[$propertyId]);
     			elseif ($propertyId == 'place_id') $where->equalTo('place_id', $params[$propertyId]);
-    			elseif ($propertyId == 'groups') $where->in('groups', $params[$propertyId]);
+    			elseif ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
+    			elseif ($propertyId == 'group_id') $where->equalTo('student_note.group_id', $params[$propertyId]);
+    			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
+    			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			else $where->equalTo('student_note.'.$propertyId, $params[$propertyId]);
@@ -246,9 +262,207 @@ class Note
     		return $note;
     	}
     	return null;
-    }
-    
-    public static function retrieveAll($type, $account_id)
+	}
+
+	public static function updateAverage($group_id, $subject, $school_year, $school_period)
+	{
+		$context = Context::getCurrent();
+		
+		// user_story - student_evaluation_subject_average:
+		// L'ajout d'une évaluation ou l'ajout d'étudiants à une évaluation existante entraîne le recalcul automatique de la moyenne de la matière de la période, pour chaque élève affecté à l'évaluation.
+		// La note de référence des moyennes (ex. /20) est un paramètre global.
+		// La moyenne par matière calculée est mémorisée pour pouvoir être affichée dans la home étudiant.
+
+		// Compute the subject average for each account
+		$teacher_id = null;
+		$noteLinks = NoteLink::getList('note', ['group_id' => $group_id, 'subject' => $subject, 'school_year' => $school_year, 'school_period' => $school_period], 'date', 'ASC', 'search');
+		$periodNotes = [];
+		foreach ($noteLinks as $noteLink) {
+			$teacher_id = $noteLink->teacher_id;
+			if ($noteLink->value !== null) {
+				$periodNotes[$noteLink->account_id][] = ['id' => $noteLink->id, 'reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value];
+			}
+		}
+		
+		// Load the input data
+		$avgData = [];
+		$avgData['place_id'] = $noteLink->place_id;
+		$avgData['group_id'] = $group_id;
+		$avgData['school_year'] = $school_year;
+		$avgData['school_period'] = $school_period;
+		$avgData['subject'] = $subject;
+		$avgData['teacher_id'] = $teacher_id;
+		$avgData['reference_value'] = $context->getConfig('student/parameter/average_computation')['reference_value'];
+		$avgData['weight'] = 1;
+		
+		$averages = array();
+		foreach ($periodNotes as $account_id => $notes) {
+			$average = 0;
+			$globalWeight = 0;
+			foreach ($notes as $note) {
+				$average += $note['note'] * $note['weight'];
+				$globalWeight += $note['reference_value'] * $note['weight'];
+			}
+			if ($globalWeight != 0) {
+				$average = $average / $globalWeight * $context->getConfig('student/parameter/average_computation')['reference_value'];
+				$averages[$account_id] = array('note' => $average, 'notes' => $notes);
+			}
+		}
+		
+		// Retrieve the report for the given subject
+		$previousReport = current(Note::getList('evaluation', 'report', ['group_id' => $group_id, 'subject' => $subject, 'school_year' => $school_year, 'school_period' => $school_period], 'id', 'ASC', 'search', null));
+		if ($previousReport) $report = Note::get($previousReport->id); // Retrieve also the note links we need
+		else {
+			$report = Note::instanciate('report', null, $group_id);
+			$report->links = array();
+			$report->teacher_id = $teacher_id;
+		}
+
+		foreach ($averages as $account_id => $average) {
+			if (!array_key_exists($account_id, $report->links)) $report->links[$account_id] = NoteLink::instanciate($account_id, null);
+			$reportLink = $report->links[$account_id];
+			$reportLink->value = $average['note'];
+			$reportLink->distribution = $average['notes'];
+		}
+
+		// user_story - student_evaluation_subject_average_indicators: Le recalcul d'une moyenne par matière de la classe entraîne le recalcul automatique de la moyenne inférieure, de la moyenne des moyennes et de la moyenne supérieure de l'ensemble des moyennes à cette matière de tous les étudiants de la classe.
+		
+		$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+		foreach ($report->links as $reportLink) {
+			if ($reportLink->value !== null) {
+				$noteSum += $reportLink->value;
+				$noteCount++;
+				if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
+				if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
+			}
+		}
+		if ($noteCount > 0) {
+			$avgData['average_note'] = round($noteSum / $noteCount, 2);
+			$avgData['lower_note'] = $lowerNote;
+			$avgData['higher_note'] = $higherNote;
+		}
+	
+		$rc = $report->loadData($avgData);
+		if ($rc != 'OK') return $rc;
+
+		if ($report->id) $rc = $report->update(null);
+		else $rc = $report->add();
+		if ($rc != 'OK') return $rc;
+
+		// Save the note at the student level
+		foreach ($report->links as $reportLink) {
+			if (!$reportLink->id) {
+				$reportLink->note_id = $report->id;
+				$rc = $reportLink->add();
+			}
+			else $rc = $reportLink->update(null);
+			if ($rc != 'OK') return $rc;
+		}
+
+		// user_story - student_evaluation_global_average:
+		// L'ajout d'une évaluation ou l'ajout d'étudiants à une évaluation existante entraîne le recalcul automatique de moyenne générale de la période, pour chaque élève affecté à l'évaluation.
+		// La note de référence des moyennes (ex. /20) est un paramètre global.
+		// La moyenne générale calculée est mémorisée pour pouvoir être affichée dans la home étudiant.
+
+		$avgData['subject'] = 'global';
+		$avgData['teacher_id'] = null;
+		
+		// Compute the global average for each account
+		$noteLinks = NoteLink::getList('report', ['group_id' => $group_id, 'school_year' => $school_year, 'school_period' => $school_period], 'date', 'ASC', 'search');
+		$periodAverages = [];
+		foreach ($noteLinks as $noteLink) {
+			if ($noteLink->subject != 'global') {
+				if ($noteLink->value !== null) {
+					$periodAverages[$noteLink->account_id][] = ['id' => $noteLink->id, 'reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value];
+				}
+			}
+		}
+		
+		$globalAverages = array();
+		foreach ($periodAverages as $account_id => $notes) {
+			$average = 0;
+			$globalWeight = 0;
+			foreach ($notes as $note) {
+				$average += $note['note'] * $note['weight'];
+				$globalWeight += $note['reference_value'] * $note['weight'];
+			}
+			if ($globalWeight != 0) {
+				$average = $average / $globalWeight * $context->getConfig('student/parameter/average_computation')['reference_value'];
+				$globalAverages[$account_id] = array('note' => $average, 'notes' => $notes);
+			}
+		}
+		
+		// Retrieve the global report
+		$previousReport = current(Note::getList('evaluation', 'report', ['group_id' => $group_id, 'subject' => 'global', 'school_year' => $school_year, 'school_period' => $school_period], 'id', 'ASC', 'search', null));
+		if ($previousReport) $report = Note::get($previousReport->id); // Retrieve also the note links we need
+		else {
+			$report = Note::instanciate('report', null, $group_id);
+			$report->links = array();
+			$report->teacher_id = $teacher_id;
+		}
+		
+		foreach ($globalAverages as $account_id => $average) {
+			if (!array_key_exists($account_id, $report->links)) $report->links[$account_id] = NoteLink::instanciate($account_id, null);
+			$reportLink = $report->links[$account_id];
+			$reportLink->value = $average['note'];
+			$reportLink->distribution = $average['notes'];
+		}
+
+		// user_story - student_evaluation_global_average_indicators: Le recalcul de la moyenne générale de la classe entraîne le recalcul automatique de la moyenne inférieure, de la moyenne des moyennes et de la moyenne supérieure de l'ensemble des moyennes de tous les étudiants de la classe.
+
+		$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+		foreach ($report->links as $reportLink) {
+			if ($reportLink->value !== null) {
+				$noteSum += $reportLink->value;
+				$noteCount++;
+				if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
+				if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
+			}
+		}
+		if ($noteCount > 0) {
+			$avgData['average_note'] = round($noteSum / $noteCount, 2);
+			$avgData['lower_note'] = $lowerNote;
+			$avgData['higher_note'] = $higherNote;
+		}
+
+		$rc = $report->loadData($avgData);
+		if ($rc != 'OK') return $rc;
+		
+		if ($report->id) $rc = $report->update(null);
+		else $rc = $report->add();
+		if ($rc != 'OK') return $rc;
+		
+		// Save the note at the student level
+		foreach ($report->links as $reportLink) {
+			if (!$reportLink->id) {
+				$reportLink->note_id = $report->id;
+				$rc = $reportLink->add();
+			}
+			else $rc = $reportLink->update(null);
+			if ($rc != 'OK') return $rc;
+		}
+
+		return null;
+	}
+	
+	public function computeGroupIndicators()
+	{
+		$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
+		foreach ($this->links as $reportLink) {
+			if ($reportLink->value !== null) {
+				$noteSum += $reportLink->value;
+				$noteCount++;
+				if ($reportLink->value < $lowerNote) $lowerNote = $reportLink->value;
+				if ($reportLink->value > $higherNote) $higherNote = $reportLink->value;
+			}
+		}
+		if ($noteCount > 0) {
+			return ['average_note' => round($noteSum / $noteCount, 2), 'lower_note' => $lowerNote, 'higher_note' => $higherNote];
+		}
+		else return null;
+	}
+	
+	public static function retrieveAll($type, $account_id)
     {
     	$select = Note::getTable()->getSelect()
     		->order(array('date DESC', 'subject ASC'));
@@ -417,11 +631,11 @@ class Note
     				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
     				->where(array('note_id' => $id, 'student_note_link.status != ?' => 'deleted'));
 		$cursor = NoteLink::getTable()->selectWith($select);
-		foreach($cursor as $noteLink) $note->links[] = $noteLink;
+		foreach($cursor as $noteLink) $note->links[$noteLink->account_id] = $noteLink;
     	return $note;
     }
     
-    public static function instanciate($type = null, $class = null)
+    public static function instanciate($type = null, $class = null, $group_id = null)
     {
     	$context = Context::getCurrent();
 		$note = new Note;
@@ -466,6 +680,12 @@ class Note
 	    	$this->level = trim(strip_tags($data['level']));
 		    if (strlen($this->level) > 255) return 'Integrity';
 		}
+
+        if (array_key_exists('group_id', $data)) {
+		    $this->group_id = (int) $data['group_id'];
+		}
+		
+		// Deprecated
        	if (array_key_exists('class', $data)) {
 	    	$this->class = trim(strip_tags($data['class']));
 		    if (!$this->class || strlen($this->class) > 255) return 'Integrity';
@@ -474,6 +694,7 @@ class Note
 	    	$this->groups = trim(strip_tags($data['groups']));
 		    if (strlen($this->groups) > 255) return 'Integrity';
 		}
+
 		if (array_key_exists('school_period', $data)) {
 	    	$this->school_period = trim(strip_tags($data['school_period']));
 		    if (strlen($this->school_period) > 255) return 'Integrity';

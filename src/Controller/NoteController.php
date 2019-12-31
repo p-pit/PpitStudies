@@ -237,7 +237,8 @@ class NoteController extends AbstractActionController
     			'context' => $context,
     			'config' => $context->getconfig(),
 	    		'places' => Place::getList(array()),
-    			'category' => $category,
+    			'groups' => Account::getList('group', [], '+name', null),
+	    		'category' => $category,
     			'type' => $type,
     			'notes' => $notes,
 				'average' => $average,
@@ -292,7 +293,7 @@ class NoteController extends AbstractActionController
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
 		$workbook = new \PHPExcel;
-		(new SsmlNoteViewHelper)->formatXls($workbook, $view);		
+		(new SsmlNoteViewHelper)->formatXls($workbook, $view, Account::getList('group', [], '+name', null));		
 		$writer = new \PHPExcel_Writer_Excel2007($workbook);
 		
 		header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -543,8 +544,387 @@ class NoteController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-    
-    public function updateEvaluationV2Action()
+
+	/**
+	 * REST version for 2pit2
+	 * Update the subject average and the global average for the given group, subject, school year and period
+	 */
+	public function apiUpdateAverageAction() {
+
+		// Retrieve the context
+		$context = Context::getCurrent();
+		
+		// Authentication
+		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+
+		// Authorization
+		if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
+			$this->response->setStatusCode('401');
+			return $this->response;
+		}
+
+		// Only POST
+		if (!$this->getRequest()->isPost()) {
+			$this->response->setStatusCode('405');
+			$this->response->setReasonPhrase('This URI only supports POST HTTP requests');
+			return $this->response;
+		}
+
+		// Retrieve the parameters
+		$group_id = $this->params()->fromQuery('group_id');
+		$group = Account::get($group_id);
+		if (!$group || $group->type != 'group') {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase('Expecting a group ID');
+			return $this->response;
+		}
+		
+		$subject = $this->params()->fromQuery('subject');
+		if (!$subject)  {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase('Expecting a subject');
+			return $this->response;
+		}
+		
+		$school_year = $this->params()->fromQuery('school_year');
+		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
+
+		if ($group->place_id) $place_id = $group->place_id;
+		else $place_id = $context->getPlaceId();
+		$place = Place::get($place_id);
+		$school_period = $this->params()->fromQuery('school_period');
+		if (!$school_period) {
+			$school_periods = $place->getConfig('school_periods');
+			$current_school_period = $context->getCurrentPeriod($school_periods);
+		}
+		
+		// Atomically save
+		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection->beginTransaction();
+		try {
+			
+			// Compute and update subject and global average for the group, the year and the period
+			$rc = Note::updateAverage($group_id, $subject, $school_year, $school_period);
+			if ($rc) {
+				$connection->rollback();
+				$this->getResponse()->setStatusCode('400');
+				$this->getResponse()->setReasonPhrase($rc);
+				return $this->response;
+			}
+			$connection->commit();
+			$this->getResponse()->setStatusCode('204');
+			return $this->response;
+		}
+		catch (\Exception $e) {
+			$connection->rollback();
+			throw $e;
+		}
+	}
+	
+	/**
+	 * REST version for 2pit2
+	 */
+	public function evaluation() {
+	
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		// Authentication
+		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+	
+		// Authorization
+		if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
+			$this->response->setStatusCode('403');
+			return $this->response;
+		}
+	
+		// Retrieve the parameters
+		$type = $this->params()->fromRoute('type');
+		if (!$type) {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase('Expecting a type');
+			return $this->response;
+		}
+		$id = $this->params()->fromRoute('id');
+		$places = Place::getList(array());
+
+		$accounts = null; // If no account is provided in parameters, all the group is evaluated
+		$accounts = $this->params()->fromQuery('accounts');
+		if ($accounts) $accounts = explode(',', $accounts);
+		
+		$subject = $this->params()->fromQuery('subject');
+		$level = $this->params()->fromQuery('level');
+		$date = $this->params()->fromQuery('date', date('Y-m-d'));
+
+		// user_story - student_evaluation_teachers: Les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif"
+		$teachers = [];
+		if ($context->hasRole('manager')) {
+			$cursor = Account::getList('teacher', ['status' => 'active'], '+name', null);
+			foreach ($cursor as $teacher_id => $teacher) {
+				$teachers[$teacher->contact_1_id] = $teacher->properties;
+				$competences = $teachers[$teacher->contact_1_id]['property_3'];
+				if ($competences) $competences = explode(',', $competences);
+				else $competences = [];
+				$teachers[$teacher->contact_1_id]['competences'] = $competences;
+			}
+		}
+		else {
+			$myAccount = Account::get($context->getContactId(), 'contact_1_id', 'teacher', 'type');
+			if (!$myAccount) {
+				$this->response->setStatusCode('403');
+				return $this->response;
+			}
+			$teachers[$myAccount->contact_1_id] = $myAccount->properties;
+
+			$competences = $myAccount->property_3;
+			if ($competences) $competences = explode(',', $competences);
+			else $competences = [];
+			$teachers[$myAccount->contact_1_id]['competences'] = $competences;
+			
+			if ($myAccount->groups) $teachers[$myAccount->contact_1_id]['groups'] = explode(',', $myAccount->groups); 
+			else $teachers[$myAccount->contact_1_id]['groups'] = []; 
+		}
+		
+		// Retrieve the existing note or instanciate
+	
+		$content = [];
+		$content['type'] = $type;
+		$content['id'] = $id;
+		$content['note'] = [];
+		$content['note']['type'] = $type;
+		$content['noteLinks'] = [];
+		$content['teachers'] = $teachers;
+		
+		if ($id) {
+			
+			$note = Note::get($id);
+
+			// Retrieve the group and the place
+			$group_id = $note->group_id;
+			$content['note']['group_id'] = $group_id;
+			$group = Account::get($group_id);
+			$content['group'] = $group->properties;
+			$place = Place::get($group->place_id);
+			$content['place'] = $place->properties;
+				
+			$noteLinks = $note->links;
+			$content['note']['status'] = $note->status;
+			$content['note']['place_id'] = $group->place_id;
+			$content['note']['teacher_id'] = $note->teacher_id;
+			$content['note']['subject'] = $note->subject;
+			$content['note']['level'] = $note->level;
+			$content['note']['date'] = $note->date;
+			$content['note']['school_year'] = $note->school_year;
+			$content['note']['school_period'] = $note->school_period;
+			$content['note']['reference_value'] = $note->reference_value;
+			$content['note']['weight'] = $note->weight;
+			$content['note']['observations'] = $note->observations;
+			foreach ($note->links as $noteLink) $content['noteLinks'][$noteLink->account_id] = $noteLink->getProperties();
+			$content['update_time'] = $note->update_time;
+		}
+		else {
+		
+			// Retrieve the group and the place
+			$group_id = $this->params()->fromQuery('group_id');
+			$content['note']['group_id'] = $group_id;
+			$group = Account::get($group_id);
+			if (!$group || $group->type != 'group') {
+				$this->response->setStatusCode('400');
+				$this->response->setReasonPhrase('Not existing group');
+				return $this->response;
+			}
+			if (!$context->hasRole('manager') && !in_array($group_id, $teachers[$myAccount->contact_1_id]['groups'])) {
+				$this->response->setStatusCode('403');
+				$this->response->setReasonPhrase('Group not allowed for this user');
+				return $this->response;
+			}
+			$content['group'] = $group->properties;
+			$place = Place::get($group->place_id);
+			$content['place'] = $place->properties;
+			
+			$note = Note::instanciate($type, null, $group_id);
+			$noteLinks = [];
+			foreach ($group->members as $member_id => $member) {
+				if (!$accounts || in_array($member_id, $accounts)) {
+					$noteLink = [
+						'account_id' => $member_id,
+						'n_fn' => $member->n_fn,
+						'value' => null,
+						'assessment' => '',
+					];
+					$noteLinks[] = $noteLink;
+				}
+			}
+			$content['note']['status'] = 'current';
+			$content['note']['place_id'] = $group->place_id;
+			if ($context->hasRole('manager')) $content['note']['teacher_id'] = null;
+			else $content['note']['teacher_id'] = $myAccount->contact_1_id;
+			$content['note']['subject'] = $subject;
+			$content['note']['level'] = $level;
+			$content['note']['date'] = $date;
+			$content['note']['school_year'] = $context->getConfig('student/property/school_year/default');
+		
+			// user_story - student_evaluation_period: La période est pré-renseignée à la période en cours (en paramètre) mais peut être modifiée (ex. pour effectuer une rétro-saisie sur une période antérieure).
+			$school_periods = $place->getConfig('school_periods');
+			$current_school_period = $context->getCurrentPeriod($school_periods);
+
+			$content['note']['school_period'] = $current_school_period;
+			$content['note']['reference_value'] = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			$content['note']['weight'] = 1;
+			$content['note']['observations'] = '';
+			$content['noteLinks'] = $noteLinks;
+			$content['update_time'] = null;
+		}
+
+		// Retrieve the subject list. As a teacher my subject list is restricted according to my competences
+		$subjects = [];
+		foreach ($place->getConfig('student/property/school_subject')['modalities'] as $subjectId => $subject) {
+			if (!array_key_exists('archive', $subject) || !$subject['archive']) {
+				if ($context->hasRole('manager')) $subjects[$subjectId] = $subject;
+				elseif (array_key_exists('subcategory', $subject) && in_array($subject['subcategory'], $teachers[$myAccount->contact_1_id]['competences'])) $subjects[$subjectId] = $subject;
+			}
+		}
+		$content['config'] = [];
+		$content['config']['subjects'] = $subjects;
+		$content['config']['categories'] = $place->getConfig('student/property/evaluationCategory')['modalities'];
+		
+		if ($this->getRequest()->isPost()) {
+	
+			// User story - student_evaluation_teachers:
+			// Rôle manager: les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif".
+			// Rôle enseignant: je ne peux pas affecter un autre enseignant que moi-même à l'évaluation.
+	
+			// Load the input data
+	
+			$content['note']['teacher_id'] = $this->request->getPost('teacher_id');
+	
+			$content['note']['school_period'] = $this->request->getPost('school_period');
+			$content['note']['level'] = $this->request->getPost('level');
+			$content['note']['subject'] = $this->request->getPost('subject');
+			$content['note']['date'] = $this->request->getPost('date');
+			$content['note']['reference_value'] = $this->request->getPost('reference_value');
+			$content['note']['weight'] = $this->request->getPost('weight');
+			$content['note']['observations'] = $this->request->getPost('observations');
+	
+			foreach ($content['noteLinks'] as &$noteLinkData) {
+				$account_id = $noteLinkData['account_id'];
+				if (!$id) $noteLink = NoteLink::instanciate($account_id);
+				else $noteLink = $note->links[$account_id];
+				$value = $this->request->getPost('value-' . $account_id);
+				if ($value == '') $value = null;
+//				$mention = $this->request->getPost('mention-' . $account_id);
+				$assessment = $this->request->getPost('assessment-' . $account_id);
+				$audit = [];
+				if ($value !== null || $assessment) {
+					$noteLinkData['value'] = $value;
+//					$noteLinkData['evaluation'] = $mention;
+					$noteLinkData['assessment'] = $assessment;
+					$noteLink->loadData($noteLinkData);
+					$note->links[$account_id] = $noteLink;
+				}
+			}
+
+			$rc = $note->loadData($content['note']);
+			if ($rc != 'OK') {
+				$this->response->setStatusCode('409');
+				$this->response->setReasonPhrase($rc);
+				return null;
+			}
+			else {
+	
+				// Atomically save
+				$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+				$connection->beginTransaction();
+				try {
+					if ($note->id) $rc = $note->update(null);
+					else {
+						$rc = $note->add();
+						$content['id'] = $note->id;
+					}
+					if ($rc != 'OK') {
+						$connection->rollback();
+						$this->response->setStatusCode('409');
+						$this->response->setReasonPhrase($rc);
+						return null;
+					}
+
+					// Save the note at the student level
+					foreach ($note->links as $noteLink) {
+						if (!$noteLink->id) {
+							$noteLink->note_id = $note->id;
+							$rc = $noteLink->add();
+						}
+						else $rc = $noteLink->update(null);
+						if ($rc != 'OK') {
+							$connection->rollback();
+							$this->response->setStatusCode('409');
+							$this->response->setReasonPhrase($rc);
+							return null;
+						}
+					}
+					
+					$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
+					if ($rc) {
+						$connection->rollback();
+						$this->response->setStatusCode('409');
+						$this->response->setReasonPhrase($rc);
+						return null;
+					}
+					
+					// Compute the group indicators
+					$content['indicators'] = $note->computeGroupIndicators();
+
+					$connection->commit();
+					$this->response->setStatusCode('200');
+					return $content;
+				}
+				catch (\Exception $e) {
+					$connection->rollback();
+					$this->response->setStatusCode('409');
+					$this->response->setReasonPhrase('Unhandled exception');
+					return null;
+				}
+			}
+		}
+		return $content;
+	}
+	
+	public function apiEvaluationAction() {
+	
+		// Retrieve the context
+		$context = Context::getCurrent();
+
+		$content = $this->evaluation();
+
+		header('Content-Type: application/json');
+		echo json_encode($content, JSON_PRETTY_PRINT);
+		return $this->response;
+	}
+	
+	public function evaluationAction()
+	{
+		$context = Context::getCurrent();
+		
+		$content = $this->evaluation();
+		
+		$view = new ViewModel(array(
+			'context' => $context,
+			'request' => ($this->getRequest()->isPost()) ? 'POST' : 'GET',
+			'content' => $content,
+			'statusCode' => $this->response->getStatusCode(),
+			'reasonPhrase' => $this->response->getReasonPhrase(),
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+	
+	public function updateEvaluationV2Action()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -630,7 +1010,7 @@ class NoteController extends AbstractActionController
     			
     			$noteCount = 0; $noteSum = 0; $lowerNote = 999; $higherNote = 0;
     			foreach ($note->links as $noteLink) {
-    				$noteLink->audit = array();
+    				$noteLink->distribution = array();
     				// Global mention to move to another property
     				$value = $request->getPost('value_'.$noteLink->account_id);
     				if ($value == '') $value = null;
@@ -955,7 +1335,7 @@ class NoteController extends AbstractActionController
 								$noteLink->value = $value;
 								$noteLink->distribution = $distribution;
 								$noteLink->audit = $audit;
-								$noteLink->update(null);
+//								$noteLink->update(null);
 							}
 						}
 					}

@@ -1,0 +1,81 @@
+<script>
+
+function postNoteEvaluation(type)
+{
+  var form = document.getElementById('note-evaluation-form');
+  form.onsubmit = function(event) {
+	    
+	event.preventDefault();
+    var xhttp = new XMLHttpRequest();
+    var route = '<?php echo $this->url('note/evaluation') ?>/' + type + '?group_id=' + $('#search-groups').val();
+    route += '&accounts=';
+    let first = true;
+    $('.account-checkbox').each(function () {
+      let account_id = $(this).attr('id').split('_')[1];
+      if ($(this).prop('checked')) {
+        if (!first) route += ',';
+        first = false;
+        route += account_id;
+      }
+    });
+
+    var formData = new FormData();
+    $('.update_input').each(function () {
+      let val = $(this).val();
+      if ($(this).hasClass('update_input_date')) val = encodeDate(val);
+      if ($(this).hasClass('update_input_number')) val = getNumber(val, 2);
+      formData.append($(this).attr('id'), val);
+    });
+
+    xhttp.open('POST', route, true);
+    xhttp.onload = function () {
+      if (xhttp.readyState == 4) {
+        if (xhttp.status == 200) {
+          $('#grouped-action-panel').html(xhttp.responseText);
+        }
+        else {
+          toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>\nTechnical information: " + xhttp.status + ' - ' + xhttp.statusText);
+        }
+      }
+	};
+	xhttp.send(formData);
+  }
+}
+
+function getNoteEvaluation(type) {
+
+  var xhttp = new XMLHttpRequest();
+  var route = '<?php echo $this->url('note/evaluation') ?>/' + type + '?group_id=' + $('#search-groups').val();
+
+  route += '&accounts=';
+  let first = true;
+  $('.account-checkbox').each(function () {
+    let account_id = $(this).attr('id').split('_')[1];
+    if ($(this).prop('checked')) {
+      if (!first) route += ',';
+      first = false;
+      route += account_id;
+    }
+  });
+
+  xhttp.open('GET', route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        $('#grouped-action-panel').html(xhttp.responseText);
+        $('.update_input_date').datepicker();
+
+        $('#subject').focus();
+        $('#up-submit-button').click(function () { postNoteEvaluation(type); });
+        $('#down-submit-button').click(function () { postNoteEvaluation(type); });
+      }
+      else {
+        toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
+      }
+    }
+  }
+  xhttp.send();
+}
+
+</script>

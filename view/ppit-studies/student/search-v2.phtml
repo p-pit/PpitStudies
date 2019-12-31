@@ -21,7 +21,9 @@
 
 	if ($propertyId == 'groups') {
 		$property['modalities'] = array();
-		foreach ($groups as $group) $property['modalities'][$group->id] = ['default' => $group->name];
+		foreach ($groups as $group) {
+			if ($context->hasRole('manager') || !$myGroups || in_array($group->id, $myGroups)) $property['modalities'][$group->id] = ['default' => $group->name];
+		}
 	}
 	
     $label = $context->localize($property['labels']);

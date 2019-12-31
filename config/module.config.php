@@ -403,18 +403,24 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-/*	       						'updateEvaluation' => array(
+	       						'apiEvaluation' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
-		        								'route' => '/update-evaluation[/:id][/:act]',
-		        								'constraints' => array(
-		        										'id'     => '[0-9]*',
-		        								),
+		        								'route' => '/api-evaluation[/:type][/:id]',
 		        								'defaults' => array(
-		        										'action' => 'updateEvaluation',
+		        										'action' => 'apiEvaluation',
 		        								),
 		        						),
-		        				),*/
+		        				),
+	       						'evaluation' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/evaluation[/:type][/:id]',
+		        								'defaults' => array(
+		        										'action' => 'evaluation',
+		        								),
+		        						),
+		        				),
 	       						'updateEvaluationV2' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -427,7 +433,16 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-				       			'reprise' => array(
+	       						'apiUpdateAverage' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/api-update-average',
+		        								'defaults' => array(
+		        										'action' => 'apiUpdateAverage',
+		        								),
+		        						),
+		        				),
+	       						'reprise' => array(
 	       								'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/reprise[/:place_identifier]',
@@ -617,15 +632,15 @@ return array_merge(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-/*        						'index' => array(
+        						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index[/:app]',
+        										'route' => '/index[/:app][/:entryId]',
         										'defaults' => array(
         												'action' => 'index',
         										),
         								),
-        						),*/
+        						),
         						'indexV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -737,7 +752,7 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-/*	       						'group' => array(
+	       						'group' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/group[:type]',
@@ -745,7 +760,7 @@ return array_merge(
         												'action' => 'group',
         										),
         								),
-        						),*/
+        						),
 	       						'groupV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1203,6 +1218,9 @@ return array_merge(
 //				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateV2', 'roles' => array('manager', 'teacher')),
 //				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/apiEvaluation', 'roles' => array('guest', 'guest')),
+				array('route' => 'note/evaluation', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/apiUpdateAverage', 'roles' => array('guest', 'guest')),
 				array('route' => 'note/updateEvaluationV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 /*						
@@ -1227,7 +1245,7 @@ return array_merge(
 
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
-//				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
 //				array('route' => 'student/studentHome', 'roles' => array('user')),
 				array('route' => 'student/studentHomeV2', 'roles' => array('user')),
@@ -1238,7 +1256,7 @@ return array_merge(
             	array('route' => 'student/listV2', 'roles' => array('manager', 'coach', 'teacher')),
 //				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/detailV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/groupV2', 'roles' => array('manager', 'coach', 'teacher')),
 //				array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/addAbsenceV2', 'roles' => array('manager', 'coach', 'teacher')),
@@ -1318,7 +1336,7 @@ return array_merge(
 	'menus/p-pit-studies' => array(
 		'entries' => array(
 					'student' => array(
-							'route' => 'student/indexV2',
+							'route' => 'student/index',
 							'params' => array('app' => 'p-pit-studies', 'type' => '', 'entryId' => 'student'),
 							'urlParams' => array(),
 							'glyphicon' => 'glyphicon-list-alt',
@@ -3086,6 +3104,24 @@ table.note-report td {
 	),
 
 	// Terms
+
+	'commitmentTerm/p-pit-studies/property/status' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'expected' => array('fr_FR' => 'Attendu', 'en_US' => 'Expected'),
+			'to_invoice' => array('fr_FR' => 'A facturer', 'en_US' => 'To invoice'),
+			'settled' => array('fr_FR' => 'Réglé', 'en_US' => 'Settled'),
+			'collected' => array('fr_FR' => 'Encaissé', 'en_US' => 'Collected'),
+			'invoiced' => array('fr_FR' => 'Facturé', 'en_US' => 'Invoiced'),
+			'rejected' => array('fr_FR' => 'Rejeté', 'en_US' => 'Rejected'),
+			'registered' => array('fr_FR' => 'Comptabilisé', 'en_US' => 'Registered'),
+		),
+		'labels' => array(
+			'en_US' => 'Status',
+			'fr_FR' => 'Statut',
+		),
+	),
 	
 	'commitmentTerm/p-pit-studies/property/quantity' => array(
 		'definition' => 'inline',
@@ -3878,6 +3914,9 @@ table.note-report td {
 					'relation_client_digitalisation' => array('default' => 'Relation client à distance et digitalisation', 'classes' => ['bts_ndrc']),
 					'relation_client_reseau' => array('default' => 'Relation client et animation des réseaux', 'classes' => ['bts_ndrc']),
 					'relation_client_vente' => array('default' => 'Relation client et négociation vente', 'classes' => ['bts_ndrc']),
+					'relation_client_vente_2' => array('default' => 'Relation client et négociation vente (2)', 'classes' => ['bts_ndrc']),
+					'guc' => array('default' => 'GUC'),
+					'muc' => array('default' => 'MUC'),
 				
 					'physio_pathologie' => array('en_US' => 'Physio-pathology', 'fr_FR' => 'Physio-pathologie'),
 					'medico-social' => array('en_US' => 'Medico-social', 'fr_FR' => 'Sciences médico-sociales'),
@@ -4435,7 +4474,7 @@ table.note-report tr.period {
 
 	// Absence event
 
-	// Properties between property_1 and property_10 are loaded with their counterpartin the calendar event
+	// Properties between property_1 and property_10 are loaded with their counterpart in the calendar event
 
 	'event/absence/property/account_id' => array(
 		'definition' => 'inline',
@@ -4831,6 +4870,13 @@ table.note-report tr.period {
 	
 	// Note
 
+	'note/property/group_id' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => [], // Dynamically loaded
+		'labels' => ['default' => 'Groupe'],
+	],
+	
 	'note/property/place_caption' => array(
 			'type' => 'text',
 			'labels' => array(
@@ -4988,6 +5034,7 @@ table.note-report tr.period {
 							),
 					),
 					'place_caption' => array('definition' => 'note/property/place_caption'),
+					'group_id' => ['definition' => 'note/property/group_id'],
 					'school_year' => array(
 							'type' => 'repository', //Deprecated
 							'definition' => 'student/property/school_year',
@@ -5086,13 +5133,14 @@ table.note-report tr.period {
 			'place_id' => 'select',
 			'school_period' => 'select',
 			'class' => 'select',
+			'group_id' => 'select',
 //			'level' => 'select',
 			'subject' => 'select',
 			'date' => 'date',
 			'weight' => 'number',
-			'lower_note' => 'number',
+/*			'lower_note' => 'number',
 			'average_note' => 'number',
-			'higher_note' => 'number',
+			'higher_note' => 'number',*/
 	),
 
 	'note/export/homework' => array(
@@ -5128,12 +5176,106 @@ table.note-report tr.period {
 			'weight' => 'K',
 			'value' => 'L',
 			'lower_note' => 'M',
-			'average_note' => 'N',
+/*			'average_note' => 'N',
 			'higher_note' => 'O',
-			'assessment' => 'P',
-			'evaluation' => 'Q',
+			'assessment' => 'P',*/
+			'evaluation' => 'N',
+			'group_id' => 'O',
 		),
 	),
+	
+	// Note link
+
+	'note_link/generic/property/status' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'labels' => ['default' => 'Observations'],
+		'modalities' => [
+			'new' => ['default' => 'Nouveau'],
+		],
+	],
+
+	'note_link/generic/property/account_id' => [
+		'definition' => 'inline',
+		'type' => 'dynamic',
+		'modalities' => [],
+		'labels' => [
+			'en_US' => 'Account',
+			'fr_FR' => 'Compte',
+		],
+	],
+	
+	'note_link/generic/property/value' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'labels' => ['default' => 'Value'],
+		'modalities' => [
+			'4' => ['default' => 'A'],
+			'3.5' => ['default' => 'B'],
+			'3' => ['default' => 'C'],
+			'2.5' => ['default' => 'D'],
+			'2' => ['default' => 'E'],
+			'1' => ['default' => 'F'],
+			'0.5' => ['default' => 'FX'],
+		],
+	],
+	
+	'note_link/generic/property/evaluation' => [
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => ['default' => 'Evaluation'],
+	],
+
+	'note_link/generic/property/assessment' => [
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => ['default' => 'Commentaire'],
+	],
+
+	'note_link/generic/property/update_time' => [
+		'definition' => 'inline',
+		'type' => 'time',
+		'labels' => [
+			'en_US' => 'Last update',
+			'fr_FR' => 'Dernière mise à jour',
+		],
+	],
+
+	'note_link/generic/property/place_id' => ['definition' => 'core_account/generic/property/place_id'],
+	'note_link/generic/property/n_fn' => ['definition' => 'note/property/n_fn'],
+	'note_link/generic/property/name' => ['definition' => 'note/property/name'],
+	
+	'note_link/generic/property/school_year' => ['definition' => 'student/property/school_year'],
+	'note_link/generic/property/level' => array('definition' => 'student/property/evaluationCategory'),
+
+	'note_link/generic/property/group_id' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => [], // Dynamically loaded
+		'labels' => ['default' => 'Groupe'],
+	],
+
+	'note_link/generic/property/school_period' => ['definition' => 'student/property/school_period'],
+	'note_link/generic/property/subject' => ['definition' => 'student/property/school_subject'],
+	'note_link/generic/property/date' => array('definition' => 'note/property/date'),
+	'note_link/generic/property/target_date' => array('definition' => 'note/property/target_date'),
+	'note_link/generic/property/value' => array('definition' => 'note/property/value'),
+	'note_link/generic/property/reference_value' => array('definition' => 'note/property/reference_value'),
+	'note_link/generic/property/weight' => array('definition' => 'note/property/weight'),
+	'note_link/generic/property/observations' => array('definition' => 'note/property/observations'),
+	'note_link/generic/property/lower_note' => array('definition' => 'note/property/lower_note'),
+	'note_link/generic/property/higher_note' => array('definition' => 'note/property/higher_note'),
+	'note_link/generic/property/average_note' => array('definition' => 'note/property/average_note'),
+
+	'note_link/generic' => [
+		'properties' => [
+			'status', 'account_id', 'value', 'evaluation', 'assessment', 'update_time',
+			'place_id', 'n_fn', 'name',
+			'school_year', 'level', 'group_id', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'lower_note', 'higher_note', 'average_note',
+		],
+	],
+
+	// Progress
 	
 	'progress/Basketball' => array(
 			'criteria' => array(
