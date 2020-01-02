@@ -1617,7 +1617,7 @@ return array_merge(
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9',
 			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
-			'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5',
+			'account_groups', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8',
 			'account_property_9', 'account_property_10', 'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_19',
 			'default_means_of_payment', 'update_time',
