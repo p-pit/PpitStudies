@@ -19,36 +19,53 @@ use Zend\View\Model\ViewModel;
 
 class NoteController extends AbstractActionController
 {
-/*    public function indexAction()
+    public function indexAction()
     {
     	$context = Context::getCurrent();
 		if (!$context->isAuthenticated()) $this->redirect()->toRoute('home');
     	$place = Place::get($context->getPlaceId());
-    	$app = $this->params()->fromRoute('app', 'p-pit-studies');
-    	$community_id = (int) $context->getCommunityId();
+    	$entry = $this->params()->fromRoute('entry', 'homework');
 
-		$menu = $context->getConfig('menus/'.$app)['entries'];
-    	$currentEntry = $this->params()->fromQuery('entry', 'account');
-
+    	// Transient: Serialize a list of the entries from all menus
+    	$menuEntries = [];
+    	foreach ($context->getApplications() as $applicationId => $application) {
+    		if ($context->getConfig('menus/'.$applicationId)) {
+    			foreach ($context->getConfig('menus/' . $applicationId)['entries'] as $entryId => $entryDef) {
+    				$menuEntries[$entryId] = ['menuId' => $applicationId, 'menu' => $application, 'definition' => $entryDef];
+    			}
+    		}
+    	}
+    	$tab = $this->params()->fromRoute('entryId', 'homework');
+    	
+    	// Retrieve the application
+    	$app = $menuEntries[$tab]['menuId'];
+    	$applicationName = $context->localize($menuEntries[$tab]['menu']['labels']);
+    	 
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
 		
-    	return new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getConfig(),
-    			'place' => $place,
-    			'applicationId' => 'p-pit-studies',
-    			'applicationName' => 'P-Pit Studies',
-    			'active' => 'application',
-    			'community_id' => $community_id,
-    			'menu' => $menu,
-    			'currentEntry' => $currentEntry,
-    			'category' => $category,
-    			'type' => $type,
-    			'places' => Place::getList(array()),
+		$this->layout('/layout/core-layout');
+		$this->layout()->setVariables(array(
+			'context' => $context,
+			'place' => $place,
+			'entry' => $entry,
+//			'config' => $config,
+			'tab' => $tab,
+			'app' => $app,
+			'applicationName' => $applicationName,
+			'pageScripts' => 'ppit-studies/note/index-scripts',
+    		'category' => $category,
+    		'type' => $type,
+		));
+		
+		return new ViewModel(array(
+    		'context' => $context,
     	));
-    }*/
+    }
     
+    /**
+     * Deprecated
+     */
     public function indexV2Action()
     {
     	$context = Context::getCurrent();
@@ -133,11 +150,13 @@ class NoteController extends AbstractActionController
 
     	$category = $this->params()->fromRoute('category');
     	$type = $this->params()->fromRoute('type');
+    	$accountConfig = Account::getConfig('p-pit-studies');
     	 
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
+    			'accountConfig' => $accountConfig,
     			'places' => Place::getList(array()),
     			'category' => $category,
     			'type' => $type,
@@ -665,7 +684,7 @@ class NoteController extends AbstractActionController
 		// user_story - student_evaluation_teachers: Les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif"
 		$teachers = [];
 		if ($context->hasRole('manager')) {
-			$cursor = Account::getList('teacher', ['status' => 'active'], '+name', null);
+			$cursor = Account::getList('teacher', ['status' => 'active,committed'], '+name', null);
 			foreach ($cursor as $teacher_id => $teacher) {
 				$teachers[$teacher->contact_1_id] = $teacher->properties;
 				$competences = $teachers[$teacher->contact_1_id]['property_3'];

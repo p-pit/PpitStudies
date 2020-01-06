@@ -31,6 +31,20 @@
       <?php endforeach;?>
             </select>
           </div>
+
+    <?php elseif ($propertyId == 'group_id') : ?>
+        <div class="input-group input-group-sm mb-2 mr-sm-2">
+            <input type="hidden" value="0" class="search_check_value" id="search_check_value-group_id" />
+            <div class="input-group-prepend">
+              <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-group_id"><?php echo $context->localize($accountConfig['groups']['labels']) ?></button>
+            </div>
+            <select class="form-control search_input search_input_select" id="search-group_id">
+              <option value=""></option>
+      <?php foreach ($accountConfig['groups']['modalities'] as $modalityId => $modality) : ?>
+              <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>
+      <?php endforeach;?>
+            </select>
+          </div>
 	
 	<?php elseif ($propertyId == 'date') : ?>
 

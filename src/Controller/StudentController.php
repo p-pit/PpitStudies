@@ -39,7 +39,7 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
     	$config = $context->getConfig();
     	$place = Place::get($context->getPlaceId());
-
+		
     	// Transient: Serialize a list of the entries from all menus
     	$menuEntries = [];
     	foreach ($context->getApplications() as $applicationId => $application) {
@@ -286,7 +286,8 @@ class StudentController extends AbstractActionController
     	$major = $this->params()->fromQuery('major');
     	$dir = $this->params()->fromQuery('dir');
     	$limit = $this->params()->fromQuery('limit');
-    
+    	$accountConfig = Account::getConfig('p-pit-studies');
+    	 
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
     	$params['status'] = 'active,retention';
     
@@ -297,6 +298,7 @@ class StudentController extends AbstractActionController
     	$view = new ViewModel(array(
     		'context' => $context,
     		'config' => $context->getconfig(),
+    		'accountConfig' => $accountConfig,
     		'accounts' => $accounts,
     		'places' => Place::getList(array()),
     		'mode' => $mode,

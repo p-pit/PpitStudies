@@ -286,15 +286,15 @@ return array_merge(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-/*        						'index' => array(
+        						'index' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/index[/:app][/:category][/:type]',
+        										'route' => '/index[/:category][/:type][/:entryId]',
         										'defaults' => array(
         												'action' => 'index',
         										),
         								),
-        						),*/
+        						),
         						'indexV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1205,7 +1205,7 @@ return array_merge(
 				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher')),*/
 
 				array('route' => 'note', 'roles' => array('manager', 'teacher')),
-//				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/indexV2', 'roles' => array('manager', 'teacher')),
 //				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/searchV2', 'roles' => array('manager', 'teacher')),
@@ -3992,10 +3992,9 @@ table.note-report td {
 	),
 
 	'student/list' => array(
-			'property_1' => 'image',
 			'photo_link_id' => 'photo',
 			'n_fn' => 'text',
-			'property_7' => 'select',
+			'groups' => 'select',
 			'tel_cell' => 'phone',
 			'email' => 'email',
 	),
@@ -5043,6 +5042,7 @@ table.note-report tr.period {
 							'type' => 'repository', //Deprecated
 							'definition' => 'student/property/school_period',
 					),
+					'group_id' => array('definition' => 'student/property/groups'),
 					'class' => array(
 							'type' => 'repository', //Deprecated
 							'definition' => 'student/property/class',
@@ -5086,7 +5086,7 @@ table.note-report tr.period {
 					'place_id' => 'select',
 					'school_year' => 'select',
 					'school_period' => 'select',
-					'class' => 'select',
+					'group_id' => 'select',
 					'subject' => 'select',
 					'date' => 'date',
 			),
@@ -5101,24 +5101,24 @@ table.note-report tr.period {
 	'note/search/evaluation/report' => array(
 			'title' => array('en_US' => 'School reports', 'fr_FR' => 'Bulletins'),
 	),
-		
-	'note/search/homework' => array(
-			'title' => array('en_US' => 'Homework notebook', 'fr_FR' => 'Cahier de texte'),
-			'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
-			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
-			'main' => array(
-					'place_id' => 'select',
-					'type' => 'select',
-					'school_year' => 'select',
-					'school_period' => 'select',
-					'class' => 'select',
-					'subject' => 'select',
-					'target_date' => 'date',
-			),
-			'more' => array(
-			),
-	),
 
+	'note/search/homework' => array(
+		'title' => array('en_US' => 'Homework notebook', 'fr_FR' => 'Cahier de texte'),
+		'todoTitle' => array('en_US' => 'current period', 'fr_FR' => 'période en cours'),
+		'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
+		'main' => array(
+			'place_id' => 'select',
+			'type' => 'select',
+			'school_year' => 'select',
+			'school_period' => 'select',
+			'class' => 'select',
+			'subject' => 'select',
+			'target_date' => 'date',
+		),
+		'more' => array(
+		),
+	),
+	
 	'note/list/homework' => array(
 			'place_id' => 'select',
 			'school_period' => 'select',
@@ -5132,7 +5132,6 @@ table.note-report tr.period {
 	'note/list/evaluation' => array(
 			'place_id' => 'select',
 			'school_period' => 'select',
-			'class' => 'select',
 			'group_id' => 'select',
 //			'level' => 'select',
 			'subject' => 'select',

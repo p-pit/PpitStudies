@@ -293,7 +293,8 @@ class Note
 		$avgData['subject'] = $subject;
 		$avgData['teacher_id'] = $teacher_id;
 		$avgData['reference_value'] = $context->getConfig('student/parameter/average_computation')['reference_value'];
-		$avgData['weight'] = 1;
+		$subjectConfig = $context->getConfig('student/property/school_subject')['modalities'][$subject];
+		$avgData['weight'] = array_key_exists('credits', $subjectConfig) ? $subjectConfig['credits'] : 1;
 		
 		$averages = array();
 		foreach ($periodNotes as $account_id => $notes) {
@@ -341,7 +342,7 @@ class Note
 			$avgData['lower_note'] = $lowerNote;
 			$avgData['higher_note'] = $higherNote;
 		}
-	
+
 		$rc = $report->loadData($avgData);
 		if ($rc != 'OK') return $rc;
 
@@ -366,6 +367,7 @@ class Note
 
 		$avgData['subject'] = 'global';
 		$avgData['teacher_id'] = null;
+		$avgData['weight'] = 1;
 		
 		// Compute the global average for each account
 		$noteLinks = NoteLink::getList('report', ['group_id' => $group_id, 'school_year' => $school_year, 'school_period' => $school_period], 'date', 'ASC', 'search');

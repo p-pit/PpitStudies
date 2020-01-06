@@ -32,7 +32,7 @@ table td {
 	elseif ($propertyId == 'subject') $label = $context->localize($context->getConfig('student/property/school_subject')['labels']);
 	elseif ($propertyId == 'date') $label = $this->translate('Notification date', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'target_date') $label = $this->translate('Target date', 'ppit-studies', $context->getLocale());
-	elseif ($propertyId == 'weight') $label = $this->translate('Weight', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'weight') $label = $this->translate('Credits', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'lower_note') $label = $this->translate(($type == 'note') ? 'Lowest note' : 'Lowest average', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'average_note') $label = $this->translate(($type == 'note') ? 'Average note' : 'Class average', 'ppit-studies', $context->getLocale());
 	elseif ($propertyId == 'higher_note') $label = $this->translate(($type == 'note') ? 'Highest note' : 'Highest average', 'ppit-studies', $context->getLocale());

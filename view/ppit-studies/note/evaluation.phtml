@@ -31,25 +31,20 @@
 
 <?php endif;?>
 
-<?php if ($request == 'POST' && $statusCode == '200') : ?>
-<!-- Menu -->
-    <div class="my-3">
-            <button type="button" class="btn btn-outline-primary" id="update-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Modifier', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-outline-primary" id="delete-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Supprimer', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
-    </div>
-<?php endif;?>
-
 <form class="was-validated" id="note-evaluation-form">
 
 <input type="hidden" id="update_time" value="<?php echo $content['update_time'] ?>" />
 
 <?php if ($request == 'POST' && $statusCode == '200') $isDisabled = true; else $isDisabled = false; ?>
 
-<?php if ($request != 'POST' || $statusCode != '200') : ?>
+<?php if (!in_array($request, ['POST', 'DELETE']) || !in_array($statusCode, ['200', '204', '201'])) : ?>
 		    <div class="form-group row">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
-					<input type="submit" id="up-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" />
+  <?php if ($content['id']) : ?>
+                    <button type="button" class="note_evaluation_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
+  <?php endif;?>
 				</div>
 			</div>
 <?php endif;?>
@@ -230,7 +225,10 @@
 		    <div class="form-group row">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
-					<input name="submit" type="submit" id="down-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" />
+  <?php if ($content['id']) : ?>
+                    <button type="button" class="note_evaluation_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
+  <?php endif;?>
 				</div>
 			</div>
 <?php endif;?>

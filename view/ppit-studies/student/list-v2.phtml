@@ -24,6 +24,7 @@ table td {
 <?php foreach ($context->getConfig('student/list') as $propertyId => $rendering) : ?>
 	<?php 
 	$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
+	if (!$property) $property = $context->getConfig('core_account/generic/property/'.$propertyId);
 	if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 	?>
 
@@ -78,6 +79,16 @@ table td {
 	
     <?php if ($propertyId == 'n_fn') : ?>
       <td><?php echo $account->n_fn ?></td>
+  
+    <?php elseif ($propertyId == 'groups') : ?>
+      <?php 
+      if ($account->groups) $groupIds = explode(',', $account->groups);
+      else $groupIds = [];
+      $groups = [];
+      foreach ($groupIds as $groupId) $groups[$groupId] = $context->localize($accountConfig['groups']['modalities'][$groupId]);
+      $groups = implode(', ', $groups);
+      ?>
+      <td><?php echo $groups ?></td>
 	
     <?php elseif ($rendering == 'select' && $account->properties[$propertyId]) : ?>
       <td><?php if (array_key_exists($account->properties[$propertyId], $property['modalities'])) echo $context->localize($property['modalities'][$account->properties[$propertyId]]) ?></td>
