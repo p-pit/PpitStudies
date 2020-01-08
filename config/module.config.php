@@ -4479,7 +4479,7 @@ table.note-report tr.period {
 		'definition' => 'inline',
 		'type' => 'select',
 		'account_type' => 'p-pit-studies',
-		'account_status' => 'active,retention,gone',
+		'account_status' => 'active,retention',
 		'labels' => array(
 			'en_US' => 'Student',
 			'fr_FR' => 'Étudiant',
