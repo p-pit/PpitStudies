@@ -4538,7 +4538,7 @@ table.note-report tr.period {
 	),
 	
 	'event/search/absence' => array(
-		'title' => array('default' => 'Planning', 'fr_FR' => 'Planning'),
+		'title' => array('default' => 'Absences', 'fr_FR' => 'Absences'),
 		'todoTitle' => array('default' => 'recent', 'fr_FR' => 'récents'),
 		'searchTitle' => array('default' => 'search', 'fr_FR' => 'recherche'),
 		'properties' => array(
