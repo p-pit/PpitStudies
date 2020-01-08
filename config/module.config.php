@@ -4585,8 +4585,8 @@ table.note-report tr.period {
 	'event/notify/absence' => [
 		'title' => ['default' => 'Notify absences', 'fr_FR' => 'Notifier des absences'],
 		'cci' => ['contact@p-pit.fr' => 'contact@p-pit.fr'],
-		'from_mail' => 'contact@p-pit.fr',
-		'from_name' => 'Le support P-Pit',
+		'from_mail' => 'no-reply@p-pit.fr',
+		'from_name' => 'Notification - Ne pas répondre',
 		'subject' => [
 			'text' => ['default' => '%s - Absence', 'fr_FR' => '%s - Absence'],
 			'params' => ['place_caption'],
