@@ -3870,6 +3870,7 @@ table.note-report td {
 					'italien' => array('en_US' => 'Italian', 'fr_FR' => 'Italien'),
 					'portuguese' => array('en_US' => 'Portuguese', 'fr_FR' => 'Portugais'),
 					'chinese' => array('en_US' => 'Chinese', 'fr_FR' => 'Chinois'),
+					'russian' => array('en_US' => 'Russian', 'fr_FR' => 'Russe'),
 					'litterature_etrangere' => array('default' => 'Littérature étrangère'),
 					'technology' => array('en_US' => 'Technology', 'fr_FR' => 'Technologie'),
 					'computing' => array('en_US' => 'Computing', 'fr_FR' => 'Informatique'),
