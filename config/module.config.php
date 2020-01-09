@@ -2480,6 +2480,8 @@ return array_merge(
 		),
 	),
 	
+	'core_account/p-pit-studies/property/property_7' => array('definition' => 'student/property/class'),
+
 	'core_account/p-pit-studies/property/property_8' => array(
 		'definition' => 'inline',
 		'type' => 'date',
