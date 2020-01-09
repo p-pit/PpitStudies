@@ -815,10 +815,12 @@ class Note
     
     	// Isolation check
     	if ($note->update_time > $update_time) return 'Isolation';
-    	 
+
+    	foreach ($this->links as $noteLink) $noteLink->delete(null);
+
     	$this->status = 'deleted';
     	Note::getTable()->save($this);
-    
+    	 
     	return 'OK';
     }
 

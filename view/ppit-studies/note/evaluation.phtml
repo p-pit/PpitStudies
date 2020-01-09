@@ -1,6 +1,6 @@
 <?php if ($statusCode == '200') : ?>
 
-  <?php if ($request == 'POST') : ?>
+  <?php if (in_array($request, ['POST', 'DELETE'])) : ?>
 
 <!-- Global message -->
 <div id="message">
@@ -31,18 +31,20 @@
 
 <?php endif;?>
 
+<div class="alert alert-danger my-3 text-center note_evaluation_delete_confirmation"><?php echo $this->translate('Please confirm', 'ppit-core', $context->getLocale()) ?></div>
+
 <form class="was-validated" id="note-evaluation-form">
 
 <input type="hidden" id="update_time" value="<?php echo $content['update_time'] ?>" />
 
-<?php if ($request == 'POST' && $statusCode == '200') $isDisabled = true; else $isDisabled = false; ?>
+<?php if (in_array($request, ['POST', 'DELETE']) && $statusCode == '200') $isDisabled = true; else $isDisabled = false; ?>
 
 <?php if (!in_array($request, ['POST', 'DELETE']) || !in_array($statusCode, ['200', '204', '201'])) : ?>
 		    <div class="form-group row">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
 					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" />
-  <?php if ($content['id']) : ?>
+  <?php if ($content['id'] && $content['type'] != 'report') : ?>
                     <button type="button" class="note_evaluation_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
   <?php endif;?>
 				</div>
@@ -89,6 +91,7 @@
 		?>
 	    			<option value="<?php echo $subjectId ?>" <?php if ($content['note']['subject'] == $subjectId) echo 'selected="selected"' ?>><?php echo $caption ?></option>
 	<?php endforeach;?>
+                    <option value="global" <?php if ($content['note']['subject'] == 'global') echo 'selected="selected"' ?>><?php echo $this->translate('Opinion of staff meeting', 'ppit-studies', $context->getLocale()) ?></option>
 	    		</select>
 			</div>
 <?php endif;?>
@@ -144,7 +147,7 @@
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Reference value', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<input class="form-control form-control-sm update_input update_input_number" id="reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> required />
+				<input class="form-control form-control-sm update_input update_input_number" id="reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"'?> required />
 			</div>
 		</div>
 
@@ -154,7 +157,7 @@
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Weight', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<input class="form-control form-control-sm update_input update_input_number" id="weight" value="<?php echo $context->formatFloat($weight, 2) ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> required />
+				<input class="form-control form-control-sm update_input update_input_number" id="weight" value="<?php echo $context->formatFloat($weight, 2) ?>" <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"'?> required />
 			</div>
 		</div>
 
@@ -164,9 +167,9 @@
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $noteLink['n_fn'] ?></label>
 			<div class="col-sm-7">
   <?php if ($context->getConfig('note/property/value')['type'] == 'number') : ?>
-				<input class="form-control form-control-sm update_input update_input_text" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> />
+				<input class="form-control form-control-sm update_input update_input_text" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> />
   <?php else : ?>
-                <select class="form-control form-control-sm update_input update_input_select" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled) echo 'disabled="disabled"' ?> <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+                <select class="form-control form-control-sm update_input update_input_select" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> <?php if ($isDisabled) echo 'disabled="disabled"'?>>
                   <option value=""></option>
   <?php foreach ($context->getConfig('note/property/value')['modalities'] as $modalityId => $modality) : ?>
                   <option value="<?php echo $modalityId ?>" <?php if ($noteLink['value'] == $modalityId) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>

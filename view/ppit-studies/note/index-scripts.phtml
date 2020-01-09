@@ -10,6 +10,7 @@
 
 <?php echo $this->partial('/partials/search-scripts-v2') ?>
 <?php echo $this->partial('/ppit-core/view-controller/document', ['type' => 'binary', 'folder' => 'studies']) ?>
+<?php echo $this->partial('/ppit-studies/note/evaluation-scripts') ?>
 
 <script>
 
@@ -49,7 +50,7 @@ function getNoteList(params) {
             $('.note-detail-anchor').click(function () {
               var id = $(this).attr('id').split('_')[1];
               if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
-              else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation(id);
+              else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation('<?php echo $type ?>', id, 'note-update-panel');
               $(this).removeClass("btn-outline-primary").addClass("btn-primary");
               $('#modalForm').modal('toggle');
             });
@@ -76,110 +77,6 @@ function connectAuditPanel()
 			$('#audit-label').text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
 		}
 	});
-}
-
-<?php 
-$properties = array();
-$properties['place_id'] = array('type' => 'select', 'mandatory' => true);
-$properties['class'] = array('type' => 'select', 'mandatory' => true);
-$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
-//$properties['teacher_n_fn'] = array('type' => 'text', 'mandatory' => true);
-$properties['teacher_id'] = array('type' => 'select', 'mandatory' => true);
-$properties['level'] = array('type' => 'select', 'mandatory' => false);
-$properties['subject'] = array('type' => 'select', 'mandatory' => true);
-$properties['date'] = array('type' => 'date', 'mandatory' => true);
-$properties['reference_value'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
-$properties['weight'] = array('type' => 'number', 'mandatory' => true, 'minValue' => 0, 'maxValue' => 100);
-$properties['observations'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
-$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
-$properties['update_time'] = array('type' => 'hidden');
-echo $this->partial('/partials/check-update-properties', array('entity' => 'Evaluation', 'context' => $context, 'properties' => $properties)) 
-?>
-
-function postNoteEvaluation(id)
-{
-    var xhttp = new XMLHttpRequest();
-    var route = '<?php echo $this->url('note/evaluation') ?>/' + type + '?group_id=' + $('#search-groups').val();
-    route += '&accounts=';
-    let first = true;
-    $('.account-checkbox').each(function () {
-      let account_id = $(this).attr('id').split('_')[1];
-      if ($(this).prop('checked')) {
-        if (!first) route += ',';
-        first = false;
-        route += account_id;
-      }
-    });
-
-    var formData = new FormData();
-    $('.update_input').each(function () {
-      let val = $(this).val();
-      if ($(this).hasClass('update_input_date')) val = encodeDate(val);
-      if ($(this).hasClass('update_input_number')) val = getNumber(val, 2);
-      formData.append($(this).attr('id'), val);
-    });
-
-    xhttp.open('POST', route, true);
-    xhttp.onload = function () {
-      if (xhttp.readyState == 4) {
-        if (xhttp.status == 200) {
-          $('#grouped-action-panel').html(xhttp.responseText);
-        }
-        else {
-          toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>\nTechnical information: " + xhttp.status + ' - ' + xhttp.statusText);
-        }
-      }
-  };
-  xhttp.send(formData);
-}
-
-function deleteEvaluation(id)
-{
-}
-
-function getNoteEvaluation(id) {
-
-	var xhttp = new XMLHttpRequest();
-	var route = '<?php echo $this->url('note/evaluation', ['type' => $type]) ?>/' + id;
-
-	xhttp.open('GET', route, true);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			$('#note-update-panel').html(xhttp.responseText);			
-			connectAuditPanel();
-            $('#date').datepicker();
-			$('#subject').focus();
-
-			if ($('#note_type').val() == 'report') {
-				if ($('#subject').val() != 'global') {
-					$('.select_value').hide();
-				}
-				$('#subject').change(function () { 
-					if ($('#subject').val() == 'global') {
-						$('.select_value').show();
-					}
-					else {
-						$('.select_value').hide();
-					}
-				});
-			}
-	        
-			$('.note_evaluation_delete_button').click(function() {
-              $('.note_evaluation_delete_button').removeClass('btn-outline-primary').addClass('btn-danger');
-              $('.note_evaluation_delete_button').unbind().click(function(event) { deleteEvaluation(id); });
-            });
-
-            $('[data-toggle="tooltip"]').tooltip();
-
-            var form = document.getElementById('ppit-form');
-            form.onsubmit = function(event) { 
-              event.preventDefault();
-              postNoteEvaluation(id);
-            };
-		}
-	}
-	xhttp.send();
 }
 
 function getSearch() {

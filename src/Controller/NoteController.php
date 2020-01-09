@@ -812,8 +812,45 @@ class NoteController extends AbstractActionController
 		$content['config'] = [];
 		$content['config']['subjects'] = $subjects;
 		$content['config']['categories'] = $place->getConfig('student/property/evaluationCategory')['modalities'];
+
+		// DELETE request
+		if ($this->request->isDelete()) {
+			if (!$id) {
+				$this->response->setStatusCode('400');
+				$this->response->setReasonPhrase('Expecting an id');
+				return null;
+			}
+
+			// Atomically save
+			$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+			$connection->beginTransaction();
+			try {
+				$update_time = $this->request->getPost('update_time');
+				$note->delete('update_time');
+				
+				// Update the subject and global averages
+				$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
+				if ($rc) {
+					$connection->rollback();
+					$this->response->setStatusCode('409');
+					$this->response->setReasonPhrase($rc);
+					return null;
+				}
+
+				$connection->commit();
+				$this->response->setStatusCode('200');
+				return $content;
+			}
+			catch (\Exception $e) {
+				$connection->rollback();
+				$this->response->setStatusCode('409');
+				$this->response->setReasonPhrase('Unhandled exception');
+				return null;
+			}
+		}
 		
-		if ($this->getRequest()->isPost()) {
+		// POST request for create or update
+		elseif ($this->request->isPost()) {
 	
 			// User story - student_evaluation_teachers:
 			// Rôle manager: les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif".
@@ -861,7 +898,8 @@ class NoteController extends AbstractActionController
 				$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 				$connection->beginTransaction();
 				try {
-					if ($note->id) $rc = $note->update(null);
+					$update_time = $this->request->getPost('update_time');
+					if ($note->id) $rc = $note->update('update_time');
 					else {
 						$rc = $note->add();
 						$content['id'] = $note->id;
@@ -888,6 +926,7 @@ class NoteController extends AbstractActionController
 						}
 					}
 					
+					// Update the subject and global averages
 					$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
 					if ($rc) {
 						$connection->rollback();
@@ -934,7 +973,7 @@ class NoteController extends AbstractActionController
 		
 		$view = new ViewModel(array(
 			'context' => $context,
-			'request' => ($this->getRequest()->isPost()) ? 'POST' : 'GET',
+			'request' => ($this->getRequest()->isPost()) ? 'POST' : ($this->getRequest()->isDelete()) ? 'DELETE' : 'GET',
 			'content' => $content,
 			'statusCode' => $this->response->getStatusCode(),
 			'reasonPhrase' => $this->response->getReasonPhrase(),
