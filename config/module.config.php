@@ -2602,6 +2602,7 @@ return array_merge(
 		'modalities' => array(
 			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel'),
 			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours'),
+			'financing_company_built' => array('default' => 'Company financing built', 'fr_FR' => 'Financement entreprise monté', 'archive' => true),
 			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé'),
 		),
 		'labels' => array(
