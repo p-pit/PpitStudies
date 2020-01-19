@@ -2837,12 +2837,6 @@ return array_merge(
 							'params' => array('type' => 'p-pit-studies'),
 							'labels' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 					),
-					'user' => array(
-							'definition' => 'inline',
-							'route' => 'account/updateUser',
-							'params' => array('type' => 'p-pit-studies'),
-							'labels' => array('en_US' => 'User account', 'fr_FR' => 'Compte utilisateur'),
-					),
 					'contact_2' => array(
 							'definition' => 'inline',
 							'route' => 'account/updateContact',
@@ -2864,6 +2858,16 @@ return array_merge(
 					'account-document' => array(
 							'definition' => 'inline',
 							'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
+					),
+					'account-form' => array(
+							'definition' => 'inline',
+							'labels' => array('en_US' => 'Send a form', 'fr_FR' => 'Envoyer un formulaire'),
+					),
+					'user' => array(
+							'definition' => 'inline',
+							'route' => 'account/updateUser',
+							'params' => array('type' => 'p-pit-studies'),
+							'labels' => array('en_US' => 'User account', 'fr_FR' => 'Compte utilisateur'),
 					),
 			),
 	),
