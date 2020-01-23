@@ -2603,6 +2603,7 @@ return array_merge(
 			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours'),
 			'financing_company_built' => array('default' => 'Company financing built', 'fr_FR' => 'Financement entreprise monté'),
 			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé'),
+			'financing_company_signed' => array('default' => 'Company financing signed', 'fr_FR' => 'Financement entreprise signé'),
 		),
 		'labels' => array(
 			'en_US' => 'Financing',
