@@ -5182,9 +5182,9 @@ table.note-report tr.period {
 			'weight' => 'K',
 			'value' => 'L',
 			'lower_note' => 'M',
-/*			'average_note' => 'N',
+			'average_note' => 'N',
 			'higher_note' => 'O',
-			'assessment' => 'P',*/
+			'assessment' => 'P',
 			'evaluation' => 'N',
 			'group_id' => 'O',
 		),
