@@ -5185,8 +5185,8 @@ table.note-report tr.period {
 			'average_note' => 'N',
 			'higher_note' => 'O',
 			'assessment' => 'P',
-			'evaluation' => 'N',
-			'group_id' => 'O',
+			'evaluation' => 'Q',
+			'group_id' => 'R',
 		),
 	),
 	
