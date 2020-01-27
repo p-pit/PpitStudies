@@ -308,6 +308,7 @@ class NoteLink
     		foreach ($params as $propertyId => $property) {
     			if ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
     			elseif ($propertyId == 'group_id') $where->equalTo('student_note.group_id', $params[$propertyId]);
+    			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
     			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
     			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
