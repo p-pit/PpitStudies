@@ -3097,6 +3097,28 @@ table.note-report td {
 			'property_17' => [],
 	),
 
+	'core_account/subscription/events/modalities/p-pit-studies' => [
+		'l_etudiant' => ['default' => 'L’étudiant'],
+		'sup_alternance' => ['default' => 'Sup’Alternance'],
+		'fete_alternance' => ['default' => 'Fête de l’Alternance'],
+		'hors_parcours_sup' => ['default' => 'Formations hors Parcours Sup'],
+		'forum_alternance' => ['default' => 'Forum de l’Alternance'],
+		'sup_alternance_special_rentree' => ['default' => 'Sup’Alternance spécial rentrée'],
+	],
+	
+	'core_account/subscription/next_meeting_date/modalities/p-pit-studies' => [
+		'2020-02-03' => ['default' => 'Lundi 3 février 2020'],
+		'2020-02-04' => ['default' => 'Mardi 4 février 2020'],
+		'2020-02-05' => ['default' => 'Mercredi 5 février 2020'],
+		'2020-02-06' => ['default' => 'Jeudi 6 février 2020'],
+		'2020-02-07' => ['default' => 'Vendredi 7 février 2020'],
+		'2020-02-10' => ['default' => 'Lundi 10 février 2020'],
+		'2020-02-11' => ['default' => 'Mardi 11 février 2020'],
+		'2020-02-12' => ['default' => 'Mercredi 12 février 2020'],
+		'2020-02-13' => ['default' => 'Jeudi 13 février 2020'],
+		'2020-02-14' => ['default' => 'Vendredi 14 février 2020'],
+	],
+	
 	'core_account/nomad/p-pit-studies' => array(
 			'properties' => array(
 					'n_first' => 'firstName',
