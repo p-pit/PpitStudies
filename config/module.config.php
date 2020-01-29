@@ -4556,7 +4556,7 @@ table.note-report tr.period {
 		'dimensions' => array(),
 		'indicators' => array(),
 		'properties' => array(
-			'status', 'type', 'place_id', 'place_caption', 'account_id', 'n_fn',
+			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
 			'property_1', 'property_2', 'property_3', 'property_11', 'property_12',
 			'update_time',
