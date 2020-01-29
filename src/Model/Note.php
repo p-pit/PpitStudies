@@ -585,6 +585,7 @@ class Note
 
     public static function computeExamAverages($place_id, $school_year, $class, $level)
     {
+
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
 	    	->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')

@@ -747,14 +747,30 @@ class StudentController extends AbstractActionController
     			// Si l'évaluation existe déjà (même période, classe, matière, catégorie et date), les étudiants sélectionnés en action groupée sont ajoutés à cette évaluation uniquement s'ils n'y sont pas déjà affectés.
     			// Si un étudiant est sélectionné mais et déjà affecté à cette évaluation, il est écarté de la sélection et l'utilisateur est averti du rejet.
     
-    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', 'note', $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
+    			$previousNote = Note::retrieve($data['place_id'], 'evaluation', $type, $data['class'], $data['school_year'], $data['school_period'], $data['subject'], $data['level'], $data['date']);
     			if ($previousNote) $note = $previousNote; // Notifier que l'évaluation existe est n'accepter l'ajout que de nouveaux élèves sur l'évaluation existante
     			else $note->links = array();
-    
+
+    			// In the case of an exam, compute the average of all the note for the exam per class subjects and for all the selected students
+    			if ($type == 'exam') {
+    				$examAverages = Note::computeExamAverages($data['place_id'], $data['school_year'], $data['class'], $data['level']);
+    			}
+    			 
     			foreach ($accounts as $account_id => $account) {
     				$noteLink = NoteLink::instanciate($account->id, null);
     				$value = $request->getPost('value_'.$account->id);
     				if ($value == '') $value = null;
+
+    				// Set the exam average
+    			    if ($type == 'exam' && $value === null) {
+    					if (array_key_exists($account->id, $examAverages)) {
+							$value = $examAverages[$account->id]['global']['note'];
+							$audit = $examAverages[$account->id]['global']['notes'];
+						}
+    			    	else $value = null;
+    			    	if ($value !== null) $value = $value * $data['reference_value'] / 20;
+    				}
+
     				$mention = $request->getPost('mention_'.$account->id);
     				$assessment = $request->getPost('assessment_'.$account->id);
     				$audit = [];
