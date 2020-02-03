@@ -1139,21 +1139,13 @@ class StudentController extends AbstractActionController
     	$sum['group'] = 0;
     	$sum['individual'] = 0;
     	$sum['total_presence'] = 0;
-    	$sum['health_absence'] = 0;
-    	$sum['vacation_absence'] = 0;
-    	$sum['necessity_absence'] = 0;
-    	$sum['business_absence'] = 0;
-    	$sum['other_absence'] = 0;
+		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $sum[$motiveId] = 0;
     	$sum['total_absence'] = 0;
     	foreach ($months as $month_id => $month) {
     		$month['period'] = $context->localize(['01' => ['default' => 'Janvier'], '02' => ['default' => 'Février'], '03' => ['default' => 'Mars'], '04' => ['default' => 'Avril'], '05' => ['default' => 'Mai'], '06' => ['default' => 'Juin'], '07' => ['default' => 'Juillet'], '08' => ['default' => 'Août'], '09' => ['default' => 'Septembre'], '10' => ['default' => 'Octobre'], '11' => ['default' => 'Novembre'], '12' => ['default' => 'Décembre']][substr($month_id, 5, 2)]) . ' ' . substr($month_id, 0, 4);
     		$month['group'] = 0;
     		$month['individual'] = 0;
-    		$month['health_absence'] = 0;
-    		$month['vacation_absence'] = 0;
-    		$month['necessity_absence'] = 0;
-    		$month['business_absence'] = 0;
-    		$month['other_absence'] = 0;
+			foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $month[$motiveId] = 0;
     			
     		// Sum the attendance
     		foreach ($month['attendances'] as $attendance) {
@@ -1163,11 +1155,15 @@ class StudentController extends AbstractActionController
     
     		// Sum the absences
     		foreach ($month['absences'] as $absence) {
-    			if ($absence['motive'] == 'medical') $month['health_absence'] += $absence['duration'];
-    			else $month['other_absence'] += $absence['duration'];
+    			foreach ($template['data']['absenceMotives'] as $motiveId => $sourceMotives) {
+    				foreach ($sourceMotives as $sourceMotive) {
+		    			if ($absence['motive'] == $sourceMotive) $month[$motiveId] += $absence['duration'];
+    				}
+    			}
     		}
-    		$month['total_absence'] = $month['health_absence'] + $month['vacation_absence'] + $month['necessity_absence'] + $month['business_absence'] + $month['other_absence'];
-    
+    		$month['total_absence'] = 0;
+    		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $month['total_absence'] += $month[$motiveId];
+    		
     		// Subtract the cumulative absence time from the attendance
     		if ($month['group'] > $month['total_absence']) $month['group'] -= $month['total_absence'];
     		if ($month['total_presence'] > $month['total_absence']) $month['total_presence'] -= $month['total_absence'];
@@ -1175,19 +1171,16 @@ class StudentController extends AbstractActionController
     		// Compute the sums
     		$sum['group'] += $month['group'];
     		$sum['total_presence'] += $month['total_presence'];
-    		$sum['health_absence'] += $month['health_absence'];
-    		$sum['other_absence'] += $month['other_absence'];
+    		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $sum[$motiveId] += $month[$motiveId];
     		$sum['total_absence'] += $month['total_absence'];
     
     		// Convert all the time values to hh:mm format
     		$month['group'] = ((int) ($month['group'] / 60)) . 'h' . sprintf('%02u', $month['group'] % 60) . 'mn';
     		$month['individual'] = ((int) ($month['individual'] / 60)) . 'h' . sprintf('%02u', $month['individual'] % 60) . 'mn';
     		$month['total_presence'] = ((int) ($month['total_presence'] / 60)) . 'h' . sprintf('%02u', $month['total_presence'] % 60) . 'mn';
-    		$month['health_absence'] = ((int) ($month['health_absence'] / 60)) . 'h' . sprintf('%02u', $month['health_absence'] % 60) . 'mn';
-    		$month['vacation_absence'] = ((int) ($month['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $month['vacation_absence'] % 60) . 'mn';
-    		$month['necessity_absence'] = ((int) ($month['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $month['necessity_absence'] % 60) . 'mn';
-    		$month['business_absence'] = ((int) ($month['business_absence'] / 60)) . 'h' . sprintf('%02u', $month['business_absence'] % 60) . 'mn';
-    		$month['other_absence'] = ((int) ($month['other_absence'] / 60)) . 'h' . sprintf('%02u', $month['other_absence'] % 60) . 'mn';
+    		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) {
+    			$month[$motiveId] = ((int) ($month[$motiveId] / 60)) . 'h' . sprintf('%02u', $month[$motiveId] % 60) . 'mn';
+    		}
     		$month['total_absence'] = ((int) ($month['total_absence'] / 60)) . 'h' . sprintf('%02u', $month['total_absence'] % 60) . 'mn';
     		$monthsCopy[] = $month;
     	}
@@ -1197,11 +1190,9 @@ class StudentController extends AbstractActionController
     	$sum['group'] = ((int) ($sum['group'] / 60)) . 'h' . sprintf('%02u', $sum['group'] % 60) . 'mn';
     	$sum['individual'] = ((int) ($sum['individual'] / 60)) . 'h' . sprintf('%02u', $sum['individual'] % 60) . 'mn';
     	$sum['total_presence'] = ((int) ($sum['total_presence'] / 60)) . 'h' . sprintf('%02u', $sum['total_presence'] % 60) . 'mn';
-    	$sum['health_absence'] = ((int) ($sum['health_absence'] / 60)) . 'h' . sprintf('%02u', $sum['health_absence'] % 60) . 'mn';
-    	$sum['vacation_absence'] = ((int) ($sum['vacation_absence'] / 60)) . 'h' . sprintf('%02u', $sum['vacation_absence'] % 60) . 'mn';
-    	$sum['necessity_absence'] = ((int) ($sum['necessity_absence'] / 60)) . 'h' . sprintf('%02u', $sum['necessity_absence'] % 60) . 'mn';
-    	$sum['business_absence'] = ((int) ($sum['business_absence'] / 60)) . 'h' . sprintf('%02u', $sum['business_absence'] % 60) . 'mn';
-    	$sum['other_absence'] = ((int) ($sum['other_absence'] / 60)) . 'h' . sprintf('%02u', $sum['other_absence'] % 60) . 'mn';
+    	foreach ($template['data']['absenceMotives'] as $motiveId => $unused) {
+	    	$sum[$motiveId] = ((int) ($sum[$motiveId] / 60)) . 'h' . sprintf('%02u', $sum[$motiveId] % 60) . 'mn';
+    	}
     	$sum['total_absence'] = ((int) ($sum['total_absence'] / 60)) . 'h' . sprintf('%02u', $sum['total_absence'] % 60) . 'mn';
     
     	// Determine the addressee

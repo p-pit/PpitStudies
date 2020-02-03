@@ -12,6 +12,15 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 	'commitments/message/p-pit-studies/attendance' => [
 		'name' => ['default' => 'Attestation de présence'],
 		'route' => 'student/generateAttendance',
+		'data' => [
+			'absenceMotives' => [
+				'health_absence' => ['medical'], 
+				'vacation_absence' => [], 
+				'necessity_absence' => [], 
+				'business_absence' => [], 
+				'other_absence' => ['training', 'competition', 'spectacle', 'family', 'unjustified', 'repetition', 'exclusion', 'other'],
+			],
+		],
 		'style' => ['default' => '
 			<style>
 			.table {
