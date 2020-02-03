@@ -1114,7 +1114,6 @@ class StudentController extends AbstractActionController
 
     	// Complete the absence cumul by month from the absences generated from the attendance
     	$absences = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
-    	
     	foreach($absences as $absence) {
     		if ($absence->begin_date >= $begin && $absence->end_date <= $end) {
     			$key = substr($absence->begin_date, 0, 7);
@@ -1122,14 +1121,14 @@ class StudentController extends AbstractActionController
     				$months[$key] = ['attendances' => [], 'absences' => [], 'cumulativeDuration' => 0];
     			}
     			if ($absence->end_time > $absence->begin_time) {
-					$startHour = (int) substr($absence->begin_time, 0, 2);
+    				$startHour = (int) substr($absence->begin_time, 0, 2);
 					$startMin = (int) substr($absence->begin_time, 3, 2);
-					$start = $startHour * 60 + $startMin;
+					$s = $startHour * 60 + $startMin;
 					$endHour = (int) substr($absence->end_time, 0, 2);
 					$endMin = (int) substr($absence->end_time, 3, 2);
-					$end = $endHour * 60 + $endMin;
-	    			$months[$key]['absences'][] = ['duration' => $end - $start, 'motive' => $absence->property_12];
-    				$months[$key]['cumulativeDuration'] += $end - $start;
+					$e = $endHour * 60 + $endMin;
+	    			$months[$key]['absences'][] = ['duration' => $e - $s, 'motive' => $absence->property_12];
+    				$months[$key]['cumulativeDuration'] += $e - $s;
     			}
     		}
     	}
@@ -1157,7 +1156,7 @@ class StudentController extends AbstractActionController
     		foreach ($month['absences'] as $absence) {
     			foreach ($template['data']['absenceMotives'] as $motiveId => $sourceMotives) {
     				foreach ($sourceMotives as $sourceMotive) {
-		    			if ($absence['motive'] == $sourceMotive) $month[$motiveId] += $absence['duration'];
+    					if ($absence['motive'] == $sourceMotive) $month[$motiveId] += $absence['duration'];
     				}
     			}
     		}
@@ -1185,7 +1184,7 @@ class StudentController extends AbstractActionController
     		$monthsCopy[] = $month;
     	}
     	$months = $monthsCopy;
-    
+
     	// Convert all the summed time values to hh:mm format
     	$sum['group'] = ((int) ($sum['group'] / 60)) . 'h' . sprintf('%02u', $sum['group'] % 60) . 'mn';
     	$sum['individual'] = ((int) ($sum['individual'] / 60)) . 'h' . sprintf('%02u', $sum['individual'] % 60) . 'mn';
