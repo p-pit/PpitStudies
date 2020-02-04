@@ -103,6 +103,7 @@ echo $this->partial('/partials/check-update-properties', array('entity' => 'Note
 function connectNoteUpdateForm(id, action)
 {
 	$('#input_date').datepicker();
+    $('#input_target_date').datepicker();
 	var form = document.getElementById('ppit-form');
 	form.onsubmit = function(event) {
 		
@@ -169,20 +170,20 @@ function getNoteUpdate(id, action) {
                 getDocumentSelect('binary', 'studies', 'document');
             });
 			
-			if ($('#type').val() != 'todo-work') $('#input_target_date_group').hide();
+//			if ($('#type').val() != 'todo-work') $('#input_target_date_group').hide();
 			if (action == 'update') {
 				CKEDITOR.replace('observations');
 				$('#type').change(function () { 
 					if ($('#type').val() == 'done-work') {
-						$('#input_target_date_group').hide();
+//						$('#input_target_date_group').hide();
 						$('#observations_group').css('background-color', 'LightGreen');
 					}
 					else if ($('#type').val() == 'todo-work') {
-						$('#input_target_date_group').show();
+//						$('#input_target_date_group').show();
 						$('#observations_group').css('background-color', 'LightSalmon');
 					}
 					else {
-						$('#input_target_date_group').show();
+//						$('#input_target_date_group').show();
 						$('#observations_group').css('background-color', 'LightBlue');
 					}
 				});

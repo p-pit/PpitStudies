@@ -9,34 +9,36 @@
 
 define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 
+	'commitments/message/p-pit-studies/attendance/data' => [
+		'absenceMotives' => [
+			'health_absence' => ['medical'],
+			'vacation_absence' => [],
+			'necessity_absence' => [],
+			'business_absence' => ['enterprise'],
+			'other_absence' => ['unjustified', 'other'],
+		],
+	],
+	
 	'commitments/message/p-pit-studies/attendance' => [
 		'name' => ['default' => 'Attestation de présence'],
 		'route' => 'student/generateAttendance',
-		'data' => [
-			'absenceMotives' => [
-				'medical' => ['medical'], 
-				'enterprise' => ['enterprise'], 
-				'unjustified' => ['unjustified'], 
-				'other' => ['other'], 
-			],
-		],
 		'style' => ['default' => '
-			<style>
-			.table {
-	    		font-size: 7;
-				padding-top: 10;
-				padding-right: 5;
-				padding-bottom: 10;
-				padding-left: 5;
-			}
-			.text-center {
-				text-align: center;
-			}
-			.text-justify{
-				text-align: justify;
-			}
-			</style>
-		'],
+				<style>
+				.table {
+		    		font-size: 7;
+					padding-top: 10;
+					padding-right: 5;
+					padding-bottom: 10;
+					padding-left: 5;
+				}
+				.text-center {
+					text-align: center;
+				}
+				.text-justify{
+					text-align: justify;
+				}
+				</style>
+			'],
 		'sections' => [
 			'header' => [
 				'class' => 'header',
@@ -121,37 +123,46 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 						'class' => 'text-justify',
 						'style' => 'border: 1px solid black;',
 						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
-						'header' => ['default' => '<strong>Raison médicale</strong>'],
+						'header' => ['default' => '<strong>Absences justifiées pour maladie</strong>'],
 						'label' => ['default' => '%s'],
-						'params' => ['month:medical'],
-						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:medical']],
+						'params' => ['month:health_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:health_absence']],
 					],
 					[
 						'class' => 'text-justify',
 						'style' => 'border: 1px solid black;',
 						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
-						'header' => ['default' => '<strong>Présence entreprise</strong>'],
+						'header' => ['default' => '<strong>Congés payés</strong>'],
 						'label' => ['default' => '%s'],
-						'params' => ['month:enterprise'],
-						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:enterprise']],
+						'params' => ['month:vacation_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:vacation_absence']],
 					],
 					[
 						'class' => 'text-justify',
 						'style' => 'border: 1px solid black;',
 						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
-						'header' => ['default' => '<strong>Absence non justifiée</strong>'],
+						'header' => ['default' => '<strong>Cas de<br>force majeure</strong>'],
 						'label' => ['default' => '%s'],
-						'params' => ['month:unjustified'],
-						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:unjustified']],
+						'params' => ['month:necessity_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:necessity_absence']],
 					],
 					[
 						'class' => 'text-justify',
 						'style' => 'border: 1px solid black;',
 						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
-						'header' => ['default' => '<strong>Autre justificatif</strong>'],
+						'header' => ['default' => '<strong>Demande<br>de<br>l’entreprise</strong>'],
 						'label' => ['default' => '%s'],
-						'params' => ['month:other'],
-						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:other']],
+						'params' => ['month:business_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:business_absence']],
+					],
+					[
+						'class' => 'text-justify',
+						'style' => 'border: 1px solid black;',
+						'group_header' => ['default' => '<strong>Heures d’absences</strong>'],
+						'header' => ['default' => '<strong>Autres absences *</strong>'],
+						'label' => ['default' => '%s'],
+						'params' => ['month:other_absence'],
+						'sum' => ['label' => ['default' => '<strong>%s</strong>'], 'params' => ['sum:other_absence']],
 					],
 					[
 						'class' => 'text-justify',

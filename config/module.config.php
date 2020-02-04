@@ -3775,9 +3775,9 @@ table.note-report td {
 	'student/property/school_period' => array(
 			'type' => 'select',
 			'modalities' => array(
-					'Q1' => array('en_US' => 'Quarter 1', 'fr_FR' => '1er trimestre'),
-					'Q2' => array('en_US' => 'Quarter 2', 'fr_FR' => '2e trimestre'),
-					'Q3' => array('en_US' => 'Quarter 3', 'fr_FR' => '3e trimestre'),
+					'Q1' => array('en_US' => 'Quarter 1', 'fr_FR' => '1ère période'),
+					'Q2' => array('en_US' => 'Quarter 2', 'fr_FR' => '2ème période'),
+					'Q3' => array('en_US' => 'Quarter 3', 'fr_FR' => '3ème période'),
 			),
 			'labels' => array(
 					'en_US' => 'Period',

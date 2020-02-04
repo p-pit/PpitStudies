@@ -1070,6 +1070,8 @@ class StudentController extends AbstractActionController
     	if ($groups) $groups = explode(',', $groups);
     
     	$template = $context->getConfig('commitments/message/' . $account->type . '/attendance');
+    	$data = $context->getConfig('commitments/message/' . $account->type . '/attendance/data');
+
     	$addressee = $this->params()->fromQuery('addressee');
     	if ($addressee) $addressee = Vcard::get($addressee);
     		
@@ -1138,13 +1140,13 @@ class StudentController extends AbstractActionController
     	$sum['group'] = 0;
     	$sum['individual'] = 0;
     	$sum['total_presence'] = 0;
-		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $sum[$motiveId] = 0;
+		foreach ($data['absenceMotives'] as $motiveId => $unused) $sum[$motiveId] = 0;
     	$sum['total_absence'] = 0;
     	foreach ($months as $month_id => $month) {
     		$month['period'] = $context->localize(['01' => ['default' => 'Janvier'], '02' => ['default' => 'Février'], '03' => ['default' => 'Mars'], '04' => ['default' => 'Avril'], '05' => ['default' => 'Mai'], '06' => ['default' => 'Juin'], '07' => ['default' => 'Juillet'], '08' => ['default' => 'Août'], '09' => ['default' => 'Septembre'], '10' => ['default' => 'Octobre'], '11' => ['default' => 'Novembre'], '12' => ['default' => 'Décembre']][substr($month_id, 5, 2)]) . ' ' . substr($month_id, 0, 4);
     		$month['group'] = 0;
     		$month['individual'] = 0;
-			foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $month[$motiveId] = 0;
+			foreach ($data['absenceMotives'] as $motiveId => $unused) $month[$motiveId] = 0;
     			
     		// Sum the attendance
     		foreach ($month['attendances'] as $attendance) {
@@ -1154,14 +1156,14 @@ class StudentController extends AbstractActionController
     
     		// Sum the absences
     		foreach ($month['absences'] as $absence) {
-    			foreach ($template['data']['absenceMotives'] as $motiveId => $sourceMotives) {
+    			foreach ($data['absenceMotives'] as $motiveId => $sourceMotives) {
     				foreach ($sourceMotives as $sourceMotive) {
     					if ($absence['motive'] == $sourceMotive) $month[$motiveId] += $absence['duration'];
     				}
     			}
     		}
     		$month['total_absence'] = 0;
-    		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $month['total_absence'] += $month[$motiveId];
+    		foreach ($data['absenceMotives'] as $motiveId => $unused) $month['total_absence'] += $month[$motiveId];
     		
     		// Subtract the cumulative absence time from the attendance
     		if ($month['group'] > $month['total_absence']) $month['group'] -= $month['total_absence'];
@@ -1170,14 +1172,14 @@ class StudentController extends AbstractActionController
     		// Compute the sums
     		$sum['group'] += $month['group'];
     		$sum['total_presence'] += $month['total_presence'];
-    		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) $sum[$motiveId] += $month[$motiveId];
+    		foreach ($data['absenceMotives'] as $motiveId => $unused) $sum[$motiveId] += $month[$motiveId];
     		$sum['total_absence'] += $month['total_absence'];
     
     		// Convert all the time values to hh:mm format
     		$month['group'] = ((int) ($month['group'] / 60)) . 'h' . sprintf('%02u', $month['group'] % 60) . 'mn';
     		$month['individual'] = ((int) ($month['individual'] / 60)) . 'h' . sprintf('%02u', $month['individual'] % 60) . 'mn';
     		$month['total_presence'] = ((int) ($month['total_presence'] / 60)) . 'h' . sprintf('%02u', $month['total_presence'] % 60) . 'mn';
-    		foreach ($template['data']['absenceMotives'] as $motiveId => $unused) {
+    		foreach ($data['absenceMotives'] as $motiveId => $unused) {
     			$month[$motiveId] = ((int) ($month[$motiveId] / 60)) . 'h' . sprintf('%02u', $month[$motiveId] % 60) . 'mn';
     		}
     		$month['total_absence'] = ((int) ($month['total_absence'] / 60)) . 'h' . sprintf('%02u', $month['total_absence'] % 60) . 'mn';
@@ -1189,7 +1191,7 @@ class StudentController extends AbstractActionController
     	$sum['group'] = ((int) ($sum['group'] / 60)) . 'h' . sprintf('%02u', $sum['group'] % 60) . 'mn';
     	$sum['individual'] = ((int) ($sum['individual'] / 60)) . 'h' . sprintf('%02u', $sum['individual'] % 60) . 'mn';
     	$sum['total_presence'] = ((int) ($sum['total_presence'] / 60)) . 'h' . sprintf('%02u', $sum['total_presence'] % 60) . 'mn';
-    	foreach ($template['data']['absenceMotives'] as $motiveId => $unused) {
+    	foreach ($data['absenceMotives'] as $motiveId => $unused) {
 	    	$sum[$motiveId] = ((int) ($sum[$motiveId] / 60)) . 'h' . sprintf('%02u', $sum[$motiveId] % 60) . 'mn';
     	}
     	$sum['total_absence'] = ((int) ($sum['total_absence'] / 60)) . 'h' . sprintf('%02u', $sum['total_absence'] % 60) . 'mn';
@@ -1368,7 +1370,7 @@ class StudentController extends AbstractActionController
     	$place = Place::get($account->place_id);
     	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
     	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
-    	 
+
     	// Add the presentation template
     	$attendance = $this->generateAttendance($account, $start_date, $end_date, $place);
     
