@@ -167,7 +167,7 @@ class StudentController extends AbstractActionController
     	// Retrieve the global average if exists
     	$current_school_year = $context->getConfig('student/property/school_year/default');
     	$school_periods = $place->getConfig('school_periods');
-    	$current_school_period = 'Q1'; //$context->getCurrentPeriod($school_periods);
+    	$current_school_period = $context->getCurrentPeriod($school_periods);
     	$cursor = NoteLink::getList('report', ['category' => 'evaluation', 'subject' => 'global', 'school_year' => $current_school_year, 'school_period' => $current_school_period, 'account_id' => $profile->id], 'id', 'ASC', $mode = 'search');
     	foreach ($cursor as $report) $averageNote = $report; // Should be unique but to keep only the last one
     	$global_average = (isset($averageNote) && $averageNote) ? $averageNote->value : null;
@@ -1198,6 +1198,12 @@ class StudentController extends AbstractActionController
     
     	// Determine the addressee
     	if (!$addressee) {
+    		if ($account->invoice_account) $message['addressee_name'] = $account->invoice_account->name;
+    		$invoiceAccount = Account::get($account->invoice_account_id);
+    		$addressee = $invoiceAccount->contact_1;
+    	}
+    	
+    	if (!$addressee) {
     		if ($account->name != $account->n_last . ', ' . $account->n_first) $message['addressee_name'] = $account->name;
     		if ($account->contact_1_status == 'invoice') $addressee = $account->contact_1;
     		elseif ($account->contact_2_status == 'invoice') $addressee = $account->contact_2;
@@ -1401,7 +1407,14 @@ class StudentController extends AbstractActionController
     	 
     	// Add the presentation template
     	$attendance = $this->generateAttendance($account, $start_date, $end_date, $place);
-    
+
+    	foreach ($attendance['data'] as $propertyId => $unused) {
+    		$pos = strpos($propertyId, ':');
+    		if ($pos > 0) $recodedId = substr($propertyId, 0, $pos) . '-' . substr($propertyId, $pos + 1);
+    		else $recodedId = $propertyId;
+    		if ($this->params()->fromQuery($recodedId)) $attendance['data'][$propertyId] = $this->params()->fromQuery($recodedId);
+	    }
+	     
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     

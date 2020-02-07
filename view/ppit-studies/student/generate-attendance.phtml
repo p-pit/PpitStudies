@@ -1,4 +1,7 @@
+<input type="hidden" id="structured-document-download-href" value="<?php echo $this->url('student/downloadAttendance', ['account_id' => $account_id, 'start_date' => $start_date, 'end_date' => $end_date]) ?>" />
 
-<a target="_blank" href="<?php echo $this->url('student/downloadAttendance', ['account_id' => $account_id, 'start_date' => $start_date, 'end_date' => $end_date]) ?>"><?php echo $this->translate('Download the PDF document', 'ppit-commitment', $context->getLocale()) ?></a>
+<a id="structured-document-download-anchor" role="button">
+  <?php echo $this->translate('Download the PDF document', 'ppit-commitment', $context->getLocale()) ?>
+</a>
 
 <?php echo $html ?>
