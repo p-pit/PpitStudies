@@ -1690,7 +1690,7 @@ class StudentController extends AbstractActionController
 				$end = $endHour * 60 + $endMin;
 	    		$cumulativeAbsence += $end - $start;
 	    		$absenceCount++;
-	    		$absLates[] = ['absence', 'subject' => $absence->property_3, 'begin_date' => $absence->begin_date, 'end_date' => $absence->end_date, 'duration' => $end - $start, 'motive' => $absence->property_12, 'observations' => ''];
+	    		$absLates[] = ['category' => 'absence', 'subject' => $absence->property_3, 'begin_date' => $absence->begin_date, 'end_date' => $absence->end_date, 'duration' => $end - $start, 'motive' => $absence->property_12, 'observations' => ''];
     		}
     	}
     	 
