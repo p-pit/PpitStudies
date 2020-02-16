@@ -2743,7 +2743,7 @@ return array_merge(
 	
 	'core_account/p-pit-studies' => array(
 		'properties' => array(
-			'title_1', 'title_2', 'title_3', 'status', 'place_id', 'identifier', 'name', 'photo_link_id', 'basket',
+			'title_1', 'title_2', 'title_3', 'status', 'place_id', 'owner_id', 'identifier', 'name', 'photo_link_id', 'basket',
 			'contact_1_id', 'n_title', 'n_first', 'n_last', 'n_fn', 'email', 'tel_work', 'tel_cell',
 			'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'birth_date', 'gender', 'nationality',
 			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
@@ -2770,6 +2770,7 @@ return array_merge(
 			'properties' => array(
 					'status' => ['multiple' => true],
 					'place_id' => ['multiple' => true],
+					'owner_id' => ['multiple' => true],
 					'property_16' => ['multiple' => true],
 					'origine' => ['multiple' => true],
 					'opening_date' => [],
@@ -2874,6 +2875,7 @@ return array_merge(
 	),
 	'core_account/update/p-pit-studies' => array(
 			'place_id' => array('mandatory' => true),
+			'owner_id' => [],
 			'status' => array('mandatory' => true),
 			'identifier' => array('mandatory' => false),
 			'name' => array('mandatory' => false),
