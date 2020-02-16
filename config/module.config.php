@@ -4549,7 +4549,8 @@ table.note-report tr.period {
 	),
 	
 	'event/absence/property/property_1' => array('definition' => 'student/property/school_year'),
-	'event/absence/property/property_2' => array('definition' => 'student/property/school_period'),
+//	'event/absence/property/property_2' => array('definition' => 'student/property/school_period'),
+	'event/absence/property/property_2' => array('definition' => 'student/property/class'),
 	'event/absence/property/property_3' => array('definition' => 'student/property/school_subject'),
 	
 	// Properties starting from property_11 are reserved for absence specific data
