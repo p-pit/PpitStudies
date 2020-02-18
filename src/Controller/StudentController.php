@@ -1457,7 +1457,7 @@ class StudentController extends AbstractActionController
     		$periods[$key][] = ['category' => $absLate->category, 'subject' => $absLate->subject, 'begin_date' => $absLate->begin_date, 'end_date' => $absLate->end_date, 'motive' => $absLate->motive, 'observations' => $absLate->observations];
     	}
     	
-    	$absences = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
+    	$absences = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default')), '+begin_date', null);
     	foreach($absences as $absence) {
     		$key = $absence->property_1 . '.' . '';
     		if (!array_key_exists($key, $periods)) $periods[$key] = array();

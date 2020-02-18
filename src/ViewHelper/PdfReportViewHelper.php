@@ -137,7 +137,9 @@ class PdfReportViewHelper
 //    	$pdf->SetDrawColor(128, 0, 0);
     	$pdf->SetLineWidth(0.2);
     	$pdf->SetFont('', '', 9);
-    	foreach($context->getConfig('student/report/description') as $line) {
+
+		$class = current(($averages) ? $averages : $notes)->class;
+		foreach($context->getConfig('student/report/description') as $line) {
     		$arguments = array();
     		foreach($line['params'] as $propertyId) {
     			if ($propertyId == 'date') $arguments[] = $context->decodeDate(date('Y-m-d'));
@@ -147,7 +149,7 @@ class PdfReportViewHelper
 					$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
 					if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 					if ($propertyId == 'name') $arguments[] = $account->name;
-					elseif ($propertyId == 'property_7' && ($averages || $notes)) $arguments[] = $context->localize($property['modalities'][current(($averages) ? $averages : $notes)->class]);
+					elseif ($propertyId == 'property_7' && $class) $arguments[] = $context->localize($property['modalities'][$class]);
 					elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
 	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $context->localize($property['modalities'][$account->properties[$propertyId]]);
