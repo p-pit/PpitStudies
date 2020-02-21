@@ -13,24 +13,21 @@ define('CORE_ACCOUNT_MESSAGE_TEACHER', [
 		'name' => ['default' => 'Récapitulatif par salarié puis type de pointage'],
 		'route' => 'event/timeSheet',
 		'style' => ['default' => '
-			<style>
-			table {
-				border-collapse: collapse;
-			}
-			p {
-				font-size: 10;
-			}
-			.addressee {
-				font-weight: bold;
-				font-size: 12;
-			}
-			.text-center {
-				text-align: center;
-			}
-			.text-justify{
-				text-align: justify;
-			}
-			</style>
+<style>
+.table {
+	font-size: 7;
+	padding-top: 10;
+	padding-right: 5;
+	padding-bottom: 10;
+	padding-left: 5;
+}
+.text-center {
+	text-align: center;
+}
+.text-justify{
+	text-align: justify;
+}
+</style>
 		'],
 		'sections' => [
 			'header' => [
@@ -39,9 +36,9 @@ define('CORE_ACCOUNT_MESSAGE_TEACHER', [
 				],
 			],
 			'title' => [
-				'class' => 'box-title',
+				'class' => '',
 				'paragraphs' => [
-					['type' => 'h1', 'class' => 'text-center', 'label' => ['default' => 'Récapitulatif par salarié puis type de pointage']],
+					['type' => 'h1', 'class' => 'text-center', 'label' => ['default' => 'Récapitulatif par salarié']],
 				],
 			],
 			'body' => [
@@ -74,15 +71,51 @@ define('CORE_ACCOUNT_MESSAGE_TEACHER', [
 				'paragraphs' => [
 					[
 						'class' => 'text-justify',
+						'style' => 'border: 1px solid black; width: 10%%; text-align:center',
 						'header' => ['default' => '<strong>Date</strong>'],
 						'label' => ['default' => '<span>%s</span>'],
 						'params' => ['event:begin_date'],
+						'sum' => ['style' => 'text-align:center'],
 					],
 					[
 						'class' => 'text-justify',
-						'header' => ['default' => '<strong>Code analytique</strong>'],
+						'style' => 'border: 1px solid black; width: 30%%',
+						'header' => ['default' => '<strong>Action</strong>'],
+						'label' => ['default' => '<span>%s</span>'],
+						'params' => ['event:property_2'],
+						'sum' => ['style' => 'text-align:center'],
+					],
+					[
+						'class' => 'text-justify',
+						'style' => 'border: 1px solid black; width: 30%%',
+						'header' => ['default' => '<strong>Module/matière</strong>'],
 						'label' => ['default' => '<span>%s</span>'],
 						'params' => ['event:property_3'],
+						'sum' => ['style' => 'text-align: right', 'label' => ['default' => '<strong>Total %s</strong>'], 'params' => ['month']],
+					],
+					[
+						'class' => 'text-justify',
+						'style' => 'border: 1px solid black; width: 10%%; text-align:center',
+						'header' => ['default' => '<strong>Début</strong>'],
+						'label' => ['default' => '<span>%s</span>'],
+						'params' => ['event:begin_time'],
+						'sum' => ['style' => 'text-align:center'],
+					],
+					[
+						'class' => 'text-justify',
+						'style' => 'border: 1px solid black; width: 10%%; text-align:center',
+						'header' => ['default' => '<strong>Durée</strong>'],
+						'label' => ['default' => '<span>%s</span>'],
+						'params' => ['event:duration'],
+						'sum' => ['style' => 'text-align:center', 'label' => ['default' => '<strong>%s</strong>'], 'params' => ['time_sum']],
+					],
+					[
+						'class' => 'text-justify',
+						'style' => 'border: 1px solid black; width: 10%%; text-align:center',
+						'header' => ['default' => '<strong>Fin</strong>'],
+						'label' => ['default' => '<span>%s</span>'],
+						'params' => ['event:end_time'],
+						'sum' => ['style' => 'text-align:center'],
 					],
 				],
 			],

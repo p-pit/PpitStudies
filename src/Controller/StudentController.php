@@ -1198,9 +1198,11 @@ class StudentController extends AbstractActionController
     
     	// Determine the addressee
     	if (!$addressee) {
-    		if ($account->invoice_account) $message['addressee_name'] = $account->invoice_account->name;
-    		$invoiceAccount = Account::get($account->invoice_account_id);
-    		$addressee = $invoiceAccount->contact_1;
+    		if ($account->invoice_account) {
+    			$message['addressee_name'] = $account->invoice_account->name;
+    			$addressee = $invoiceAccount->contact_1;
+    		}
+//    		$invoiceAccount = Account::get($account->invoice_account_id);
     	}
     	
     	if (!$addressee) {
