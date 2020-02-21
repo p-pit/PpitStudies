@@ -10,7 +10,7 @@
 define('CORE_ACCOUNT_MESSAGE_TEACHER', [
 
 	'commitments/message/teacher/time_sheet' => [
-		'name' => ['default' => 'Récapitulatif par salarié'],
+		'name' => ['default' => 'Relevé mensuel enseignant'],
 		'route' => 'event/timeSheet',
 		'style' => ['default' => '
 <style>
@@ -38,7 +38,7 @@ define('CORE_ACCOUNT_MESSAGE_TEACHER', [
 			'title' => [
 				'class' => '',
 				'paragraphs' => [
-					['type' => 'h1', 'class' => 'text-center', 'label' => ['default' => 'Récapitulatif par salarié']],
+					['type' => 'h1', 'class' => 'text-center', 'label' => ['default' => 'Relevé mensuel enseignant']],
 				],
 			],
 			'body' => [
