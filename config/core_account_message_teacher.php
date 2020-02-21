@@ -10,7 +10,7 @@
 define('CORE_ACCOUNT_MESSAGE_TEACHER', [
 
 	'commitments/message/teacher/time_sheet' => [
-		'name' => ['default' => 'Récapitulatif par salarié puis type de pointage'],
+		'name' => ['default' => 'Récapitulatif par salarié'],
 		'route' => 'event/timeSheet',
 		'style' => ['default' => '
 <style>
