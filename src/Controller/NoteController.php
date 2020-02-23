@@ -60,7 +60,9 @@ class NoteController extends AbstractActionController
 		
 		return new ViewModel(array(
     		'context' => $context,
-    	));
+			'tab' => $tab,
+			'app' => $app,
+		));
     }
     
     /**
@@ -107,7 +109,9 @@ class NoteController extends AbstractActionController
 		
 		return new ViewModel(array(
     		'context' => $context,
-    	));
+			'tab' => $tab,
+			'app' => $app,
+		));
     }
     
     public function getFilters($category, $params)

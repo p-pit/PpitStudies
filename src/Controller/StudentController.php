@@ -69,9 +69,11 @@ class StudentController extends AbstractActionController
     	));
 
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getConfig(),
-    			'place' => $place,
+    		'context' => $context,
+			'config' => $context->getConfig(),
+    		'tab' => $tab,
+    		'app' => $app,
+    		'place' => $place,
     	));
 		return $view;
     }
@@ -111,9 +113,11 @@ class StudentController extends AbstractActionController
     	));
 
     	$view = new ViewModel(array(
-    			'context' => $context,
-    			'config' => $context->getConfig(),
-    			'place' => $place,
+    		'context' => $context,
+			'config' => $context->getConfig(),
+    		'tab' => $tab,
+    		'app' => $app,
+    		'place' => $place,
     	));
 		return $view;
     }

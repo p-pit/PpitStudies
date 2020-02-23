@@ -76,6 +76,8 @@ class AbsenceController extends AbstractActionController
     	 
     	return new ViewModel(array(
     		'context' => $context,
+    		'tab' => $tab,
+    		'app' => $app,
     	));
     }
     
