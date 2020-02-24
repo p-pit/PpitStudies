@@ -1242,7 +1242,7 @@ class NoteController extends AbstractActionController
 		    					}
 		    					
 		    					// Compute the new global average
-		    					$newGlobalAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class']);
+		    					$newGlobalAverages = Note::computePeriodAverages($data['place_id'], $note->school_year, $data['class'], $data['school_period']);
 		    					$report->id = null;
 		    					 
 		    					$previousReport = Note::retrieve($data['place_id'], 'evaluation', 'report', $data['class'], $note->school_year, $data['school_period'], 'global');

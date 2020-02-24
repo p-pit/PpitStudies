@@ -371,7 +371,7 @@ class NoteLink
     	$periodAverages = array();
     	foreach ($cursor as $noteLink) {
     		if ($noteLink->value !== null) {
-    			$periodAverages[] = array('reference_value' => ($noteLink->reference_value) ? $noteLink->reference_value : 20, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+    			$periodAverages[] = array('id' => $noteLink->id, 'reference_value' => ($noteLink->reference_value) ? $noteLink->reference_value : 20, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
     		}
     	}
     	$globalAverage = 0;

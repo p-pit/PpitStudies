@@ -489,7 +489,8 @@ class Note
     	$where->notEqualTo('student_note.status', 'deleted');
     	$where->notEqualTo('student_note_link.status', 'deleted');
     	$where->equalTo('category', 'evaluation');
-    	$where->equalTo('type', 'note');
+    	if ($subject == 'global') $where->equalTo('type', 'report');
+    	else $where->equalTo('type', 'note');
     	$where->equalTo('place_id', $place_id);
     	$where->equalTo('school_year', $school_year);
     	if ($class) $where->equalTo('class', $class);
@@ -504,7 +505,7 @@ class Note
     	$periodSubjectCategoryNotes = array();
     	foreach ($cursor as $noteLink) {
     		if ($noteLink->value !== null) {
-		    	$periodNotes[$noteLink->account_id][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
+		    	$periodNotes[$noteLink->account_id][] = array('id' => $noteLink->id, 'reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
 		    	$periodCategoryNotes[$noteLink->account_id][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
 		    	$periodSubjectNotes[$noteLink->account_id][$noteLink->subject][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
 		    	$periodSubjectCategoryNotes[$noteLink->account_id][$noteLink->subject][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
