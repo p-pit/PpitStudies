@@ -813,7 +813,7 @@ class NoteController extends AbstractActionController
 				else {
 					$teacher = $teachers[$myAccount->contact_1_id];
 					$teacherSubjects = ($teacher['property_5']) ? explode(',', $teacher['property_5']) : [];
-					if (array_key_exists($subjectId, $teacherSubjects)) $subjects[$subjectId] = $subject;
+					if (in_array($subjectId, $teacherSubjects)) $subjects[$subjectId] = $subject;
 					if (array_key_exists('subcategory', $subject) && in_array($subject['subcategory'], $teacher['competences'])) $subjects[$subjectId] = $subject;
 				}
 			}
