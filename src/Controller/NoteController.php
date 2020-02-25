@@ -810,7 +810,12 @@ class NoteController extends AbstractActionController
 		foreach ($place->getConfig('student/property/school_subject')['modalities'] as $subjectId => $subject) {
 			if (!array_key_exists('archive', $subject) || !$subject['archive']) {
 				if ($context->hasRole('manager')) $subjects[$subjectId] = $subject;
-				elseif (array_key_exists('subcategory', $subject) && in_array($subject['subcategory'], $teachers[$myAccount->contact_1_id]['competences'])) $subjects[$subjectId] = $subject;
+				else {
+					$teacher = $teachers[$myAccount->contact_1_id];
+					$teacherSubjects = ($teacher['property_5']) ? explode(',', $teacher['property_5']) : [];
+					if (array_key_exists($subjectId, $teacherSubjects)) $subjects[$subjectId] = $subject;
+					if (array_key_exists('subcategory', $subject) && in_array($subject['subcategory'], $teacher['competences'])) $subjects[$subjectId] = $subject;
+				}
 			}
 		}
 		$content['config'] = [];
