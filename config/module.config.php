@@ -1815,7 +1815,7 @@ return array_merge(
 
 	// Legal documents
 /*	
-	'commitment/message/p-pit-studies/attestation_fin_formation' => [
+	'commitments/message/p-pit-studies/attestation_fin_formation' => [
 		'name' => ['default' => 'Attestation de fin de formation'],
 		'header' => [
 			'class' => 'header',
@@ -1923,8 +1923,8 @@ return array_merge(
 		],
 	],
 
-	'commitment/message/p-pit-studies' => [
-		'commitment/message/p-pit-studies/attestation_fin_formation',
+	'commitments/message/p-pit-studies' => [
+		'commitments/message/p-pit-studies/attestation_fin_formation',
 	],*/
 	
 	// Account p-pit-studies

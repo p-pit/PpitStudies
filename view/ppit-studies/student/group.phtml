@@ -75,11 +75,13 @@
           <span class="fas fa-plus"></span>&nbsp;<?php echo $this->translate('Evaluation', 'ppit-studies', $context->getLocale()) ?>
         </a>
       </li>
+<?php if ($context->hasRole('admin')) : ?>
       <li class="nav-item">
-        <a class="nav-link action-btn" href="#" <?php if (!$context->hasRole('admin') && !$current_school_period) echo 'disabled' ?> id="evaluation-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
+        <a class="nav-link action-btn" href="#" id="evaluation-add-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale()) ?>">
           <?php echo $this->translate('Evaluation avant 2019-2020', 'ppit-studies', $context->getLocale()) ?>
         </a>
       </li>
+<?php endif;?>
     </ul>
 		</div>
 
