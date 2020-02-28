@@ -267,7 +267,9 @@ function showCalendar(route, target) {
       }
       $route = $this->url($tab['route'], $params);
       ?>
-showStatic('<?php echo $route ?>', '<?php echo $tabId ?>-panel');
+$('#' + '<?php echo $tabId ?>-tab').click(function () {
+	showStatic('<?php echo $route ?>', '<?php echo $tabId ?>-panel');
+});
     <?php elseif ($tab['type'] == 'calendar') : ?>
 showCalendar('<?php echo $this->url($tab['route'], array('id' => $profile->id)) ?>', '<?php echo $tabId ?>-panel');
 
