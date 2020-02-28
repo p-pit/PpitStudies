@@ -1124,11 +1124,13 @@ class StudentController extends AbstractActionController
 
     public function absenceV2Action()
     {
-    	// Retrieve the context
+    	// Retrieve the context and parameter values
     	$context = Context::getCurrent();
-    
     	$account_id = (int) $this->params()->fromRoute('account_id');
     	$account = Account::get($account_id);
+    	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
+    	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
+    	
     	$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'begin_date', 'DESC', 'search', null);
     	$absences = array();
     	$absenceCount = 0;
@@ -1148,14 +1150,14 @@ class StudentController extends AbstractActionController
     	}
     
     	$periods = array();
-    	$absLates = Absence::GetList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search', null);
+    	$absLates = Absence::GetList('schooling', ['account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_end_date' => $end_date], 'date', 'DESC', 'search', null);
     	foreach($absLates as $absLate) {
     		$key = $absLate->school_year . '.' . $absLate->school_period;
     		if (!array_key_exists($key, $periods)) $periods[$key] = array();
     		$periods[$key][] = ['category' => $absLate->category, 'subject' => $absLate->subject, 'begin_date' => $absLate->begin_date, 'end_date' => $absLate->end_date, 'motive' => $absLate->motive, 'observations' => $absLate->observations];
     	}
     	
-    	$absences = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default')), '+begin_date', null);
+    	$absences = Event::GetList('absence', ['account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_end_date' => $end_date], '+begin_date', null);
     	foreach($absences as $absence) {
     		$key = $absence->property_1 . '.' . '';
     		if (!array_key_exists($key, $periods)) $periods[$key] = array();
@@ -1169,6 +1171,8 @@ class StudentController extends AbstractActionController
     		'context' => $context,
     		'config' => $context->getconfig(),
     		'account' => $account,
+    		'start_date' => $start_date,
+    		'end_date' => $end_date,
     		'periods' => $periods,
     		'absenceCount' => $absenceCount,
     		'cumulativeAbsence' => $cumulativeAbsence,
@@ -1349,7 +1353,10 @@ class StudentController extends AbstractActionController
     		$school_period = $context->getCurrentPeriod($place->getConfig('school_periods'));
     	}*/
     	$level = $this->params()->fromRoute('level');
-    
+
+    	$start_date = $this->params()->fromQuery('start_date', $context->getConfig('student/property/school_year/start'));
+    	$end_date = $this->params()->fromQuery('end_date', $context->getConfig('student/property/school_year/end'));
+
     	$absences = array();
     	$latenesss = array();
     	$cumulativeAbsence = 0;
@@ -1359,7 +1366,7 @@ class StudentController extends AbstractActionController
     	$absLates = [];
 
     	// Retrieve the manual absences
-    	$filter = ['account_id' => $account_id, 'school_year' => $school_year];
+    	$filter = ['account_id' => $account_id, 'school_year' => $school_year, 'min_begin_date' => $start_date, 'max_end_date' => $end_date];
     	if ($school_period) $filter['school_period'] = $school_period;
     	$cursor = Absence::getList(null, $filter, 'date', 'DESC', 'search', null);
     	foreach ($cursor as $absLate) {
@@ -1377,7 +1384,7 @@ class StudentController extends AbstractActionController
     	}
     	
     	// Retrieve the absences from attendance sheet
-    	$cursor = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $school_year), '+begin_date', null);
+    	$cursor = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $school_year, 'min_begin_date' => $start_date, 'max_end_date' => $end_date), '+begin_date', null);
     	foreach ($cursor as $absence) {
     		if ($absence->end_time > $absence->begin_time) {
 				$startHour = (int) substr($absence->begin_time, 0, 2);

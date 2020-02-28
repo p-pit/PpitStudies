@@ -211,8 +211,14 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 			],
 		],
 	],
+
+	'commitments/message/p-pit-studies/absence' => [
+		'name' => ['default' => 'Relevé d’absences'],
+		'route' => 'student/absenceV2',
+	],
 	
 	'commitments/message/p-pit-studies' => [
 		'attendance',
+		'absence',
 	],
 ]);

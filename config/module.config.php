@@ -941,7 +941,7 @@ return array_merge(
 	       						'absenceV2' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/absence-v2[/:account_id]',
+        										'route' => '/absence-v2[/:account_id][/:start_date][/:end_date]',
         										'constraints' => array(
         												'account_id' => '[0-9]*',
         										),

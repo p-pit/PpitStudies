@@ -65,7 +65,7 @@ table.note-report tr.period {
 		<?php if ($school_period) echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
 	</h4>
 	<!--Text-->
-		<div><a href="<?php echo $this->url('student/download', $params) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+		<div><a href="<?php echo $this->url('student/download', $params, ['query' => ['start_date' => $start_date, 'end_date' => $end_date]]) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
 		<table class="table note-report">
 			<tr>
 				<th><?php echo $this->translate('Type', 'ppit-core', $context->getLocale()) ?></th>
