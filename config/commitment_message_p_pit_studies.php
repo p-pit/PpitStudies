@@ -669,6 +669,6 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 		'convocation_formation',
 		'attestation_entree_formation',
 		'attestation_fin_formation',
-		'attendance',
+//		'attendance',
 	],
 ]);

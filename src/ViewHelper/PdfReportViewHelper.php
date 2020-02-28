@@ -138,7 +138,8 @@ class PdfReportViewHelper
     	$pdf->SetLineWidth(0.2);
     	$pdf->SetFont('', '', 9);
 
-		$class = current(($averages) ? $averages : $notes)->class;
+    	if (!$averages && !$notes) $class = '';
+		else $class = current(($averages) ? $averages : $notes)->class;
 		foreach($context->getConfig('student/report/description') as $line) {
     		$arguments = array();
     		foreach($line['params'] as $propertyId) {
