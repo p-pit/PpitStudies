@@ -4550,6 +4550,7 @@ table.note-report tr.period {
 		),
 	),
 	
+	'event/absence/property/account_groups' => array('definition' => 'core_account/generic/property/groups'),
 	'event/absence/property/property_1' => array('definition' => 'student/property/school_year'),
 //	'event/absence/property/property_2' => array('definition' => 'student/property/school_period'),
 	'event/absence/property/property_2' => array('definition' => 'student/property/class'),
@@ -4586,15 +4587,17 @@ table.note-report tr.period {
 			'fr_FR' => 'Motif',
 		),
 	),
+
+	'event/absence/property/account_property_19' => array('definition' => 'core_account/p-pit-studies/property/property_19'),
 	
 	'event/absence' => array(
 		'statuses' => array(),
 		'dimensions' => array(),
 		'indicators' => array(),
 		'properties' => array(
-			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn',
+			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn', 'account_groups',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
-			'property_1', 'property_2', 'property_3', 'property_11', 'property_12',
+			'property_1', 'property_2', 'property_3', 'property_11', 'property_12', 'account_property_19',
 			'update_time',
 		),
 	),
