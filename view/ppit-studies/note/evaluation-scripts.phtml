@@ -83,7 +83,11 @@ function getNoteEvaluation(type, id, panel) {
         $('.update_input_date').datepicker();
 
         $('#subject').focus();
-        $('.note_evaluation_submit_button').click(function () { postNoteEvaluation(route, panel); });
+        $('.note_evaluation_submit_button').click(function () { 
+          $('.note_evaluation_submit_button').removeClass('visible').addClass('invisible');
+          $('.note-evaluation-spinner').removeClass('invisible').addClass('visible');
+          postNoteEvaluation(route, panel);
+        });
 
         $('.note_evaluation_delete_confirmation').hide();
         $('.note_evaluation_delete_button').click(function () { 
