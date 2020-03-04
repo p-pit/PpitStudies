@@ -73,7 +73,7 @@ table td {
 		<td <?php if ($backgroundColor) echo 'style="background-color: '.$backgroundColor.'"' ?>><?php echo $context->localize($context->getConfig('note')['types'][$category][$note->type]['labels']) ?></td>
 
 		<?php elseif ($propertyId == 'place_id') : ?>
-		<td><?php echo $places[$note->place_id]->caption ?></td>
+		<td><?php if ($note->place_id) echo $places[$note->place_id]->caption ?></td>
 
 		<?php elseif ($propertyId == 'school_period') : ?>
 		<td><?php if ($note->school_period) echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$note->school_period]) ?></td>

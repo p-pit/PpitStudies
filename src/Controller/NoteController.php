@@ -1087,7 +1087,7 @@ class NoteController extends AbstractActionController
 							$value = $computedAverages[$noteLink->account_id]['global']['note'];
     				    }
     				}
-    				elseif ($note->type == 'report' && $value === null) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
+    				elseif ($note->type == 'report' /*&& $value === null*/) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     				    if ($data['subject'] == 'global') {
     			    		$value = $noteLink->computeStudentAverage($note->school_year, $data['school_period']);
     			    	}
@@ -1098,7 +1098,7 @@ class NoteController extends AbstractActionController
     					else $value = null;
     			    	if ($value !== null) $value = $value * $data['reference_value'] / 20; //$context->getConfig('student/parameter/average_computation')['reference_value'];
     				}
-    			    elseif ($note->type == 'exam' && $value === null) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
+    			    elseif ($note->type == 'exam' /*&& $value === null*/) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
     					if (array_key_exists($noteLink->account_id, $examAverages)) {
 							$value = $examAverages[$noteLink->account_id]['global']['note'];
 							$audit = $examAverages[$noteLink->account_id]['global']['notes'];
@@ -1155,7 +1155,8 @@ class NoteController extends AbstractActionController
 		    					$connection->rollback();
 		    					$error = $rc;
 		    				}
-		    				if (!$error && $note->type != 'report') {
+		    				// Désactivation temporaire du calcul automatique des moyennes
+		    				if (false) { // !$error && $note->type != 'report') {
 		    					// Create or update the reports, per subject and global
 		    					
 		    					// Retrieve the possibly existing report (same year, class, period, subject)
@@ -1402,7 +1403,7 @@ class NoteController extends AbstractActionController
 								$noteLink->value = $value;
 								$noteLink->distribution = $distribution;
 								$noteLink->audit = $audit;
-//								$noteLink->update(null);
+								$noteLink->update(null);
 							}
 						}
 					}
