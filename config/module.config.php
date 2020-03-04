@@ -1597,6 +1597,54 @@ return array_merge(
 			'fr_FR' => 'Nombre d’heures de formation prévues',
 		),
 	),
+
+	'commitment/p-pit-studies/property/property_10' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'initial' => array('default' => 'Initial'),
+			'searching' => array('default' => 'En recherche'),
+			'undefined' => array('en_US' => '?', 'fr_FR' => '?'),
+			'company' => array('default' => 'Professionnalisation'),
+			'apprenticeship' => array('default' => 'Apprentissage'),
+			'training_course' => array('default' => 'Stage'),
+			'student' => array('default' => 'Job étudiant'),
+		),
+		'labels' => array(
+			'default' => 'Student follow-up',
+			'fr_FR' => 'Suivi Elève',
+		),
+	),
+	
+	'commitment/p-pit-studies/property/property_11' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'full_time' => array('default' => 'Full time', 'fr_FR' => 'Full time'),
+			'part_time' => array('default' => 'Part time', 'fr_FR' => 'Part time'),
+			'online' => array('default' => 'Online', 'fr_FR' => 'En ligne'),
+		),
+		'labels' => array(
+			'default' => 'Rythm',
+			'fr_FR' => 'Rythme',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_12' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel'),
+			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours'),
+			'financing_company_built' => array('default' => 'Company financing built', 'fr_FR' => 'Financement entreprise monté'),
+			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé'),
+			'financing_company_signed' => array('default' => 'Company financing signed', 'fr_FR' => 'Financement entreprise signé'),
+		),
+		'labels' => array(
+			'default' => 'Financing',
+			'fr_FR' => 'Financement',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/account_property_1' => ['definition' => 'student/property/discipline'],
 	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_4'],
@@ -1615,7 +1663,7 @@ return array_merge(
 			'status', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'birth_date', 'invoice_n_fn', 'year',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
-			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12',
 			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8',
@@ -1745,6 +1793,9 @@ return array_merge(
 		'property_7' => array('mandatory' => false),
 		'property_8' => array('mandatory' => false),
 		'property_9' => array('mandatory' => false),
+		'property_10' => array('mandatory' => false),
+		'property_11' => array('mandatory' => false),
+		'property_12' => array('mandatory' => false),
 	),
 	'commitment/group/p-pit-studies' => array(
 		'status' => [],
@@ -1778,7 +1829,10 @@ return array_merge(
 		'property_7' => 'V',
 		'property_8' => 'W',
 		'property_9' => 'X',
-		'tel_cell' => 'Y',
+		'property_10' => 'X',
+		'property_11' => 'Y',
+		'property_12' => 'Z',
+		'tel_cell' => 'AA',
 	),
 	
 	'commitment/invoice/p-pit-studies' => array(
@@ -3454,32 +3508,17 @@ table.note-report td {
 	
 	'commitmentAccount/contactForm/p-pit-studies' => array('definition' => 'customization/esi/commitmentAccount/contactForm/p-pit-studies'),
 
+	// Deprecated
 	'commitment/accountList/p-pit-studies' => array(
-			'title' => array('en_US' => 'Registrations', 'fr_FR' => 'INSCRIPTIONS'),
+			'title' => array('default' => 'Commitments', 'fr_FR' => 'Engagements'),
 			'properties' => array(
-					'caption' => 'text',
-					'property_1' => 'text',
-					'property_2' => 'text',
+					'caption' => [],
+					'property_1' => [],
+					'property_10' => [],
+					'property_11' => [],
+					'property_12' => [],
 			),
 			'anchors' => array(
-					'document' => array(
-							'type' => 'nav',
-							'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
-							'entries' => array(
-									'student/acknowledgement' => array(
-											'labels' => array('en_US' => 'Acknowledgement', 'fr_FR' => 'Accusé réception'),
-									),
-									'student/confirmation' => array(
-											'labels' => array('en_US' => 'Confirmation', 'fr_FR' => 'Confirmation'),
-									),
-									'student/commitment' => array(
-											'labels' => array('en_US' => 'Coverage', 'fr_FR' => 'Prise en charge'),
-									),
-									'student/attestation' => array(
-											'labels' => array('en_US' => 'Attestation', 'fr_FR' => 'Attestation'),
-									),
-							),
-					),
 			),
 	),
 		
