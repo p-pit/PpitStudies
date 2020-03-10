@@ -1345,72 +1345,79 @@ class NoteController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-/*
-    public function repriseAction()
-    {
-    	$context = Context::getCurrent();
-    	$select = Note::getTable()->getSelect()->where(['status' => 'deleted']);
-    	$cursor = Note::getTable()->selectWith($select);
-	    foreach ($cursor as $note) {
-	    	$select = NoteLink::getTable()->getSelect()->where(['note_id' => $note->id]);
-    		$cursor = NoteLink::getTable()->selectWith($select);
-	    	foreach ($cursor as $noteLink) {
-	    		if ($noteLink->status != 'deleted') {
-	    			print_r($note->id . ' ' . $noteLink->id . "\n");
-	    			$noteLink->delete(null);
-	    		}
-	    	}
-	    }
-	    return $this->response;
-    }*/
 
-	    public function repriseAction()
-	    {
-	    	$context = Context::getCurrent();
-	    	$place_identifier = $this->params()->fromRoute('place_identifier');
-	    	$place = Place::get($place_identifier, 'identifier');
-	    	$school_year = $this->params()->fromQuery('school_year');
-	    	$school_period = $this->params()->fromQuery('school_period');
-	    	$where = array();
-	    	if ($place_identifier) $where['place_id'] = $place->id;
-	    	if ($school_year) $where['school_year'] = $school_year;
-	    	if ($school_period) $where['school_period'] = $school_period;
-	    	foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
-	    		if ($note->subject != 'global') {
-			    	$select = NoteLink::getTable()->getSelect()
-			    				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
-			    				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
-		    					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
-			    				$cursor = NoteLink::getTable()->selectWith($select);
-		    		$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
-			    	foreach($cursor as $noteLink) {
-						$audit = array();
-						$distribution = array();
-						if (array_key_exists($noteLink->account_id, $computedAverages)) {
-		    				$value = $computedAverages[$noteLink->account_id]['global']['note'];
-							$value = round($value * $note->reference_value / 20 , 2);
-//							$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
-    						$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
-		    				foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
-		    					if ($categoryId != 'global') $distribution[$categoryId] = $category['note'];
-							}
-							if (round($value, 2) != round($noteLink->value, 2) || count($distribution) != count($noteLink->distribution)) {
-								print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: '.$noteLink->account_id.' '.$note->class.' '.$note->subject."\n");
-								print_r('New: '.$value."\n");
-								print_r($distribution);
-								print_r('Old: '.$noteLink->value."\n");
-								print_r($noteLink->distribution);
-								$noteLink->value = $value;
-								$noteLink->distribution = $distribution;
-								$noteLink->audit = $audit;
-								$noteLink->update(null);
-							}
+	/**
+	 * user_story - note_average_auto: The student averages by subject and global are checked globally, and patched when necessary, for a given place or for all the places at the same time.
+	 */
+	public function batchAverageAction()
+	{
+		$context = Context::getCurrent();
+	
+		// Authentication allowed either online or by WS
+		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+
+		// Authorization
+		if (!$context->hasRole('admin')) {
+			$this->response->setStatusCode('401');
+			return $this->response;
+		}
+
+		$place_identifier = $this->params()->fromQuery('place_identifier');
+		if ($place_identifier) $place = Place::get($place_identifier, 'identifier');
+		else $place = Place::get($context->getPlaceId());
+				
+		$school_year = $this->params()->fromQuery('school_year');
+		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
+
+		$school_period = $this->params()->fromQuery('school_period');
+		if (!$school_period) {
+			$school_periods = $place->getConfig('school_periods');
+			$current_school_period = $context->getCurrentPeriod($school_periods);
+		}
+		if (!$school_period) $school_period = 'q1';
+		
+		$where = array();
+		if ($place_identifier) $where['place_id'] = $place->id;
+		
+		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
+			if ($note->subject != 'global') {
+				$select = NoteLink::getTable()->getSelect()
+					->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
+					->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
+					->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
+					$cursor = NoteLink::getTable()->selectWith($select);
+				$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
+				foreach($cursor as $noteLink) {
+					$audit = array();
+					$distribution = array();
+					if (array_key_exists($noteLink->account_id, $computedAverages)) {
+						$value = $computedAverages[$noteLink->account_id]['global']['note'];
+						$value = round($value * $note->reference_value / 20 , 2);
+//						$value = round($value * $note->reference_value / $context->getConfig('student/parameter/average_computation')['reference_value'], 2);
+						$audit[] = $computedAverages[$noteLink->account_id]['global']['notes'];
+						foreach ($computedAverages[$noteLink->account_id] as $categoryId => $category) {
+							if ($categoryId != 'global') $distribution[$categoryId] = $category['note'];
+						}
+						if (round($value, 2) != round($noteLink->value, 2) || count($distribution) != count($noteLink->distribution)) {
+							print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: '.$noteLink->account_id.' '.$note->class.' '.$note->subject."\n");
+							print_r('New: '.$value."\n");
+							print_r($distribution);
+							print_r('Old: '.$noteLink->value."\n");
+							print_r($noteLink->distribution);
+							$noteLink->value = $value;
+							$noteLink->distribution = $distribution;
+							$noteLink->audit = $audit;
+							$noteLink->update(null);
 						}
 					}
-		    	}
-	    	}
-	    	return $this->response;
-	    }
+				}
+			}
+		}
+		return $this->response;
+	}
 
     // Identify n-uplets of average for a same account + school year + period + subject, regardless of the class => Keep the one that has an assessment
 /*	public function repriseAction()

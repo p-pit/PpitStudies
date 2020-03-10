@@ -442,6 +442,15 @@ return array_merge(
 		        								),
 		        						),
 		        				),
+	       						'batchAverage' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/batch-average',
+		        								'defaults' => array(
+		        										'action' => 'batchAverage',
+		        								),
+		        						),
+		        				),
 	       						'reprise' => array(
 	       								'type' => 'segment',
 		        						'options' => array(
@@ -1222,6 +1231,7 @@ return array_merge(
 				array('route' => 'note/evaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/apiUpdateAverage', 'roles' => array('guest', 'guest')),
 				array('route' => 'note/updateEvaluationV2', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/batchAverage', 'roles' => array('guest')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 /*						
 				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher')),
