@@ -3886,6 +3886,8 @@ table.note-report td {
 					'mock-bac' => array('default' => '1er baccalauréat blanc'),
 					'mock-bac_2' => array('default' => '2nd baccalauréat blanc'),
 					'mock-bac_3' => array('default' => '3e baccalauréat blanc'),
+					'mock-bep' => array('default' => 'BEP blanc n°1'),
+					'mock-bep_2' => array('default' => 'BEP blanc n°2'),
 					'mock-bts' => array('default' => '1er BTS blanc'),
 					'mock-bts_2' => array('default' => '2nd BTS blanc'),
 					'mock-bts_3' => array('default' => '3e BTS blanc'),
