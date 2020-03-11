@@ -1368,7 +1368,7 @@ class NoteController extends AbstractActionController
 		$place_identifier = $this->params()->fromQuery('place_identifier');
 		if ($place_identifier) $place = Place::get($place_identifier, 'identifier');
 		else $place = Place::get($context->getPlaceId());
-				
+
 		$school_year = $this->params()->fromQuery('school_year');
 		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
 

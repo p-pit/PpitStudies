@@ -4721,10 +4721,15 @@ table.note-report tr.period {
 			],
 			'params' => ['n_fn'],
 			'event_text' => [
-				'default' => '<p style="text-align: center"><strong>Subject: %s &mdash; %s %s (%s) &mdash; Motivation: %s</strong></p>',
-				'fr_FR' => '<p style="text-align: center"><strong>Sujet: %s &mdash; %s %s (%s) &mdash; Justification : %s</strong></p>',
+				'default' => '<p style="text-align: center"><strong>Subject: %s &mdash; %s from %s to %s (%s) &mdash; Motivation: %s</strong></p>',
+				'fr_FR' => '<p style="text-align: center"><strong>Matières: %s &mdash; %s de %s à %s (%s) &mdash; Justification : %s</strong></p>',
 			],
-			'event_params' => ['property_3', 'begin_date', 'begin_time', 'duration', 'property_12'],
+			'event_params' => ['property_3', 'begin_date', 'begin_time', 'end_time', 'duration', 'property_12'],
+			'sum_text' => [
+				'default' => '<p>Which amounts to a sum of <strong>%s</strong> during the period.</p>',
+				'fr_FR' => '<p>Soit un total de <strong>%s</strong> sur la période.</p>',
+			],
+			'sum_params' => ['duration'],
 		],
 	],
 	
