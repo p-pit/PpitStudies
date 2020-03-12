@@ -1366,7 +1366,7 @@ class StudentController extends AbstractActionController
     	$absLates = [];
 
     	// Retrieve the manual absences
-    	$filter = ['account_id' => $account_id, 'school_year' => $school_year, 'min_begin_date' => $start_date, 'max_end_date' => $end_date];
+    	$filter = ['account_id' => $account_id, 'school_year' => $school_year, 'min_begin_date' => $start_date, 'max_begin_date' => $end_date];
     	if ($school_period) $filter['school_period'] = $school_period;
     	$cursor = Absence::getList(null, $filter, 'date', 'DESC', 'search', null);
     	foreach ($cursor as $absLate) {
@@ -1384,7 +1384,7 @@ class StudentController extends AbstractActionController
     	}
     	
     	// Retrieve the absences from attendance sheet
-    	$cursor = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $school_year, 'min_begin_date' => $start_date, 'max_begin_date' => $end_date), '+begin_date', null);
+    	$cursor = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $school_year, 'min_begin_date' => $start_date, 'max_end_date' => $end_date), '+begin_date', null);
     	foreach ($cursor as $absence) {
     		if ($absence->end_time > $absence->begin_time) {
 				$startHour = (int) substr($absence->begin_time, 0, 2);
