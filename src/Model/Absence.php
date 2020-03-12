@@ -275,8 +275,8 @@ class Absence
     			
 				if ($propertyId == 'place_id') $where->equalTo('student_absence.place_id', $value);
 				elseif ($propertyId == 'n_fn') $where->like('core_vcard.n_fn', '%'.$value.'%');
-				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $value);
-    			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $value);
+				elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo($propertyKey, $value);
+    			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo($propertyKey, $value);
 				elseif (strpos($value, ',')) $where->in($entity.'.'.$column, array_map('trim', explode(',', $value)));
 				elseif ($value == '*') $where->notEqualTo($entity.'.'.$column, '');
 				elseif ($property['type'] == 'select') {

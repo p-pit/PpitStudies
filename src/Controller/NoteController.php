@@ -936,16 +936,16 @@ class NoteController extends AbstractActionController
 					}
 					
 					// Update the subject and global averages
-					$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
+/*					$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
 					if ($rc) {
 						$connection->rollback();
 						$this->response->setStatusCode('409');
 						$this->response->setReasonPhrase($rc);
 						return null;
-					}
+					}*/
 					
 					// Compute the group indicators
-					$content['indicators'] = $note->computeGroupIndicators();
+//					$content['indicators'] = $note->computeGroupIndicators();
 
 					$connection->commit();
 					$this->response->setStatusCode('200');
