@@ -1683,7 +1683,7 @@ return array_merge(
 	'commitment/p-pit-studies/property/account_property_17' => ['definition' => 'core_account/p-pit-studies/property/property_17'],
 	'commitment/p-pit-studies/property/account_property_18' => ['definition' => 'core_account/p-pit-studies/property/property_18'],
 	'commitment/p-pit-studies/property/account_property_19' => ['definition' => 'core_account/p-pit-studies/property/property_19'],
-	'commitment/p-pit-studies/property/account_property_20' => ['definition' => 'core_account/generic/property/property_20'],
+	'commitment/p-pit-studies/property/account_property_20' => ['definition' => 'core_account/p-pit-studies/property/property_20'],
 	
 	'commitment/p-pit-studies' => array(
 		'tax' => 'including',
