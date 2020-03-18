@@ -1668,7 +1668,7 @@ return array_merge(
 	'commitment/p-pit-studies/property/account_property_2' => ['definition' => 'core_account/p-pit-studies/property/property_2'],
 	'commitment/p-pit-studies/property/account_property_3' => ['definition' => 'core_account/p-pit-studies/property/property_3'],
 	'commitment/p-pit-studies/property/account_property_4' => ['definition' => 'core_account/p-pit-studies/property/property_4'],
-	'commitment/p-pit-studies/property/account_property_5' => ['definition' => 'core_account/p-pit-studies/property/property_5'],
+//	'commitment/p-pit-studies/property/account_property_5' => ['definition' => 'core_account/p-pit-studies/property/property_5'],
 	'commitment/p-pit-studies/property/account_property_6' => ['definition' => 'core_account/p-pit-studies/property/property_6'],
 	'commitment/p-pit-studies/property/account_property_7' => ['definition' => 'student/property/class'],
 	'commitment/p-pit-studies/property/account_property_8' => ['definition' => 'core_account/p-pit-studies/property/property_8'],
@@ -1695,7 +1695,7 @@ return array_merge(
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12',
 			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
-			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
+			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4'/*, 'account_property_5'*/, 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
 			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20',
 			'default_means_of_payment', 'update_time',
 		),
@@ -2559,7 +2559,25 @@ return array_merge(
 	),
 	
 	'core_account/p-pit-studies/property/priority' => array('definition' => 'core_account/generic/property/priority'),
-	'core_account/p-pit-studies/property/origine' => array('definition' => 'core_account/generic/property/origine'),
+	
+	'core_account/p-pit-studies/property/origine' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'contact_request' => array('en_US' => 'Contact request', 'fr_FR' => 'Demande de contact'),
+			'subscription' => array('en_US' => 'Online subscription', 'fr_FR' => 'Souscription en ligne'),
+			'cooptation' => array('en_US' => 'Cooptation', 'fr_FR' => 'Cooptation'),
+			'file' => array('en_US' => 'File', 'fr_FR' => 'Fichier'),
+			'e_mailing' => array('en_US' => 'e-mailing', 'fr_FR' => 'e-mailing'),
+			'facebook' => array('default' => 'Facebook'),
+			'agency' => array('default' => 'Agence'),
+		),
+		'labels' => array(
+			'en_US' => 'Origine',
+			'fr_FR' => 'Origine',
+		),
+	],
+	
 	'core_account/p-pit-studies/property/contact_history' => array('definition' => 'core_account/generic/property/contact_history'),
 	'core_account/p-pit-studies/property/default_means_of_payment' => array('definition' => 'core_account/generic/property/default_means_of_payment'),
 	'core_account/p-pit-studies/property/transfer_order_id' => array('definition' => 'core_account/generic/property/transfer_order_id'),
