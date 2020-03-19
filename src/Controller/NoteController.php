@@ -1155,8 +1155,8 @@ class NoteController extends AbstractActionController
 		    					$connection->rollback();
 		    					$error = $rc;
 		    				}
-		    				// Désactivation temporaire du calcul automatique des moyennes
-		    				if (false) { // !$error && $note->type != 'report') {
+		    				// Réactivation temporaire du calcul automatique des moyennes
+		    				if (!$error && $note->type != 'report') { // (false) { 
 		    					// Create or update the reports, per subject and global
 		    					
 		    					// Retrieve the possibly existing report (same year, class, period, subject)
@@ -1171,6 +1171,7 @@ class NoteController extends AbstractActionController
 		    					$note->school_period = $current_school_period;
 		    					
 		    					// Load the input data
+								$data['school_year'] = $context->getConfig('student/property/school_year/default');
 		    					unset($data['date']);
 		    					unset($data['teacher_id']);
 		    					$data['level'] = null;
