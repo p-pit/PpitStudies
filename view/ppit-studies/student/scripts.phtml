@@ -119,7 +119,14 @@ function getStudentList(params) {
             else dir = 'ASC';
             getStudentList(getSearchParams(''));
           });
-          
+
+          // Connect the more anchor
+          $('#account-more-anchor').click(function () {
+            $('#limit').val('');
+            $('[data-toggle="tooltip"]').tooltip('hide');
+            getStudentList(getSearchParams(''));
+          });
+            
           // Able the group action button
           $('.account-group-anchor').prop('disabled', true);
           $('.account-checkbox').click(function () { $('.account-group-anchor').prop('disabled', false); });

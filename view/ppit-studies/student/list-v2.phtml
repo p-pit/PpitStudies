@@ -143,7 +143,19 @@ table td {
           </button>
         </div>
       </td>
-      <td>&nbsp;</td>
+
+<?php if (count($accounts) == '50') : ?>
+    <td style="text-align: center">
+      <div class="input-group input-group-sm">
+        <button type="button" class="btn btn-sm btn-outline-primary index-btn" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="account-more-anchor">
+          <i class="fas fa-ellipsis-h" id="more-glyphicon"></i>
+        </button>
+      </div>
+    </td>
+<?php else : ?>
+    <td>&nbsp;</td>
+<?php endif;?>
+
       <td colspan="<?php echo count($context->getConfig('student/list')) - 1 ?>">&nbsp;</td>    
 	</tr>
 </table>
