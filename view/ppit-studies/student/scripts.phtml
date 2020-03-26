@@ -143,13 +143,6 @@ function getStudentList(params) {
           $('.account-group-anchor').click(function () {
             getStudentGroup();
           });
-
-          // Connect the detail anchors
-/*          $('.account-detail-anchor').click(function () {
-            var id = $(this).attr('id').split('_')[1];
-            getStudentHome(id);
-            $(this).removeClass("btn-outline-primary").addClass("btn-primary");
-          });*/
 		}
 
         // Refresh the list on modal close
@@ -166,92 +159,6 @@ function getStudentList(params) {
 	}
 	xhttp.send();
 }
-
-// Retrieve the events
-/*function getEvents(id) {
-
-	// Execute the ajax request
-	route = '<?php //echo $this->url('studentEvent/planning') ?>?account_id=' + id;
-	xhttp = new XMLHttpRequest();
-	xhttp.open("GET", route, true);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php //echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-		    $('#calendar').fullCalendar({
-		    	lang: '<?php //echo substr($context->getLocale(), 0, 2) ?>',
-		        defaultView: 'agendaWeek',
-		        minTime: '08:00:00'
-		    });
-			obj = jQuery.parseJSON(xhttp.responseText);
-
-			jQuery.each(obj.planning, function (name, value) {
-				var color = 'lightBlue', textColor = 'black';			
-<?php //foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-	<?php //foreach ($category['color'] as $color => $unused) : ?>
-				if (value.properties['category'] == '<?php //echo $categoryId ?>') {
-					color = '<?php //echo $color ?>';
-					textColor = 'white';
-				}
-	<?php //endforeach;?>
-<?php //endforeach;?>
-
-				var title = '';
-				if (value.properties['property_3']) title += value.properties['property_3'];
-				if (value.properties['property_3'] && value.properties['caption']) title += ' - ';
-				if (value.properties['caption']) title += value.properties['caption'];
-				if (value.properties['location']) title += ' (' + value.properties['location'] + ')';
-				var event={
-					id:value.id,
-					title: title,
-					color: color,
-					textColor: textColor,
-					start:  $.fullCalendar.moment(value.properties['begin_date'] + ' ' + value.properties['begin_time']), 
-					end:  $.fullCalendar.moment(value.properties['begin_date'] + ' ' + value.properties['end_time'])
-				};
-				$('#calendar').fullCalendar('renderEvent', event, true);
-			});
-
-			jQuery.each(obj.events, function (name, value) {
-				var color = 'lightBlue', textColor = 'black';			
-<?php //foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-	<?php //foreach ($category['color'] as $color => $unused) : ?>
-				if (value.category == '<?php //echo $categoryId ?>') {
-					color = '<?php //echo $color ?>';
-					textColor = 'white';
-				}
-	<?php //endforeach;?>
-<?php //endforeach;?>
-
-				var event={
-					id:value.id,
-					title: value.title + ' (' + value.location + ')',
-					color: color,
-					textColor: textColor,
-					start:  $.fullCalendar.moment(value.begin_time), 
-					end:  $.fullCalendar.moment(value.end_time)
-				};
-				$('#calendar').fullCalendar('renderEvent', event, true);
-			});
-		}
-	}
-	xhttp.send();
-}*/
-
-// Load the detail panel
-/*function connectNewsFlashTab(route, id) {
-
-	// Execute the ajax request
-	xhttp = new XMLHttpRequest();
-	xhttp.open("GET", route, true);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			document.getElementById('news_flash-panel').innerHTML = xhttp.responseText;
-			getEvents(id);
-		}
-	}
-	xhttp.send();
-}*/
 
 // Load the detail panel
 function connectStudentTab(route) {
@@ -388,13 +295,6 @@ function connectAdd<?php echo $typeId ?>AbsenceForm()
             var route, target;
             route = '<?php echo $this->url('student/addAbsenceV2', array('type' => $typeId)) ?>?';
             target = 'grouped-action-panel';
-/*
-			var criteriaNumber = $('#group-nb-criteria').val();
-			for (i = 0; i < criteriaNumber; i++) {
-				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-			}
-			formData.append('nb-criteria', i);*/
 
             route += '&accounts=';
             let first = true;
@@ -472,120 +372,6 @@ function getAdd<?php echo $typeId?>Absence() {
 
 <?php endforeach;?>
 
-//////////////////////
-// student/addEvent //
-//////////////////////
-
-<?php 
-/*$properties = array();
-
-$properties['begin_date'] = array('type' => 'date', 'mandatory' => false);
-$properties['begin_h'] = array('type' => 'select', 'mandatory' => false);
-$properties['begin_m'] = array('type' => 'select', 'mandatory' => false);
-$properties['end_date'] = array('type' => 'date', 'mandatory' => false);
-$properties['end_h'] = array('type' => 'select', 'mandatory' => false);
-$properties['end_m'] = array('type' => 'select', 'mandatory' => false);
-$properties['location'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
-$properties['title'] = array('type' => 'input', 'mandatory' => true, 'maxSize' => 65535);
-$properties['comment'] = array('type' => 'textarea', 'mandatory' => false, 'maxSize' => 2047);
-echo $this->partial('/partials/check-update-properties', array('entity' => 'Event', 'context' => $context, 'properties' => $properties)) */
-?>
-/*
-function postAddEventForm(category)
-{
-		// Check validity
-		var validity = checkEventUpdateProperties();
-
-		if (validity) {
-            var xhttp = new XMLHttpRequest();
-            var route, target;
-            route = '<?php //echo $this->url('student/addEventV2') ?>/' + category;
-            target = 'grouped-action-panel';
-
-//			var criteriaNumber = $('#group-nb-criteria').val();
-//			for (i = 0; i < criteriaNumber; i++) {
-//				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-//				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-//			}
-//			formData.append('nb-criteria', i);
-
-	  	    route += '&accounts=';
-	  	    let first = true;
-	  	    $('.account-checkbox').each(function () {
-	  	        let account_id = $(this).attr('id').split('_')[1];
-	  			if ($(this).prop('checked')) {
-	  	            if (!first) route += ',';
-	  	            first = false;
-	  	            route += account_id;
-	  			}
-	  		});
-      
-            // Create a new FormData object.
-            var formData = new FormData();
-			
-			// Get the properties values
-<?php //foreach ($properties as $propertyId => $property) : ?>
-				formData.append('<?php //echo $propertyId ?>', document.getElementById('<?php //echo $propertyId ?>').value);
-<?php //endforeach ?>
-
-			xhttp.open('POST', route, true);
-			// Set up a handler for when the request finishes.
-			xhttp.onload = function () {
-				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-					document.getElementById(target).innerHTML = xhttp.responseText;
-					$('.action-btn').removeAttr('primary');
-				}
-			};
-			xhttp.send(formData);
-		}
-		else return false;
-}
-
-function getAddEvent(category) {
-	
-	var xhttp = new XMLHttpRequest();
-	var route = '<?php //echo $this->url('student/addEventV2') ?>/' + category;
-
-//	var criteriaNumber = $('#group-nb-criteria').val();
-//	for (i = 0; i < criteriaNumber; i++) {
-//		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-//		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-//	}
-//	formData.append('nb-criteria', i);
-
-      route += '&accounts=';
-      let first = true;
-      $('.account-checkbox').each(function () {
-          let account_id = $(this).attr('id').split('_')[1];
-          if ($(this).prop('checked')) {
-              if (!first) route += ',';
-              first = false;
-              route += account_id;
-          }
-    });
-
-	xhttp.open('GET', route, true);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php //echo $this->url('user/expired')?>';
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			document.getElementById('grouped-action-panel').innerHTML = xhttp.responseText;
-
-			$('#input_begin_date').datepicker();
-            $('#input_end_date').datepicker();
-
-			$('#subject').focus();
-
-            $('#up-submit-button').click(function () { postAddEventForm(category); });
-            $('#down-submit-button').click(function () { postAddEventForm(category); });
-		}
-	}
-	xhttp.send();
-
-	// Highlight the clicked button (and only it in its class)
-	$('.action-btn').removeClass('active');
-	$('#' + category + '-event-add-anchor').addClass('active');
-}*/
-
 /////////////////////
 // student/addNote //
 /////////////////////
@@ -622,11 +408,6 @@ function postAddNoteForm(classe)
     
 		// Create a new FormData object.
 		var formData = new FormData();
-/*		
-		var criteriaNumber = $('#group-nb-criteria').val();
-		for (i = 0; i < criteriaNumber; i++) {
-		  route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
-  		}*/
 
   	    route += '&accounts=';
   	    let first = true;
@@ -697,11 +478,6 @@ function getAddNote(classe) {
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('student/addNoteV2', array('type' => 'homework')) ?>?';
 	if (classe) route += '&class=' + classe;
-/*
-	var criteriaNumber = $('#group-nb-criteria').val();
-	for (i = 0; i < criteriaNumber; i++) {
-        route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
-	}*/
 
     route += '&accounts=';
     let first = true;
@@ -802,11 +578,6 @@ function postAddEvaluationForm(type, classe)
 		
 			// Create a new FormData object.
 			var formData = new FormData();
-/*
-			var criteriaNumber = $('#group-nb-criteria').val();
-			for (i = 0; i < criteriaNumber; i++) {
-		        route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
-			}*/
 
             route += '&accounts=';
             let first = true;
@@ -863,11 +634,6 @@ function getAddEvaluation(type, classe) {
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php echo $this->url('student/addEvaluationV2') ?>/' + type + '?';
 	if (classe) route += '&class=' + classe;
-/*
-	var criteriaNumber = $('#group-nb-criteria').val();
-	for (i = 0; i < criteriaNumber; i++) {
-        route += '&' + $('#group-criterion-id_' + i).val() + '=' + $('#group-criterion_' + i).val();
-	}*/
 
     route += '&accounts=';
     let first = true;
@@ -1006,13 +772,6 @@ function postAddNotificationForm(category)
             var route, target;
             route = '<?php //echo $this->url('student/addNotificationV2') ?>/' + category;
             target = 'grouped-action-panel';
-/*
-			var criteriaNumber = $('#group-nb-criteria').val();
-			for (i = 0; i < criteriaNumber; i++) {
-				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-			}
-			formData.append('nb-criteria', i);*/
 
 	  	    route += '&accounts=';
 	  	    let first = true;
@@ -1056,13 +815,6 @@ function getAddNotification(category) {
 	
 	var xhttp = new XMLHttpRequest();
 	var route = '<?php //echo $this->url('student/addNotificationV2') ?>/' + category;
-/*
-	var criteriaNumber = $('#group-nb-criteria').val();
-	for (i = 0; i < criteriaNumber; i++) {
-		formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-		formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-	}
-	formData.append('nb-criteria', i);*/
 
 	    route += '&accounts=';
 	    let first = true;
@@ -1135,13 +887,6 @@ function postAddProgressForm(sport)
             var route, target;
             route = '<?php //echo $this->url('student/addProgressV2') ?>/' + sport;
             target = 'grouped-action-panel';
-/*
-			var criteriaNumber = $('#group-nb-criteria').val();
-			for (i = 0; i < criteriaNumber; i++) {
-				formData.append('criterion-id_' + i, $('#group-criterion-id_' + i).val());
-				formData.append('criterion_' + i, $('#group-criterion_' + i).val());
-			}
-			formData.append('nb-criteria', i);*/
 
 	  	    route += '&accounts=';
 	  	    let first = true;
@@ -1213,38 +958,6 @@ function getStudentGroup() {
             route += account_id;
 		}
 	});
-/*
-	var sport;
-
-    $('.search_input_text').each(function () {
-      let propertyId = $(this).attr('id').split('-')[1];
-      formData.append(propertyId, $(this).val());
-    });
-
-    $('.search_input_select').each(function () {
-      let propertyId = $(this).attr('id').split('-')[1];
-      formData.append(propertyId, $(this).val());
-    });
-
-    $('.search_input_text_min').each(function () {
-      let propertyId = $(this).attr('id').split('-')[1];
-      formData.append('min_' + propertyId, $(this).val());
-    });
-
-    $('.search_input_text_max').each(function () {
-      let propertyId = $(this).attr('id').split('-')[1];
-      formData.append('max_' + propertyId, $(this).val());
-    });
-
-    $('.search_input_date_min').each(function () {
-      let propertyId = $(this).attr('id').split('-')[1];
-      formData.append('min_' + propertyId, $(this).val());
-    });
-
-    $('.search_input_date_max').each(function () {
-      let propertyId = $(this).attr('id').split('-')[1];
-      formData.append('max_' + propertyId, $(this).val());
-    });*/
 
 	// Execute the ajax request
 	xhttp = new XMLHttpRequest();
@@ -1310,20 +1023,6 @@ function getStudentGroup() {
 				getAdd<?php echo $typeId ?>Absence(); 
 			});
 <?php endforeach;?>
-
-<?php //foreach ($context->getConfig('commitmentNotification/p-pit-studies')['category'] as $categoryId => $category) : ?>
-/*			$('#<?php //echo $categoryId ?>-notification-add-anchor').click(function () { 
-				$('#grouped-action-panel').show();
-				getAddNotification('<?php //echo $categoryId ?>'); 
-			});*/
-<?php //endforeach;?>
-
-<?php //foreach ($context->getConfig('commitmentEvent/p-pit-studies')['category'] as $categoryId => $category) : ?>
-/*			$('#<?php //echo $categoryId ?>-event-add-anchor').click(function () { 
-				$('#grouped-action-panel').show();
-				getAddEvent('<?php //echo $categoryId ?>'); 
-			});*/
-<?php //endforeach;?>
 
 			$('#note-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
