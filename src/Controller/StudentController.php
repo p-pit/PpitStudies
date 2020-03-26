@@ -836,7 +836,7 @@ class StudentController extends AbstractActionController
     							}
     						}
 		    				// Déactivation temporaire du calcul automatique des moyennes
-    						if (!$error) { // (false) { 
+    						if (false) { // (!$error) {
     
     							// user_story - student_evaluation_subject_average:
     							// L'ajout d'une évaluation ou l'ajout d'étudiants à une évaluation existante entraîne le recalcul automatique de la moyenne de la matière de la période, pour chaque élève affecté à l'évaluation.
