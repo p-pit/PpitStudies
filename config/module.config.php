@@ -3375,11 +3375,15 @@ table.note-report td {
 	),
 
 	'commitmentTerm/p-pit-studies/property/commitment_caption' => ['definition' => 'student/property/school_year'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_1' => ['definition' => 'student/property/level'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_4' => ['definition' => 'commitment/p-pit-studies/property/property_4'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_5' => ['definition' => 'commitment/p-pit-studies/property/property_5'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_6' => ['definition' => 'commitment/p-pit-studies/property/property_6'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_7' => ['definition' => 'commitment/p-pit-studies/property/property_7'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_8' => ['definition' => 'commitment/p-pit-studies/property/property_8'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_10' => ['definition' => 'commitment/p-pit-studies/property/property_10'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_11' => ['definition' => 'commitment/p-pit-studies/property/property_11'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_12' => ['definition' => 'commitment/p-pit-studies/property/property_12'],
 	
 	'commitmentTerm/search/p-pit-studies' => array(
 		'title' => array('en_US' => 'Terms', 'fr_FR' => 'Echéances'),
