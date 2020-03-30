@@ -114,6 +114,25 @@ class NoteLink
 		// Return the dictionary
 		return $properties;
 	}
+
+	/**
+	 * Returns a dictionary of each property associated with its description contextual to the current instance config.
+	 */
+	public static function getConfigList($properties) {
+	
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		// If no description is found for the given type retrieve the properties description for the generic type
+		$descriptionList = $context->getConfig('note_link/list/generic');
+	
+		// Construct the resulting dictionary for each defined property
+		$listProperties = [];
+		foreach($descriptionList as $propertyId => $options) $listProperties[$propertyId] = $properties[$propertyId];
+	
+		// Return the dictionary
+		return $listProperties;
+	}
 	
 	// For compatibility
 	

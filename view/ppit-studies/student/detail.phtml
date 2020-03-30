@@ -1,0 +1,63 @@
+<!-- 
+/**
+ * PpitCore V1.0 (https://github.com/p-pit/PpitCore)
+ *
+ * @link      https://github.com/p-pit/PpitCore
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitCore/blob/master/license.txt GNU-GPL license
+ */
+-->
+
+<div class="modal-dialog modal-lg" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title"><?php echo $this->translate('Detail', 'ppit-core', $context->getLocale()) ?></h5>
+      <div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+
+        <div class="card my-3">
+          <div class="card-body">
+            
+            <h5 class="card-title text-muted"><?php echo $this->translate('Selected student', 'ppit-studies', $context->getLocale()) ?></h5>
+
+            <div class="form-group row">
+              <label class="col-sm-5 control-label">&nbsp;</label>
+              <div class="col-sm-7">
+                <input class="form-control" disabled="disabled" value="<?php echo $account->contact_1->n_fn ?>" />
+              </div>
+            </div>
+      
+          </div>
+        </div>
+        
+        <div class="card my-3">
+           
+        <div class="card-body">
+
+		<div class="group-panel" id="schooling-panel">
+    <ul class="nav nav-pills nav-justified">
+<!--      <li class="nav-item">
+        <a class="nav-link action-btn" href="#" id="note-list-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Teaching content', 'ppit-studies', $context->getLocale()) ?>">
+         <?php echo $this->translate('Teaching content', 'ppit-studies', $context->getLocale()) ?>
+        </a>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link action-btn" href="#" <?php if (!$context->hasRole('admin') && !$current_school_period) echo 'disabled' ?> id="note-evaluation-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Evaluations', 'ppit-studies', $context->getLocale()) ?>">
+          <?php echo $this->translate('Evaluations', 'ppit-studies', $context->getLocale()) ?>
+        </a>
+      </li>
+    </ul>
+		</div>
+
+        <div id="detail-action-panel"></div>
+	    </div>
+        </div>
+	</div>
+  </div>
+</div>
+	

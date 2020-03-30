@@ -135,6 +135,7 @@
 		'Return to student list' => 'Retour à la liste des élèves',
 		'Right handed' => 'Droitier',
 		'Secondary posts' => 'Postes secondaires',
+		'Selected student' => 'Elève sélectionné',
 		'Selected students' => 'Elèves sélectionnés',
 		'School' => 'Scolaire',
 		'School year' => 'Année scolaire',

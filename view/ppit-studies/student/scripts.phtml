@@ -97,11 +97,47 @@ function getStudentSearch()
   xhttp.send();
 }
 
+function getStudentEvaluations(id) {
+  
+  let xhttp = new XMLHttpRequest();
+  let route = '<?php echo $this->url('noteLink/list', ['category' => 'evaluation', 'type' => 'note']) ?>' + '?account_id=' + id;
+
+  xhttp.open('GET', route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+        $('#detail-action-panel').html(xhttp.responseText);
+    }
+  }
+  xhttp.send();
+}
+
+function getDetail(id) {
+  
+  let xhttp = new XMLHttpRequest();
+  let route = '<?php echo $this->url('student/detail') ?>/' + id;
+
+  xhttp.open('GET', route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+	  $('#modalForm').html(xhttp.responseText);
+      $('#modalForm').modal('toggle');
+      $('[data-toggle="tooltip"]').tooltip();
+
+      $('#note-evaluation-anchor').click(function () {
+          getStudentEvaluations(id);
+      });
+    }
+  }
+  xhttp.send();
+}
+
 // Load the list
 function getStudentList(params) {		
 
 	// Execute the ajax request
-	route = '<?php echo $this->url('student/listV2') ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
+	route = '<?php echo $this->url('student/list') ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC') + '&limit=' + $('#limit').val();
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
@@ -139,6 +175,12 @@ function getStudentList(params) {
             $('.account-group-anchor').prop('disabled', false);
           });
           
+          // Connect the detail action anchors
+          $('.account-detail-anchor').click(function () {
+            let id = $(this).attr('id').split('-')[1];
+            getDetail(id);
+          });
+          
           // Connect the grouped actions anchors
           $('.account-group-anchor').click(function () {
             getStudentGroup();
@@ -150,10 +192,6 @@ function getStudentList(params) {
 			$('.account-detail-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
             $('.account-group-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
 		});
-
-        $("#student-home-modal").on("hidden.bs.modal", function () {
-          $('.account-detail-anchor').removeClass("btn-primary").addClass("btn-outline-primary");
-        });
 
         $('[data-toggle="tooltip"]').tooltip();
 	}

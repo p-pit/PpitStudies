@@ -62,8 +62,13 @@ table td {
 
       <td style="text-align: center">
         <div class="input-group input-group-sm">
-          <a type="button" href="<?php echo $this->url('student/studentHomeV2', ['account_id' => $account->id]) ?>" target="_blank" class="btn btn-sm btn-outline-primary index-btn account-preview-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account-preview-anchor_<?php echo $account->id ?>">
-            <i class="fas fa-search"></i>
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn account-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account_detail_anchor-<?php echo $account->id ?>">
+            <i class="fas fa-search" id="group-glyphicon"></i>
+          </button>
+      </td>
+      <td style="text-align: center">
+          <a type="button" href="<?php echo $this->url('student/studentHomeV2', ['account_id' => $account->id]) ?>" target="_blank" class="btn btn-sm btn-outline-primary index-btn account-preview-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Student home page', 'ppit-studies', $context->getLocale())?>" id="account_preview_anchor-<?php echo $account->id ?>">
+            <i class="fas fa-tablet-alt" id="group-glyphicon"></i>
           </a>
         </div>
       </td>

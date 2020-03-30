@@ -314,6 +314,11 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
+    public function listAction()
+    {
+    	return $this->getList();
+    }
+    
     public function listV2Action()
     {
     	return $this->getList();
@@ -336,19 +341,15 @@ class StudentController extends AbstractActionController
     	$writer->save('php://output');
     }
     
-    public function detailV2Action()
+    public function detailAction()
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
-    	$id = (int) $this->params()->fromRoute('id', 0);
-    	if ($id) $account= Account::get($id);
-    	else $account = Account::instanciate();
-    
+    	$id = $this->params()->fromRoute('id');
+    	$account = Account::get($id);
+
     	$view = new ViewModel(array(
     		'context' => $context,
-    		'config' => $context->getconfig(),
-    		'id' => $account->id,
     		'account' => $account,
     	));
     	$view->setTerminal(true);

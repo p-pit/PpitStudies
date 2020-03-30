@@ -13,28 +13,10 @@ return array_merge(
         	'PpitStudies\Controller\Absence' => 'PpitStudies\Controller\AbsenceController',
         	'PpitStudies\Controller\Event' => 'PpitStudies\Controller\EventController',
         	'PpitStudies\Controller\Note' => 'PpitStudies\Controller\NoteController',
-//        	'PpitStudies\Controller\Notification' => 'PpitStudies\Controller\NotificationController',
-//        	'PpitStudies\Controller\Planning' => 'PpitStudies\Controller\PlanningController',
-//        	'PpitStudies\Controller\Progress' => 'PpitStudies\Controller\ProgressController',
+        	'PpitStudies\Controller\NoteLink' => 'PpitStudies\Controller\NoteLinkController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
         ),
     ),
-/*
-	'console' => array(
-			'router' => array(
-					'routes' => array(
-							'batchNomad' => array(
-									'options' => array(
-											'route'    => 'student nomad <instance_id> <request> [--place_identifier=] [--limit=]',
-											'defaults' => array(
-													'controller' => 'PpitStudies\Controller\Student',
-													'action'     => 'batchNomad'
-											)
-									)
-							),
-					),
-			),
-	),*/
 		
     'router' => array(
         'routes' => array(
@@ -462,6 +444,39 @@ return array_merge(
 			       				),
 	       		),
             ),
+
+        	'noteLink' => [
+                'type'    => 'literal',
+                'options' => [
+                    'route'    => '/note-link',
+                    'defaults' => [
+                        'controller' => 'PpitStudies\Controller\NoteLink',
+                        'action'     => 'v1',
+                    ],
+                ],
+           		'may_terminate' => true,
+	       		'child_routes' => [
+					'list' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/list[/:category][/:type]',
+							'defaults' => [
+								'action' => 'list',
+							],
+						],
+					],
+					'v1' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/v1[/:category][/:type][/:id]',
+							'defaults' => [
+								'action' => 'v1',
+							],
+						],
+					],
+	       		],
+	       	],
+	       			
 /*        	'studentNotification' => array(
                 'type'    => 'literal',
                 'options' => array(
@@ -659,18 +674,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'studentHome' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/student-home[/:account_id]',
-		        								'constraints' => array(
-		        										'account_id'     => '[0-9]*',
-		        								),
-        										'defaults' => array(
-        												'action' => 'studentHome',
-        										),
-        								),
-        						),*/
 	       						'studentHomeV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -692,15 +695,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'search' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/search',
-        										'defaults' => array(
-        												'action' => 'search',
-        										),
-        								),
-        						),*/
 	       						'searchV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -710,7 +704,7 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'list' => array(
+	       						'list' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/list',
@@ -718,7 +712,7 @@ return array_merge(
         												'action' => 'list',
         										),
         								),
-        						),*/
+        						),
 	       						'listV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -737,7 +731,7 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'detail' => array(
+	       						'detail' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/detail[/:id]',
@@ -746,18 +740,6 @@ return array_merge(
 		        								),
 		        								'defaults' => array(
 		        										'action' => 'detail',
-		        								),
-		        						),
-		        				),*/
-	       						'detailV2' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/detail-v2[/:id]',
-		        								'constraints' => array(
-		        										'id'     => '[0-9]*',
-		        								),
-		        								'defaults' => array(
-		        										'action' => 'detailV2',
 		        								),
 		        						),
 		        				),
@@ -779,15 +761,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'addAbsence' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-absence[/:type]',
-        										'defaults' => array(
-        												'action' => 'addAbsence',
-        										),
-        								),
-        						),*/
 	       						'addAbsenceV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -797,33 +770,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'addEvent' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-event[/:category]',
-        										'defaults' => array(
-        												'action' => 'addEvent',
-        										),
-        								),
-        						),
-	       						'addEventV2' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-event-v2[/:category]',
-        										'defaults' => array(
-        												'action' => 'addEventV2',
-        										),
-        								),
-        						),*/
-/*	       						'addNote' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-note[/:type][/:class]',
-        										'defaults' => array(
-        												'action' => 'addNote',
-        										),
-        								),
-        						),*/
 	       						'addNoteV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -833,15 +779,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'addEvaluation' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-evaluation[/:type][/:class]',
-        										'defaults' => array(
-        												'action' => 'addEvaluation',
-        										),
-        								),
-        						),*/
 	       						'addEvaluationV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -851,66 +788,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'addNotification' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-notification[/:category]',
-        										'defaults' => array(
-        												'action' => 'addNotification',
-        										),
-        								),
-        						),
-	       						'addNotificationV2' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-notification-v2[/:category]',
-        										'defaults' => array(
-        												'action' => 'addNotificationV2',
-        										),
-        								),
-        						),
-				       			'addProgress' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-progress[/:type]',
-        										'defaults' => array(
-        												'action' => 'addProgress',
-        										),
-        								),
-        						),
-				       			'addProgressV2' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/add-progress-v2[/:type]',
-        										'defaults' => array(
-        												'action' => 'addProgressV2',
-        										),
-        								),
-        						),
-	       						'dashboard' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/dashboard[/:account_id][/:category]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'dashboard',
-        										),
-        								),
-        						),
-	       						'planning' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/planning[/:id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'planning',
-        										),
-        								),
-        						),*/
 	       						'planningV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -923,30 +800,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'file' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/file[/:id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'file',
-        										),
-        								),
-        						),
-	       						'absence' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/absence[/:id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'absence',
-        										),
-        								),
-        						),*/
 	       						'absenceV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -959,18 +812,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'evaluation' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/evaluation[/:id][/:mock]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'evaluation',
-        										),
-        								),
-        						),*/
 	       						'evaluationV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -983,18 +824,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'exam' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/exam[/:id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'exam',
-        										),
-        								),
-        						),*/
 	       						'examV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1031,18 +860,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'homework' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/homework[/:id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'homework',
-        										),
-        								),
-        						),*/
 	       						'homeworkV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1055,18 +872,6 @@ return array_merge(
         										),
         								),
         						),
-/*	       						'report' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/report[/:id]',
-        										'constraints' => array(
-        												'id' => '[0-9]*',
-        										),
-        										'defaults' => array(
-        												'action' => 'report',
-        										),
-        								),
-        						),*/
 	       						'reportV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1103,75 +908,6 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-/*	       						'dropboxLink' => array(
-        								'type' => 'segment',
-        								'options' => array(
-        										'route' => '/dropbox-link[/:document]',
-        										'defaults' => array(
-        												'action' => 'dropboxLink',
-        										),
-        								),
-        						),
-	       						'letter' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/letter[/:template][/:id]',
-		        								'constraints' => array(
-		        										'id'     => '[0-9]*',
-		        								),
-		        								'defaults' => array(
-		        										'action' => 'letter',
-		        								),
-		        						),
-		        				),
-	       						'confirmation' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/confirmation[/:id]',
-		        								'constraints' => array(
-		        										'id'     => '[0-9]*',
-		        								),
-		        								'defaults' => array(
-		        										'action' => 'confirmation',
-		        								),
-		        						),
-		        				),
-	       						'attestation' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/attestation[/:id]',
-		        								'constraints' => array(
-		        										'id'     => '[0-9]*',
-		        								),
-		        								'defaults' => array(
-		        										'action' => 'attestation',
-		        								),
-		        						),
-		        				),
-	       						'acknowledgement' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/acknowledgement[/:id]',
-		        								'constraints' => array(
-		        										'id'     => '[0-9]*',
-		        								),
-		        								'defaults' => array(
-		        										'action' => 'acknowledgement',
-		        								),
-		        						),
-		        				),
-	       						'commitment' => array(
-		        						'type' => 'segment',
-		        						'options' => array(
-		        								'route' => '/commitment[/:id]',
-		        								'constraints' => array(
-		        										'id'     => '[0-9]*',
-		        								),
-		        								'defaults' => array(
-		        										'action' => 'commitment',
-		        								),
-		        						),
-		        				),*/
 	       						'nomad' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -1191,122 +927,64 @@ return array_merge(
 			'BjyAuthorize\Guard\Route' => array(
 
 				array('route' => 'absence', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'absence/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'absence/search', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/searchV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'absence/list', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/listV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/get', 'roles' => array('user')),
 				array('route' => 'absence/export', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'absence/detail', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'absence/update', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/updateV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'absence/reprise', 'roles' => array('admin')),
-/*				
-				array('route' => 'studentEvent', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentEvent/index', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentEvent/search', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'studentEvent/list', 'roles' => array('manager', 'coach', 'teacher')),*/
-            	array('route' => 'studentEvent/planning', 'roles' => array('user')),
-/*				array('route' => 'studentEvent/export', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentEvent/update', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentEvent/delete', 'roles' => array('manager', 'coach', 'teacher')),*/
+
+				array('route' => 'studentEvent/planning', 'roles' => array('user')),
 
 				array('route' => 'note', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/index', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/indexV2', 'roles' => array('manager', 'teacher')),
-//				array('route' => 'note/search', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/searchV2', 'roles' => array('manager', 'teacher')),
-//				array('route' => 'note/list', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/listV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/get', 'roles' => array('manager', 'user')),
 				array('route' => 'note/export', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/exportCsv', 'roles' => array('admin')),
-//				array('route' => 'note/detail', 'roles' => array('manager', 'teacher')),
-//				array('route' => 'note/update', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/updateV2', 'roles' => array('manager', 'teacher')),
-//				array('route' => 'note/updateEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/apiEvaluation', 'roles' => array('guest', 'guest')),
 				array('route' => 'note/evaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/apiUpdateAverage', 'roles' => array('guest', 'guest')),
 				array('route' => 'note/updateEvaluationV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/batchAverage', 'roles' => array('guest')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
-/*						
-				array('route' => 'studentNotification', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentNotification/index', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentNotification/search', 'roles' => array('manager', 'coach', 'teacher')),
-            	array('route' => 'studentNotification/list', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentNotification/export', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentNotification/update', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'studentNotification/delete', 'roles' => array('manager', 'coach', 'teacher')),*/
-/*
-				array('route' => 'planning', 'roles' => array('manager')),
-				array('route' => 'planning/index', 'roles' => array('manager')),*/
-/*
-				array('route' => 'progress', 'roles' => array('manager', 'coach')),
-				array('route' => 'progress/index', 'roles' => array('manager', 'coach')),
-				array('route' => 'progress/search', 'roles' => array('manager', 'coach')),
-            	array('route' => 'progress/list', 'roles' => array('manager', 'coach')),
-				array('route' => 'progress/export', 'roles' => array('manager', 'coach')),
-				array('route' => 'progress/update', 'roles' => array('manager', 'coach')),
-				array('route' => 'progress/delete', 'roles' => array('manager', 'coach')),*/
 
+				array('route' => 'noteLink', 'roles' => array('manager', 'teacher')),
+				array('route' => 'noteLink/list', 'roles' => array('manager', 'teacher')),
+				array('route' => 'noteLink/v1', 'roles' => array('guest')),
+				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
 				array('route' => 'student/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/studentHome', 'roles' => array('user')),
 				array('route' => 'student/studentHomeV2', 'roles' => array('user')),
-//				array('route' => 'student/search', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/searchV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/export', 'roles' => array('manager', 'coach', 'teacher')),
-//            	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher')),
+            	array('route' => 'student/list', 'roles' => array('manager', 'coach', 'teacher')),
             	array('route' => 'student/listV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher')),
-				array('route' => 'student/detailV2', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'student/detail', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/group', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/groupV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/addAbsence', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/addAbsenceV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/addEvent', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/addEventV2', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/addNote', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addNoteV2', 'roles' => array('manager', 'teacher')),
-//				array('route' => 'student/addEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/addEvaluationV2', 'roles' => array('manager', 'teacher')),
-//				array('route' => 'student/addNotification', 'roles' => array('manager', 'coach', 'teacher')),
-//				array('route' => 'student/addNotificationV2', 'roles' => array('manager', 'coach', 'teacher')),*/
-//				array('route' => 'student/addProgress', 'roles' => array('manager', 'coach')),
-//				array('route' => 'student/addProgressV2', 'roles' => array('manager', 'coach')),
-//				array('route' => 'student/dashboard', 'roles' => array('user')),
-//				array('route' => 'student/planning', 'roles' => array('guest')),
+				array('route' => 'student/listEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/planningV2', 'roles' => array('user')),
 				array('route' => 'student/file', 'roles' => array('guest')),
-//				array('route' => 'student/absence', 'roles' => array('guest')),
 				array('route' => 'student/absenceV2', 'roles' => array('user')),
-//				array('route' => 'student/homework', 'roles' => array('guest')),
 				array('route' => 'student/homeworkV2', 'roles' => array('user')),
-//				array('route' => 'student/evaluation', 'roles' => array('guest')),
 				array('route' => 'student/evaluationV2', 'roles' => array('guest')),
-//				array('route' => 'student/exam', 'roles' => array('guest')),
 				array('route' => 'student/examV2', 'roles' => array('guest')),
 				array('route' => 'student/generateAttendance', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/downloadAttendance', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-//				array('route' => 'student/report', 'roles' => array('guest')),
 				array('route' => 'student/reportV2', 'roles' => array('guest')),
 				array('route' => 'student/download', 'roles' => array('guest')),
 				array('route' => 'student/downloadExam', 'roles' => array('guest')),
-//				array('route' => 'student/dropboxLink', 'roles' => array('guest')),
-//				array('route' => 'student/letter', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-//				array('route' => 'student/confirmation', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-//				array('route' => 'student/attestation', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-//				array('route' => 'student/acknowledgement', 'roles' => array('operational_management', 'sales_manager', 'manager')),
-//				array('route' => 'student/commitment', 'roles' => array('operational_management', 'sales_manager', 'manager')),
 				array('route' => 'student/nomad', 'roles' => array('guest')),
-//				array('route' => 'student/nomadFix', 'roles' => array('admin')),
-//				array('route' => 'student/cleanUserPerimeter', 'roles' => array('admin')),
 			)
 		)
 	),
@@ -5501,6 +5179,16 @@ table.note-report tr.period {
 		],
 	],
 
+	'note_link/list/generic' => [
+		'subject' => [],
+		'date' => [],
+		'reference_value' => [],
+		'weight' => [],
+		'value' => [], 
+		'evaluation' => [], 
+		'assessment' => [],
+	],
+	
 	// Progress
 	
 	'progress/Basketball' => array(
