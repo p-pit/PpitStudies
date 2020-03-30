@@ -82,17 +82,6 @@ table td {
 	<tr>
 		<td colspan="<?php echo count($content['config']['list']) + 1 ?>">&nbsp;</td>
 	</tr>
-	
-	<tr>
-		<th>&nbsp;</th>
-	<?php foreach ($content['config']['list'] as $propertyId => $rendering) : ?>
-		<?php if ($propertyId == 'average_note') : ?>
-		<th><?php echo $context->formatFloat($average*20, 2) ?></th>
-		<?php elseif ($link['type'] != 'report' || $propertyId != 'level') : ?>
-		<th>&nbsp;</th>
-		<?php endif;?>
-	<?php endforeach;?>
-	</tr>
 
   </table>
 </div>
