@@ -1155,8 +1155,8 @@ class NoteController extends AbstractActionController
 		    					$connection->rollback();
 		    					$error = $rc;
 		    				}
-		    				// Déactivation temporaire du calcul automatique des moyennes
-		    				if (false) { // (!$error && $note->type != 'report') {
+		    				// Réactivation du calcul automatique des moyennes pour les RP uniquement
+		    				if (!$error && $note->type != 'report' && $context->hasRole('manager')) { // (false) {
 		    					// Create or update the reports, per subject and global
 		    					
 		    					// Retrieve the possibly existing report (same year, class, period, subject)
@@ -1383,6 +1383,7 @@ class NoteController extends AbstractActionController
 		$where = array();
 		if ($place_identifier) $where['place_id'] = $place->id;
 		
+		// Check and update when necessary the average for all the reports
 		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
 			if ($note->subject != 'global') {
 				$select = NoteLink::getTable()->getSelect()
