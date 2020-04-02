@@ -1226,6 +1226,24 @@ return array_merge(
 			'fr_FR' => 'Statut du compte',
 		),
 	),
+
+	'commitment/p-pit-studies/property/n_fn' => array(
+		'definition' => 'inline',
+		'type' => 'phone',
+		'labels' => array(
+			'en_US' => 'Name',
+			'fr_FR' => 'Nom',
+		),
+	),
+	
+	'commitment/p-pit-studies/property/tel_cell' => array(
+		'definition' => 'inline',
+		'type' => 'phone',
+		'labels' => array(
+			'en_US' => 'Cellular',
+			'fr_FR' => 'Mobile',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/caption' => ['definition' => 'student/property/school_year'],
 	'commitment/p-pit-studies/property/property_1' => ['definition' => 'student/property/level'],
