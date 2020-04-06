@@ -1630,11 +1630,11 @@ return array_merge(
 							'right' => array('en_US' => '%s school year %s', 'fr_FR' => 'Scolarité %s %s'),
 							'params' => array('product_brand', 'caption'),
 					),
-					array(
+/*					array(
 							'left' => array('en_US' => 'Invoice date', 'fr_FR' => 'Date de facture'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 							'params' => array('date'),
-					),
+					),*/
 					array(
 							'left' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
 							'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
