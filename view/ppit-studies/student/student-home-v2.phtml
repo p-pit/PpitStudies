@@ -153,7 +153,7 @@
         <ul class="nav nav-tabs md-tabs nav-justified primary-color">
 <?php $first = true; foreach ($template['content'] as $tabId => $tab) : ?>
           <li class="nav-item" id="<?php echo $tabId ?>-tab">
-            <a class="nav-link <?php if ($first) echo 'active' ?>" data-toggle="tab" href="#<?php echo $tabId ?>-panel" role="tab"><?php echo $tab['label'][$context->getLocale()] ?></a>
+            <a class="nav-link <?php if ($first) echo 'active' ?>" data-toggle="tab" href="#<?php echo $tabId ?>-panel" role="tab"><?php echo $context->localize($tab['label']) ?></a>
           </li>
 <?php $first = false; endforeach;?>
         </ul>

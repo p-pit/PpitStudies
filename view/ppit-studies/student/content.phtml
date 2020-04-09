@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="list-group">
+
+<?php foreach ($context->getConfig('student/home/content')['list'] as $itemId => $item) : ?>
+
+      <div class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-2 h5"><?php echo $context->localize($item['labels']) ?></h5>
+        </div>
+
+  <?php if ($itemId == 'syllabus') : ?>
+
+    <?php 
+	$content = $item['content'];
+	?>
+
+    <?php foreach ($content as $productId => $product) : ?>
+
+      <p class="mb-2 d-flex w-100 justify-content-between">
+        <a href=""><?php echo $context->localize($product['card']['title']) ?></a>
+        <small class="text-muted"><?php echo $context->localize($product['card']['type']) ?></small>
+      </p>
+      <small class="text-muted"><?php echo $context->localize($product['card']['description']) ?></small>
+
+    <?php endforeach;?>
+
+  <?php elseif ($itemId == 'library') : ?>
+
+    <?php 
+  $content = $item['content'];
+  ?>
+
+    <?php foreach ($content as $linkId => $link) : ?>
+
+      <p class="mb-2 d-flex w-100 justify-content-between">
+        <a href="<?php echo $context->localize($link['url']) ?>" target="_blank"><?php echo $context->localize($link['title']) ?></a>
+        <small class="text-muted"><?php echo $context->localize($link['type']) ?></small>
+      </p>
+
+    <?php endforeach;?>
+
+  <?php endif;?>
+
+    </div>
+
+<?php endforeach;?>
+
+    </div>
+  </div>
+</div>

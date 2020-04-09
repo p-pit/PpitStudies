@@ -800,6 +800,30 @@ return array_merge(
         										),
         								),
         						),
+	       						'file' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/file[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'file',
+        										),
+        								),
+        						),
+	       						'content' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/content[/:id]',
+        										'constraints' => array(
+        												'id' => '[0-9]*',
+        										),
+        										'defaults' => array(
+        												'action' => 'content',
+        										),
+        								),
+        						),
 	       						'absenceV2' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -974,7 +998,8 @@ return array_merge(
 				array('route' => 'student/addEvaluationV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/listEvaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'student/planningV2', 'roles' => array('user')),
-				array('route' => 'student/file', 'roles' => array('guest')),
+				array('route' => 'student/file', 'roles' => array('user')),
+				array('route' => 'student/content', 'roles' => array('user')),
 				array('route' => 'student/absenceV2', 'roles' => array('user')),
 				array('route' => 'student/homeworkV2', 'roles' => array('user')),
 				array('route' => 'student/evaluationV2', 'roles' => array('guest')),
@@ -5525,18 +5550,6 @@ table.note-report tr.period {
 				'route' => 'student/planningV2',
 				'label' => array('en_US' => 'Planning', 'fr_FR' => 'Planning'),
 			),
-/*			'absence' => array(
-				'type' => 'static',
-				'level' => 'subject',
-				'route' => 'student/absence',
-				'label' => array('en_US' => 'Absences & lateness', 'fr_FR' => 'Absences & retards'),
-			),
-			'homework' => array(
-				'type' => 'static',
-				'level' => 'subject',
-				'route' => 'student/homework',
-				'label' => array('en_US' => 'Homework', 'fr_FR' => 'Cahier de texte'),
-			),*/
 			'evaluation' => array(
 				'type' => 'static',
 				'level' => 'subject',

@@ -1,0 +1,125 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="list-group">
+
+<?php foreach ($context->getConfig('student/home/file')['list'] as $itemId => $item) : ?>
+
+      <div class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-2 h5"><?php echo $context->localize($item['labels']) ?></h5>
+        </div>
+        
+  <?php if ($itemId == 'certificat_scolarite') : ?>
+
+        <p class="mb-2 d-flex w-100 justify-content-between">
+          <a href="<?php echo $this->url('commitment/downloadMessage', ['type' => 'p-pit-studies', 'template_identifier' => 'certificat_scolarite'], ['query' => ['commitment_id' => 10512]]) ?>">2019/2020</a>
+        </p>
+
+  <?php elseif ($itemId == 'report') : ?>
+
+    <?php foreach ($reports as $periodId => $period) : ?>
+
+      <?php 
+		$params = explode('.', $periodId); 
+		$school_year = $params[0];
+		$school_period = $params[1];
+		$visible = false;
+		foreach ($period as $averagePerSubject) {
+			if ($averagePerSubject->subject == 'global' && $averagePerSubject->date) $date = $averagePerSubject->date;
+			else $date = null;
+		}
+	  ?>
+      <?php if ($context->hasRole('manager') || $context->hasRole('teacher') || $visible) : ?>  
+
+        <p class="mb-2 d-flex w-100 justify-content-between">
+          <a href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>" <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic disabled"<?php endif;?>>
+
+        <?php if (array_key_exists($school_year, $context->getConfig('student/property/school_year')['modalities'])) : ?>
+            <?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?>
+        <?php endif;?>
+        <?php if ($school_period) : ?>
+            &mdash;
+            <?php echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
+        <?php endif;?>
+        
+          </a>
+          <small <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic"<?php endif;?>><?php echo ($date) ? $context->decodeDate($date) : $this->translate('Non yet visible', 'ppit-studies', $context->getLocale()) ?></small>
+
+        </p>
+
+      <?php endif;?>
+    <?php endforeach;?>
+    
+  <?php elseif ($itemId == 'absence') : ?>
+
+    <?php foreach ($absences as $periodId => $period) : ?>
+      <?php 
+  		$params = explode('.', $periodId); 
+		$school_year = $params[0];
+		$school_period = $params[1];
+		$params = ['category' => 'absence', 'account_id' => $account_id, 'school_year' => $school_year];
+		if ($school_period) $params['school_period'] = $school_period;
+		$date = date('Y-m-d');
+      ?>
+
+        <p class="mb-2 d-flex w-100 justify-content-between">
+          <a href="<?php echo $this->url('student/download', $params, ['query' => ['start_date' => $start_date, 'end_date' => $end_date]]) ?>" <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic disabled"<?php endif;?>>
+		<?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?> &mdash;
+		<?php if ($school_period) echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
+        
+          </a>
+          <small <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic"<?php endif;?>><?php echo ($date) ? $context->decodeDate($date) : $this->translate('Non yet visible', 'ppit-studies', $context->getLocale()) ?></small>
+
+        </p>
+      
+    <?php endforeach;?>
+
+  <?php elseif ($itemId == 'homework') : ?>
+
+ <div class="row my-3">
+
+    <?php foreach ($documents as $document_id => $document) : ?>
+    <?php 
+  	if (strlen($document->name) > 20) $name = substr($document->name, 0, 20) . '&hellip;';
+	else $name = $document->name;
+	?>
+
+    <div class="col-md-2 my-2">
+       
+      <div class="text-center mt-2">
+        <a href="<?php echo $this->url('document/download', ['id' => $document->id]) ?>" target="_blank" class="document-download-anchor" data-toggle="tooltip" title="Télécharger">
+
+      <?php if (substr($document->mime, 0, 5) == 'image') : ?>
+            <img src="<?php echo $this->url('document/download', ['id' => $document->id]) ?>" class="img-fluid" alt="<?php echo $document->name ?>" />
+      <?php else : ?>
+        <?php 
+	    if ($document->mime == 'application/pdf') $glyph = 'fa-file-pdf';
+	    elseif ($document->mime == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') $glyph = 'fa-file-word';
+	    elseif ($document->mime == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') $glyph = 'fa-file-excel';
+	    elseif ($document->mime == 'application/vnd.openxmlformats-officedocument.presentationml.presentation') $glyph = 'fa-file-powerpoint';
+	    else $glyph = 'fa-file';
+    	?>
+            <i class="far <?php echo $glyph ?> fa-2x text-muted"></i>
+      <?php endif;?>
+
+        </a>
+      </div>
+
+      <div class="text-center"><small class="text-muted" data-toggle="tooltip" title="<?php echo $document->name ?>"><?php echo $name ?></small></div>
+
+    </div>
+    
+    <?php endforeach;?>
+
+</div>
+
+  <?php endif;?>
+
+        <small></small>
+      </div>
+
+<?php endforeach;?>
+
+    </div>
+  </div>
+</div>

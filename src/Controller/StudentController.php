@@ -1064,7 +1064,61 @@ class StudentController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
     }
-   
+
+    public function fileAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('id');
+    	$account = Account::get($account_id);
+
+    	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
+    	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
+    	 
+    	$reports = $this->getReport($account);
+    	$absences = $this->getAbsences($account);
+
+    	// Homework
+    	$template = $context->getConfig('commitment/message/p-pit-studies' . $account->type);
+		$filters['folder'] = ['eq', 'commitments'];
+		$filters['account_id'] = ['eq', $account_id];
+		$select = Document::getSelect('binary', [], $filters, ['name']);
+		$documents = [];
+    	$cursor = Document::getTable()->selectWith($select);
+    	foreach ($cursor as $document) {
+    		$documents[$document->id] = $document;
+    	}
+
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'reports' => $reports,
+    		'absences' => $absences,
+    		'documents' => $documents,
+    		'start_date' => $start_date,
+    		'end_date' => $end_date,
+    		'account_id' => $account->id,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+
+    public function contentAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('id');
+    	$account = Account::get($account_id);
+    
+    	$view = new ViewModel(array(
+    		'context' => $context,
+    		'account_id' => $account->id,
+    	));
+    	$view->setTerminal(true);
+    	return $view;
+    }
+    
     public function generateAttendanceAction()
     {
     	// Retrieve the context and parameters
@@ -1124,6 +1178,35 @@ class StudentController extends AbstractActionController
     	return $this->response;
     }
 
+    public function getAbsences($account)
+    {
+    	// Retrieve the context and parameter values
+    	$context = Context::getCurrent();
+    	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
+    	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
+    	 
+    	$absLates = Absence::getList('schooling', ['account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_begin_date' => $end_date], 'begin_date', 'DESC', 'search', null);
+    	$absences = array();
+    	$latenesss = array();
+    
+    	$periods = array();
+    	foreach($absLates as $absLate) {
+    		$key = $absLate->school_year . '.' . $absLate->school_period;
+    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
+    		$periods[$key][] = ['category' => $absLate->category, 'subject' => $absLate->subject, 'begin_date' => $absLate->begin_date, 'end_date' => $absLate->end_date, 'motive' => $absLate->motive, 'observations' => $absLate->observations];
+    	}
+    	 
+    	$absences = Event::GetList('absence', ['account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_end_date' => $end_date], '+begin_date', null);
+    	foreach($absences as $absence) {
+    		$key = $absence->property_1 . '.' . '';
+    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
+    		$periods[$key][] = ['category' => 'absence', 'subject' => $absence->property_3, 'begin_date' => $absence->begin_date, 'end_date' => $absence->end_date, 'motive' => $absence->property_12, 'observations' => ''];
+    	}
+    
+    	krsort($periods);
+    	return $periods;
+    }
+    
     public function absenceV2Action()
     {
     	// Retrieve the context and parameter values
@@ -1132,42 +1215,9 @@ class StudentController extends AbstractActionController
     	$account = Account::get($account_id);
     	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
     	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
+
+    	$periods = $this->getAbsences($account);
     	
-//    	$absLates = Absence::getList('schooling', array('account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'begin_date', 'DESC', 'search', null);
-    	$absLates = Absence::getList('schooling', ['account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_begin_date' => $end_date], 'begin_date', 'DESC', 'search', null);
-    	$absences = array();
-    	$absenceCount = 0;
-    	$cumulativeAbsence = 0;
-    	$latenesss = array();
-    	$latenessCount = 0;
-    	$cumulativeLateness = 0;
-    	foreach ($absLates as $absLate) {
-    		if ($absLate->category == 'absence') {
-    			$absenceCount++;
-    			$cumulativeAbsence += $absLate->duration;
-    		}
-    		elseif ($absLate->category =='lateness') {
-    			$latenessCount++;
-    			$cumulativeLateness += $absLate->duration;
-    		}
-    	}
-    
-    	$periods = array();
-    	foreach($absLates as $absLate) {
-    		$key = $absLate->school_year . '.' . $absLate->school_period;
-    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
-    		$periods[$key][] = ['category' => $absLate->category, 'subject' => $absLate->subject, 'begin_date' => $absLate->begin_date, 'end_date' => $absLate->end_date, 'motive' => $absLate->motive, 'observations' => $absLate->observations];
-    	}
-    	
-    	$absences = Event::GetList('absence', ['account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_end_date' => $end_date], '+begin_date', null);
-    	foreach($absences as $absence) {
-    		$key = $absence->property_1 . '.' . '';
-    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
-    		$periods[$key][] = ['category' => 'absence', 'subject' => $absence->property_3, 'begin_date' => $absence->begin_date, 'end_date' => $absence->end_date, 'motive' => $absence->property_12, 'observations' => ''];
-    	}
-    	 
-    	krsort($periods);
-    
     	// Return the link list
     	$view = new ViewModel(array(
     		'context' => $context,
@@ -1176,10 +1226,6 @@ class StudentController extends AbstractActionController
     		'start_date' => $start_date,
     		'end_date' => $end_date,
     		'periods' => $periods,
-    		'absenceCount' => $absenceCount,
-    		'cumulativeAbsence' => $cumulativeAbsence,
-    		'latenessCount' => $latenessCount,
-    		'cumulativeLateness' => $cumulativeLateness,
     	));
     	$view->setTerminal(true);
     	return $view;
@@ -1305,14 +1351,11 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
-    public function reportV2Action()
+    public function getReport($account)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    
-    	$account_id = (int) $this->params()->fromRoute('id');
-    	$account = Account::get($account_id);
-    
+    	
     	$periods = array();
     	$notes = NoteLink::GetList('report', array('account_id' => $account->id), 'date', 'DESC', 'search');
     	foreach($notes as $note) {
@@ -1321,6 +1364,18 @@ class StudentController extends AbstractActionController
     		$periods[$key][] = $note;
     	}
     	krsort($periods);
+    	return $periods;
+    }
+    
+    public function reportV2Action()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+    
+    	$account_id = (int) $this->params()->fromRoute('id');
+    	$account = Account::get($account_id);
+
+    	$periods = $this->getReport($account);
     
     	// Return the link list
     	$view = new ViewModel(array(
