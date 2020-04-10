@@ -837,14 +837,16 @@ class NoteController extends AbstractActionController
 				$update_time = $this->request->getPost('update_time');
 				$note->delete('update_time');
 				
-				// Update the subject and global averages
-/*				$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
-				if ($rc) {
-					$connection->rollback();
-					$this->response->setStatusCode('409');
-					$this->response->setReasonPhrase($rc);
-					return null;
-				}*/
+				// Update the subject and global averages (for admin only)
+				if ($context->hasRole('admin')) {
+					$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
+					if ($rc) {
+						$connection->rollback();
+						$this->response->setStatusCode('409');
+						$this->response->setReasonPhrase($rc);
+						return null;
+					}
+				}
 
 				$connection->commit();
 				$this->response->setStatusCode('200');
@@ -935,14 +937,16 @@ class NoteController extends AbstractActionController
 						}
 					}
 					
-					// Update the subject and global averages
-/*					$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
-					if ($rc) {
-						$connection->rollback();
-						$this->response->setStatusCode('409');
-						$this->response->setReasonPhrase($rc);
-						return null;
-					}*/
+					// Update the subject and global averages (for admin only)
+					if ($context->hasRole('admin')) {
+						$rc = Note::updateAverage($group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
+						if ($rc) {
+							$connection->rollback();
+							$this->response->setStatusCode('409');
+							$this->response->setReasonPhrase($rc);
+							return null;
+						}
+					}
 					
 					// Compute the group indicators
 //					$content['indicators'] = $note->computeGroupIndicators();
