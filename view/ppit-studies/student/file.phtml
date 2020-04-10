@@ -28,11 +28,12 @@
 			if ($averagePerSubject->subject == 'global' && $averagePerSubject->date) $date = $averagePerSubject->date;
 			else $date = null;
 		}
+		if ($date && date('Y-m-d') >= $date) $visible = true;
 	  ?>
       <?php if ($context->hasRole('manager') || $context->hasRole('teacher') || $visible) : ?>  
 
         <p class="mb-2 d-flex w-100 justify-content-between">
-          <a href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>" <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic disabled"<?php endif;?>>
+          <a href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>" <?php if (!$visible) : ?>class="text-muted font-italic disabled"<?php endif;?>>
 
         <?php if (array_key_exists($school_year, $context->getConfig('student/property/school_year')['modalities'])) : ?>
             <?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?>
@@ -43,7 +44,7 @@
         <?php endif;?>
         
           </a>
-          <small <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic"<?php endif;?>><?php echo ($date) ? $context->decodeDate($date) : $this->translate('Non yet visible', 'ppit-studies', $context->getLocale()) ?></small>
+          <small <?php if (!$visible) : ?>class="text-muted font-italic"<?php endif;?>><?php echo ($date) ? $context->decodeDate($date) : $this->translate('Non yet visible', 'ppit-studies', $context->getLocale()) ?></small>
 
         </p>
 
@@ -64,8 +65,8 @@
 
         <p class="mb-2 d-flex w-100 justify-content-between">
           <a href="<?php echo $this->url('student/download', $params, ['query' => ['start_date' => $start_date, 'end_date' => $end_date]]) ?>" <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic disabled"<?php endif;?>>
-		<?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?> &mdash;
-		<?php if ($school_period) echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
+		<?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?>
+		<?php if ($school_period) echo ' &mdash; ' . $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
         
           </a>
           <small <?php if (!$date || $date > date('Y-m-d')) : ?>class="text-muted font-italic"<?php endif;?>><?php echo ($date) ? $context->decodeDate($date) : $this->translate('Non yet visible', 'ppit-studies', $context->getLocale()) ?></small>
