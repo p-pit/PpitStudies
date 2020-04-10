@@ -815,7 +815,7 @@ return array_merge(
 	       						'content' => array(
         								'type' => 'segment',
         								'options' => array(
-        										'route' => '/content[/:id]',
+        										'route' => '/content[/:id][/:category]',
         										'constraints' => array(
         												'id' => '[0-9]*',
         										),

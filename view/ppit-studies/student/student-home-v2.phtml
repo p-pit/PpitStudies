@@ -149,7 +149,13 @@
 
       <!--Grid column-->
       <div class="col-md-9 card-block ppit-panel" id="main-panel">
-        
+    
+<?php if (array_key_exists('alert', $template)) : ?>
+        <div class="alert <?php echo $template['alert']['class'] ?>" role="alert">
+          <span><?php echo $context->localize($template['alert']['html']) ?></span>
+        </div>
+<?php endif;?>
+    
         <ul class="nav nav-tabs md-tabs nav-justified primary-color">
 <?php $first = true; foreach ($template['content'] as $tabId => $tab) : ?>
           <li class="nav-item" id="<?php echo $tabId ?>-tab">

@@ -276,6 +276,8 @@ showCalendar('<?php echo $this->url($tab['route'], array('id' => $profile->id)) 
 	<?php endif;?>
 <?php endforeach;?>
 
+$('.alert').click(function () { $(this).hide(); });
+
 <?php if ($message == 'Already activated') : ?>
 toastr.success('<?php echo $this->translate('This account has already been activated, you can log in now.', 'ppit-core', $context->getLocale()) ?>');
 $('#modalLoginForm').modal('show');

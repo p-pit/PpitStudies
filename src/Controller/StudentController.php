@@ -1110,10 +1110,13 @@ class StudentController extends AbstractActionController
     
     	$account_id = (int) $this->params()->fromRoute('id');
     	$account = Account::get($account_id);
-    
+
+    	$category = $this->params()->fromRoute('category');
+    	 
     	$view = new ViewModel(array(
     		'context' => $context,
     		'account_id' => $account->id,
+    		'category' => $category,
     	));
     	$view->setTerminal(true);
     	return $view;
