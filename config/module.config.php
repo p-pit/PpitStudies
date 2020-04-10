@@ -2802,7 +2802,7 @@ return array_merge(
 			'property_15' => array('mandatory' => false),
 			'property_19' => array('mandatory' => false),
 			'property_1' => array('mandatory' => false),
-			'groups' => array('readonly' => true),
+			'groups' => array(),
 			'property_11' => array('mandatory' => false),
 			'property_14' => array('mandatory' => false),
 			'property_10' => array('mandatory' => false),
