@@ -1269,6 +1269,20 @@ return array_merge(
 			'fr_FR' => 'Mobile',
 		),
 	),
+
+	'commitment/p-pit-studies/property/default_means_of_payment' => ['definition' => 'core_account/generic/property/default_means_of_payment'],
+	'commitment/p-pit-studies/property/transfer_order_id' => ['definition' => 'core_account/generic/property/transfer_order_id'],
+	'commitment/p-pit-studies/property/transfer_order_date' => ['definition' => 'core_account/generic/property/transfer_order_date'],
+	'commitment/p-pit-studies/property/bank_identifier' => ['definition' => 'core_account/generic/property/bank_identifier'],
+	'commitment/p-pit-studies/property/account_contact_history' => ['definition' => 'core_account/generic/property/contact_history'],
+	
+	'commitment/p-pit-studies/property/n_title_4' => ['definition' => 'core_account/p-pit-studies/property/n_title_4'],
+	'commitment/p-pit-studies/property/n_first_4' => ['definition' => 'core_account/p-pit-studies/property/n_first_4'],
+	'commitment/p-pit-studies/property/n_last_4' => ['definition' => 'core_account/p-pit-studies/property/n_last_4'],
+	'commitment/p-pit-studies/property/n_fn_4' => ['definition' => 'core_account/p-pit-studies/property/n_fn_4'],
+	'commitment/p-pit-studies/property/email_4' => ['definition' => 'core_account/p-pit-studies/property/email_4'],
+	'commitment/p-pit-studies/property/tel_work_4' => ['definition' => 'core_account/p-pit-studies/property/tel_work_4'],
+	'commitment/p-pit-studies/property/tel_cell_4' => ['definition' => 'core_account/p-pit-studies/property/tel_cell_4'],
 	
 	'commitment/p-pit-studies/property/caption' => ['definition' => 'student/property/school_year'],
 	'commitment/p-pit-studies/property/property_1' => ['definition' => 'student/property/level'],
@@ -1411,6 +1425,7 @@ return array_merge(
 		'currencySymbol' => '€',
 		'properties' => array(
 			'status', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'invoice_n_fn', 'year',
+			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12',
@@ -1418,7 +1433,7 @@ return array_merge(
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4'/*, 'account_property_5'*/, 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
 			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20',
-			'default_means_of_payment', 'update_time',
+			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier', 'account_contact_history', 'update_time',
 		),
 		'order' => 'school_year DESC',
 		'todo' => array(
