@@ -3379,11 +3379,12 @@ table.note-report td {
 	'commitment/accountList/p-pit-studies' => array(
 			'title' => array('default' => 'Commitments', 'fr_FR' => 'Engagements'),
 			'properties' => array(
-					'caption' => [],
-					'property_1' => [],
-					'property_10' => [],
-					'property_11' => [],
-					'property_12' => [],
+				'status' => [],
+				'caption' => [],
+				'property_1' => [],
+				'property_10' => [],
+				'property_11' => [],
+				'property_12' => [],
 			),
 			'anchors' => array(
 			),
