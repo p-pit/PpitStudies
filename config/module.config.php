@@ -1342,11 +1342,23 @@ return array_merge(
 	),
 
 	'commitment/p-pit-studies/property/property_8' => array(
-		'definition' => 'inline',
+/*		'definition' => 'inline',
 		'type' => 'input',
 		'labels' => array(
 			'default' => 'Enterprise name',
 			'fr_FR' => 'Nom de l’entreprise',
+		),*/
+		'definition' => 'inline',
+		'type' => 'select',
+		'source' => array(
+			'entity' => 'core_account',
+			'type' => 'business',
+			'status' => 'new,active',
+			'property' => 'name',
+		),
+		'labels' => array(
+			'en_US' => 'Company',
+			'fr_FR' => 'Entreprise',
 		),
 	),
 
@@ -3063,6 +3075,7 @@ table.note-report td {
 			'invoiced' => array('fr_FR' => 'Facturé', 'en_US' => 'Invoiced'),
 			'rejected' => array('fr_FR' => 'Rejeté', 'en_US' => 'Rejected'),
 			'registered' => array('fr_FR' => 'Comptabilisé', 'en_US' => 'Registered'),
+			'proceedings' => array('fr_FR' => 'Procédure engagée', 'en_US' => 'Proceedings'),
 		),
 		'labels' => array(
 			'en_US' => 'Status',
