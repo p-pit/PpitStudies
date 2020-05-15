@@ -1622,6 +1622,31 @@ return array_merge(
 		'property_11' => array('mandatory' => false),
 		'property_12' => array('mandatory' => false),
 	),
+
+	'commitment/update/p-pit-studies' => array(
+		'status' => array('mandatory' => true),
+		'year' => array('mandatory' => true),
+		'invoice_date' => array('mandatory' => true),
+		'caption' => array('mandatory' => true),
+		'account_id' => array('mandatory' => true),
+		'description' => array('mandatory' => false),
+		'property_1' => array('mandatory' => false, 'account-initial-value' => 'property_10'),
+		'property_2' => array('mandatory' => false),
+		'property_3' => array('mandatory' => false, 'account-initial-value' => 'property_6'),
+		'property_4' => array('mandatory' => false),
+		'property_5' => array('mandatory' => false),
+		'property_6' => array('mandatory' => false),
+		'property_7' => array('mandatory' => false),
+		'property_8' => array('mandatory' => false),
+		'property_9' => array('mandatory' => false),
+		'property_10' => array('mandatory' => false),
+		'property_11' => array('mandatory' => false),
+		'property_12' => array('mandatory' => false),
+	),
+	
+	'commitment/model_rules/p-pit-studies' => [
+	],
+	
 	'commitment/group/p-pit-studies' => array(
 		'status' => [],
 		'caption' => [],
@@ -2393,6 +2418,15 @@ return array_merge(
 		),
 	),
 
+	'core_account/p-pit-studies/property/property_5' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Options',
+			'fr_FR' => 'Options',
+		),
+	),
+		
 	'core_account/p-pit-studies/property/property_6' => array(
 		'definition' => 'inline',
 		'type' => 'select',
