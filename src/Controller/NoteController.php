@@ -1162,8 +1162,8 @@ class NoteController extends AbstractActionController
 		    					$connection->rollback();
 		    					$error = $rc;
 		    				}
-		    				// Réactivation du calcul automatique des moyennes pour les RP uniquement
-		    				if (!$error && $note->type != 'report' && $context->hasRole('manager')) { // (false) {
+		    				// Réactivation du calcul automatique des moyennes //pour les RP uniquement
+		    				if (!$error && $note->type != 'report' /*&& $context->hasRole('manager')*/) { // (false) {
 		    					// Create or update the reports, per subject and global
 		    					
 		    					// Retrieve the possibly existing report (same year, class, period, subject)
