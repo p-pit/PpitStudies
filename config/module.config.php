@@ -1013,12 +1013,12 @@ return array_merge(
 				array('route' => 'note/batchAverage', 'roles' => array('guest')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 
-				array('route' => 'noteLink', 'roles' => array('manager', 'manager')),
-				array('route' => 'noteLink/index', 'roles' => array('manager', 'manager')),
-				array('route' => 'noteLink/search', 'roles' => array('manager', 'manager')),
-				array('route' => 'noteLink/list', 'roles' => array('manager', 'manager')),
-				array('route' => 'noteLink/studentList', 'roles' => array('manager', 'manager')),
-				array('route' => 'noteLink/group', 'roles' => array('manager', 'manager')),
+				array('route' => 'noteLink', 'roles' => array('manager')),
+				array('route' => 'noteLink/index', 'roles' => array('manager')),
+				array('route' => 'noteLink/search', 'roles' => array('manager')),
+				array('route' => 'noteLink/list', 'roles' => array('manager')),
+				array('route' => 'noteLink/studentList', 'roles' => array('manager')),
+				array('route' => 'noteLink/group', 'roles' => array('manager')),
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
 				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
