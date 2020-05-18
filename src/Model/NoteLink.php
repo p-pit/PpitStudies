@@ -387,7 +387,7 @@ class NoteLink
     	$select->where($where);
 
     	// Set the limit or no-limit
-    	if ($limit) $select->limit($limit);
+    	if ($limit) $select->limit((int)$limit);
 
     	$cursor = NoteLink::getTable()->selectWith($select);
 		$noteLinks = array();
