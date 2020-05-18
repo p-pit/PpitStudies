@@ -19,8 +19,19 @@ table td {
   <table class="table table-sm table-hover">
     <tr class="table-info">
       <th>&nbsp;</th>
+      <th>&nbsp;</th>
 
 <?php foreach ($content['config']['list'] as $propertyId => $property) : ?>
+  <?php 
+	if (substr($order, 0, 1) == '-') {
+		$dir = 'DESC';
+		$major = substr($order, 1);
+	}
+	else {
+		$dir = 'ASC';
+		$major = $order;
+	}
+  ?>
       <th align="center">
         <a type="button" class="btn btn-sm sort_anchor <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
           <span><?php echo $context->localize($property['labels']) ?></span>
@@ -32,13 +43,32 @@ table td {
 <?php endforeach;?>
 
 	</tr>
+  
+    <tr>
+      <td>
+        <input type="checkbox" class="noteLink-checkbox" id="noteLink-checkbox"></input>
+      </td>
+  
+      <td class="text-center">
+        <div class="input-group input-group-sm">
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn noteLink-group-anchor" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>" id="group-anchor">
+            <span class="fas fa-list" id="group-glyphicon"></span>
+          </button>
+        </div>
+      </td>
+  
+      <td colspan="<?php echo count($listPage['properties']) ?>">&nbsp;</td>
+    </tr>
 
 <?php foreach ($content['links'] as $link) : ?>
 	
 	<tr>
+      <td>
+        <input type="checkbox" class="noteLink-checkbox" id="noteLink_checkbox-<?php echo $link['id'] ?>"></input>
+      </td>
 
       <td style="text-align: center">
-        <button type="button" class="btn btn-sm btn-outline-primary index-btn note-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $link['id'] ?>">
+        <button type="button" class="btn btn-sm btn-outline-primary index-btn note-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $link['note_id'] ?>">
           <i class="fas fa-search" id="group-glyphicon"></i>
         </button>
       </td>
@@ -47,6 +77,9 @@ table td {
           
         <?php if ($propertyId == 'place_id') : ?>
         <td><?php echo ($link[$propertyId]) ? $property['modalities'][$link[$propertyId]] : '' ?></td>
+  
+        <?php elseif ($propertyId == 'subject') : ?>
+        <td><?php echo ($link['subject'] == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : (($link[$propertyId]) ? $context->localize($property['modalities'][$link[$propertyId]]) : '') ?></td>
     
         <?php elseif ($propertyId == 'value') : ?>
         <td>  
@@ -62,7 +95,7 @@ table td {
 		<?php elseif ($property['type'] == 'input') : ?>
 		<td><?php echo $link[$propertyId] ?></td>
 	
-		<?php elseif ($property['type'] == 'select') : ?>
+		<?php elseif (in_array($property['type'], ['select', 'dynamic'])) : ?>
 		<td><?php echo ($link[$propertyId]) ? $context->localize($property['modalities'][$link[$propertyId]]) : '' ?></td>
 	
 		<?php elseif ($property['type'] == 'number') : ?>
@@ -79,9 +112,61 @@ table td {
 	
 <?php endforeach; ?>
 
-	<tr>
-		<td colspan="<?php echo count($content['config']['list']) + 1 ?>">&nbsp;</td>
-	</tr>
+    <tr>
+      <td>
+        <input type="checkbox" class="noteLink-checkbox" id="down-noteLink-checkbox"></input>
+      </td>
+    
+        <td style="text-align: center">
+          <div class="input-group input-group-sm">
+            <button type="button" class="btn btn-sm btn-outline-primary index-btn noteLink-group-anchor" id="noteLink_down_group_anchor">
+              <i class="fas fa-list" id="group-glyphicon"></i>
+            </button>
+          </div>
+        </td>
+
+<?php if (count($content['links']) == '50') : ?>
+        <td style="text-align: center">
+          <div class="input-group input-group-sm">
+            <button type="button" class="btn btn-sm btn-outline-primary index-btn" data-toggle="tooltip" data-placement="top" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="more-anchor">
+              <i class="fas fa-ellipsis-h" id="more-glyphicon"></i>
+            </button>
+          </div>
+        </td>
+<?php else : ?>
+        <td>&nbsp;</td>
+<?php endif;?>
+        <td colspan="<?php echo count($listPage['properties']) - 1 ?>">&nbsp;</td>
+      </tr>
+
+  <tr class="table-info">
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+
+    <?php $subjectProperty = $content['config']['list']['subject'] ?>
+
+    <th class="text-center" colspan="<?php echo count($content['config']['list']) ?>">
+
+      <select class="px-0 py-0 my-0" id="select-distribution">
+      <?php foreach ($content['averages'] as $subjectId => $average) : ?>
+        <?php if ($subjectId != 'global') : ?>
+          <?php $subject = $subjectProperty['modalities'][$subjectId] ?>
+        <option value="<?php echo $subjectId ?>"><?php echo $context->localize($subject) ?></option>
+        <?php endif;?>
+      <?php endforeach;?>
+        <option value="<?php echo 'global' ?>"><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></option>
+      </select>
+
+      <?php foreach ($content['averages'] as $subjectId => $average) : ?>
+        <?php if ($subjectId != 'global') : ?>
+      <span class="distribution" id="distribution_<?php echo $subjectId ?>"><?php echo round($average[0] / $average[1] * 2000) / 100 ?></span>
+        <?php endif;?>
+      <?php endforeach;?>
+  
+      <span class="distribution" id="distribution_global"><?php echo round($content['globalAverage'][0] / $content['globalAverage'][1] * 2000) / 100 ?></span>
+    
+    </th>
+  </tr>
 
   </table>
 </div>

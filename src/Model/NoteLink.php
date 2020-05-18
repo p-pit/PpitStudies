@@ -90,7 +90,7 @@ class NoteLink
 			// Cache the accounts retrieved from the database for the current instance in the account_id property description
 			elseif ($propertyId == 'account_id') {
 				$property['modalities'] = [];
-				foreach (Account::getList('p-pit-studies', ['status' => 'active,retention'], '+name', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name];
+				foreach (Account::getList('p-pit-studies', ['status' => 'active,retention'], '+name', null) as $account) $property['modalities'][$account->id] = ['default' => $account->n_fn];
 			}
 				
 			// Cache the groups retrieved from the database for the current instance in the group_id property description
@@ -115,23 +115,68 @@ class NoteLink
 		return $properties;
 	}
 
-	/**
-	 * Returns a dictionary of each property associated with its description contextual to the current instance config.
-	 */
+	public static function getConfigSearch($properties) {
+	
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		// If no description is found for the given type retrieve the properties description for the generic type
+		$configSearch = $context->getConfig('note_link/search/generic');
+	
+		// Construct the resulting dictionary for each defined property
+		$searchProperties = [];
+		foreach($configSearch as $propertyId => $options) $searchProperties[$propertyId] = $properties[$propertyId];
+	
+		// Return the dictionary
+		return $searchProperties;
+	}
+	
 	public static function getConfigList($properties) {
 	
 		// Retrieve the context
 		$context = Context::getCurrent();
 	
 		// If no description is found for the given type retrieve the properties description for the generic type
-		$descriptionList = $context->getConfig('note_link/list/generic');
+		$configList = $context->getConfig('note_link/list/generic');
 	
 		// Construct the resulting dictionary for each defined property
 		$listProperties = [];
-		foreach($descriptionList as $propertyId => $options) $listProperties[$propertyId] = $properties[$propertyId];
+		foreach($configList as $propertyId => $options) $listProperties[$propertyId] = $properties[$propertyId];
 	
 		// Return the dictionary
 		return $listProperties;
+	}
+
+	public static function getConfigStudentList($properties) {
+	
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		// If no description is found for the given type retrieve the properties description for the generic type
+		$configStudentList = $context->getConfig('note_link/student_list/generic');
+	
+		// Construct the resulting dictionary for each defined property
+		$studentListProperties = [];
+		foreach($configStudentList as $propertyId => $options) $studentListProperties[$propertyId] = $properties[$propertyId];
+	
+		// Return the dictionary
+		return $studentListProperties;
+	}
+
+	public static function getConfigGroup($properties) {
+	
+		// Retrieve the context
+		$context = Context::getCurrent();
+	
+		// If no description is found for the given type retrieve the properties description for the generic type
+		$configGroup = $context->getConfig('note_link/group/generic');
+	
+		// Construct the resulting dictionary for each defined property
+		$listProperties = [];
+		foreach($configGroup as $propertyId => $options) $groupProperties[$propertyId] = $properties[$propertyId];
+	
+		// Return the dictionary
+		return $groupProperties;
 	}
 	
 	// For compatibility
@@ -154,14 +199,14 @@ class NoteLink
     public $n_fn;
     public $user_n_fn; // Deprecated
     public $name;
-    public $account_class; // Deprecated
+    public $account_class; 
     public $note_status;
     public $category;
     public $type;
     public $school_year;
     public $level;
     public $group_id;
-    public $class; // Deprecated
+    public $class;
     public $school_period;
     public $subject;
     public $teacher_id;
@@ -212,7 +257,7 @@ class NoteLink
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
         $this->group_id = (isset($data['group_id'])) ? $data['group_id'] : null;
-        $this->class = (isset($data['class'])) ? $data['class'] : null; // Deprecated
+        $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->teacher_id = (isset($data['teacher_id'])) ? $data['teacher_id'] : null;
@@ -254,7 +299,7 @@ class NoteLink
     	$data['school_year'] =  $this->school_year;
     	$data['level'] =  $this->level;
     	$data['group_id'] =  $this->group_id;
-    	$data['class'] =  $this->class; // Deprecated
+    	$data['class'] =  $this->class;
     	$data['school_period'] =  $this->school_period;
     	$data['subject'] =  $this->subject;
     	$data['teacher_id'] =  $this->teacher_id;
@@ -306,7 +351,7 @@ class NoteLink
     	return $data;
     }
     
-    public static function getList($type, $params, $major, $dir, $mode = 'todo')
+    public static function getList($type, $params, $major, $dir, $mode = 'todo', $limit = null)
     {
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
@@ -332,6 +377,7 @@ class NoteLink
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
     			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
     			elseif ($propertyId == 'level') $where->like('student_note.level', '%'.$params[$propertyId].'%');
+				elseif (strpos($params[$propertyId], ',')) $where->in($propertyId, array_map('trim', explode(',', $params[$propertyId])));
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
     			else $where->like($propertyId, '%'.$params[$propertyId].'%');
@@ -339,9 +385,13 @@ class NoteLink
     	}
 		
     	$select->where($where);
-		$cursor = NoteLink::getTable()->selectWith($select);
+
+    	// Set the limit or no-limit
+    	if ($limit) $select->limit($limit);
+
+    	$cursor = NoteLink::getTable()->selectWith($select);
 		$noteLinks = array();
-		foreach ($cursor as $noteLink) $noteLinks[] = $noteLink;
+		foreach ($cursor as $noteLink) $noteLinks[$noteLink->id] = $noteLink;
 		return $noteLinks;
     }
 
@@ -349,6 +399,7 @@ class NoteLink
     {
     	$noteLink = NoteLink::getTable()->get($id, $column);
     	$note = Note::get($noteLink->note_id);
+    	$account = Account::get($noteLink->account_id);
     	$noteLink->status = $note->status;
     	$noteLink->category = $note->category;
     	$noteLink->type = $note->type;
@@ -357,6 +408,7 @@ class NoteLink
     	$noteLink->class = $note->class;
     	$noteLink->school_period = $note->school_period;
     	$noteLink->subject = $note->subject;
+    	$noteLink->n_fn = $account->n_fn;
     	$noteLink->teacher_id = $note->teacher_id;
     	$noteLink->date = $note->date;
     	$noteLink->target_date = $note->target_date;

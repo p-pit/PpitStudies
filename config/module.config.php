@@ -456,7 +456,25 @@ return array_merge(
                 ],
            		'may_terminate' => true,
 	       		'child_routes' => [
-					'list' => [
+					'index' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/index[/:category][/:type][/:entryId]',
+							'defaults' => [
+								'action' => 'index',
+							],
+						],
+					],
+					'search' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/search[/:category][/:type]',
+							'defaults' => [
+								'action' => 'search',
+							],
+						],
+					],
+	       			'list' => [
 						'type' => 'segment',
 						'options' => [
 							'route' => '/list[/:category][/:type]',
@@ -465,7 +483,25 @@ return array_merge(
 							],
 						],
 					],
-					'v1' => [
+					'studentList' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/student-list[/:category][/:type]',
+							'defaults' => [
+								'action' => 'studentList',
+							],
+						],
+					],
+	       			'group' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/group[/:category][/:type]',
+							'defaults' => [
+								'action' => 'group',
+							],
+						],
+					],
+	       			'v1' => [
 						'type' => 'segment',
 						'options' => [
 							'route' => '/v1[/:category][/:type][/:id]',
@@ -978,7 +1014,11 @@ return array_merge(
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 
 				array('route' => 'noteLink', 'roles' => array('manager', 'teacher')),
+				array('route' => 'noteLink/index', 'roles' => array('manager', 'teacher')),
+				array('route' => 'noteLink/search', 'roles' => array('manager', 'teacher')),
 				array('route' => 'noteLink/list', 'roles' => array('manager', 'teacher')),
+				array('route' => 'noteLink/studentList', 'roles' => array('manager', 'teacher')),
+				array('route' => 'noteLink/group', 'roles' => array('manager', 'teacher')),
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
 				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
@@ -5283,6 +5323,7 @@ table.note-report tr.period {
 		'labels' => ['default' => 'Groupe'],
 	],
 
+	'note_link/generic/property/class' => ['definition' => 'student/property/class'],
 	'note_link/generic/property/school_period' => ['definition' => 'student/property/school_period'],
 	'note_link/generic/property/subject' => ['definition' => 'student/property/school_subject'],
 	'note_link/generic/property/date' => array('definition' => 'note/property/date'),
@@ -5299,17 +5340,48 @@ table.note-report tr.period {
 		'properties' => [
 			'status', 'account_id', 'value', 'evaluation', 'assessment', 'update_time',
 			'place_id', 'n_fn', 'name',
-			'school_year', 'level', 'group_id', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'lower_note', 'higher_note', 'average_note',
+			'school_year', 'level', 'group_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'lower_note', 'higher_note', 'average_note',
 		],
 	],
 
-	'note_link/list/generic' => [
+	'note_link/student_list/generic' => [
 		'subject' => [],
 		'date' => [],
 		'reference_value' => [],
 		'weight' => [],
 		'value' => [], 
 		'evaluation' => [], 
+		'assessment' => [],
+	],
+
+	'note_link/search/generic' => [
+		'place_id' => [],
+		'school_year' => [],
+		'school_period' => [],
+		'class' => [],
+		'n_fn' => [],
+		'subject' => [],
+		'date' => [],
+	],
+	
+	'note_link/list/generic' => [
+		'place_id' => [],
+		'school_year' => [],
+		'school_period' => [],
+		'class' => [],
+		'n_fn' => [],
+		'subject' => [],
+		'date' => [],
+		'reference_value' => [],
+		'weight' => [],
+		'value' => [],
+		'evaluation' => [],
+		'assessment' => [],
+	],
+
+	'note_link/group/generic' => [
+		'value' => [],
+		'evaluation' => [],
 		'assessment' => [],
 	],
 	

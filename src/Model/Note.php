@@ -23,6 +23,7 @@ class Note
     public $type;
     public $school_year;
     public $level;
+    public $class;
     public $group_id;
     public $school_period;
     public $subject;
@@ -49,7 +50,6 @@ class Note
     public $properties;
 
     // Deprecated
-    public $class;
     public $groups;
     
     protected $inputFilter;
@@ -73,6 +73,7 @@ class Note
         $this->type = (isset($data['type'])) ? $data['type'] : null;
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
+        $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->group_id = (isset($data['group_id'])) ? $data['group_id'] : null;
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
@@ -94,7 +95,6 @@ class Note
         $this->teacher_n_fn = (isset($data['teacher_n_fn'])) ? $data['teacher_n_fn'] : null;
     
         // Deprecated
-        $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->groups = (isset($data['groups'])) ? $data['groups'] : null;
     }
 
@@ -109,6 +109,7 @@ class Note
     	$data['type'] = $this->type;
     	$data['school_year'] = $this->school_year;
     	$data['level'] = $this->level;
+    	$data['class'] = $this->class;
     	$data['group_id'] = $this->group_id;
     	$data['school_period'] = $this->school_period;
     	$data['subject'] = $this->subject;
@@ -125,7 +126,6 @@ class Note
     	$data['higher_note'] = ($this->higher_note) ? $this->higher_note : null;
     
     	// Deprecated
-    	$data['class'] = $this->class;
     	$data['groups'] = $this->groups;
     	 
     	return $data;
@@ -143,6 +143,7 @@ class Note
     	$data['type'] = $this->type;
     	$data['school_year'] = $this->school_year;
     	$data['level'] = $this->level;
+    	$data['class'] = $this->class;
     	$data['group_id'] = (int) $this->group_id;
     	$data['school_period'] = $this->school_period;
     	$data['subject'] = $this->subject;
@@ -160,7 +161,6 @@ class Note
     	$data['audit'] =  ($this->audit) ? json_encode($this->audit) : null;
 
     	// Deprecated
-    	$data['class'] = $this->class;
     	$data['groups'] = $this->groups;
     	 
     	return $data;
@@ -264,7 +264,7 @@ class Note
     	return null;
 	}
 
-	public static function updateAverage($group_id, $subject, $school_year, $school_period)
+	public static function updateAverage($class, $group_id, $subject, $school_year, $school_period)
 	{
 		$context = Context::getCurrent();
 		
@@ -689,7 +689,6 @@ class Note
 		    $this->group_id = (int) $data['group_id'];
 		}
 		
-		// Deprecated
        	if (array_key_exists('class', $data)) {
 	    	$this->class = trim(strip_tags($data['class']));
 		    if (!$this->class || strlen($this->class) > 255) return 'Integrity';

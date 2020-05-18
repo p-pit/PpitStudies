@@ -1,0 +1,47 @@
+<!-- 
+/**
+ * PpitCore V1.0 (https://github.com/p-pit/PpitCore)
+ *
+ * @link      https://github.com/p-pit/PpitCore
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitCore/blob/master/license.txt GNU-GPL license
+ */
+-->
+        <div class="card mt-3">
+          <div class="card-body">
+            
+            <h5 class="card-title text-muted"><?php echo $this->translate('Selected notes', 'ppit-studies', $context->getLocale()) ?></h5>
+     
+<?php $i = 0; foreach ($noteLinks as $note_link_id => $noteLink) : ?>
+
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <input class="form-control" disabled="disabled" value="<?php echo $noteLink->school_year . ' ' . $noteLink->school_year . ' ' . (($noteLink->class) ? $noteLink->class . ' ' : '') . (($noteLink->group_id) ? $noteLink->group_id . ' ' : '') . $noteLink->subject . ': ' . $noteLink->n_fn . '(' . $noteLink->value . ')' ?>" />
+        </div>
+      </div>
+      
+<?php $i++; endforeach;?>
+     
+          </div>
+        </div>
+        
+        <div class="card my-4">
+          <div class="card-header">
+			
+			<ul class="nav nav-tabs card-header-tabs">
+			  <li class="nav-item"><a class="nav-link group-tab active" id="update-tab"><?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?></a></li>
+			</ul>
+          </div>
+          
+          <div class="card-body">
+
+			<div class="group-panel" id="group-delete-panel">
+			    <div class="form-group row">
+					<div class="col-sm-5">&nbsp;</div>
+					<div class="col-sm-7">
+						<input name="submit" type="submit" id="submit-button" class="btn btn-warning" value="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>">
+					</div>
+				</div>
+          </div>
+        </div>
+      </div>

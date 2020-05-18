@@ -100,7 +100,7 @@ function getStudentSearch()
 function getStudentEvaluations(id) {
   
   let xhttp = new XMLHttpRequest();
-  let route = '<?php echo $this->url('noteLink/list', ['category' => 'evaluation', 'type' => 'note']) ?>' + '?account_id=' + id;
+  let route = '<?php echo $this->url('noteLink/studentList', ['category' => 'evaluation', 'type' => 'note']) ?>' + '?account_id=' + id;
 
   xhttp.open('GET', route, true);
   xhttp.onreadystatechange = function() {

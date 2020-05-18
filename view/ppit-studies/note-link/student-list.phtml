@@ -1,0 +1,87 @@
+<!-- 
+/**
+ * PpitAccounting V1.0 (https://github.com/p-pit/PpitAccounting)
+ *
+ * @link      https://github.com/p-pit/PpitAccounting
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitAccounting/blob/master/license.txt GNU-GPL license
+ */
+-->
+
+<style>
+table td { 
+  font-size: 0.9rem;
+}
+</style>
+
+<div class="col-md-12">
+ 
+  <table class="table table-sm table-hover">
+    <tr class="table-info">
+      <th>&nbsp;</th>
+
+<?php foreach ($content['config']['student_list'] as $propertyId => $property) : ?>
+      <th align="center">
+        <a type="button" class="btn btn-sm sort_anchor <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
+          <span><?php echo $context->localize($property['labels']) ?></span>
+    <?php if ($content['major'] == $propertyId) : ?>
+          <i class="fas fa-caret-<?php echo ($dir == 'ASC') ? 'up' : 'down' ?>"></i>
+    <?php endif ?>
+        </a>
+		</th>
+<?php endforeach;?>
+
+	</tr>
+
+<?php foreach ($content['links'] as $link) : ?>
+	
+	<tr>
+
+      <td style="text-align: center">
+        <button type="button" class="btn btn-sm btn-outline-primary index-btn note-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $link['id'] ?>">
+          <i class="fas fa-search" id="group-glyphicon"></i>
+        </button>
+      </td>
+
+	<?php foreach ($content['config']['student_list'] as $propertyId => $property) : ?>
+          
+        <?php if ($propertyId == 'place_id') : ?>
+        <td><?php echo ($link[$propertyId]) ? $property['modalities'][$link[$propertyId]] : '' ?></td>
+    
+        <?php elseif ($propertyId == 'value') : ?>
+        <td>  
+          <?php if (true) : //$content['config']['list']['value']['type'] == 'number') : ?>
+		  <?php echo $link['value'] ?>
+
+          <?php else : ?>
+            <?php echo $context->localize($content['config']['list']['value']['modalities'][sprintf($link['value'])]) ?>
+            
+          <?php endif;?>
+        </td>
+    
+		<?php elseif ($property['type'] == 'input') : ?>
+		<td><?php echo $link[$propertyId] ?></td>
+	
+		<?php elseif (in_array($property['type'], ['select', 'dynamic'])) : ?>
+		<td><?php echo ($link[$propertyId]) ? $context->localize($property['modalities'][$link[$propertyId]]) : '' ?></td>
+	
+		<?php elseif ($property['type'] == 'number') : ?>
+		<td style="text-align: right"><?php echo $context->formatFloat($link[$propertyId], 2) ?></td>
+	
+		<?php else : ?>
+		<td><?php echo $link[$propertyId] ?></td>
+		
+		<?php endif;?>
+
+	<?php endforeach;?>
+	
+	</tr>
+	
+<?php endforeach; ?>
+
+	<tr>
+		<td colspan="<?php echo count($content['config']['student_list']) + 1 ?>">&nbsp;</td>
+	</tr>
+
+  </table>
+</div>
