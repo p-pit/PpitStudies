@@ -173,7 +173,7 @@ class NoteLinkController extends AbstractActionController
 			}
 			
 			// Update the subject and global averages
-/*			$rc = Note::updateAverage($content['link']['group_id'], $content['link']['subject'], $content['link']['school_year'], $content['link']['school_period']);
+/*			$rc = Note::updateAverage($content['link']['place_id'], null, $content['link']['group_id'], $content['link']['subject'], $content['link']['school_year'], $content['link']['school_period']);
 			if ($rc) {
 				$connection->rollback();
 				$this->response->setStatusCode('409');
@@ -216,7 +216,7 @@ class NoteLinkController extends AbstractActionController
 		$averages = [];
 		foreach ($id as $note_link_id) {
 			$link = NoteLink::get($note_link_id);
-//			$averages[$link->school_year . '_' . $link->school_period . '_' . $link->class . '_' . $link->group_id . '_' . $link->subject] = ['school_year' => $link->school_year, 'school_period' => $link->school_period, 'class' => $link->class, 'group_id' => $link->group_id, 'subject' => $link->subject];
+			$averages[$link->place_id . '_' . $link->school_year . '_' . $link->school_period . '_' . $link->class . '_' . $link->group_id . '_' . $link->subject] = ['place_id' => $link->place_id, 'school_year' => $link->school_year, 'school_period' => $link->school_period, 'class' => $link->class, 'group_id' => $link->group_id, 'subject' => $link->subject];
 			$rc = $link->delete(null);
 			if ($rc != 'OK') {
 				$this->response->setStatusCode('409');
@@ -224,6 +224,7 @@ class NoteLinkController extends AbstractActionController
 				return null;
 			}
 		}
+		foreach ($averages as $average) Note::updateAverage($average['place_id'], null, $average['group_id'], $average['subject'], $average['school_year'], $average['school_period']);
 		return $content;
 	}
 
@@ -333,7 +334,10 @@ class NoteLinkController extends AbstractActionController
 	{
 		// Retrieve the context
 		$context = Context::getCurrent();
-	
+		if ($this->request->isGet()) $requestType = 'GET';
+		elseif ($this->request->isPost()) $requestType = 'POST';
+		elseif ($this->request->isDelete()) $requestType = 'DELETE';
+		
 		// Retrieve the parameters and the panel configuration
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
@@ -342,13 +346,10 @@ class NoteLinkController extends AbstractActionController
 		$noteLinks = [];
 		foreach ($id as $note_link_id) $noteLinks[$note_link_id] = NoteLink::get($note_link_id);
 		
-		if ($this->request->isDelete()) {
-			$this->delete($id);
-			
-			// Update Averages
-		}
+		if ($requestType == 'DELETE') $this->delete($id);
 
 		$view = new ViewModel(array(
+			'requestType' => $requestType,
 			'context' => $context,
 			'category' => $category,
 			'type' => $type,

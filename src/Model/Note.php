@@ -264,7 +264,7 @@ class Note
     	return null;
 	}
 
-	public static function updateAverage($class, $group_id, $subject, $school_year, $school_period)
+	public static function updateAverage($place_id, $class, $group_id, $subject, $school_year, $school_period)
 	{
 		$context = Context::getCurrent();
 		
@@ -286,7 +286,7 @@ class Note
 		
 		// Load the input data
 		$avgData = [];
-		$avgData['place_id'] = $noteLink->place_id;
+		$avgData['place_id'] = $place_id;
 		$avgData['group_id'] = $group_id;
 		$avgData['school_year'] = $school_year;
 		$avgData['school_period'] = $school_period;
@@ -357,6 +357,7 @@ class Note
 				$rc = $reportLink->add();
 			}
 			else $rc = $reportLink->update(null);
+var_dump($reportLink->id);
 			if ($rc != 'OK') return $rc;
 		}
 
@@ -441,6 +442,7 @@ class Note
 				$rc = $reportLink->add();
 			}
 			else $rc = $reportLink->update(null);
+var_dump($reportLink->id);
 			if ($rc != 'OK') return $rc;
 		}
 
