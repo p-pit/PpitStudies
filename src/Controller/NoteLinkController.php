@@ -342,9 +342,10 @@ class NoteLinkController extends AbstractActionController
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
 		$id = $this->params()->fromQuery('id');
+		$noteLinks = NoteLink::getList($type, ['id' => $id], 'id', 'DESC', null);
 		$id = explode(',', $id);
-		$noteLinks = [];
-		foreach ($id as $note_link_id) $noteLinks[$note_link_id] = NoteLink::get($note_link_id);
+/*		$noteLinks = [];
+		foreach ($id as $note_link_id) $noteLinks[$note_link_id] = NoteLink::get($note_link_id);*/
 		
 		if ($requestType == 'DELETE') $this->delete($id);
 
