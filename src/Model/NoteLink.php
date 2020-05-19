@@ -36,6 +36,7 @@ class NoteLink
 			'place_caption' => 		['entity' => 'core_place', 'column' => 'caption'],
 			'n_fn' => 				['entity' => 'core_vcard', 'column' => 'n_fn'],
 			'name' => 				['entity' => 'core_account', 'column' => 'name'],
+			'account_property_15' =>['entity' => 'core_account', 'column' => 'property_15'],
 			'note_status' => 		['entity' => 'student_note', 'column' => 'status'],
 			'category' => 			['entity' => 'student_note', 'column' => 'category'],
 			'type' => 				['entity' => 'student_note', 'column' => 'type'],
@@ -199,6 +200,7 @@ class NoteLink
     public $n_fn;
     public $user_n_fn; // Deprecated
     public $name;
+    public $account_property_15;
     public $account_class; 
     public $note_status;
     public $category;
@@ -250,6 +252,7 @@ class NoteLink
         $this->n_fn = (isset($data['n_fn'])) ? $data['n_fn'] : null;
         $this->user_n_fn = (isset($data['user_n_fn'])) ? $data['user_n_fn'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null; // Deprecated
+        $this->account_property_15 = (isset($data['account_property_15'])) ? $data['account_property_15'] : null; // Deprecated
         $this->account_class = (isset($data['account_class'])) ? $data['account_class'] : null;
         $this->note_status = (isset($data['note_status'])) ? $data['note_status'] : null;
         $this->category = (isset($data['category'])) ? $data['category'] : null;
@@ -292,6 +295,7 @@ class NoteLink
     	$data['n_fn'] =  $this->n_fn;
     	$data['user_n_fn'] =  $this->user_n_fn;
     	$data['name'] =  $this->name;
+    	$data['account_property_15'] =  $this->account_property_15;
     	$data['account_class'] =  $this->account_class;
     	$data['note_status'] =  $this->note_status;
     	$data['category'] =  $this->category;
@@ -327,6 +331,7 @@ class NoteLink
     	unset($data['n_fn']);
     	unset($data['user_n_fn']);
     	unset($data['name']);
+    	unset($data['account_property_15']);
     	unset($data['account_class']);
     	unset($data['note_status']);
     	unset($data['category']);
@@ -358,7 +363,7 @@ class NoteLink
     		->order(array($major.' '.$dir, 'date DESC', 'type ASC'))
     		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id' , 'class', 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
-    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_class' => 'property_7'), 'left')
+    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7'), 'left')
     		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('n_fn'), 'left');
     	$where = new Where;
     	$where->notEqualTo('student_note_link.status', 'deleted');
@@ -374,6 +379,7 @@ class NoteLink
     			elseif ($propertyId == 'group_id') $where->equalTo('student_note.group_id', $params[$propertyId]);
     			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
     			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
+    			elseif ($propertyId == 'account_property_15') $where->equalTo('core_account.property_15', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
     			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
     			elseif ($propertyId == 'level') $where->like('student_note.level', '%'.$params[$propertyId].'%');

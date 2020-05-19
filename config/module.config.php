@@ -5312,6 +5312,7 @@ table.note-report tr.period {
 	'note_link/generic/property/place_id' => ['definition' => 'core_account/generic/property/place_id'],
 	'note_link/generic/property/n_fn' => ['definition' => 'note/property/n_fn'],
 	'note_link/generic/property/name' => ['definition' => 'note/property/name'],
+	'note_link/generic/property/account_property_15' => ['definition' => 'core_account/p-pit-studies/property/property_15'],
 	
 	'note_link/generic/property/school_year' => ['definition' => 'student/property/school_year'],
 	'note_link/generic/property/level' => array('definition' => 'student/property/evaluationCategory'),
@@ -5339,7 +5340,7 @@ table.note-report tr.period {
 	'note_link/generic' => [
 		'properties' => [
 			'status', 'account_id', 'value', 'evaluation', 'assessment', 'update_time',
-			'place_id', 'n_fn', 'name',
+			'place_id', 'n_fn', 'name', 'account_property_15',
 			'school_year', 'level', 'group_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'lower_note', 'higher_note', 'average_note',
 		],
 	],
