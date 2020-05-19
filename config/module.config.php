@@ -1393,7 +1393,7 @@ return array_merge(
 		'source' => array(
 			'entity' => 'core_account',
 			'type' => 'business',
-			'status' => 'new,active',
+			'status' => 'new,active,retention',
 			'property' => 'name',
 		),
 		'labels' => array(

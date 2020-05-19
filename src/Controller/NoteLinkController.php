@@ -216,15 +216,14 @@ class NoteLinkController extends AbstractActionController
 		$averages = [];
 		foreach ($id as $note_link_id) {
 			$link = NoteLink::get($note_link_id);
-			$averages[$link->school_year . '_' . $link->school_period . '_' . $link->class . '_' . $link->group_id . '_' . $link->subject] = ['school_year' => $link->school_year, 'school_period' => $link->school_period, 'class' => $link->class, 'group_id' => $link->group_id, 'subject' => $link->subject];
-/*			$rc = $link->delete(null);
+//			$averages[$link->school_year . '_' . $link->school_period . '_' . $link->class . '_' . $link->group_id . '_' . $link->subject] = ['school_year' => $link->school_year, 'school_period' => $link->school_period, 'class' => $link->class, 'group_id' => $link->group_id, 'subject' => $link->subject];
+			$rc = $link->delete(null);
 			if ($rc != 'OK') {
 				$this->response->setStatusCode('409');
 				$this->response->setReasonPhrase($rc);
 				return null;
-			}*/
+			}
 		}
-var_dump($averages);		
 		return $content;
 	}
 
