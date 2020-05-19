@@ -1499,7 +1499,7 @@ return array_merge(
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12',
-			'including_options_amount', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
+			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
 			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20',
@@ -1641,27 +1641,6 @@ return array_merge(
 			'update_time' => [],
 		),
 	),
-	
-	'commitment/update/p-pit-studies' => array(
-		'status' => array('mandatory' => true),
-		'year' => array('mandatory' => true),
-		'invoice_date' => array('mandatory' => true),
-		'caption' => array('mandatory' => true),
-		'account_id' => array('mandatory' => true),
-		'description' => array('mandatory' => false),
-		'property_1' => array('mandatory' => false, 'account-initial-value' => 'property_10'),
-		'property_2' => array('mandatory' => false),
-		'property_3' => array('mandatory' => false, 'account-initial-value' => 'property_6'),
-		'property_4' => array('mandatory' => false),
-		'property_5' => array('mandatory' => false),
-		'property_6' => array('mandatory' => false),
-		'property_7' => array('mandatory' => false),
-		'property_8' => array('mandatory' => false),
-		'property_9' => array('mandatory' => false),
-		'property_10' => array('mandatory' => false),
-		'property_11' => array('mandatory' => false),
-		'property_12' => array('mandatory' => false),
-	),
 
 	'commitment/update/p-pit-studies' => array(
 		'status' => array('mandatory' => true),
@@ -1674,6 +1653,7 @@ return array_merge(
 		'property_2' => array('mandatory' => false),
 		'property_3' => array('mandatory' => false, 'account-initial-value' => 'property_6'),
 		'property_4' => array('mandatory' => false),
+		'order_identifier' => array('mandatory' => false),
 		'property_5' => array('mandatory' => false),
 		'property_6' => array('mandatory' => false),
 		'property_7' => array('mandatory' => false),
@@ -3216,6 +3196,7 @@ table.note-report td {
 	),
 
 	'commitmentTerm/p-pit-studies/property/commitment_caption' => ['definition' => 'student/property/school_year'],
+	'commitmentTerm/p-pit-studies/property/commitment_order_identifier' => ['definition' => 'commitment/generic/property/order_identifier'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_1' => ['definition' => 'student/property/level'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_4' => ['definition' => 'commitment/p-pit-studies/property/property_4'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_5' => ['definition' => 'commitment/p-pit-studies/property/property_5'],
@@ -3285,6 +3266,7 @@ table.note-report td {
 		'tiny_4' => [],
 		'tiny_5' => [],*/
 		'commitment_property_4' => ['readonly' => true],
+		'commitment_order_identifier' => ['readonly' => true],
 		'commitment_property_5' => ['readonly' => true],
 		'commitment_property_6' => ['readonly' => true],
 		'commitment_property_7' => ['readonly' => true],
@@ -3397,6 +3379,11 @@ table.note-report td {
 				'left' => array('en_US' => 'File reference', 'fr_FR' => 'Référence dossier'),
 				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 				'params' => array('commitment_property_4'),
+			),
+			array(
+				'left' => array('en_US' => 'Order identifier', 'fr_FR' => 'Numéro de commande client'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('commitment_order_identifier'),
 			),
 			array(
 				'left' => array('en_US' => 'Training name', 'fr_FR' => 'Nom de la formation'),
