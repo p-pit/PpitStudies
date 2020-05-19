@@ -203,7 +203,7 @@ function getNoteLinkList(params) {
       // Connect the grouped actions anchors
       $('.noteLink-group-anchor').click(function () {
         let ids = [];
-        $('.noteLink-checkbox').each(function () {
+        $('.noteLink-checkbox-row').each(function () {
           if ($(this).prop('checked')) {
             let id = $(this).attr('id').split('-')[1];
             if (!ids.includes(id)) ids.push(id);
