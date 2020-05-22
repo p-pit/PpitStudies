@@ -5,6 +5,7 @@
 <script>
 
 var criterion = 'n_fn', dir = 'ASC';
+var studentListOrder = 'date', studentListDir = 'DESC';
 
 function openDocumentModal()
 {
@@ -100,13 +101,34 @@ function getStudentSearch()
 function getStudentEvaluations(id) {
   
   let xhttp = new XMLHttpRequest();
-  let route = '<?php echo $this->url('noteLink/studentList', ['category' => 'evaluation', 'type' => 'note']) ?>' + '?account_id=' + id;
+  let route = '<?php echo $this->url('noteLink/studentList', ['category' => 'evaluation', 'type' => 'note']) ?>' + '?account_id=' + id + '&order=' + ((studentListDir =='ASC') ? '' : '-') + studentListOrder;
 
   xhttp.open('GET', route, true);
   xhttp.onreadystatechange = function() {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4 && xhttp.status == 200) {
         $('#detail-action-panel').html(xhttp.responseText);
+    
+        // Connect the sort anchors
+        $('.noteLink-sort-anchor').click(function () {
+          studentListOrder = $(this).attr('id').split('-')[1];
+          let descCriterion = $('.noteLink-sort-anchor-down').attr('id');
+          let ascCriterion = $('.noteLink-sort-anchor-up').attr('id');
+          if ('noteLink_sort_anchor-' + studentListOrder == ascCriterion) studentListDir = 'DESC';
+          else if ('noteLink_sort_anchor-' + studentListOrder == descCriterion) studentListDir = 'ASC';
+          else studentListDir = 'ASC';
+          getStudentEvaluations(id);
+        });
+    
+        // Connect the distribution anchor
+        $('.distribution').hide();
+        var distributionValue = $('#select-distribution').val();
+        $('#distribution_' + distributionValue).show();
+        $('#select-distribution').change(function () {
+          $('.distribution').hide();
+          var distributionValue = $('#select-distribution').val();
+          $('#distribution_' + distributionValue).show();
+        });
     }
   }
   xhttp.send();

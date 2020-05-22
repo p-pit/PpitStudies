@@ -33,10 +33,10 @@ table td {
 	}
   ?>
       <th align="center">
-        <a type="button" class="btn btn-sm sort_anchor <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
+        <a type="button" class="btn btn-sm sort_anchor <?php if ($content['major'] == $propertyId) echo 'btn-secondary active '.(($content['major'] == $propertyId) ? (($content['dir'] == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
           <span><?php echo $context->localize($property['labels']) ?></span>
     <?php if ($content['major'] == $propertyId) : ?>
-          <i class="fas fa-caret-<?php echo ($dir == 'ASC') ? 'up' : 'down' ?>"></i>
+          <i class="fas fa-caret-<?php echo ($content['dir'] == 'ASC') ? 'up' : 'down' ?>"></i>
     <?php endif ?>
         </a>
 		</th>

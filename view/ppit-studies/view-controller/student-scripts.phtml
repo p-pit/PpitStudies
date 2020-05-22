@@ -81,7 +81,8 @@ function getHomework(calendar) {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4) {
       let obj = jQuery.parseJSON(xhttp.responseText);
-      obj.forEach(function (homework, homeworkId) {
+      Object.keys(obj).forEach(function (homeworkId) {
+        let homework = obj[homeworkId];
         let color, textColor, title;
         if (homework.type == 'done-work') {
             color = '<?php echo $context->getConfig('note/colour')['done-work'] ?>', textColor = 'black';

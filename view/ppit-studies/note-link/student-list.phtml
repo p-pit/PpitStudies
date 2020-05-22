@@ -18,14 +18,13 @@ table td {
  
   <table class="table table-sm table-hover">
     <tr class="table-info">
-      <th>&nbsp;</th>
 
 <?php foreach ($content['config']['student_list'] as $propertyId => $property) : ?>
       <th align="center">
-        <a type="button" class="btn btn-sm sort_anchor <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
+        <a type="button" class="btn btn-sm noteLink-sort-anchor <?php if ($content['major'] == $propertyId) echo 'btn-secondary active '.(($content['major'] == $propertyId) ? (($content['dir'] == 'ASC') ? 'noteLink-sort-anchor-up' : 'noteLink-sort-anchor-down') : '') ?>" role="button" id="noteLink_sort_anchor-<?php echo $propertyId ?>">
           <span><?php echo $context->localize($property['labels']) ?></span>
     <?php if ($content['major'] == $propertyId) : ?>
-          <i class="fas fa-caret-<?php echo ($dir == 'ASC') ? 'up' : 'down' ?>"></i>
+          <i class="fas fa-caret-<?php echo ($content['dir'] == 'ASC') ? 'up' : 'down' ?>"></i>
     <?php endif ?>
         </a>
 		</th>
@@ -36,12 +35,6 @@ table td {
 <?php foreach ($content['links'] as $link) : ?>
 	
 	<tr>
-
-      <td style="text-align: center">
-        <button type="button" class="btn btn-sm btn-outline-primary index-btn note-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $link['id'] ?>">
-          <i class="fas fa-search" id="group-glyphicon"></i>
-        </button>
-      </td>
 
 	<?php foreach ($content['config']['student_list'] as $propertyId => $property) : ?>
           
@@ -79,9 +72,39 @@ table td {
 	
 <?php endforeach; ?>
 
-	<tr>
-		<td colspan="<?php echo count($content['config']['student_list']) + 1 ?>">&nbsp;</td>
-	</tr>
+  <tr class="table-info">
+
+    <?php $subjectProperty = $content['config']['list']['subject'] ?>
+
+    <th class="text-center" colspan="<?php echo count($content['config']['list']) ?>">
+
+      <select class="px-0 py-0 my-0" id="select-distribution">
+
+      <?php foreach ($content['averages'] as $subjectId => $average) : ?>
+        <?php if ($subjectId != 'global') : ?>
+          <?php $subject = $subjectProperty['modalities'][$subjectId] ?>
+        <option value="<?php echo $subjectId ?>"><?php echo $context->localize($subject) ?></option>
+        <?php endif;?>
+      <?php endforeach;?>
+
+      <?php if (count($content['links'])) : ?>
+        <option value="<?php echo 'global' ?>"><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></option>
+      <?php endif;?>
+
+      </select>
+
+      <?php foreach ($content['averages'] as $subjectId => $average) : ?>
+        <?php if ($subjectId != 'global') : ?>
+      <span class="distribution" id="distribution_<?php echo $subjectId ?>"><?php echo round($average[0] / $average[1] * 2000) / 100 ?></span>
+        <?php endif;?>
+      <?php endforeach;?>
+  
+      <?php if (count($content['links'])) : ?>
+      <span class="distribution" id="distribution_global"><?php echo round($content['globalAverage'][0] / $content['globalAverage'][1] * 2000) / 100 ?></span>
+      <?php endif;?>
+    
+    </th>
+  </tr>
 
   </table>
 </div>

@@ -5338,7 +5338,7 @@ table.note-report tr.period {
 		'reference_value' => [],
 		'weight' => [],
 		'value' => [], 
-		'evaluation' => [], 
+//		'evaluation' => [], 
 		'assessment' => [],
 	],
 
@@ -5363,7 +5363,7 @@ table.note-report tr.period {
 		'reference_value' => [],
 		'weight' => [],
 		'value' => [],
-		'evaluation' => [],
+//		'evaluation' => [],
 		'assessment' => [],
 	],
 

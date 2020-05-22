@@ -48,7 +48,7 @@ class NoteLinkController extends AbstractActionController
 		}
 	
 		// Retrieve the filtered and ordered links
-		$content = ['major' => $major];
+		$content = ['major' => $major, 'dir' => $dir];
 		$links = NoteLink::getList($type, $filters, $major, $dir, 'search', $limit);
 		$content['links'] = [];
 
