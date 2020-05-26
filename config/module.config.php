@@ -4383,6 +4383,14 @@ table.note-report tr.period {
 	),
 	
 	// Calendar event
+
+	'event/calendar/property/account_status' => array(
+		'definition' => 'core_account/teacher/property/status',
+		'labels' => array(
+			'default' => 'Account status',
+			'fr_FR' => 'Statut du compte',
+		),
+	),
 	
 	'event/calendar/property/property_1' => array('definition' => 'student/property/school_year'),
 	'event/calendar/property/property_2' => array('definition' => 'student/property/class'),
@@ -4411,7 +4419,7 @@ table.note-report tr.period {
 		'dimensions' => array(),
 		'indicators' => array(),
 		'properties' => array(
-			'status', 'type', 'place_id', 'place_caption', 'vcard_id', 'n_fn', 'category', 'subcategory', 'identifier', 'caption', 'description',
+			'status', 'type', 'place_id', 'place_caption', 'vcard_id', 'n_fn', 'account_status', 'category', 'subcategory', 'identifier', 'caption', 'description',
 			'begin_date', 'end_date', 'day_of_week', 'day_of_month', 'exception_1', 'exception_2', 'exception_3', 'exception_4', 'begin_time', 'end_time', 'time_zone', 'location', 'latitude', 'longitude',
 			'value', 'comments',
 			'property_1', 'property_2', 'property_3', 'property_4', 
