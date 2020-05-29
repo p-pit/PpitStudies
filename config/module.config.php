@@ -3465,7 +3465,7 @@ table.note-report td {
 				'status' => [],
 				'caption' => [],
 				'property_1' => [],
-				'property_10' => [],
+				'property_13' => [],
 				'property_11' => [],
 				'property_12' => [],
 			),
