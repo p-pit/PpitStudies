@@ -1392,7 +1392,7 @@ class NoteController extends AbstractActionController
 		
 		// Check and update when necessary the average for all the reports
 		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
-			if ($note->subject != 'global') {
+//			if ($note->subject != 'global') {
 				$select = NoteLink::getTable()->getSelect()
 					->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
 					->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
@@ -1423,7 +1423,7 @@ class NoteController extends AbstractActionController
 						}
 					}
 				}
-			}
+//			}
 		}
 		return $this->response;
 	}
