@@ -1387,7 +1387,7 @@ class NoteController extends AbstractActionController
 		}
 		if (!$school_period) $school_period = 'q1';
 		
-		$where = array();
+		$where = array('school_year' => $school_year, 'school_period' => $school_period);
 		if ($place_identifier) $where['place_id'] = $place->id;
 		
 		// Check and update when necessary the average for all the reports
