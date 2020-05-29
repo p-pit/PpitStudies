@@ -1412,7 +1412,7 @@ class NoteController extends AbstractActionController
 						}
 						if (round($value, 2) != round($noteLink->value, 2) || count($distribution) != count($noteLink->distribution)) {
 							print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: ' . $noteLink->account_id . ' ' . $noteLink->n_fn.' '.$note->class.' '.$note->subject."\n");
-							print_r('Computed averages');
+							print_r("Computed averages:\n");
 							print_r($computedAverages[$noteLink->account_id]);
 							print_r('New: '.$value."\n");
 							print_r($distribution);
