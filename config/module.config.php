@@ -1286,6 +1286,10 @@ return array_merge(
 			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
 			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
+		'perspectives' => array(
+				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
+				'account' => array('committed', 'visa', 'active', 'retention', 'canceled'),
+		),
 		'labels' => array(
 			'en_US' => 'Account status',
 			'fr_FR' => 'Statut du compte',
@@ -1492,7 +1496,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'invoice_n_fn', 'year',
+			'status', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -2840,6 +2844,10 @@ return array_merge(
 							'params' => array('type' => 'p-pit-studies', 'contactNumber' => 4),
 							'labels' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 					),
+					'commitments' => array(
+						'definition' => 'inline',
+						'labels' => array('default' => 'Subscription years', 'fr_FR' => 'Années d’incription'),
+					),
 					'account-document' => array(
 							'definition' => 'inline',
 							'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
@@ -3449,7 +3457,6 @@ table.note-report td {
 	
 	'commitmentAccount/contactForm/p-pit-studies' => array('definition' => 'customization/esi/commitmentAccount/contactForm/p-pit-studies'),
 
-	// Deprecated
 	'commitment/accountList/p-pit-studies' => array(
 			'title' => array('default' => 'Commitments', 'fr_FR' => 'Engagements'),
 			'properties' => array(
