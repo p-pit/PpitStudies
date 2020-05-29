@@ -520,12 +520,10 @@ var_dump($reportLink->id);
     		$average = 0;
     		$globalWeight = 0;
     		foreach ($notes as $note) {
-    			if ($note['note'] !== null) {
-	    			$average += $note['note'] * $note['weight'];
-	    			$globalWeight += $note['reference_value'] * $note['weight'];
-/*	    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
-    				$globalWeight += $note['weight'];*/
-    			}
+    			$average += $note['note'] * $note['weight'];
+    			$globalWeight += $note['reference_value'] * $note['weight'];
+/*    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
+    			$globalWeight += $note['weight'];*/
     		}
     		if ($globalWeight != 0) {
     			$average = $average / $globalWeight * 20;
@@ -539,12 +537,10 @@ var_dump($reportLink->id);
 	    		$average = 0;
 	    		$globalWeight = 0;
 	    		foreach ($notes as $note) {
-    				if ($note['note'] !== null) {
-		    			$average += $note['note'] * $note['weight'];
-		    			$globalWeight += $note['reference_value'] * $note['weight'];
+	    			$average += $note['note'] * $note['weight'];
+	    			$globalWeight += $note['reference_value'] * $note['weight'];
 /*	    			$average += $note['note'] * 20 / $note['reference_value'] * $note['weight'];
 	    			$globalWeight += $note['weight'];*/
-    				}
 	    		}
 	    		if ($globalWeight != 0) {
 	    			$average = $average / $globalWeight * 20;
