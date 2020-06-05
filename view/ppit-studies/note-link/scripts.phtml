@@ -1,4 +1,4 @@
-<?php echo $this->partial('/partials/search-scripts-v2') ?>
+<?php //echo $this->partial('/partials/search-scripts-v2') ?>
 <?php echo $this->partial('/ppit-studies/view-controller/note-scripts') ?>
 
 <script>
@@ -213,13 +213,6 @@ function getNoteLinkList(params) {
         getGroup(ids);
         $(this).removeClass("btn-outline-primary").addClass("btn-primary");
         $('#modalForm').modal('toggle');
-      });
-			
-      // Connect the detail anchors
-      $('.commitment-detail-anchor').click(function () {
-        var id = $(this).attr('id').split('_')[1];
-        getDetail(id);
-        $(this).removeClass("btn-outline-primary").addClass("btn-primary");
       });
 			
       // Connect the distribution anchor

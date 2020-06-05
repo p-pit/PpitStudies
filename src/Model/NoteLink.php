@@ -375,6 +375,11 @@ class NoteLink
     	else {
     		// Set the filters
     		foreach ($params as $propertyId => $property) {
+    			if (in_array(substr($propertyId, 0, 4), array('min_', 'max_'))) $propertyKey = substr($propertyId, 4);
+    			else $propertyKey = $propertyId;
+    			$entity = NoteLink::$model['properties'][$propertyKey]['entity'];
+    			$column = NoteLink::$model['properties'][$propertyKey]['column'];
+    			 
     			if ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
     			elseif ($propertyId == 'group_id') $where->equalTo('student_note.group_id', $params[$propertyId]);
     			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
@@ -383,10 +388,10 @@ class NoteLink
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
     			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
     			elseif ($propertyId == 'level') $where->like('student_note.level', '%'.$params[$propertyId].'%');
-				elseif (strpos($params[$propertyId], ',')) $where->in('student_note_link.' . $propertyId, array_map('trim', explode(',', $params[$propertyId])));
-    			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
-    			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo(substr($propertyId, 4), $params[$propertyId]);
-    			else $where->like($propertyId, '%'.$params[$propertyId].'%');
+				elseif (strpos($params[$propertyId], ',')) $where->in($entity . '.' . $column, array_map('trim', explode(',', $params[$propertyId])));
+    			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
+    			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
+    			else $where->like($entity . '.' . $column, '%'.$params[$propertyId].'%');
     		}
     	}
 		

@@ -57,13 +57,15 @@ class NoteLinkController extends AbstractActionController
 		foreach ($links as $link) {
 			$content['links'][$link->id] = $link->getProperties();
 			if (!array_key_exists($link->subject, $averages)) $averages[$link->subject] = [0, 0];
-			$averages[$link->subject][0] += $link->value * $link->weight;
-			$averages[$link->subject][1] += $link->reference_value * $link->weight;
+			if ($link->value !== null) {
+				$averages[$link->subject][0] += $link->value * $link->weight;
+				$averages[$link->subject][1] += $link->reference_value * $link->weight;
+			}
 		}
 		$globalAverage = [0, 0];
 		$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 		foreach ($averages as $subject => $average) {
-			if ($subject != 'global') {
+			if ($subject != 'global' && $average[1]) {
 				$globalAverage[0] += $average[0] / $average[1] * $averageReference;
 				$globalAverage[1] += $averageReference;
 			}
