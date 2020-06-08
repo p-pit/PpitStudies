@@ -42,6 +42,7 @@ class NoteLink
 			'type' => 				['entity' => 'student_note', 'column' => 'type'],
 			'school_year' => 		['entity' => 'student_note', 'column' => 'school_year'],
 			'level' => 				['entity' => 'student_note', 'column' => 'level'],
+			'class' => 				['entity' => 'student_note', 'column' => 'class'], // Deprecated
 			'group_id' => 			['entity' => 'student_note', 'column' => 'group_id'],
 			'school_period' => 		['entity' => 'student_note', 'column' => 'school_period'],
 			'subject' => 			['entity' => 'student_note', 'column' => 'subject'],
