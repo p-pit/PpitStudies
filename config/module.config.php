@@ -1655,7 +1655,7 @@ return array_merge(
 		'invoice_date' => array('mandatory' => true, 'accountant' => true),
 		'caption' => array('mandatory' => true),
 		'account_id' => array('mandatory' => true, 'accountant' => true),
-		'invoice_account_id' => array('mandatory' => true, 'accountant' => true),
+		'invoice_account_id' => array('mandatory' => false, 'accountant' => true),
 		'description' => array('mandatory' => false),
 		'property_1' => array('mandatory' => false, 'account-initial-value' => 'property_10'),
 		'property_13' => array('mandatory' => false, 'account-initial-value' => 'property_7'),
