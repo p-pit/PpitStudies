@@ -357,7 +357,6 @@ class Note
 				$rc = $reportLink->add();
 			}
 			else $rc = $reportLink->update(null);
-var_dump($reportLink->id);
 			if ($rc != 'OK') return $rc;
 		}
 
