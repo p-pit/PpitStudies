@@ -1269,6 +1269,23 @@ return array_merge(
 	),
 	
 	// Commitment
+
+	'commitment/p-pit-studies/property/status' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+			'confirmed' => array('en_US' => 'Confirmed', 'fr_FR' => 'Confirmé'),
+			'approved' => array('en_US' => 'Approved', 'fr_FR' => 'Validé'),
+			'invoiced' => array('en_US' => 'Invoiced', 'fr_FR' => 'Facturé', 'auto' => true),
+			'settled' => array('en_US' => 'Settled', 'fr_FR' => 'Réglé', 'auto' => true),
+			'registered' => array('en_US' => 'Registered', 'fr_FR' => 'Comptabilisé', 'auto' => true),
+		),
+		'labels' => array(
+			'en_US' => 'Commitment status',
+			'fr_FR' => 'Statut d’engagement',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/account_status' => array(
 		'definition' => 'inline',
@@ -1674,7 +1691,7 @@ return array_merge(
 	),
 
 	'commitment/subscriptionUpdate/p-pit-studies' => array(
-		'status' => array('mandatory' => true, 'accountant' => true),
+		'status' => array('mandatory' => true),
 		'year' => array('mandatory' => true, 'accountant' => true),
 		'invoice_date' => array('mandatory' => true, 'accountant' => true),
 		'caption' => array('mandatory' => true),
