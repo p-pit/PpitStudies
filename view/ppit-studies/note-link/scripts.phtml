@@ -1,5 +1,6 @@
 <?php //echo $this->partial('/partials/search-scripts-v2') ?>
 <?php echo $this->partial('/ppit-studies/view-controller/note-scripts') ?>
+<?php echo $this->partial('/ppit-studies/note/evaluation-scripts') ?>
 
 <script>
 
@@ -179,7 +180,7 @@ function getNoteLinkList(params) {
       $('.noteLink-detail-anchor').click(function () {
         var id = $(this).attr('id').split('_')[1];
         if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
-        else if ('<?php echo $category ?>' == 'evaluation') getEvaluationUpdate(id);
+        else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(),  id, 'note-update-panel');
         $(this).removeClass("btn-outline-primary").addClass("btn-primary");
         $('#modalForm').modal('toggle');
       });

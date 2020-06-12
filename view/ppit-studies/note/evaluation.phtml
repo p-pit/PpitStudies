@@ -55,7 +55,7 @@
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $context->localize($context->getConfig('student/property/school_period')['labels']) ?></label>
 			<div class="col-sm-7">
-				<select class="form-control form-control-sm update_input update_input_select" id="school_period" <?php if ($isDisabled || ($content['type'] == 'report')) echo 'disabled="disabled"'?> required>
+				<select class="form-control form-control-sm update_input update_input_select" id="school_period" <?php if ($isDisabled || ($content['type'] == 'report' && $content['id'])) echo 'disabled="disabled"'?> required>
 					<option />
 	<?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $modalityId => $modality) : ?>
 					<option value="<?php echo $modalityId ?>" <?php if ($modalityId == $content['note']['school_period']) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
@@ -147,7 +147,7 @@
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Reference value', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<input class="form-control form-control-sm update_input update_input_number" id="reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" disabled="disabled" required />
+				<input class="form-control form-control-sm update_input update_input_number" id="reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" <?php if (!$context->hasRole('manager')) : ?>disabled="disabled"<?php endif;?> required />
 			</div>
 		</div>
 
@@ -157,7 +157,7 @@
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Weight', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<input class="form-control form-control-sm update_input update_input_number" id="weight" value="<?php echo $context->formatFloat($weight, 2) ?>" <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"'?> required />
+				<input class="form-control form-control-sm update_input update_input_number" id="weight" value="<?php echo $context->formatFloat($weight, 2) ?>" <?php if ($isDisabled || ($content['type'] == 'report' && !$context->hasRole('manager'))) : ?>disabled="disabled"<?php endif;?> required />
 			</div>
 		</div>
 

@@ -54,14 +54,14 @@ function deleteNoteEvaluation(route, panel)
   xhttp.send(formData);
 }
 
-function getNoteEvaluation(type, id, panel) {
+function getNoteEvaluation(type, group_id, id, panel) {
 
   if (!panel) panel = 'grouped-action-panel';
   var xhttp = new XMLHttpRequest();
   var route = '<?php echo $this->url('note/evaluation') ?>/' + type;
   if (id) route += '/' + id;
-  else {
-    route += '?group_id=' + $('#search-groups').val();
+//  else {
+    route += '?group_id=' + group_id;
     route += '&accounts=';
     let first = true;
     $('.account-checkbox').each(function () {
@@ -72,7 +72,7 @@ function getNoteEvaluation(type, id, panel) {
         route += account_id;
       }
     });
-  }
+//  }
 
   xhttp.open('GET', route, true);
   xhttp.onreadystatechange = function() {

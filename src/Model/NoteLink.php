@@ -501,7 +501,7 @@ class NoteLink
 				$property = $configProperties[$propertyId];
 	
 				// Suppress white spaces and tags in the string values
-				if (in_array($property['type'], ['array', 'key_value', 'structure'])) $value = $data[$propertyId];
+				if (in_array($property['type'], ['array', 'key_value', 'structure', 'number'])) $value = $data[$propertyId];
 				else $value = trim(strip_tags($data[$propertyId]));
 	
 				// Check for maximum sizes
@@ -530,8 +530,10 @@ class NoteLink
 	
 				// Cast number to int or float depending on the precision defined for this property
 				elseif ($property['type'] == 'number') {
-					if (array_key_exists('precision', $property) && $property['precision'] > 0) $value = (float) $value;
-					else $value = (int) $value;
+					if ($value !== null) {
+						if (array_key_exists('precision', $property) && $property['precision'] > 0) $value = (float) $value;
+						else $value = (int) $value;
+					}
 				}
 	
 				// Private data protection
@@ -626,6 +628,14 @@ class NoteLink
     	return 'OK';
     }
 
+    public function drop()
+    {
+    	$context = Context::getCurrent();
+    	NoteLink::getTable()->delete($this->id);
+    
+    	return 'OK';
+    }
+    
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception("Not used");

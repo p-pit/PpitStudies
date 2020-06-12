@@ -882,6 +882,7 @@ class NoteController extends AbstractActionController
 			$content['note']['weight'] = $this->request->getPost('weight');
 			$content['note']['observations'] = $this->request->getPost('observations');
 	
+//			$note->links = [];
 			foreach ($content['noteLinks'] as &$noteLinkData) {
 				$account_id = $noteLinkData['account_id'];
 				if (!$id) $noteLink = NoteLink::instanciate($account_id);
@@ -899,7 +900,6 @@ class NoteController extends AbstractActionController
 					$note->links[$account_id] = $noteLink;
 				}
 			}
-
 			$rc = $note->loadData($content['note']);
 			if ($rc != 'OK') {
 				$this->response->setStatusCode('409');
@@ -914,7 +914,7 @@ class NoteController extends AbstractActionController
 				try {
 					$update_time = $this->request->getPost('update_time');
 					if ($note->id) $rc = $note->update('update_time');
-					else {
+					elseif (count($note->links)) {
 						$rc = $note->add();
 						$content['id'] = $note->id;
 					}
@@ -940,8 +940,8 @@ class NoteController extends AbstractActionController
 						}
 					}
 					
-					// Update the subject and global averages (for admin only)
-//					if ($context->hasRole('admin')) {
+					// Update the subject and global averages
+					if ($note->id) {
 						$rc = Note::updateAverage($content['note']['place_id'], $class, $group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
 						if ($rc) {
 							$connection->rollback();
@@ -949,7 +949,7 @@ class NoteController extends AbstractActionController
 							$this->response->setReasonPhrase($rc);
 							return null;
 						}
-//					}
+					}
 					
 					// Compute the group indicators
 //					$content['indicators'] = $note->computeGroupIndicators();
@@ -961,7 +961,7 @@ class NoteController extends AbstractActionController
 				catch (\Exception $e) {
 					$connection->rollback();
 					$this->response->setStatusCode('409');
-					$this->response->setReasonPhrase('Unhandled exception');
+					$this->response->setReasonPhrase('Exception: ' . $e);
 					return null;
 				}
 			}

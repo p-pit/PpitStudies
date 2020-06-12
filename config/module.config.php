@@ -5407,6 +5407,7 @@ table.note-report tr.period {
 		'school_year' => [],
 		'school_period' => [],
 		'class' => [],
+		'group_id' => [],
 		'name' => [],
 		'subject' => [],
 		'date' => [],

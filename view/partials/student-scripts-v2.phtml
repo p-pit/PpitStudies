@@ -1338,7 +1338,7 @@ function getStudentGroup() {
       if (!$('#search-groups').val()) $('#note-evaluation-anchor').addClass('disabled');
       $('#note-evaluation-anchor').click(function () { 
         $('#grouped-action-panel').show();
-        getNoteEvaluation('note');
+        getNoteEvaluation('note', $('#search-groups').val());
       });
 
 			$('#report-add-anchor').click(function () { 
