@@ -352,13 +352,11 @@ class Note
 
 		// Save the note at the student level
 		foreach ($report->links as $reportLink) {
-			if ($reportLink->id) {
-				$rc = $reportLink->drop();
-				if ($rc != 'OK') return $rc;
-				$reportLink->id = null;
+			if (!$reportLink->id) {
+				$reportLink->note_id = $report->id;
+				$rc = $reportLink->add();
 			}
-			$reportLink->note_id = $report->id;
-			$rc = $reportLink->add();
+			else $rc = $reportLink->update(null);
 			if ($rc != 'OK') return $rc;
 		}
 
