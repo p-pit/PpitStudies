@@ -37,11 +37,14 @@ table.note-report tr.period {
 </style>
 
 <?php foreach ($periods as $periodId => $period) : ?>
-	<?php 
+  
+    <?php 
 	$params = explode('.', $periodId); 
 	$school_year = $params[0];
 	$school_period = $params[1];
 	?>
+  
+  <?php if ($context->getPlace()->identifier != 'ESI' || $school_year != '2019-2020' || $school_period != 'Q2' ) : // Transient rule ?> 
 	
     <!--Card content-->
 <div class="container card-block" style="color: #686868">
@@ -108,4 +111,7 @@ table.note-report tr.period {
 	<?php endforeach;?>
 		</table>
 </div>
+
+  <?php endif; // Transient rule ?>
+
 <?php endforeach;?>

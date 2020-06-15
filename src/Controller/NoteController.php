@@ -941,7 +941,7 @@ class NoteController extends AbstractActionController
 					}
 					
 					// Update the subject and global averages
-					if ($note->id) {
+					if (false /* (transient rule) $note->id*/) {
 						$rc = Note::updateAverage($content['note']['place_id'], $class, $group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
 						if ($rc) {
 							$connection->rollback();
