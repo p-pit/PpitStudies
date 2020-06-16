@@ -1275,6 +1275,7 @@ return array_merge(
 		'type' => 'select',
 		'modalities' => array(
 			'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+			'confirmed' => array('en_US' => 'Confirmed', 'fr_FR' => 'Confirmé'),
 			'approved' => array('en_US' => 'Approved', 'fr_FR' => 'Validé'),
 			'invoiced' => array('en_US' => 'Invoiced', 'fr_FR' => 'Facturé', 'auto' => true),
 			'settled' => array('en_US' => 'Settled', 'fr_FR' => 'Réglé', 'auto' => true),
