@@ -68,7 +68,7 @@
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Teacher', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<select class="form-control form-control-sm update_input update_input_select" id="teacher_id" <?php if ($isDisabled || !$context->hasROle('manager')) echo 'disabled="disabled"'?> required>
+				<select class="form-control form-control-sm update_input update_input_select" id="teacher_id" <?php if ($isDisabled || !$context->hasRole('manager')) echo 'disabled="disabled"'?>>
 					<option />
 	<?php foreach ($content['teachers'] as $teacher_id => $teacher) : ?>
 					<option value="<?php echo $teacher_id ?>" <?php if ($teacher_id == $content['note']['teacher_id']) echo 'selected="selected"' ?>><?php echo $teacher['n_fn'] ?></option>
@@ -83,7 +83,7 @@
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Subject', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
 	    		<select class="form-control form-control-sm update_input update_input_select" id="subject" <?php if ($isDisabled || ($content['type'] == 'report' && $content['note']['subject'])) echo 'disabled="disabled"'?> required>
-	    			<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+	    			<option />
 	<?php foreach ($content['config']['subjects'] as $subjectId => $subject) : ?>
 		<?php
 		$subject = $context->getConfig('student/property/school_subject')['modalities'][$subjectId];
@@ -167,7 +167,7 @@
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $noteLink['n_fn'] ?></label>
 			<div class="col-sm-7">
   <?php if ($context->getConfig('note/property/value')['type'] == 'number') : ?>
-				<input class="form-control form-control-sm update_input update_input_text" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> />
+				<input class="form-control form-control-sm update_input update_input_text" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$noteLink['value'].'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> />
   <?php else : ?>
                 <select class="form-control form-control-sm update_input update_input_select" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> <?php if ($isDisabled) echo 'disabled="disabled"'?>>
                   <option value=""></option>
@@ -183,13 +183,13 @@
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm">&nbsp;</label>
 			<div class="col-sm-7">
-				<textarea class="form-control form-control-sm update_input update_input_textarea" id="assessment-<?php echo $noteLink['account_id'] ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Assessment', 'ppit-studies', $context->getLocale()) ?>"><?php echo $noteLink['assessment'] ?></textarea>
+				<textarea class="form-control form-control-sm update_input update_input_textarea" rows="6" id="assessment-<?php echo $noteLink['account_id'] ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?> placeholder="<?php echo $this->translate('Assessment', 'ppit-studies', $context->getLocale()) ?>"><?php echo $noteLink['assessment'] ?></textarea>
 			</div>
 		</div>
 
 <?php endforeach;?>
 
-<?php if ($request == 'POST' && $statusCode == '200') : ?>
+<?php if ($request == 'POST' && $statusCode == '200' && $content['indicators']) : ?>
 <!-- Class average -->
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Class average', 'ppit-studies', $context->getLocale()) ?></label>

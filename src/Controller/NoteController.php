@@ -734,13 +734,19 @@ class NoteController extends AbstractActionController
 			$group_id = $note->group_id;
 			$content['note']['group_id'] = $group_id;
 			$group = Account::get($group_id);
-			$content['group'] = $group->properties;
-			$place = Place::get($group->place_id);
+			if ($group) {
+				$content['group'] = $group->properties;
+				$place = Place::get($group->place_id);
+			}
+			else {
+				$content['group'] = null;
+				$place = Place::get($note->place_id);
+			}
 			$content['place'] = $place->properties;
 				
 			$noteLinks = $note->links;
 			$content['note']['status'] = $note->status;
-			$content['note']['place_id'] = $group->place_id;
+			$content['note']['place_id'] = $place->id;
 			$content['note']['teacher_id'] = $note->teacher_id;
 			$content['note']['subject'] = $note->subject;
 			$content['note']['level'] = $note->level;
@@ -941,18 +947,18 @@ class NoteController extends AbstractActionController
 					}
 					
 					// Update the subject and global averages
-					if (false /* (transient rule) $note->id*/) {
+//					if (false /* (transient rule) $note->id*/) {
 						$rc = Note::updateAverage($content['note']['place_id'], $class, $group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
 						if ($rc) {
 							$connection->rollback();
 							$this->response->setStatusCode('409');
 							$this->response->setReasonPhrase($rc);
 							return null;
-						}
+//						}
 					}
 					
 					// Compute the group indicators
-//					$content['indicators'] = $note->computeGroupIndicators();
+					$content['indicators'] = null; //$note->computeGroupIndicators();
 
 					$connection->commit();
 					$this->response->setStatusCode('200');
@@ -986,10 +992,9 @@ class NoteController extends AbstractActionController
 		$context = Context::getCurrent();
 		
 		$content = $this->evaluation();
-		
 		$view = new ViewModel(array(
 			'context' => $context,
-			'request' => ($this->getRequest()->isPost()) ? 'POST' : ($this->getRequest()->isDelete()) ? 'DELETE' : 'GET',
+			'request' => ($this->getRequest()->isPost()) ? 'POST' : (($this->getRequest()->isDelete()) ? 'DELETE' : 'GET'),
 			'content' => $content,
 			'statusCode' => $this->response->getStatusCode(),
 			'reasonPhrase' => $this->response->getReasonPhrase(),

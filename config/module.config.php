@@ -1698,9 +1698,9 @@ return array_merge(
 		'caption' => array('mandatory' => true),
 		'account_id' => array('mandatory' => true, 'accountant' => true),
 		'description' => array('mandatory' => false),
-		'property_1' => array('mandatory' => false, 'account-initial-value' => 'property_10'),
+//		'property_1' => array('mandatory' => false, 'account-initial-value' => 'property_10'),
 		'property_13' => array('mandatory' => false, 'account-initial-value' => 'property_7'),
-		'property_2' => array('mandatory' => false),
+//		'property_2' => array('mandatory' => false),
 		'property_3' => array('mandatory' => false, 'account-initial-value' => 'property_6'),
 		'property_4' => array('mandatory' => false),
 		'order_identifier' => array('mandatory' => false),
@@ -1709,9 +1709,9 @@ return array_merge(
 		'property_7' => array('mandatory' => false),
 		'property_8' => array('mandatory' => false),
 		'property_9' => array('mandatory' => false),
-		'property_10' => array('mandatory' => false),
+/*		'property_10' => array('mandatory' => false),
 		'property_11' => array('mandatory' => false),
-		'property_12' => array('mandatory' => false),
+		'property_12' => array('mandatory' => false),*/
 	),
 	
 	'commitment/model_rules/p-pit-studies' => [
@@ -3402,6 +3402,7 @@ table.note-report td {
 		'total_expected' => ['position' => 'AE', 'type' => 'sum', 'labels' => ['default' => 'Total - Attendu'], 'indicator' => 'amount', 'filter' => ['status' => 'expected']],
 		'total_rejected' => ['position' => 'AF', 'type' => 'sum', 'labels' => ['default' => 'Total - Rejeté'], 'indicator' => 'amount', 'filter' => ['status' => 'rejected']],
 		'total_proceedings' => ['position' => 'AG', 'type' => 'sum', 'labels' => ['default' => 'Total - Procédure'], 'indicator' => 'amount', 'filter' => ['status' => 'proceedings']],
+		'term_amount_gap' => ['position' => 'AH', 'type' => 'sum', 'labels' => ['default' => 'Total - Non planifié'], 'indicator' => 'amount'],
 	),
 	
 	'commitmentTerm/invoice/p-pit-studies' => array(
@@ -3834,6 +3835,9 @@ table.note-report td {
 					'2018-2019' => array('fr_FR' => '2018-2019', 'en_US' => '2018-2019'),
 					'2019-2020' => array('fr_FR' => '2019-2020', 'en_US' => '2019-2020'),
 					'2020-2021' => array('fr_FR' => '2020-2021', 'en_US' => '2020-2021'),
+					'2021-2022' => array('fr_FR' => '2021-2022', 'en_US' => '2021-2022'),
+					'2022-2023' => array('fr_FR' => '2022-2023', 'en_US' => '2022-2023'),
+					'2023-2024' => array('fr_FR' => '2023-2024', 'en_US' => '2023-2024'),
 			),
 			'labels' => array(
 					'en_US' => 'School year',

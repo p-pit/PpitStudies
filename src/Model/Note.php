@@ -293,8 +293,11 @@ class Note
 		$avgData['subject'] = $subject;
 		$avgData['teacher_id'] = $teacher_id;
 		$avgData['reference_value'] = $context->getConfig('student/parameter/average_computation')['reference_value'];
-		$subjectConfig = $context->getConfig('student/property/school_subject')['modalities'][$subject];
-		$avgData['weight'] = array_key_exists('credits', $subjectConfig) ? $subjectConfig['credits'] : 1;
+		if ($subject != 'global') {
+			$subjectConfig = $context->getConfig('student/property/school_subject')['modalities'][$subject];
+			$avgData['weight'] = array_key_exists('credits', $subjectConfig) ? $subjectConfig['credits'] : 1;
+		}
+		else $avgData['weight'] = 1;
 		
 		$averages = array();
 		foreach ($periodNotes as $account_id => $notes) {
