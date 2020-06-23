@@ -148,12 +148,13 @@ class PdfReportViewHelper
 				elseif ($propertyId == 'class_size') $arguments[] = $classSize;
     			else {
 					$property = $context->getConfig('core_account/p-pit-studies/property/'.$propertyId);
+					if (!$property) $property = $context->getConfig('core_account/generic/property/'.$propertyId);
 					if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 					if ($propertyId == 'name') $arguments[] = $account->name;
 					elseif ($propertyId == 'property_7' && $class) $arguments[] = $context->localize($property['modalities'][$class]);
 					elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
-	    			elseif ($property['type'] == 'select' && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $context->localize($property['modalities'][$account->properties[$propertyId]]);
+	    			elseif (in_array($property['type'], ['select', 'multiselect']) && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $context->localize($property['modalities'][$account->properties[$propertyId]]);
 	    			else $arguments[] = $account->properties[$propertyId];
     			}
     		}
@@ -253,14 +254,7 @@ class PdfReportViewHelper
 			$pdf->writeHTML($text, true, 0, true, 0);
 	    }
 	    $pdf->SetFont('', '', 8);
-	    $pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>'.
-					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.
-					'<em>P-Pit Studies</em> (www.p-pit.fr)'
-					, true, 0, true, 0);
+	    $pdf->writeHTML('<strong>'.$translator->translate('Report to keep carefully. No duplicate will be provided', 'ppit-studies', $context->getLocale()).'</strong>', true, 0, true, 0);
 	    return $pdf;
     }
 }

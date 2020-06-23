@@ -43,12 +43,22 @@ class PdfEvaluationTableViewHelper
 		    	$subject = $evaluation->subject;
 		    	$caption = (array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level]) : '';
 		    	if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
+		    	if ($evaluation->value === null) $value = $translator->translate('Not eval.', 'ppit-studies', $context->getLocale());
+		    	else {
+		    		if ($context->getConfig('note/property/value')['type'] == 'number') {
+		    			$value = $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0);
+		    		}
+		    		else {
+		    			$value = $context->localize($context->getConfig('note/property/value')['modalities'][(float)$evaluation->value]);
+		    		}
+		    	}
+		    		
 		   		$rows.= sprintf(
 		   				$context->getConfig('student/report/evaluationRow')['html'], 
 						'',
 		   				$caption,
 		   				$context->formatFloat($evaluation->weight, 1),
-		   				($evaluation->value === null) ? $translator->translate('Not eval.', 'ppit-studies', $context->getLocale()) : $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0),
+		   				$value,
 		   				$context->formatFloat($evaluation->higher_note, 2),
 		   				$context->formatFloat($evaluation->average_note, 2),
 						$context->formatFloat($evaluation->lower_note, 2),
