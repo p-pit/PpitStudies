@@ -425,7 +425,7 @@ if ($note_link_id) {
 		}
 		if (!$school_period) $school_period = 'q1';
 		
-		$where = array('category' => 'evaluation', 'type' => 'note', 'place_id' => $place->id, 'school_year' => $school_year, 'school_period' => $school_period);
+		$where = array('category' => 'evaluation', 'type' => 'note'/*, 'place_id' => $place->id*/, 'school_year' => $school_year, 'school_period' => $school_period);
 
 		$computedReports = [];
 		$existingReports = [];
