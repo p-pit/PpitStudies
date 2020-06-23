@@ -43,7 +43,7 @@
 		    <div class="form-group row">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
-					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" <?php if ($content['type'] != 'report') : ?>disabled<?php endif;?> />
+					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" <?php if ($content['type'] == 'report') : ?>disabled<?php endif;?> />
   <?php if ($content['id'] && $content['type'] != 'report') : ?>
                     <button type="button" class="note_evaluation_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
   <?php endif;?>
@@ -228,7 +228,7 @@
 		    <div class="form-group row">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
-					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" />
+					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" <?php if ($content['type'] == 'report') : ?>disabled<?php endif;?> />
                     <span class="spinner-border note-evaluation-spinner invisible" role="status"><span class="sr-only">Loading...</span></span>
   <?php if ($content['id']) : ?>
                     <button type="button" class="note_evaluation_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
