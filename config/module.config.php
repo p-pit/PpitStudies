@@ -510,6 +510,15 @@ return array_merge(
 							],
 						],
 					],
+	       			'repair' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/repair',
+							'defaults' => [
+								'action' => 'repair',
+							],
+						],
+					],
 	       		],
 	       	],
 	       			
@@ -1020,6 +1029,7 @@ return array_merge(
 				array('route' => 'noteLink/studentList', 'roles' => array('manager')),
 				array('route' => 'noteLink/group', 'roles' => array('manager')),
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
+				array('route' => 'noteLink/repair', 'roles' => array('admin')),
 				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),

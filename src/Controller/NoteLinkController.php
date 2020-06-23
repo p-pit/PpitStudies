@@ -403,4 +403,68 @@ if ($note_link_id) {
 		echo json_encode($content, JSON_PRETTY_PRINT);
 		return $this->response;
 	}
+
+	/**
+	 * user_story - note_link/repair: Check that 1 and only 1 average exists per student, period and subject on which there are notes.
+	 */
+	public function repairAction()
+	{
+		$context = Context::getCurrent();
+
+		$place_identifier = $this->params()->fromQuery('place_identifier');
+		if ($place_identifier) $place = Place::get($place_identifier, 'identifier');
+		else $place = Place::get($context->getPlaceId());
+
+		$school_year = $this->params()->fromQuery('school_year');
+		if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');
+
+		$school_period = $this->params()->fromQuery('school_period');
+		if (!$school_period) {
+			$school_periods = $place->getConfig('school_periods');
+			$current_school_period = $context->getCurrentPeriod($school_periods);
+		}
+		if (!$school_period) $school_period = 'q1';
+		
+		$where = array('category' => 'evaluation', 'type' => 'note', 'place_id' => $place->id, 'school_year' => $school_year, 'school_period' => $school_period);
+
+		$computedReports = [];
+		$existingReports = [];
+		
+		// Retrieve all the notes in the required scope
+		foreach (NoteLink::getList(null, $where, 'id', 'asc', 'search') as $evaluation) {
+			
+			$computedKey = $evaluation->place_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject . '_' . $evaluation->account_id;
+			if (!array_key_exists($computedKey, $computedReports)) $computedReports[$computedKey] = ['evaluations' => [], 'reports' => []];
+			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id, 'note_id' => $evaluation->note_id, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => $evaluation->value, 'assessment' => $evaluation->assessment];
+		}
+
+		// Retrieve all the notes in the required scope
+		$where['type'] = 'report';
+		foreach (NoteLink::getList(null, $where, 'id', 'asc', 'search') as $report) {
+		
+			$existingKey = $report->place_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject . '_' . $report->account_id;
+			if (array_key_exists($existingKey, $computedReports)) {
+				$computedReports[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
+			}
+			else {
+				if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
+				$existingReports[$existingKey][] = ['place_id' => $report->place_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
+			}
+		}
+		
+		$result = ['duplicate_or_missing_report' => [], 'report_without_note' => []];
+
+		foreach ($computedReports as $computedKey => $computedReport) {
+			if (count($computedReport['reports']) != 1) {
+				$result['duplicate_or_missing_report'][] = [$computedKey => $computedReport];
+			}
+		}
+	
+		foreach ($existingReports as $existingKey => $existingReport) {
+			$result['report_without_note'][] = [$existingKey => $existingReport];
+		}
+
+		echo json_encode($result, JSON_PRETTY_PRINT);
+		return $this->response;
+	}
 }
