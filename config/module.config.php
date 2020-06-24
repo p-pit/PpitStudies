@@ -424,7 +424,16 @@ return array_merge(
 		        								),
 		        						),
 		        				),
-	       						'batchAverage' => array(
+				       			'repair' => [
+									'type' => 'segment',
+									'options' => [
+										'route' => '/repair',
+										'defaults' => [
+											'action' => 'repair',
+										],
+									],
+								],
+				       			'batchAverage' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
 		        								'route' => '/batch-average',
@@ -1019,6 +1028,7 @@ return array_merge(
 				array('route' => 'note/evaluation', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/apiUpdateAverage', 'roles' => array('guest', 'guest')),
 				array('route' => 'note/updateEvaluationV2', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/repair', 'roles' => array('admin')),
 				array('route' => 'note/batchAverage', 'roles' => array('guest')),
 				array('route' => 'note/reprise', 'roles' => array('admin')),
 
