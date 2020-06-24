@@ -89,7 +89,7 @@ table.note-report tr.period {
 						<?php
 						if ($note->value === null) echo $this->translate('Not eval.', 'ppit-studies', $context->getLocale());
 						else {
-  							if ($context->getConfig('note/property/value')['type'] == 'number') {
+  							if (true) { //$context->getConfig('note/property/value')['type'] == 'number') {
 								echo $context->formatFloat($note->value, 2).'&nbsp;/&nbsp;'.$context->formatFloat($note->reference_value, 0);
   							}
   							else {
