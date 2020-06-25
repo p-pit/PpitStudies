@@ -45,11 +45,16 @@ class PdfEvaluationTableViewHelper
 		    	if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
 		    	if ($evaluation->value === null) $value = $translator->translate('Not eval.', 'ppit-studies', $context->getLocale());
 		    	else {
-		    		if (true) { //$context->getConfig('note/property/value')['type'] == 'number') {
+		    		if ($context->getConfig('note/property/value')['type'] == 'number') {
 		    			$value = $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0);
 		    		}
 		    		else {
-		    			$value = $context->localize($context->getConfig('note/property/value')['modalities'][(float)$evaluation->value]);
+		    		  	foreach ($context->getConfig('note/property/value')['modalities'] as $modality) {
+	  						if ($modality['value'] == $evaluation->value) {
+	  							$value = $context->localize($modality);
+	  							break;
+	  						}
+  						}
 		    		}
 		    	}
 		    		
