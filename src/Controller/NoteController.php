@@ -947,14 +947,14 @@ class NoteController extends AbstractActionController
 					}
 					
 					// Update the subject and global averages
-//					if (false /* (transient rule) $note->id*/) {
+					if (false /* (transient rule) $note->id*/) {
 						$rc = Note::updateAverage($content['note']['place_id'], $class, $group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
 						if ($rc) {
 							$connection->rollback();
 							$this->response->setStatusCode('409');
 							$this->response->setReasonPhrase($rc);
 							return null;
-//						}
+						}
 					}
 					
 					// Compute the group indicators
