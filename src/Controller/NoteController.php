@@ -937,7 +937,11 @@ class NoteController extends AbstractActionController
 							$noteLink->note_id = $note->id;
 							$rc = $noteLink->add();
 						}
-						else $rc = $noteLink->update(null);
+						else {
+							$rc = $noteLink->drop();
+							$noteLink->id = null;
+							$rc = $noteLink->add(null);
+						}
 						if ($rc != 'OK') {
 							$connection->rollback();
 							$this->response->setStatusCode('409');

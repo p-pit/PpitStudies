@@ -44,7 +44,7 @@ table.note-report tr.period {
 	$school_period = $params[1];
 	?>
   
-  <?php if ($context->hasRole('manager') || $context->hasRole('teacher') || $context->getInstance()->caption != 'ESI' || $school_year != '2019-2020' || $school_period != 'Q2' ) : // Transient rule ?> 
+  <?php //if ($context->hasRole('manager') || $context->hasRole('teacher') || $context->getInstance()->caption != 'ESI' || $school_year != '2019-2020' || $school_period != 'Q2' ) : // Transient rule ?> 
 	
     <!--Card content-->
 <div class="container card-block" style="color: #686868">
@@ -124,6 +124,6 @@ table.note-report tr.period {
 		</table>
 </div>
 
-  <?php endif; // Transient rule ?>
+  <?php //endif; // Transient rule ?>
 
 <?php endforeach;?>
