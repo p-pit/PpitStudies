@@ -472,7 +472,7 @@ if ($note_link_id) {
 					$existingReportKey = $computedReport['evaluations'][0]['place_id'] . '_' . $computedReport['evaluations'][0]['group_id'] . '_' . $computedReport['evaluations'][0]['school_year'] . '_' . $computedReport['evaluations'][0]['school_period'] . '_' . $computedReport['evaluations'][0]['subject'];
 					$newReport = NoteLink::instanciate($computedReport['evaluations'][0]['account_id'], $existingReports[$existingReportKey]['id']);
 					$result['duplicate_or_missing_report'][$computedKey]['report_id'] = $newReport->note_id;
-//					$newReport->add();
+					$newReport->add();
 				}
 			}
 		}
