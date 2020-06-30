@@ -168,14 +168,17 @@ table td {
 
       </select>
 
+      <?php 
+      $reference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+      ?>
       <?php foreach ($content['averages'] as $subjectId => $average) : ?>
         <?php if ($subjectId != 'global') : ?>
-      <span class="distribution" id="distribution_<?php echo $subjectId ?>"><?php echo round($average[0] / $average[1] * 2000) / 100 ?></span>
+      <span class="distribution" id="distribution_<?php echo $subjectId ?>"><?php echo round($average[0] / $average[1] * $reference * 100) / 100 ?></span>
         <?php endif;?>
       <?php endforeach;?>
   
       <?php if (count($content['links'])) : ?>
-      <span class="distribution" id="distribution_global"><?php echo round($content['globalAverage'][0] / $content['globalAverage'][1] * 2000) / 100 ?></span>
+      <span class="distribution" id="distribution_global"><?php echo round($content['globalAverage'][0] / $content['globalAverage'][1] * $reference * 100) / 100 ?></span>
       <?php endif;?>
     
     </th>
