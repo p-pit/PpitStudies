@@ -1389,22 +1389,22 @@ class NoteController extends AbstractActionController
 		// Retrieve all the notes in the required scope
 		foreach (Note::getList('evaluation', 'note', $where, 'id', 'asc', 'search') as $evaluation) {
 				
-			$computedKey = $evaluation->place_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject;
+			$computedKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject;
 			if (!array_key_exists($computedKey, $computedReports)) $computedReports[$computedKey] = ['evaluations' => [], 'reports' => []];
-			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id];
+			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id];
 		}
 
-		// Retrieve all the notes in the required scope
+		// Retrieve all the reports in the required scope
 		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $report) {
 		
-			$existingKey = $report->place_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
+			$existingKey = $report->place_id . '_' . $report->group_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
 			if (array_key_exists($existingKey, $computedReports)) {
-				$computedReports[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
+				$computedReports[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
 			}
 			else {
 				if ($report->subject != 'global') {
 					if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
-					$existingReports[$existingKey][] = ['place_id' => $report->place_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
+					$existingReports[$existingKey][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
 				}
 			}
 		}

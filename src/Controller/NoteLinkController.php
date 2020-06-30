@@ -433,22 +433,22 @@ if ($note_link_id) {
 		// Retrieve all the notes in the required scope
 		foreach (NoteLink::getList(null, $where, 'id', 'asc', 'search') as $evaluation) {
 			
-			$computedKey = $evaluation->place_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject . '_' . $evaluation->account_id;
+			$computedKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject . '_' . $evaluation->account_id;
 			if (!array_key_exists($computedKey, $computedReports)) $computedReports[$computedKey] = ['evaluations' => [], 'reports' => []];
-			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id, 'note_id' => $evaluation->note_id, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => $evaluation->value, 'assessment' => $evaluation->assessment];
+			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id, 'note_id' => $evaluation->note_id, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => $evaluation->value, 'assessment' => $evaluation->assessment];
 		}
 
 		// Retrieve all the notes in the required scope
 		$where['type'] = 'report';
 		foreach (NoteLink::getList(null, $where, 'id', 'asc', 'search') as $report) {
 		
-			$existingKey = $report->place_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject . '_' . $report->account_id;
+			$existingKey = $report->place_id . '_' . $report->group_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject . '_' . $report->account_id;
 			if (array_key_exists($existingKey, $computedReports)) {
-				$computedReports[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
+				$computedReports[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
 			}
 			else {
 				if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
-				$existingReports[$existingKey][] = ['place_id' => $report->place_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
+				$existingReports[$existingKey][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
 			}
 		}
 		

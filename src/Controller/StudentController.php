@@ -1629,4 +1629,84 @@ class StudentController extends AbstractActionController
     	echo date('Y-m-d')."\n";
     	return $this->nomad($request, date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')), $place_identifier, $limit);
     }
- }
+
+    public function keystoneAction() {
+    
+    	$context = Context::getCurrent();
+    	 
+    	// Authentication
+    	if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+    		$this->getResponse()->setStatusCode('401');
+    		return $this->getResponse();
+    	}
+    	 
+    	$from = $this->params()->fromRoute('from', $date);
+    	$place_identifier = $this->params()->fromQuery('place_identifier', '');
+    	$limit = $this->params()->fromQuery('limit', 10);
+
+    	$safe = $context->getConfig()['ppitUserSettings']['safe'];
+    	$url = 'https://smarthub.keystoneacademic.com/api/rest/getLead';
+    	$client = new Client($url, ['adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30]);
+    	 
+    	$client->setHeaders([
+    		'Accept-Encoding' => 'gzip,deflate',
+    		'Accept' => 'application/json',
+    		'Content-Type' => 'application/json',
+			'x-api-key: ' . $safe[$context->getInstance()->caption]['keystone']
+    	]);
+    	$client->setMethod('POST');
+    	$response = $client->send();
+    	$body = $response->getBody();
+    	$leads = json_decode($body, true)['data'];
+    	foreach ($leads as $lead) {
+    		echo $lead['id']."\n";
+    
+    		// If the account exists, update it if the contact is a prospect (new status) and the existing account is a suspect
+    		$account = Account::get($lead['id'], 'identifier');
+    		if (!$account) {
+    			$vcard = Vcard::get($lead['email'], 'email');
+    			if ($vcard) $account = Account::get($vcard->id, 'contact_1_id');
+    		}
+    		if ($account && in_array($account->status, ['suspect', 'gone']) && $lead['type'] == 'sponsor') {
+    			$account->status = 'new';
+    			$account->callback_date = date('Y-m-d');
+    			$account->update(null);
+    			continue;
+    		}
+    
+    		$data = [];
+    		if ($place_identifier) $data['place_id'] = Place::get($place_identifier, 'identifier')->id;
+    		$data['identifier'] = $lead['id'];
+    		$data['status'] = (array_key_exists('type', $lead) && $lead['type'] == 'registration') ? 'suspect' : 'new';
+    		$data['origine'] = 'nomad';
+    		$data['callback_date'] = date('Y-m-d');
+    		foreach ($context->getConfig('core_account/nomad/p-pit-studies')['properties'] as $propertyId => $property) {
+    			if (array_key_exists($property, $lead)) $data[$propertyId] = $lead[$property];
+    		}
+    
+    		$levels = ['Terminale' => '1st', '1ère année' => '2nd', '2ème année' => '3rd', '3ème année' => '4th'];
+    		$data['property_10'] = (array_key_exists($lead['levelOfEducation'], $levels)) ? $levels[$lead['levelOfEducation']] : '';
+    
+    		$data['json_property_2'] = $lead['wishedDomain'];
+    		unset($lead['wishedDomain']);
+    		$data['json_property_3'] = $lead['engagements'];
+    		unset($lead['engagements']);
+    		if (array_key_exists('studyChoices', $lead)) {
+    			foreach ($lead['studyChoices'] as $group) {
+    				foreach ($group as $key => $value) {
+    					if ($key == 'name') {
+    						if ($value == 'Alternance') $data['property_15'] = 'part_time';
+    						elseif ($value == 'Formation initiale') $data['property_15'] = 'initial';
+    						else $data['property_15'] = $value;
+    					}
+    				}
+    			}
+    		}
+    		$data['json_property_1'] = $lead;
+    		$data['contact_history'] = 'P-Pit -> Nomad connector';
+    		$account = Account::instanciate('p-pit-studies');
+    		$account->loadAndAdd($data, Account::getConfig('p-pit-studies'));
+    	}
+    	return $this->response;
+    }
+}
