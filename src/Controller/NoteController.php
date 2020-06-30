@@ -1387,7 +1387,7 @@ class NoteController extends AbstractActionController
 		$existingReports = [];
 		
 		// Retrieve all the notes in the required scope
-		foreach (Note::getList('evaluation', 'note', $where, 'id', 'asc', 'search') as $evaluation) {
+		foreach (Note::getList('evaluation', 'note', $where, 'id', 'asc', 'search', null) as $evaluation) {
 				
 			$computedKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject;
 			if (!array_key_exists($computedKey, $computedReports)) $computedReports[$computedKey] = ['evaluations' => [], 'reports' => []];
@@ -1395,7 +1395,7 @@ class NoteController extends AbstractActionController
 		}
 
 		// Retrieve all the reports in the required scope
-		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $report) {
+		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search', null) as $report) {
 		
 			$existingKey = $report->place_id . '_' . $report->group_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
 			if (array_key_exists($existingKey, $computedReports)) {
