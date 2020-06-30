@@ -447,8 +447,13 @@ if ($note_link_id) {
 				$computedReportLinks[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
 			}
 			else {
-				if (!array_key_exists($existingKey, $existingReportLinks)) $existingReportLinks[$existingKey] = [];
-				$existingReportLinks[$existingKey][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
+				if ($report->subject != 'global') {
+					if (!array_key_exists($existingKey, $existingReportLinks)) $existingReportLinks[$existingKey] = [];
+					$existingReportLinks[$existingKey][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
+					
+					// Drop the report not corresponding to any evaluation
+//					if (!$report->assessment) $report->drop();
+				}
 			}
 		}
 		
