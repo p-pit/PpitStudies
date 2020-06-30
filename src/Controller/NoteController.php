@@ -1415,8 +1415,10 @@ class NoteController extends AbstractActionController
 			if (count($computedReport['reports']) != 1) {
 				$result['duplicate_or_missing_report'][] = [$computedKey => $computedReport];
 				if (count($computedReport['reports']) == 0) {
-					$newReport = Note::instanciate('evaluation', null, $computedReport['evaluations'][0]['group_id']);
+					$newReport = Note::instanciate('report');
+					$newReport->category = 'evaluation';
 					$newReport->place_id = $computedReport['evaluations'][0]['place_id'];
+					$newReport->group_id = $computedReport['evaluations'][0]['group_id'];
 					$newReport->school_year = $computedReport['evaluations'][0]['school_year'];
 					$newReport->school_period = $computedReport['evaluations'][0]['school_period'];
 					$newReport->subject = $computedReport['evaluations'][0]['subject'];
