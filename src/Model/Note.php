@@ -507,12 +507,12 @@ class Note
     	$periodSubjectNotes = array();
     	$periodSubjectCategoryNotes = array();
     	foreach ($cursor as $noteLink) {
-//    		if ($noteLink->value !== null) {
+    		if ($noteLink->value !== null) {
 		    	$periodNotes[$noteLink->account_id][] = array('id' => $noteLink->id, 'reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
 		    	$periodCategoryNotes[$noteLink->account_id][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
 		    	$periodSubjectNotes[$noteLink->account_id][$noteLink->subject][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
 		    	$periodSubjectCategoryNotes[$noteLink->account_id][$noteLink->subject][$noteLink->level][] = array('reference_value' => $noteLink->reference_value, 'weight' => $noteLink->weight, 'note' => $noteLink->value);
-//    		}
+    		}
     	}
     	$categoryAverages = array();
     	
