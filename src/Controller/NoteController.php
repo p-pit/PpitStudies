@@ -1470,10 +1470,9 @@ class NoteController extends AbstractActionController
 		
 		$where = array('school_year' => $school_year, 'school_period' => $school_period);
 		if ($place_identifier) $where['place_id'] = $place->id;
-var_dump($where); exit;
 
 		// Check and update when necessary the average for all the reports
-		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search') as $note) {
+		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search', null) as $note) {
 			$select = NoteLink::getTable()->getSelect()
 				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
 				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
