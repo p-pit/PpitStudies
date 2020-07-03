@@ -1502,6 +1502,15 @@ return array_merge(
 	),
 
 	'commitment/p-pit-studies/property/property_13' => ['definition' => 'student/property/class'],
+
+	'commitment/p-pit-studies/property/property_14' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Learning houtly rate',
+			'fr_FR' => 'Taux horaire de la formation',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
@@ -1543,7 +1552,7 @@ return array_merge(
 			'invoice_account_id',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
-			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12', 'property_13',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14',
 			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
@@ -1705,6 +1714,7 @@ return array_merge(
 		'property_7' => array('mandatory' => false),
 		'property_8' => array('mandatory' => false),
 		'property_9' => array('mandatory' => false),
+		'property_14' => array('mandatory' => false),
 		'property_10' => array('mandatory' => false),
 		'property_11' => array('mandatory' => false),
 		'property_12' => array('mandatory' => false),
@@ -1712,11 +1722,26 @@ return array_merge(
 
 	'commitment/subscriptionUpdate/p-pit-studies' => array(
 		'status' => array('mandatory' => true),
+		'year' => array('mandatory' => true, 'accountant' => true),
+		'invoice_date' => array('mandatory' => true, 'accountant' => true),
 		'caption' => array('mandatory' => true),
 		'account_id' => array('mandatory' => true, 'accountant' => true),
 		'description' => array('mandatory' => false),
 		'property_13' => array('mandatory' => false, 'account-initial-value' => 'property_7'),
-		'property_2' => array('multiple' => true, 'mandatory' => false),
+		'property_2' => array('mandatory' => false),
+		'property_3' => array('mandatory' => false, 'account-initial-value' => 'property_6'),
+		'property_4' => array('mandatory' => false),
+		'order_identifier' => array('mandatory' => false),
+		'property_5' => array('mandatory' => false),
+		'property_6' => array('mandatory' => false),
+		'property_7' => array('mandatory' => false),
+		'property_8' => array('mandatory' => false),
+		'property_9' => array('mandatory' => false),
+		'property_14' => array('mandatory' => false),
+		'property_10' => array('mandatory' => false),
+		'property_11' => array('mandatory' => false),
+		'property_12' => array('mandatory' => false),
+		'including_options_amount' => array('mandatory' => false),
 	),
 	
 	'commitment/model_rules/p-pit-studies' => [
@@ -1937,6 +1962,105 @@ return array_merge(
 	'commitments/message/p-pit-studies' => [
 		'commitments/message/p-pit-studies/attestation_fin_formation',
 	],*/
+
+	//Invoicing
+	
+	'commitment/service/property/caption' => ['definition' => 'student/property/school_year'],
+
+	'commitment/service/property/n_title_2' => ['definition' => 'core_account/p-pit-studies/property/n_title_2'],
+	'commitment/service/property/n_first_2' => ['definition' => 'core_account/p-pit-studies/property/n_first_2'],
+	'commitment/service/property/n_last_2' => ['definition' => 'core_account/p-pit-studies/property/n_last_2'],
+	'commitment/service/property/n_fn_2' => ['definition' => 'core_account/p-pit-studies/property/n_fn_2'],
+	'commitment/service/property/email_2' => ['definition' => 'core_account/p-pit-studies/property/email_2'],
+	'commitment/service/property/tel_work_2' => ['definition' => 'core_account/p-pit-studies/property/tel_work_2'],
+	'commitment/service/property/tel_cell_2' => ['definition' => 'core_account/p-pit-studies/property/tel_cell_2'],
+	
+	'commitment/service/property/n_title_3' => ['definition' => 'core_account/p-pit-studies/property/n_title_3'],
+	'commitment/service/property/n_first_3' => ['definition' => 'core_account/p-pit-studies/property/n_first_3'],
+	'commitment/service/property/n_last_3' => ['definition' => 'core_account/p-pit-studies/property/n_last_3'],
+	'commitment/service/property/n_fn_3' => ['definition' => 'core_account/p-pit-studies/property/n_fn_3'],
+	'commitment/service/property/email_3' => ['definition' => 'core_account/p-pit-studies/property/email_3'],
+	'commitment/service/property/tel_work_3' => ['definition' => 'core_account/p-pit-studies/property/tel_work_3'],
+	'commitment/service/property/tel_cell_3' => ['definition' => 'core_account/p-pit-studies/property/tel_cell_3'],
+	
+	'commitment/service/property/n_title_4' => ['definition' => 'core_account/p-pit-studies/property/n_title_4'],
+	'commitment/service/property/n_first_4' => ['definition' => 'core_account/p-pit-studies/property/n_first_4'],
+	'commitment/service/property/n_last_4' => ['definition' => 'core_account/p-pit-studies/property/n_last_4'],
+	'commitment/service/property/n_fn_4' => ['definition' => 'core_account/p-pit-studies/property/n_fn_4'],
+	'commitment/service/property/email_4' => ['definition' => 'core_account/p-pit-studies/property/email_4'],
+	'commitment/service/property/tel_work_4' => ['definition' => 'core_account/p-pit-studies/property/tel_work_4'],
+	'commitment/service/property/tel_cell_4' => ['definition' => 'core_account/p-pit-studies/property/tel_cell_4'],
+	
+	'commitment/service/property/property_1' => ['definition' => 'student/property/level'],
+	'commitment/service/property/property_2' => ['definition' => 'student/property/specialty'],
+	'commitment/service/property/property_3' => ['definition' => 'student/property/boarding_school'],
+	
+	'commitment/service/property/property_4' => ['definition' => 'commitment/p-pit-studies/property/property_4'],
+	'commitment/service/property/property_5' => ['definition' => 'commitment/p-pit-studies/property/property_5'],
+	'commitment/service/property/property_6' => ['definition' => 'commitment/p-pit-studies/property/property_6'],
+	'commitment/service/property/property_7' => ['definition' => 'commitment/p-pit-studies/property/property_7'],
+	'commitment/service/property/property_8' => ['definition' => 'commitment/p-pit-studies/property/property_8'],
+	'commitment/service/property/property_9' => ['definition' => 'commitment/p-pit-studies/property/property_9'],
+	'commitment/service/property/property_10' => ['definition' => 'commitment/p-pit-studies/property/property_10'],
+	'commitment/service/property/property_11' => ['definition' => 'commitment/p-pit-studies/property/property_11'],
+	'commitment/service/property/property_12' => ['definition' => 'commitment/p-pit-studies/property/property_12'],
+	'commitment/service/property/property_13' => ['definition' => 'student/property/class'],
+	'commitment/service/property/property_14' => ['definition' => 'commitment/p-pit-studies/property/property_14'],
+	
+	'commitment/service/property/account_property_17' => ['definition' => 'core_account/p-pit-studies/property/property_17'],
+	'commitment/service/property/account_property_18' => ['definition' => 'core_account/p-pit-studies/property/property_18'],
+	'commitment/service/property/account_property_19' => ['definition' => 'core_account/p-pit-studies/property/property_19'],
+	'commitment/service/property/account_property_20' => ['definition' => 'core_account/p-pit-studies/property/property_20'],
+	
+	'commitment/service/property/transfer_order_id' => ['definition' => 'core_account/generic/property/transfer_order_id'],
+	'commitment/service/property/transfer_order_date' => ['definition' => 'core_account/generic/property/transfer_order_date'],
+	'commitment/service/property/bank_identifier' => ['definition' => 'core_account/generic/property/bank_identifier'],
+	'commitment/service/property/account_contact_history' => ['definition' => 'core_account/generic/property/contact_history'],
+	
+	'commitment/service' => array(
+		'tax' => 'including',
+		'currencySymbol' => '€',
+		'properties' => array(
+			'status', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year',
+			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
+			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
+			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
+			'invoice_account_id',
+			'caption', 'product_caption','account_id', 'account_status', 'description',
+			'quantity', 'unit_price', 'amount', 'product_brand',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14',
+			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
+			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
+			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
+			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20',
+			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier', 'account_contact_history', 'update_time',
+		),
+	),
+	
+	'commitment/update/service' => array(
+		'status' => array('mandatory' => true, 'accountant' => true),
+		'year' => array('mandatory' => true, 'accountant' => true),
+		'invoice_date' => array('mandatory' => true, 'accountant' => true),
+		'caption' => array('mandatory' => true, 'matchInvoiceWithCommitment' => true),
+		'account_id' => array('mandatory' => true, 'accountant' => true, 'matchInvoiceWithCommitment' => true),
+		'invoice_account_id' => array('mandatory' => false, 'accountant' => true),
+		'description' => array('mandatory' => false),
+		'property_1' => array('mandatory' => false, 'account-initial-value' => 'property_10'),
+		'property_13' => array('mandatory' => false, 'account-initial-value' => 'property_7'),
+		'property_2' => array('mandatory' => false),
+		'property_3' => array('mandatory' => false, 'account-initial-value' => 'property_6'),
+		'property_4' => array('mandatory' => false),
+		'order_identifier' => array('mandatory' => false),
+		'property_5' => array('mandatory' => false),
+		'property_6' => array('mandatory' => false),
+		'property_7' => array('mandatory' => false),
+		'property_8' => array('mandatory' => false),
+		'property_9' => array('mandatory' => false),
+		'property_14' => array('mandatory' => false),
+		'property_10' => array('mandatory' => false, 'matchInvoiceWithCommitment' => true),
+		'property_11' => array('mandatory' => false, 'matchInvoiceWithCommitment' => true),
+		'property_12' => array('mandatory' => false, 'matchInvoiceWithCommitment' => true),
+	),
 	
 	// Account p-pit-studies
 	
