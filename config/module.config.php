@@ -322,6 +322,15 @@ return array_merge(
         										),
         								),
         						),
+	       						'teacherList' => array(
+        								'type' => 'segment',
+        								'options' => array(
+        										'route' => '/teacher-list[/:category][/:type]',
+        										'defaults' => array(
+        												'action' => 'teacherList',
+        										),
+        								),
+        						),
 	       						'get' => array(
         								'type' => 'segment',
         								'options' => array(
@@ -1020,6 +1029,7 @@ return array_merge(
 				array('route' => 'note/indexV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/searchV2', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/listV2', 'roles' => array('manager', 'teacher')),
+				array('route' => 'note/teacherList', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/get', 'roles' => array('manager', 'user')),
 				array('route' => 'note/export', 'roles' => array('manager', 'teacher')),
 				array('route' => 'note/exportCsv', 'roles' => array('admin')),
@@ -3021,7 +3031,7 @@ return array_merge(
 					),
 					'commitments' => array(
 						'definition' => 'inline',
-						'labels' => array('default' => 'Subscription years', 'fr_FR' => 'Historique des inscriptions'),
+						'labels' => array('default' => 'Commitments', 'fr_FR' => 'Engagements'),
 					),
 					'account-document' => array(
 							'definition' => 'inline',
@@ -5355,13 +5365,9 @@ table.note-report tr.period {
 			'place_id' => 'select',
 			'school_period' => 'select',
 			'group_id' => 'select',
-//			'level' => 'select',
 			'subject' => 'select',
 			'date' => 'date',
 			'weight' => 'number',
-/*			'lower_note' => 'number',
-			'average_note' => 'number',
-			'higher_note' => 'number',*/
 	),
 
 	'note/export/homework' => array(

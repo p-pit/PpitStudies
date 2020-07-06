@@ -15,9 +15,10 @@ class PdfReportTableViewHelper
 {	
 	public static function mapArgs($headerDef, $params, $locale)
 	{
+		$context = Context::getCurrent();
 		$arguments = array($headerDef['html']);
 		foreach ($params as $param) {
-			if (is_array($param)) $arguments[] = $param[$locale];
+			if (is_array($param)) $arguments[] = $context->localize($param, $locale);
 			else $arguments[] = $param;
 		}
 		return call_user_func_array('sprintf', $arguments);

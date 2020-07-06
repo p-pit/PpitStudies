@@ -274,6 +274,11 @@ class NoteController extends AbstractActionController
     	return $view;
     }
     
+    public function teacherListAction()
+    {
+    	return $this->listV2Action();
+    }
+    
     public function getAction()
     {
     	// Retrieve the context

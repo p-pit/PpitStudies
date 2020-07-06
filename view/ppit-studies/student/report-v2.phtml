@@ -66,7 +66,11 @@ table.note-report tr.period {
 	                	<?php if (!$visible) echo '('.$this->translate('Non yet visible', 'ppit-studies', $context->getLocale()).')' ?>
 	                </h4>
 	                <!--Text-->
+<?php if ($context->getInstance()->caption == 'ESI') : //Transient ?>
+                    <div><a href="<?php echo $this->basePath('/my-gema/download-report/report/' . $account->id . '/' . $school_year . '/' . $school_period) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+<?php else : ?>
 					<div><a href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+<?php endif;?>
                     <div class="mt-3"><?php echo $report ?></div>
 	            </div>
 	            <!--/.Card content-->

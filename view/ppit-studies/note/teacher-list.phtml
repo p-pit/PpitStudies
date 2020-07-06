@@ -1,0 +1,153 @@
+<!-- 
+/**
+ * PpitAccounting V1.0 (https://github.com/p-pit/PpitAccounting)
+ *
+ * @link      https://github.com/p-pit/PpitAccounting
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitAccounting/blob/master/license.txt GNU-GPL license
+ */
+-->
+
+<style>
+table td { 
+  font-size: 0.9rem;
+}
+</style>
+
+<div class="col-md-12">
+ 
+  <table class="table table-sm table-hover">
+    <thead class="table-info">
+      <th>&nbsp;</th>
+
+<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
+	<?php 
+	$label = null;
+	if ($propertyId == 'type') $label = $this->translate('Type', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'place_id') $label = $context->localize($context->getConfig('note')['properties']['place_id']['labels']);
+	elseif ($propertyId == 'school_period') $label = $context->localize($context->getConfig('student/property/school_period')['labels']);
+	elseif ($propertyId == 'group_id') $label = $context->localize($context->getConfig('note/property/group_id')['labels']);
+	elseif ($propertyId == 'class') $label = $context->localize($context->getConfig('student/property/class')['labels']);
+	elseif ($type != 'report' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
+	elseif ($propertyId == 'subject') $label = $context->localize($context->getConfig('student/property/school_subject')['labels']);
+	elseif ($propertyId == 'date') $label = $this->translate('Evaluation date', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'target_date') $label = $this->translate('Target date', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'weight') $label = $this->translate('Weight', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'lower_note') $label = $this->translate(($type == 'note') ? 'Lowest note' : 'Lowest average', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'average_note') $label = $this->translate(($type == 'note') ? 'Average note' : 'Class average', 'ppit-studies', $context->getLocale());
+	elseif ($propertyId == 'higher_note') $label = $this->translate(($type == 'note') ? 'Highest note' : 'Highest average', 'ppit-studies', $context->getLocale());
+	?>
+  <?php if ($label) : ?>
+      <th align="center">
+        <a <?php if ($major == $propertyId) echo 'btn-secondary active '.(($major == $propertyId) ? (($dir == 'ASC') ? 'sort_anchor_up' : 'sort_anchor_down') : '') ?>" role="button" id="<?php echo $propertyId ?>-anchor">
+          <span><?php echo $label ?></span>
+    <?php if ($major == $propertyId) : ?>
+          <i class="fas fa-caret-<?php echo ($dir == 'ASC') ? 'up' : 'down' ?>"></i>
+    <?php endif ?>
+        </a>
+		</th>
+  <?php endif;?>
+<?php endforeach;?>
+
+	</thead>
+
+<?php foreach ($notes as $note) : ?>
+<?php if ($note->subject == 'french') : ?>
+	<?php 
+	if ($note->type == 'done-work') $backgroundColor = 'LightGreen';
+	elseif ($note->type == 'todo-work') $backgroundColor = 'LightSalmon';
+	elseif ($note->type == 'event') $backgroundColor = 'LightBlue';
+	else $backgroundColor = null;
+	?>
+	
+	<tr>
+
+      <td style="text-align: center">
+        <a class="text-primary font-weight-bold note-detail-anchor" id="note-detail-anchor_<?php echo $note->id ?>">
+          <i class="fas fa-search" id="group-glyphicon"></i>
+        </a>
+      </td>
+
+	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
+	
+		<?php if ($propertyId == 'type') : ?>
+		<td <?php if ($backgroundColor) echo 'style="background-color: '.$backgroundColor.'"' ?>><?php echo $context->localize($context->getConfig('note')['types'][$category][$note->type]['labels']) ?></td>
+
+		<?php elseif ($propertyId == 'place_id') : ?>
+		<td><?php if ($note->place_id) echo $places[$note->place_id]->caption ?></td>
+
+		<?php elseif ($propertyId == 'school_period') : ?>
+		<td><?php if ($note->school_period) echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$note->school_period]) ?></td>
+
+        <?php elseif ($propertyId == 'group_id') : ?>
+        <td><?php if ($note->group_id) echo $groups[$note->group_id]->name ?></td>
+
+		<?php elseif ($propertyId == 'class') : ?>
+		<td><?php if ($note->class) echo $context->localize($context->getConfig('student/property/class')['modalities'][$note->class]) ?></td>
+
+		<?php elseif ($type != 'report' && $propertyId == 'level') : ?>
+			<?php if (!$note->level)  : ?>
+		<td style="color: red;">A compléter</td>
+			<?php else : ?>
+		<td><?php echo $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$note->level]) ?></td>
+			<?php endif;?>
+
+		<?php elseif ($propertyId == 'subject') : ?>
+			<?php if (!$note->subject)  : ?>
+		<td style="color: red;">A compléter</td>
+			<?php else : ?>
+		<td><?php echo ($note->subject == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$note->subject]) ?></td>
+			<?php endif;?>
+
+		<?php elseif ($propertyId == 'date') : ?>
+		<td><?php echo $context->decodeDate($note->date) ?></td>
+
+        <?php elseif ($propertyId == 'target_date') : ?>
+        <td><?php echo $context->decodeDate($note->target_date) ?></td>
+
+		<?php elseif ($propertyId == 'weight') : ?>
+		<td><?php echo $context->formatFloat($note->weight, 1) ?></td>
+
+		<?php elseif ($propertyId == 'lower_note') : ?>
+		<td><?php echo $context->formatFloat($note->lower_note, 2) ?></td>
+
+		<?php elseif ($propertyId == 'average_note') : ?>
+		<td><?php echo $context->formatFloat($note->average_note, 2) ?></td>
+
+		<?php elseif ($propertyId == 'higher_note') : ?>
+		<td><?php echo $context->formatFloat($note->higher_note, 2) ?></td>
+		
+		<?php endif;?>
+	<?php endforeach;?>
+	
+	</tr>
+<?php endif;?>	
+<?php endforeach; ?>
+
+	<tr>
+
+<?php if (count($notes) == '50') : ?>
+		<td style="text-align: center">
+          <button type="button" class="btn btn-sm btn-outline-primary index-btn" title="<?php echo $this->translate('Display the entire list', 'ppit-core', $context->getLocale())?>" id="more-anchor">
+            <i class="fas fa-ellipsis-h" id="more-glyphicon"></i>
+          </button>
+		</td>
+<?php else : ?>
+		<td>&nbsp;</td>
+<?php endif;?>
+		<td colspan="<?php echo count($context->getConfig('note/list/'.$category)) ?>">&nbsp;</td>
+	</tr>
+	
+	<tr>
+		<th>&nbsp;</th>
+	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
+		<?php if ($propertyId == 'average_note') : ?>
+		<th><?php echo $context->formatFloat($average*20, 2) ?></th>
+		<?php elseif ($type != 'report' || $propertyId != 'level') : ?>
+		<th>&nbsp;</th>
+		<?php endif;?>
+	<?php endforeach;?>
+	</tr>
+
+  </table>
+</div>

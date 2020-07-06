@@ -1708,5 +1708,5 @@ class StudentController extends AbstractActionController
     		$account->loadAndAdd($data, Account::getConfig('p-pit-studies'));
     	}
     	return $this->response;
-    }
+	}
 }

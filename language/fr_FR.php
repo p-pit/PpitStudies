@@ -53,6 +53,7 @@
 		'End date' => 'Date fin',
 		'In entire days if given' => 'En journées entières si saisi',
 		'Evaluation' => 'Évaluation',
+		'Evaluation date' => 'Date d’évaluation',
 		'Evaluations' => 'Évaluations',
 		'Extern' => 'Externe',
 		'Event' => 'Evénement',
