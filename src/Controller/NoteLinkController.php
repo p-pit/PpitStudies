@@ -464,7 +464,7 @@ if ($note_link_id) {
 			$existingKey = $report->place_id . '_' . $report->group_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
 			if ($report->subject != 'global') {
 //				if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
-				$existingReports[$existingKey] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject];
+				$existingReports[$existingKey] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
 			}
 		}
 		

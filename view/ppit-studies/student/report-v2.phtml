@@ -67,7 +67,7 @@ table.note-report tr.period {
 	                </h4>
 	                <!--Text-->
 <?php if ($context->getInstance()->caption == 'ESI') : //Transient ?>
-                    <div><a href="<?php echo $this->basePath('/my-gema/download-report/report/' . $account->id . '/' . $school_year . '/' . $school_period) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
+                    <div><a href="<?php echo $this->basePath('/my-gema/download-report/report/' . $account->id . '/' . $school_year) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
 <?php else : ?>
 					<div><a href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
 <?php endif;?>
