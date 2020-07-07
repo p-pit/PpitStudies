@@ -4,6 +4,7 @@ namespace PpitStudies\ViewHelper;
 use Zend\View\Model\ViewModel;
 use PpitCommitment\Model\Commitment;
 use PpitCommitment\Model\Term;
+use PpitCore\Model\Account;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
@@ -138,6 +139,9 @@ class PdfReportViewHelper
     	$pdf->SetLineWidth(0.2);
     	$pdf->SetFont('', '', 9);
 
+    	$groupConfig = [];
+    	foreach (Account::getList('group', [], '+name', null) as $group) $groupConfig[$group->id] = $group->name;
+    	 
     	if (!$averages && !$notes) $class = '';
 		else $class = current(($averages) ? $averages : $notes)->class;
 		foreach($context->getConfig('student/report/description') as $line) {
@@ -151,6 +155,13 @@ class PdfReportViewHelper
 					if (!$property) $property = $context->getConfig('core_account/generic/property/'.$propertyId);
 					if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 					if ($propertyId == 'name') $arguments[] = $account->name;
+    				elseif ($propertyId == 'groups') {
+						$groups = [];
+						if ($account->groups) foreach (explode(',', $account->groups) as $group_id) {
+							$groups[] = $groupConfig[$group_id];
+						}
+						$arguments[] = implode(',', $groups);
+					}
 					elseif ($propertyId == 'property_7' && $class) $arguments[] = $context->localize($property['modalities'][$class]);
 					elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
