@@ -265,7 +265,7 @@ class StudentController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    	$groups = Account::getList('group', [], '+name', null);
+    	$groups = Account::getList('group', ['status' => 'new'], '+id', null);
     	$myAccount = Account::get($context->getContactId(), 'contact_1_id');
     	if ($myAccount && $myAccount->groups) $myGroups = explode(',', $myAccount->groups);
     	else $myGroups = [];
@@ -1716,8 +1716,8 @@ class StudentController extends AbstractActionController
 		foreach ($context->getConfig('student/property/class')['modalities'] as $group_identifier => $class) {
 			$account = Account::instanciate('group');
 			$data = ['identifier' => $group_identifier, 'name' => $context->localize($class)];
-			if (array_key_exists('archive', $class) && $class['archive']) $data['status'] = 'archive';
-			else $data['status'] = 'new';
+			if (array_key_exists('archive', $class) && $class['archive']) $data['status'] = 'gone';
+			else $data['status'] = 'active';
 			$rc = $account->loadAndAdd($data, null, true, true);
 			if ($rc[0] == '206') $account = Account::get($rc[1]); // Partially accepted on an already existing account which is returned as rc[1]
 			elseif ($rc[0] != '200') $error = $rc;
