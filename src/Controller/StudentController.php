@@ -265,7 +265,7 @@ class StudentController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    	$groups = Account::getList('group', ['status' => 'new'], '+id', null);
+    	$groups = Account::getList('group', ['status' => 'active'], '+id', null);
     	$myAccount = Account::get($context->getContactId(), 'contact_1_id');
     	if ($myAccount && $myAccount->groups) $myGroups = explode(',', $myAccount->groups);
     	else $myGroups = [];
