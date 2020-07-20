@@ -5204,6 +5204,7 @@ table.note-report tr.period {
 					'assessment' => array('definition' => 'note/property/assessment'),
 					'evaluation' => array('definition' => 'student/property/reportMention'),
 					'observations' => array('definition' => 'note/property/observations'),
+					'group_id' => array('definition' => 'note/property/group_id'),
 			),
 	),
 
