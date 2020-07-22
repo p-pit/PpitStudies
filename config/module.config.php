@@ -3721,6 +3721,7 @@ table.note-report td {
 					'table-tennis' => array('en_US' => 'Table tennis', 'fr_FR' => 'Tennis de table'),
 					'danse' => array('en_US' => 'Danse', 'fr_FR' => 'Danse'),
 					'music' => array('en_US' => 'Music', 'fr_FR' => 'Musique'),
+					'musical' => array('en_US' => 'Musical', 'fr_FR' => 'Comédie musicale'),
 					'figure-skating' => array('en_US' => 'Figure skating', 'fr_FR' => 'Patinage artistique'),
 					'ice_sport' => array('en_US' => 'Ice sports', 'fr_FR' => 'Sports de glace'),
 					'multisport' => array('en_US' => 'Multisport', 'fr_FR' => 'Multisport'),
