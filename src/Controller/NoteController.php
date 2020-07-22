@@ -1483,7 +1483,7 @@ class NoteController extends AbstractActionController
 				->join('core_vcard', 'core_vcard.id = core_account.contact_1_id', array('n_fn'), 'left')
 				->where(array('note_id' => $note->id, 'student_note_link.status != ?' => 'deleted'));
 				$cursor = NoteLink::getTable()->selectWith($select);
-			$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject);
+			$computedAverages = Note::computePeriodAverages($note->place_id, $note->school_year, $note->class, $note->school_period, $note->subject, true);
 			foreach($cursor as $noteLink) {
 				$audit = array();
 				$distribution = array();
@@ -1504,7 +1504,7 @@ class NoteController extends AbstractActionController
 						$noteLink->value = $value;
 						$noteLink->distribution = $distribution;
 						$noteLink->audit = $audit;
-						$noteLink->update(null);
+//						$noteLink->update(null);
 					}
 				}
 			}

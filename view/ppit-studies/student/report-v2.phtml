@@ -70,8 +70,8 @@ table.note-report tr.period {
                     <div><a href="<?php echo $this->basePath('/my-gema/download-report/report/' . $account->id . '/' . $school_year) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
 <?php else : ?>
 					<div><a href="<?php echo $this->url('student/download', array('category' => 'report', 'account_id' => $account->id, 'school_year' => $school_year, 'school_period' => $school_period)) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a></div>
-<?php endif;?>
                     <div class="mt-3"><?php echo $report ?></div>
+<?php endif;?>
 	            </div>
 	            <!--/.Card content-->
 		<div>&nbsp;</div>
