@@ -1714,13 +1714,16 @@ class StudentController extends AbstractActionController
 	{
 		$context = Context::getCurrent();
 		foreach ($context->getConfig('student/property/class')['modalities'] as $group_identifier => $class) {
-			$account = Account::instanciate('group');
-			$data = ['identifier' => $group_identifier, 'name' => $context->localize($class)];
-			if (array_key_exists('archive', $class) && $class['archive']) $data['status'] = 'gone';
-			else $data['status'] = 'active';
-			$rc = $account->loadAndAdd($data, null, true, true);
-			if ($rc[0] == '206') $account = Account::get($rc[1]); // Partially accepted on an already existing account which is returned as rc[1]
-			elseif ($rc[0] != '200') $error = $rc;
+			$account = Account::get('identifier', $group_identifier);
+			if (!$account) {
+				$account = Account::instanciate('group');
+				$data = ['identifier' => $group_identifier, 'name' => $context->localize($class)];
+				if (array_key_exists('archive', $class) && $class['archive']) $data['status'] = 'gone';
+				else $data['status'] = 'active';
+				$rc = $account->loadAndAdd($data, null, true, true);
+				if ($rc[0] == '206') $account = Account::get($rc[1]); // Partially accepted on an already existing account which is returned as rc[1]
+				elseif ($rc[0] != '200') $error = $rc;
+			}
 		}
 	}
 }
