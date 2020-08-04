@@ -3376,11 +3376,13 @@ table.note-report td {
 	),
 
 	'commitmentTerm/generate/p-pit-studies' => array(
+		'commitment_caption' => [],
+		'invoice_account_id' => [],
+		'scheduling' => [],
+		'status' => [],
+		'amount_to_divide' => [],
+		'means_of_payment' => [],
 		'tiny_1' => [],
-/*		'tiny_2' => [],
-		'tiny_3' => [],
-		'tiny_4' => [],
-		'tiny_5' => [],*/
 	),
 	
 	'commitmentTerm/export/p-pit-studies' => array(
