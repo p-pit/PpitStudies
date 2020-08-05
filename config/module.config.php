@@ -3866,9 +3866,9 @@ table.note-report td {
 					'fr_FR' => 'Année scolaire',
 			),
 	),
-	'student/property/school_year/default' => '2019-2020',
-	'student/property/school_year/start' => '2019-09-01',
-	'student/property/school_year/end' => '2020-07-31',
+	'student/property/school_year/default' => '2020-2021',
+	'student/property/school_year/start' => '2020-09-01',
+	'student/property/school_year/end' => '2021-07-31',
 	
 	'student/property/school_period' => array(
 			'type' => 'select',
