@@ -8,7 +8,7 @@ function getEvents(calendar) {
   getHomework(calendar);
   getAbsence(calendar);
 	
-  let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=2019-09-01&end=2020-07-31&property_1=<?php echo $context->getConfig('student/property/school_year/default') ?>';
+  let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=<?php echo $context->getConfig('student/property/school_year/start') ?>&end=<?php echo $context->getConfig('student/property/school_year/end') ?>&property_1=<?php echo $context->getConfig('student/property/school_year/default') ?>';
 
 //Filter on place
 <?php if ($place) : ?>

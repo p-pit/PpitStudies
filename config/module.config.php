@@ -1128,112 +1128,106 @@ return array_merge(
 
 	'menus/p-pit-studies' => array(
 		'entries' => array(
-					'student' => array(
-							'route' => 'student/index',
-							'params' => array('app' => 'p-pit-studies', 'type' => '', 'entryId' => 'student'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-list-alt',
-							'label' => array(
-									'en_US' => 'Students/Classes',
-									'fr_FR' => 'Elèves/Classes',
-							),
-					),
-					
-					// planning_implement_event_calendar: Le planning de P-Pit Studies implémente la feature event/calendar de l'enabler PpitCore.
-					
-					'calendar' => array(
-						'route' => 'event/calendar',
-						'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'calendar'),
-						'urlParams' => '?status=new',
-						'glyphicon' => 'glyphicon-calendar',
-						'label' => array(
-							'en_US' => 'Planning',
-							'fr_FR' => 'Planning',
-						),
-					),
-					'absence' => array(
-						'route' => 'event/indexAlt',
-						'params' => array('type' => 'absence', 'entryId' => 'absence'),
-						'urlParams' => array(),
-						'glyphicon' => 'glyphicon-hourglass',
-						'label' => array(
-							'en_US' => 'Absences/Lateness',
-							'fr_FR' => 'Absences/Retards',
-						),
-					),
-					'homework' => array(
-							'route' => 'note/indexV2',
-							'params' => array('category' => 'homework', 'type' => '*', 'entryId' => 'homework'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-calendar',
-							'label' => array(
-									'en_US' => 'Homework notebook',
-									'fr_FR' => 'Cahier de texte',
-							),
-					),
-					'evaluation' => array(
-							'route' => 'note/indexV2',
-							'params' => array('category' => 'evaluation', 'type' => 'note', 'entryId' => 'evaluation'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-dashboard',
-							'label' => array(
-									'en_US' => 'Evaluations',
-									'fr_FR' => 'Relevés de notes',
-							),
-					),
-					'report' => array(
-							'route' => 'note/indexV2',
-							'params' => array('category' => 'evaluation', 'type' => 'report', 'entryId' => 'report'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-education',
-							'label' => array(
-									'en_US' => 'School reports',
-									'fr_FR' => 'Bulletins',
-							),
-					),
-					'exam' => array(
-							'route' => 'note/indexV2',
-							'params' => array('category' => 'evaluation', 'type' => 'exam', 'entryId' => 'exam'),
-							'urlParams' => array(),
-							'glyphicon' => 'glyphicon-education',
-							'label' => array(
-									'en_US' => 'Mock exams',
-									'fr_FR' => 'Examens blancs',
-							),
-					),
-					'subscriptions' => array(
-							'route' => 'account/indexAlt',
-							'params' => array('entry' => 'account', 'type' => 'p-pit-studies', 'entryId' => 'subscriptions'),
-							'glyphicon' => 'glyphicon-user',
-							'label' => array(
-									'en_US' => 'Subscriptions',
-									'fr_FR' => 'Inscriptions',
-							),
-					),
-					'teacher' => array(
-							'route' => 'account/indexAlt',
-							'params' => array('entry' => 'account', 'type' => 'teacher', 'app' => 'p-pit-studies', 'entryId' => 'teacher'),
-							'glyphicon' => 'glyphicon-user',
-							'label' => array(
-									'en_US' => 'Trainers',
-									'fr_FR' => 'Formateurs',
-							),
-					),
-					'group' => array(
-							'route' => 'account/indexAlt',
-							'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-studies', 'entryId' => 'group'),
-							'label' => array(
-								'en_US' => 'Groups',
-								'fr_FR' => 'Groupes',
-							),
-					),
+			'subscriptions' => array(
+				'route' => 'commitment/index',
+				'params' => array('entry' => 'account', 'type' => 'p-pit-studies', 'entryId' => 'subscriptions'),
+				'glyphicon' => 'glyphicon-link',
+				'label' => array(
+					'default' => 'Inscriptions',
+				),
+			),
+	
+			'teacher' => array(
+				'route' => 'account/indexAlt',
+				'params' => array('entry' => 'account', 'type' => 'teacher', 'app' => 'p-pit-studies', 'entryId' => 'teacher'),
+				'glyphicon' => 'glyphicon-user',
+				'label' => array(
+					'default' => 'Trainers',
+					'fr_FR' => 'Intervenants',
+				),
+			),
+	
+			'group' => array(
+				'route' => 'account/indexAlt',
+				'params' => array('entry' => 'group', 'type' => 'group', 'app' => 'p-pit-studies', 'entryId' => 'group'),
+				'label' => array(
+					'default' => 'Groups',
+					'fr_FR' => 'Groupes',
+				),
+			),
+	
+			'student' => array(
+				'route' => 'student/index',
+				'params' => array('app' => 'p-pit-studies', 'type' => '', 'entryId' => 'student'),
+				'urlParams' => array(),
+				'glyphicon' => 'glyphicon-list-alt',
+				'label' => array(
+					'default' => 'Students/Classes',
+					'fr_FR' => 'Elèves/Classes',
+				),
+			),
+				
+			// planning_implement_event_calendar: Le planning de P-Pit Studies implémente la feature event/calendar de l'enabler PpitCore.
+				
+			'calendar' => array(
+				'route' => 'event/calendar',
+				'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'calendar'),
+				'urlParams' => '?status=new',
+				'glyphicon' => 'glyphicon-calendar',
+				'label' => array(
+					'default' => 'Planning',
+					'fr_FR' => 'Planning',
+				),
+			),
+	
+			'absence' => array(
+				'route' => 'event/indexAlt',
+				'params' => array('type' => 'absence', 'entryId' => 'absence'),
+				'urlParams' => array(),
+				'glyphicon' => 'glyphicon-hourglass',
+				'label' => array(
+					'default' => 'Absences',
+					'fr_FR' => 'Absences',
+				),
+			),
+	
+			'homework' => array(
+				'route' => 'note/indexV2',
+				'params' => array('category' => 'homework', 'type' => '*', 'entryId' => 'homework'),
+				'urlParams' => array(),
+				'glyphicon' => 'glyphicon-calendar',
+				'label' => array(
+					'default' => 'Homework notebook',
+					'fr_FR' => 'Cahier de texte',
+				),
+			),
+			'evaluation' => array(
+				'route' => 'noteLink/index',
+				'params' => array('category' => 'evaluation', 'type' => 'note', 'entryId' => 'evaluation'),
+				'urlParams' => array(),
+				'glyphicon' => 'glyphicon-dashboard',
+				'label' => array(
+					'default' => 'Evaluations',
+					'fr_FR' => 'Évaluations',
+				),
+			),
+			'report' => array(
+				'route' => 'noteLink/index',
+				'params' => array('category' => 'evaluation', 'type' => 'report', 'entryId' => 'report'),
+				'urlParams' => array(),
+				'glyphicon' => 'glyphicon-dashboard',
+				'label' => array(
+					'default' => 'Reports',
+					'fr_FR' => 'Bulletins',
+				),
+			),
 		),
 		'labels' => array(
 			'default' => '2pit Studies',
 			'fr_FR' => 'P-Pit Studies',
 		),
 	),
-
+	
 	'admin/p-pit-studies' => array(
 /*			'student/property/contact_meeting_context',
 			'student/property/discipline',
