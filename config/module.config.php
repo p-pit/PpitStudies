@@ -4559,11 +4559,11 @@ table.note-report tr.period {
 	
 	'event/update/calendar' => array(
 		'status' => ['mandatory' => true],
-		'groups' => [],
 		'place_id' => ['mandatory' => true],
+		'groups' => [],
 		'property_1' => ['mandatory' => true, 'default' => 'student/property/school_year/default'],
 		'account_id' => [],
-		'property_2' => [],
+//		'property_2' => [],
 		'property_3' => [],
 		'caption' => array('mandatory' => false),
 		'day_of_week' => array('mandatory' => false),
