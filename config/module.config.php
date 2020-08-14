@@ -1226,6 +1226,7 @@ return array_merge(
 			'default' => '2pit Studies',
 			'fr_FR' => 'P-Pit Studies',
 		),
+		'support' => ['default' => '/img/solo_studies/presentation_p_pit_studies_rp.pdf'],
 	),
 	
 	'admin/p-pit-studies' => array(
