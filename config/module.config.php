@@ -1226,7 +1226,10 @@ return array_merge(
 			'default' => '2pit Studies',
 			'fr_FR' => 'P-Pit Studies',
 		),
-		'support' => ['default' => '/img/solo_studies/presentation_p_pit_studies_rp.pdf'],
+		'support' => [
+			['labels' => ['default' => 'Mode opératoire P-Pit Studies'], 'href' => ['default' => '/img/solo_studies/presentation_p_pit_studies_rp.pdf']],
+			['labels' => ['default' => 'Vidéo de présentation Planning'], 'href' => ['default' => '/img/solo_studies/video_p_pit_studies_planning.mp4']],
+		],
 	),
 	
 	'admin/p-pit-studies' => array(
