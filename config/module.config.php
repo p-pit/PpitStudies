@@ -1166,17 +1166,13 @@ return array_merge(
 					'fr_FR' => 'Elèves/Classes',
 				),
 			),
-				
-			// planning_implement_event_calendar: Le planning de P-Pit Studies implémente la feature event/calendar de l'enabler PpitCore.
-				
+			
 			'calendar' => array(
-				'route' => 'event/calendar',
-				'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'calendar'),
-				'urlParams' => '?status=new',
+				'route' => 'event/indexAlt',
+				'params' => array('type' => 'calendar', 'entryId' => 'calendar'),
 				'glyphicon' => 'glyphicon-calendar',
 				'label' => array(
 					'default' => 'Planning',
-					'fr_FR' => 'Planning',
 				),
 			),
 	
@@ -1219,6 +1215,19 @@ return array_merge(
 				'label' => array(
 					'default' => 'Reports',
 					'fr_FR' => 'Bulletins',
+				),
+			),
+				
+			// planning_implement_event_calendar: Le planning de P-Pit Studies implémente la feature event/calendar de l'enabler PpitCore.
+				
+			'calendar_old' => array(
+				'route' => 'event/calendar',
+				'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'calendar_old'),
+				'urlParams' => '?status=new',
+				'glyphicon' => 'glyphicon-calendar',
+				'label' => array(
+					'default' => 'Planning (old)',
+					'fr_FR' => 'Planning (ancien)',
 				),
 			),
 		),
@@ -4521,30 +4530,47 @@ table.note-report tr.period {
 			'groups' => ['multiple' => true],
 			'property_3' => ['multiple' => true],
 			'account_id' => ['multiple' => true],
+			'account_status' => ['multiple' => true],
+			'begin_date' => [],
+			'end_date' => [],
+			'day_of_week' => ['multiple' => true],
+			'begin_time' => [],
+			'end_time' => [],
 		),
 	),
-	
+
 	'event/list/calendar' => array(
-		'place_id' => [],
-		'property_1' => [],
-		'n_fn' => [],
-//		'property_2' => [],
-		'groups' => [],
+		'place_id' => ['mandatory' => true],
+		'property_1' => ['mandatory' => true],
+		'groups' => ['mandatory' => true, 'multiple' => true],
 		'property_3' => [],
-		'property_4' => [],
-		'category' => [],
-		'subcategory' => [],
-		'identifier' => [],
-		'caption' => [],
-		'value' => [],
-		'begin_date' => [],
+		'account_id' => [],
+		'account_status' => ['readonly' => true],
+		'begin_date' => ['mandatory' => true],
 		'end_date' => [],
-		'day_of_week' => [],
-		'day_of_month' => [],
-		'begin_time' => [],
-		'end_time' => [],
-		'comments' => [],
-		'update_time' => [],
+		'day_of_week' => ['multiple' => true],
+		'begin_time' => ['mandatory' => true],
+		'end_time' => ['mandatory' => true],
+		'value' => ['readonly' => true],
+	),
+
+	'event/group/calendar' => [
+		'title' => ['default' => 'Selected events', 'fr_FR' => 'Evénements sélectionnés'],
+		'checklist' => ['format' => '%s %s %s %s %s', 'params' => ['place_id', 'groups', 'property_3', 'begin_date', 'begin_time']],
+	],
+
+	'event/export/calendar' => array(
+		'place_id' => 'A',
+		'property_1' => 'B',
+		'n_fn' => 'C',
+		'groups' => 'D',
+		'property_3' => 'E',
+		'begin_date' => 'F',
+		'end_date' => 'G',
+		'day_of_week' => 'H',
+		'begin_time' => 'I',
+		'end_time' => 'J',
+		'value' => 'K',
 	),
 	
 	'event/detail/calendar' => array(
@@ -4580,25 +4606,6 @@ table.note-report tr.period {
 		'exception_3' => array('mandatory' => false),
 		'exception_4' => array('mandatory' => false),
 		'location' => array('mandatory' => false),
-	),
-	
-	'event/export/calendar' => array(
-		'status' => 'A',
-		'type' => 'B',
-		'place_id' => 'C',
-		'property_1' => 'D',
-		'n_fn' => 'E',
-//		'property_2' => 'F',
-		'groups' => 'F',
-		'property_3' => 'G',
-		'property_4' => 'H',
-		'category' => 'I',
-		'subcategory' => 'J',
-		'place_caption' => 'K',
-		'identifier' => 'L',
-		'caption' => 'M',
-		'description' => 'N',
-		'value' => 'O',
 	),
 
 	// Absence event
