@@ -1166,16 +1166,20 @@ return array_merge(
 					'fr_FR' => 'Elèves/Classes',
 				),
 			),
+
+			// planning_implement_event_calendar: Le planning de P-Pit Studies implémente la feature event/calendar de l'enabler PpitCore.
 			
 			'calendar' => array(
-				'route' => 'event/indexAlt',
-				'params' => array('type' => 'calendar', 'entryId' => 'calendar'),
+				'route' => 'event/calendar',
+				'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'calendar'),
+				'urlParams' => '?status=new',
 				'glyphicon' => 'glyphicon-calendar',
 				'label' => array(
 					'default' => 'Planning',
+					'fr_FR' => 'Planning',
 				),
 			),
-	
+				
 			'absence' => array(
 				'route' => 'event/indexAlt',
 				'params' => array('type' => 'absence', 'entryId' => 'absence'),
@@ -1215,19 +1219,6 @@ return array_merge(
 				'label' => array(
 					'default' => 'Reports',
 					'fr_FR' => 'Bulletins',
-				),
-			),
-				
-			// planning_implement_event_calendar: Le planning de P-Pit Studies implémente la feature event/calendar de l'enabler PpitCore.
-				
-			'calendar_old' => array(
-				'route' => 'event/calendar',
-				'params' => array('type' => 'calendar', 'category' => 'calendar', 'entryId' => 'calendar_old'),
-				'urlParams' => '?status=new',
-				'glyphicon' => 'glyphicon-calendar',
-				'label' => array(
-					'default' => 'Planning (old)',
-					'fr_FR' => 'Planning (ancien)',
 				),
 			),
 		),
@@ -3798,7 +3789,11 @@ table.note-report td {
 			'3e' => array('fr_FR' => 'Troisième'),
 			'2nde' => array('fr_FR' => 'Seconde générale'),
 			'1ere' => array('fr_FR' => 'Première générale'),
+			'1ereSTMG' => array('fr_FR' => 'Première STMG'),
+			'1ereSTSS' => array('fr_FR' => 'Première STSS'),
 			'0term' => array('fr_FR' => 'Terminale générale'),
+			'0termSTMG' => array('fr_FR' => 'Terminale STMG'),
+			'0termSTSS' => array('fr_FR' => 'Terminale STSS'),
 			'2ndeProCommerce' => array('fr_FR' => 'Seconde Pro Commerce'),
 			'1ereProCommerce' => array('fr_FR' => 'Première Pro Commerce'),
 			'0termProCommerce' => array('fr_FR' => 'Terminale Pro Commerce'),
