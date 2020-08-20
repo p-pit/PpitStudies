@@ -1162,8 +1162,8 @@ return array_merge(
 				'urlParams' => array(),
 				'glyphicon' => 'glyphicon-list-alt',
 				'label' => array(
-					'default' => 'Students/Classes',
-					'fr_FR' => 'Elèves/Classes',
+					'default' => 'Students/Groups',
+					'fr_FR' => 'Elèves/Groupes',
 				),
 			),
 
@@ -1342,8 +1342,8 @@ return array_merge(
 			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
 		'perspectives' => array(
-				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
-				'account' => array('committed', 'visa', 'active', 'retention', 'canceled'),
+				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'canceled'),
+				'account' => array('committed', 'visa', 'active', 'retention', 'gone'),
 		),
 		'labels' => array(
 			'en_US' => 'Account status',
