@@ -1717,7 +1717,7 @@ return array_merge(
 		'status' => array('mandatory' => true, 'accountant' => true),
 		'year' => array('mandatory' => true, 'accountant' => true),
 		'invoice_date' => array('mandatory' => true, 'accountant' => true),
-		'caption' => array('mandatory' => true),
+		'caption' => array('mandatory' => true, 'default' => '2020-2021'),
 		'account_id' => array('mandatory' => true, 'accountant' => true),
 		'invoice_account_id' => array('mandatory' => false, 'accountant' => true),
 		'description' => array('mandatory' => false),
@@ -1742,7 +1742,7 @@ return array_merge(
 		'status' => array('mandatory' => true),
 		'year' => array('mandatory' => true, 'accountant' => true),
 		'invoice_date' => array('mandatory' => true, 'accountant' => true),
-		'caption' => array('mandatory' => true),
+		'caption' => array('mandatory' => true, 'default' => '2020-2021'),
 		'account_id' => array('mandatory' => true, 'accountant' => true),
 		'description' => array('mandatory' => false),
 		'property_13' => array('mandatory' => false, 'account-initial-value' => 'property_7'),
@@ -2940,7 +2940,7 @@ return array_merge(
 					),
 					'commitments' => array(
 						'definition' => 'inline',
-						'labels' => array('default' => 'Commitments', 'fr_FR' => 'Engagements'),
+						'labels' => array('default' => 'Commitments', 'fr_FR' => 'Années d’inscription'),
 					),
 					'account-document' => array(
 							'definition' => 'inline',
@@ -2968,7 +2968,7 @@ return array_merge(
 						'params' => [
 							'type' => 'p-pit-studies',
 							'status' => 'confirmed',
-							'caption' => 'property_16',
+							'caption' => 'defaultSchoolYear',
 							'property_10' => 'property_4',
 							'property_11' => 'property_15', 
 							'property_12' => 'property_19',
