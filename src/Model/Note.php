@@ -189,6 +189,7 @@ class Note
     			if ($propertyId == 'type') $where->equalTo('student_note.type', $params[$propertyId]);
     			elseif ($propertyId == 'place_id') $where->equalTo('place_id', $params[$propertyId]);
     			elseif ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
+    			elseif ($propertyId == 'teacher_id') $where->equalTo('teacher_id', $params[$propertyId]);
     			elseif ($propertyId == 'group_id') $where->equalTo('student_note.group_id', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
     			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
@@ -631,7 +632,10 @@ class Note
     {
     	$note = Note::getTable()->get($id, $column);
     	if (!$note) return null;
-    	if ($note->teacher_id) $note->teacher_n_fn = Vcard::get($note->teacher_id)->n_fn;
+    	if ($note->teacher_id) {
+    		$teacher = Vcard::get($note->teacher_id);
+    		if ($teacher) $note->teacher_n_fn = $teacher->n_fn;
+    	}
     	$note->links = array();
     	$select = NoteLink::getTable()->getSelect()
     				->join('core_account', 'core_account.id = student_note_link.account_id', array(), 'left')
