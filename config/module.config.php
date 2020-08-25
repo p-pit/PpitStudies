@@ -1744,7 +1744,7 @@ return array_merge(
 		'year' => array('mandatory' => true, 'accountant' => true),
 		'invoice_date' => array('mandatory' => true, 'accountant' => true),
 		'caption' => array('mandatory' => true, 'default' => '2020-2021'),
-		'account_id' => array('mandatory' => true, 'accountant' => true),
+//		'account_id' => array('mandatory' => true, 'accountant' => true),
 		'description' => array('mandatory' => false),
 		'property_13' => array('mandatory' => false, 'account-initial-value' => 'property_7'),
 		'property_2' => array('mandatory' => false),
