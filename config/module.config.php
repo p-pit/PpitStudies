@@ -4028,6 +4028,7 @@ table.note-report td {
 					'epi' => array('en_US' => 'EPI', 'fr_FR' => 'EPI'),
 					'vsp' => array('en_US' => 'VSP', 'fr_FR' => 'VSP'),
 					'mde' => array('en_US' => 'MDE', 'fr_FR' => 'MDE'),
+					'pse' => array('en_US' => 'PSE', 'fr_FR' => 'PSE (Prévention Santé Environnement'),
 					'eps-arts-music' => array('default' => 'EPS / Arts plastiques / Éducation musicale'),
 					'applied-arts' => array('en_US' => 'Applied arts', 'fr_FR' => 'Arts appliqués'),
 					'plastic-arts' => array('en_US' => 'Plastic arts', 'fr_FR' => 'Arts plastiques'),
