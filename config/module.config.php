@@ -1228,6 +1228,7 @@ return array_merge(
 		),
 		'support' => [
 			['labels' => ['default' => 'Mode opératoire P-Pit Studies'], 'href' => ['default' => '/img/solo_studies/presentation_p_pit_studies_rp.pdf']],
+			['labels' => ['default' => 'Mode opératoire P-Pit Learning Formateur'], 'href' => ['default' => '/img/solo_studies/presentation_p_pit_learning_formateur.pdf']],
 			['labels' => ['default' => 'Vidéo de présentation Inscriptions'], 'href' => ['default' => '/img/solo_studies/video_p_pit_studies_inscription.mp4']],
 			['labels' => ['default' => 'Vidéo de présentation Planning'], 'href' => ['default' => '/img/solo_studies/video_p_pit_studies_planning.mp4']],
 		],
