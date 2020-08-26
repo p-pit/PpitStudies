@@ -822,7 +822,7 @@ class Note
     	$note = Note::get($this->id);
     
     	// Isolation check
-    	if ($note->update_time > $update_time) return 'Isolation';
+    	if ($update_time && $note->update_time > $update_time) return 'Isolation';
 
     	foreach ($this->links as $noteLink) $noteLink->delete(null);
 
