@@ -1190,7 +1190,18 @@ return array_merge(
 					'fr_FR' => 'Absences',
 				),
 			),
-	
+
+			'lateness' => array(
+				'route' => 'absence/indexV2',
+				'params' => array('type' => '', 'entryId' => 'lateness'),
+				'urlParams' => array(),
+				'glyphicon' => 'glyphicon-hourglass',
+				'label' => array(
+					'en_US' => 'Lateness',
+					'fr_FR' => 'Retards',
+				),
+			),
+					
 			'homework' => array(
 				'route' => 'note/indexV2',
 				'params' => array('category' => 'homework', 'type' => '*', 'entryId' => 'homework'),

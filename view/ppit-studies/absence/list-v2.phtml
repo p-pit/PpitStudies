@@ -65,7 +65,7 @@ table td {
         }
         else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
       }
-      else $modalities = $subject['modalities'];
+      else $modalities = $context->getConfig('student/property/school_subject')['modalities'];
       ?>
 		
       <td><?php if ($absence->subject) echo $context->localize($modalities[$absence->subject]) ?></td>
