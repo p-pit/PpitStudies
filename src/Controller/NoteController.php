@@ -739,14 +739,9 @@ class NoteController extends AbstractActionController
 			$group_id = $note->group_id;
 			$content['note']['group_id'] = $group_id;
 			$group = Account::get($group_id);
-			if ($group) {
-				$content['group'] = $group->properties;
-				$place = Place::get($group->place_id);
-			}
-			else {
-				$content['group'] = null;
-				$place = Place::get($note->place_id);
-			}
+			if ($group) $content['group'] = $group->properties;
+			else $content['group'] = null;
+			$place = Place::get($note->place_id);
 			$content['place'] = $place->properties;
 				
 			$noteLinks = $note->links;

@@ -487,10 +487,17 @@ class NoteLink
 		$context = Context::getCurrent();
 		$result = [];
 		$errors = [];
-	
-		// Retrieve the properties description for the given account type
-		$configProperties = NoteLink::getConfig();
-	
+
+		$configProperties = array();
+		foreach($context->getConfig('note_link/generic')['properties'] as $propertyId) {
+			$property = $context->getConfig('note_link/generic/property/'.$propertyId);
+			$propertyType = (array_key_exists('type', $property)) ? $property['type'] : null;
+			if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+			if ($propertyType) $property['type'] = $propertyType;
+			if (!array_key_exists('private', $property)) $property['private'] = false;
+			$configProperties[$propertyId] = $property;
+		}
+		
 		// Iterates on the given pairs of property => value
 		foreach ($data as $propertyId => $value) {
 	
@@ -558,7 +565,15 @@ class NoteLink
     		'time' => Date('Y-m-d G:i:s'),
     		'n_fn' => $context->getFormatedName(),
     	];
-    	$configProperties = NoteLink::getConfig();
+    	
+    	$configProperties = array();
+    	foreach($context->getConfig('note_link/generic')['properties'] as $propertyId) {
+    		$property = $context->getConfig('note_link/generic/property/'.$propertyId);
+    		$propertyType = (array_key_exists('type', $property)) ? $property['type'] : null;
+    		if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+    		if ($propertyType) $property['type'] = $propertyType;
+    		$configProperties[$propertyId] = $property;
+    	}
     
     	$validation = NoteLink::validate($data);
     	foreach ($validation as $resultType => $result) {
