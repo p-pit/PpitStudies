@@ -1242,6 +1242,7 @@ return array_merge(
 			['labels' => ['default' => 'Mode opératoire P-Pit Learning Formateur'], 'href' => ['default' => '/img/solo_studies/presentation_p_pit_learning_formateur.pdf']],
 			['labels' => ['default' => 'Vidéo de présentation Inscriptions'], 'href' => ['default' => '/img/solo_studies/video_p_pit_studies_inscription.mp4']],
 			['labels' => ['default' => 'Vidéo de présentation Planning'], 'href' => ['default' => '/img/solo_studies/video_p_pit_studies_planning.mp4']],
+			['labels' => ['default' => 'Vidéo de présentation Formateur'], 'href' => ['default' => '/img/solo_studies/video_p_pit_learning.mp4']],
 		],
 	),
 	
@@ -1580,7 +1581,7 @@ return array_merge(
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
-			'invoice_account_id',
+			'account_owner_id', 'invoice_account_id',
 			'caption', 'product_caption','account_id', 'account_status', 'description',
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14',
@@ -1722,6 +1723,7 @@ return array_merge(
 			'property_2' => [],
 			'status' => [],
 			'account_status' => [],
+			'including_options_amount' => [],
 			'update_time' => [],
 		),
 	),
@@ -1749,6 +1751,7 @@ return array_merge(
 		'property_10' => array('mandatory' => false),
 		'property_11' => array('mandatory' => false),
 		'property_12' => array('mandatory' => false),
+		'amount' => array('mandatory' => false),
 	),
 
 	'commitment/subscriptionUpdate/p-pit-studies' => array(
@@ -1772,7 +1775,7 @@ return array_merge(
 		'property_10' => array('mandatory' => false),
 		'property_11' => array('mandatory' => false),
 		'property_12' => array('mandatory' => false),
-		'including_options_amount' => array('mandatory' => false),
+		'amount' => array('mandatory' => false),
 	),
 	
 	'commitment/model_rules/p-pit-studies' => [
@@ -1846,6 +1849,7 @@ return array_merge(
 		'property_11' => 'Y',
 		'property_12' => 'Z',
 		'tel_cell' => 'AA',
+		'including_options_amount' => 'AB',
 	),
 	
 	'commitment/invoice/p-pit-studies' => array(
