@@ -186,7 +186,7 @@ if ($profile->groups) {
 elseif ($profile->property_7) $studentGroups = $context->localize($configProperties['property_7']['modalities'][$profile->property_7]);
 else $studentGroups = null;
 ?>
-              <div class="h6 text-center text-muted my-4"><?php echo $profile->property_16 ?><?php if ($studentGroups) : ?> &mdash; <?php echo $studentGroups ?><?php endif;?></div>
+              <div class="h6 text-center text-muted my-4"><?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$context->getConfig('student/property/school_year/default')]) ?><?php if ($studentGroups) : ?> &mdash; <?php echo $studentGroups ?><?php endif;?></div>
 <?php if ($global_average) : ?>
               <div class="text-center text-muted my-4"><strong><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?>:</strong> <?php echo $context->formatFloat($global_average, 2) ?></div>
 <?php endif;?>
