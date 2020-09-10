@@ -2032,6 +2032,16 @@ return array_merge(
 	'core_account/p-pit-studies/property/name' => array(
 		'definition' => 'core_account/generic/property/name'
 	),
+	
+	'core_account/p-pit-studies/property/email_work' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'School e-mail',
+			'fr_FR' => 'Email école',
+		),
+	),
+	
 	'core_account/p-pit-studies/property/photo_link_id' => array('definition' => 'core_account/generic/property/photo_link_id'),
 	'core_account/p-pit-studies/property/basket' => array('definition' => 'core_account/generic/property/basket'),
 	'core_account/p-pit-studies/property/contact_1_id' => array('definition' => 'core_account/generic/property/contact_1_id'),
@@ -2841,7 +2851,7 @@ return array_merge(
 	
 	'core_account/p-pit-studies' => array(
 		'properties' => array(
-			'title_1', 'title_2', 'title_3', 'status', 'place_id', 'owner_id', 'identifier', 'name', 'photo_link_id', 'basket',
+			'title_1', 'title_2', 'title_3', 'status', 'place_id', 'owner_id', 'identifier', 'name', 'email_work', 'photo_link_id', 'basket',
 			'contact_1_id', 'n_title', 'n_first', 'n_last', 'n_fn', 'email', 'tel_work', 'tel_cell',
 			'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'birth_date', 'gender', 'nationality',
 			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
