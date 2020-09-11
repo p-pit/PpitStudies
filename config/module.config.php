@@ -1577,7 +1577,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year',
+			'status', 'state', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -2851,7 +2851,7 @@ return array_merge(
 	
 	'core_account/p-pit-studies' => array(
 		'properties' => array(
-			'title_1', 'title_2', 'title_3', 'status', 'place_id', 'owner_id', 'identifier', 'name', 'email_work', 'photo_link_id', 'basket',
+			'title_1', 'title_2', 'title_3', 'status', 'state', 'place_id', 'owner_id', 'identifier', 'name', 'email_work', 'photo_link_id', 'basket',
 			'contact_1_id', 'n_title', 'n_first', 'n_last', 'n_fn', 'email', 'tel_work', 'tel_cell',
 			'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'birth_date', 'gender', 'nationality',
 			'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
