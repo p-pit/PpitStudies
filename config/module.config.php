@@ -1356,8 +1356,8 @@ return array_merge(
 			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
 		'perspectives' => array(
-				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'canceled'),
-				'account' => array('committed', 'visa', 'active', 'retention', 'gone'),
+				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
+				'account' => array('committed', 'visa', 'active', 'retention', 'canceled'),
 		),
 		'labels' => array(
 			'en_US' => 'Account status',
@@ -1884,6 +1884,28 @@ return array_merge(
 			'terms' => true,
 	),
 
+	'commitment/invoiceControl/service' => [
+		'header' => ['labels' => ['default' => 'Entête'], 'key' => 'header', 'type' => 'text'],
+		'customer_invoice_name' => ['labels' => ['default' => 'Nom facturation'], 'key' => 'customer_invoice_name', 'type' => 'text'],
+		'customer_n_fn' => ['labels' => ['default' => 'Contact facturation'], 'key' => 'customer_n_fn', 'type' => 'text'],
+		'customer_adr_street' => ['labels' => ['default' => 'Adresse facturation'], 'key' => 'customer_adr_street', 'type' => 'text'],
+		'customer_adr_zip' => ['labels' => ['default' => 'Code postal'], 'key' => 'customer_adr_zip', 'type' => 'text'],
+		'customer_adr_city' => ['labels' => ['default' => 'Adresse facturation'], 'key' => 'customer_adr_city', 'type' => 'text'],
+		'customer_adr_country' => ['labels' => ['default' => 'Pays facturation'], 'key' => 'customer_adr_country', 'type' => 'text'],
+		'identifier' => ['labels' => ['default' => 'N° facture'], 'key' => 'identifier', 'type' => 'text'],
+		'date' => ['labels' => ['default' => 'Date facture'], 'key' => 'date', 'type' => 'date'],
+		'libelle' => ['labels' => ['default' => 'Libellé'], 'key' => 'description/0/value', 'type' => 'text'],
+		'eleve' => ['labels' => ['default' => 'Élève'], 'key' => 'description/1/value', 'type' => 'text'],
+		'centre' => ['labels' => ['default' => 'Centre'], 'key' => 'description/2/value', 'type' => 'text'],
+		'lines' => ['labels' => ['default' => 'Détail'], 'key' => 'lines', 'type' => 'list', 'format' => '%s: %s €', 'params' => ['caption' => ['type' => 'text'], 'amount' => ['type' => 'amount']]],
+		'including_tax' => ['labels' => ['default' => 'Montant total'], 'key' => 'excluding_tax', 'type' => 'amount'],
+		'terms' => ['labels' => ['default' => 'Échéancier'], 'key' => 'terms', 'type' => 'list', 'format' => '%s: %s €, %s le %s', 'params' => ['caption' => ['type' => 'text'], 'unit_price' => ['type' => 'amount'], 'status' => ['definition' => 'commitmentTerm/service/property/status'], 'due_date' => ['type' => 'date']]],
+		'settled_amount' => ['labels' => ['default' => 'Montant réglé'], 'key' => 'settled_amount', 'type' => 'amount'],
+		'collected_amount' => ['labels' => ['default' => 'Montant encaissé'], 'key' => 'collected_amount', 'type' => 'amount'],
+		'still_due' => ['labels' => ['default' => 'Reste-à-payer'], 'key' => 'still_due', 'type' => 'amount'],
+		'tax_mention' => ['labels' => ['default' => 'Mention TVA'], 'key' => 'tax_mention', 'type' => 'text'],
+	],
+	
 	// Legal documents
 /*	
 	'commitments/message/p-pit-studies/attestation_fin_formation' => [
