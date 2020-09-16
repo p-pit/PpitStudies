@@ -1502,6 +1502,13 @@ class NoteController extends AbstractActionController
 						$noteLink->update(null);
 					}
 				}
+				if ($context->getInstanceId() == 28 && $noteLink->value === null) {
+					print_r($note->type.' Note: '.$note->id.' Link: '.$noteLink->id.' Account: ' . $noteLink->account_id . ' ' . $noteLink->n_fn.' '.$note->class.' '.$note->subject."\n");
+					print_r('New: '.$value."\n");
+					print_r('Old: '.$noteLink->value."\n");
+					$noteLink->value = 0;
+					$noteLink->update(null);
+				}
 			}
 		}
 		return $this->response;
