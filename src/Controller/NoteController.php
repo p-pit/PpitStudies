@@ -1482,6 +1482,7 @@ class NoteController extends AbstractActionController
 			foreach($cursor as $noteLink) {
 				$audit = array();
 				$distribution = array();
+				$update = false;
 				if (array_key_exists($noteLink->account_id, $computedAverages)) {
 					$value = $computedAverages[$noteLink->account_id]['global']['note'];
 					$value = round($value * $note->reference_value / 20 , 2);
@@ -1499,7 +1500,7 @@ class NoteController extends AbstractActionController
 						$noteLink->value = $value;
 						$noteLink->distribution = $distribution;
 						$noteLink->audit = $audit;
-						$noteLink->update(null);
+						$update = true;
 					}
 				}
 				if ($context->getInstanceId() == 28 && $noteLink->value === null) {
@@ -1507,8 +1508,9 @@ class NoteController extends AbstractActionController
 					print_r('New: '.$value."\n");
 					print_r('Old: '.$noteLink->value."\n");
 					$noteLink->value = 0;
-					$noteLink->update(null);
+					$update = true;
 				}
+				if ($update) $noteLink->update(null);
 			}
 		}
 		return $this->response;
