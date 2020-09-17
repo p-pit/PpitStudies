@@ -90,7 +90,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 						'type' => 'p',
 						'class' => 'text-center',
 						'label' => ['default' => '<strong>%s</strong>'],
-						'params' => ['property_1'],
+						'params' => ['property_13'],
 					],
 					[
 						'type' => 'p',
