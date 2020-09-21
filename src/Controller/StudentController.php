@@ -1242,16 +1242,18 @@ class StudentController extends AbstractActionController
     	$account_id = $this->params()->fromRoute('account_id');
     	$account = Account::get($account_id);
     	$type = $this->params()->fromQuery('type');
+    	$group_id = $this->params()->fromQuery('group_id');
     	$subject = $this->params()->fromQuery('subject');
     	$date = $this->params()->fromQuery('date');
     
     	$filters = [];
-    	$filters['place_id'] = $account->place_id;
-    	$filters['class'] = $account->property_7;
+    	$filters['group_id'] = explode(',', $group_id);
+//    	$filters['place_id'] = $account->place_id;
+//    	$filters['class'] = $account->property_7;
     	if ($subject) $filters['subject'] = $subject;
     	if ($type == 'done-work') $filters['date'] = $date;
     	elseif (in_array($type, ['todo-work', 'event'])) $filters['target_date'] = $date;
-    
+
     	/*		$groups = [];
     		foreach ($account->groups as $group_id => $unused) $groups[] = $group_id;*/
     	//		if ($groups) $filters['groups'] = $groups;

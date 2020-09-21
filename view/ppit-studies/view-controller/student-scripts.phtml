@@ -76,7 +76,8 @@ function getHomework(calendar) {
 
   // Retrieve the homework events
   let xhttp = new XMLHttpRequest();
-  xhttp.open("GET", '<?php echo $this->url('note/get', ['category' => 'homework']) ?>?account_id=<?php echo $profile->id ?>', true);
+//  xhttp.open("GET", '<?php echo $this->url('note/get', ['category' => 'homework']) ?>?account_id=<?php echo $profile->id ?>', true);
+  xhttp.open("GET", '<?php echo $this->url('note/get', ['category' => 'homework']) ?>?group_id=<?php echo $profile->groups ?>', true);
   xhttp.onreadystatechange = function() {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4) {
@@ -223,7 +224,7 @@ function showCalendar(route, target) {
       createCalendar(function (info) {
         let entry = info.event.extendedProps;
         if (entry.entryType == 'homework') {
-	        let route = '<?php echo $this->url('student/homeworkV2', ['account_id' => $profile->id]) ?>?';
+	        let route = '<?php echo $this->url('student/homeworkV2', ['account_id' => $profile->id]) ?>?group_id=<?php echo $profile->groups ?>';
             if (entry.type == 'done-work') route += '&type=done-work';
             else if (entry.type == 'todo-work') route += '&type=todo-work';
             else route += '&type=event';

@@ -190,7 +190,7 @@ class Note
     			elseif ($propertyId == 'place_id') $where->equalTo('place_id', $params[$propertyId]);
     			elseif ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
     			elseif ($propertyId == 'teacher_id') $where->equalTo('teacher_id', $params[$propertyId]);
-    			elseif ($propertyId == 'group_id') $where->equalTo('student_note.group_id', $params[$propertyId]);
+    			elseif ($propertyId == 'group_id') $where->in('student_note.group_id', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
     			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
