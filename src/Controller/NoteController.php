@@ -542,7 +542,7 @@ class NoteController extends AbstractActionController
     			try {
     				if (!$note->id) $rc = $note->add();
     				elseif ($action == 'delete') {
-		    			foreach ($note->links as $noteLink) $noteLink->delete(null);
+//		    			foreach ($note->links as $noteLink) $noteLink->delete(null);
 		    			$rc = $note->delete($request->getPost('update_time'));
 		    		}
     				else $rc = $note->update($note->update_time);
