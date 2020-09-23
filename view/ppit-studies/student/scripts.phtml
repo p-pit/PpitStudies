@@ -26,6 +26,21 @@ function getStudentSearch()
       $todoTitle = $this->translate('todo list', 'ppit-core', $context->getLocale());
       ?>
       $('#mode-text').text('<?php echo $todoTitle ?>');
+
+      let refresh = function () {
+          $('#refresh-button').removeClass('btn-warning').addClass('btn-default');
+          $('#refresh-button').attr('disabled', 'disabled');
+          getStudentList(getSearchParams(''));
+      }
+      // Trigger the Entry key event that refreshes the list
+      $(document).keyup(function(e) {    
+        if (e.keyCode == 13) {
+            refresh();
+        }
+      });
+      
+      // Connect the refresh button that refreshes the list
+      $('#refresh-button').click(refresh);
           
       // Connect the erase button that reset all the search engine inputs and checks and refresh the list
       $('#erase-button').click(function() {
@@ -33,6 +48,7 @@ function getStudentSearch()
         $('.search_selectpicker').selectpicker('refresh');
         $('.search_check_value').val('0');
         $('.search_check').removeClass('btn-secondary').addClass('btn-default').removeClass('active');
+        $('#refresh-button').removeClass('btn-warning').addClass('btn-default');
         $('#erase-button').removeClass('btn-success').addClass('btn-default');
         $('#erase-button').attr('disabled', 'disabled');
         getStudentList(getSearchParams(''));
@@ -46,12 +62,13 @@ function getStudentSearch()
       // Trigger the change event on search inputs and refresh the list
       $('.search_input').change(function () {
         if ($(this).attr('id')) {
+          $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
+          $('#refresh-button').attr('disabled', false);
           var propertyId = $(this).attr('id').split('-')[1];
           $('#erase-button').removeClass('btn-default').addClass('btn-success');
           $('#erase-button').attr('disabled', false);
           $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
           $('#search_check_value-' + propertyId).val('1');
-        getStudentList(getSearchParams(''));
         }
       }); 
 
@@ -59,18 +76,21 @@ function getStudentSearch()
       $('.search_input').keyup(function () {
         if ($(this).attr('id')) {
           if ($(this).val().length > 2) {
+            $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
+            $('#refresh-button').attr('disabled', false);
             var propertyId = $(this).attr('id').split('-')[1];
             $('#erase-button').removeClass('btn-default').addClass('btn-success');
             $('#erase-button').attr('disabled', false);
             $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
             $('#search_check_value-' + propertyId).val('1');
-            getStudentList(getSearchParams(''));
           }
         }
       });
 
       // Trigger the click event on per-property checks (allowing to search on empty values) and refresh the list
       $('.search_check').click(function() {
+        $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
+        $('#refresh-button').attr('disabled', false);
         $('#erase-button').removeClass('btn-default').addClass('btn-success');
         $('#erase-button').attr('disabled', false);
         var propertyId = $(this).attr('id').split('-')[1], check = 'search_check_value-' + propertyId;
@@ -86,7 +106,6 @@ function getStudentSearch()
           $(this).removeClass('btn-default').addClass('btn-secondary').addClass('active');
           $('#' + check).val('1');
         }
-        getStudentList(getSearchParams(''));
       });
 
       // Connect the shared documents button to a modal view
