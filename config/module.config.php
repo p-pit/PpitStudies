@@ -5276,6 +5276,7 @@ table.note-report tr.period {
 			'searchTitle' => array('en_US' => 'Search', 'fr_FR' => 'recherche'),
 			'main' => array(
 					'place_id' => 'select',
+					'teacher_id' => 'select',
 					'school_year' => 'select',
 					'school_period' => 'select',
 					'group_id' => 'select',
