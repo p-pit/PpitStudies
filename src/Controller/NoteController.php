@@ -242,7 +242,7 @@ class NoteController extends AbstractActionController
     	/*if (count($params) == 0) $mode = 'todo'; else */$mode = 'search';
     
     	// Retrieve the list
-    	$notes = Note::getList($category, $type, $params, $major, $dir, $mode, $limit);
+    	$notes = Note::getList($category, $type, $params, $major, $dir, $mode, $limit); 
 		$average = 0;
     	if ($category == 'evaluation') {
 			$totalWeight = 0;

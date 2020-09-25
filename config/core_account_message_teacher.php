@@ -82,7 +82,7 @@ define('CORE_ACCOUNT_MESSAGE_TEACHER', [
 						'style' => 'border: 1px solid black; width: 30%%',
 						'header' => ['default' => '<strong>Action</strong>'],
 						'label' => ['default' => '<span>%s</span>'],
-						'params' => ['event:property_2'],
+						'params' => ['event:groups'],
 						'sum' => ['style' => 'text-align:center'],
 					],
 					[

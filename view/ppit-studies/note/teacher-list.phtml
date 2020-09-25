@@ -60,7 +60,7 @@ table td {
     </tr>
 
 <?php foreach ($notes as $note) : ?>
-<?php if ($note->subject == 'french') : ?>
+
 	<?php 
 	if ($note->type == 'done-work') $backgroundColor = 'LightGreen';
 	elseif ($note->type == 'todo-work') $backgroundColor = 'LightSalmon';
@@ -129,7 +129,7 @@ table td {
 	<?php endforeach;?>
 	
 	</tr>
-<?php endif;?>	
+
 <?php endforeach; ?>
 
 	<tr>
