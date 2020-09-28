@@ -77,7 +77,7 @@ function getHomework(calendar) {
   // Retrieve the homework events
   let xhttp = new XMLHttpRequest();
 //  xhttp.open("GET", '<?php echo $this->url('note/get', ['category' => 'homework']) ?>?account_id=<?php echo $profile->id ?>', true);
-  xhttp.open("GET", '<?php echo $this->url('note/get', ['category' => 'homework']) ?>?group_id=<?php echo $profile->groups ?>', true);
+  xhttp.open("GET", '<?php echo $this->url('note/get', ['category' => 'homework']) ?>?account_id=<?php echo $profile->id ?>&group_id=<?php echo $profile->groups ?>', true);
   xhttp.onreadystatechange = function() {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4) {

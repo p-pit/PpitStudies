@@ -284,12 +284,14 @@ class NoteController extends AbstractActionController
     	// Retrieve the context
     	$context = Context::getCurrent();
     	$id = $this->params()->fromRoute('id');
-/*    
+    
     	$account_id = (int) $this->params()->fromQuery('account_id');
-    	if ($account_id) $notes = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account_id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');*/
+    	if ($account_id) $noteLinks = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account_id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
 
     	$group_id = explode(',', $this->params()->fromQuery('group_id'));
 		$notes = Note::getList('homework', null, ['group_id' => $group_id], 'id', 'ASC', 'search', null); 
+		
+		if ($account_id) $notes = array_merge($noteLinks, $notes);
 
     	echo json_encode($notes, JSON_PRETTY_PRINT);
     	return $this->getResponse();
