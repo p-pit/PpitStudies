@@ -4605,6 +4605,7 @@ table.note-report tr.period {
 		'day_of_week' => ['multiple' => true],
 		'begin_time' => ['mandatory' => true],
 		'end_time' => ['mandatory' => true],
+		'location' => ['mandatory' => false],
 		'value' => ['readonly' => true],
 	),
 
