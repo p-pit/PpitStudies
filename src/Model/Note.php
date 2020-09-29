@@ -653,6 +653,7 @@ class Note
     	$note->status = 'new';
 		$note->type = $type;
 		$note->class = $class;
+		$note->group_id = $group_id;
 		if (in_array($type, ['note', 'report', 'exam'])) $note->category = 'evaluation';
 		elseif ($type == 'done-work' || $type == 'todo-work' || $type == 'event') $note->category = 'homework';
 		$note->teacher_n_fn = $context->getFormatedName();
