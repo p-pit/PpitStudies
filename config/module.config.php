@@ -1357,7 +1357,7 @@ return array_merge(
 		),
 		'perspectives' => array(
 				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
-				'account' => array('committed', 'visa', 'active', 'retention', 'alumni', 'canceled'),
+				'account' => array('committed', 'visa', 'active', 'retention', 'canceled'),
 		),
 		'labels' => array(
 			'en_US' => 'Account status',
