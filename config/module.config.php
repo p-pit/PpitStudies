@@ -1338,6 +1338,15 @@ return array_merge(
 			'fr_FR' => 'Statut d’engagement',
 		),
 	),
+
+	'commitment/p-pit-studies/property/account_id' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Client',
+			'fr_FR' => 'Client',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/account_status' => array(
 		'definition' => 'inline',
@@ -4977,7 +4986,7 @@ table.note-report tr.period {
 							),
 					),
 				
-					'account_id' => ['definition' => 'commitment/generic/property/account_id'],
+					'account_id' => ['definition' => 'commitment/p-pit-studies/property/account_id'],
 					'account_status' => ['definition' => 'commitment/generic/property/account_status'],
 					'account_name' => ['definition' => 'core_account/generic/property/name'],
 					'account_identifier' => ['definition' => 'commitment/generic/property/account_identifier'],
