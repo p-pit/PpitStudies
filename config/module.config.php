@@ -4705,6 +4705,7 @@ table.note-report tr.period {
 				'competition' => array('en_US' => 'Tournament / Competition', 'fr_FR' => 'Tournoi / Compétition'),
 				'spectacle' => array('en_US' => 'Spectacle', 'fr_FR' => 'Spectacle'),
 				'family' => array('en_US' => 'Family', 'fr_FR' => 'Familial'),
+				'justified' => array('en_US' => 'Justified absence', 'fr_FR' => 'Absence justifiée'),
 				'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
 				'repetition' => array('en_US' => 'Repetition', 'fr_FR' => 'Répétition'),
 				'exclusion' => array('en_US' => 'Exclusion', 'fr_FR' => 'Exclusion'),
