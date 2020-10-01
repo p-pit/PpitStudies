@@ -293,7 +293,7 @@ class StudentController extends AbstractActionController
     	$accountConfig = Account::getConfig('p-pit-studies');
     	 
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-    	$params['status'] = 'active,retention';
+    	$params['status'] = 'active,retention,alumni';
     
     	// Retrieve the list
     	$accounts = Account::getList('p-pit-studies', $params, (($dir == 'DESC') ? '-' : '+').$major, $limit);
