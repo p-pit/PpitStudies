@@ -1382,6 +1382,15 @@ return array_merge(
 			'fr_FR' => 'Nom',
 		),
 	),
+
+	'commitment/p-pit-studies/property/email_work' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'Pro e-mail',
+			'fr_FR' => 'Email pro',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/tel_cell' => array(
 		'definition' => 'inline',
@@ -1595,7 +1604,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'state', 'place_id', 'account_name', 'email', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year', 'adr_zip',
+			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year', 'adr_zip',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -5016,6 +5025,7 @@ table.note-report tr.period {
 					'account_property_14' => ['definition' => 'core_account/generic/property/property_14'],
 					'account_property_15' => ['definition' => 'core_account/generic/property/property_15'],
 					'account_property_16' => ['definition' => 'core_account/generic/property/property_16'],
+					'account_property_18' => ['definition' => 'core_account/generic/property/property_18'],
 					'account_property_19' => ['definition' => 'core_account/p-pit-studies/property/property_19'],
 			),
 	),
