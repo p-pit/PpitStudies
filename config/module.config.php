@@ -4635,6 +4635,7 @@ table.note-report tr.period {
 		'begin_time' => 'I',
 		'end_time' => 'J',
 		'value' => 'K',
+		'location' => 'L',
 	),
 	
 	'event/detail/calendar' => array(
