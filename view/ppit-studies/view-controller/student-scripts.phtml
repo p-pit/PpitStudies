@@ -1,14 +1,15 @@
 <script>
 var viewBeginDate = '<?php echo date('Y-m-d') ?>';
 
-function getEvents(calendar) {
+function getEvents(calendar, activeStart, activeEnd) {
 
   calendar.getEvents().forEach(function (event, id) { event.remove(); });
 
   getHomework(calendar);
   getAbsence(calendar);
 	
-  let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=<?php echo $context->getConfig('student/property/school_year/start') ?>&end=<?php echo $context->getConfig('student/property/school_year/end') ?>&property_1=<?php echo $context->getConfig('student/property/school_year/default') ?>';
+//  let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=<?php echo $context->getConfig('student/property/school_year/start') ?>&end=<?php echo $context->getConfig('student/property/school_year/end') ?>&property_1=<?php echo $context->getConfig('student/property/school_year/default') ?>';
+  let route = '<?php echo $this->url('event/planning', ['type' => 'calendar']) ?>?&begin=' + activeStart + '&end=' + activeEnd + '&property_1=<?php echo $context->getConfig('student/property/school_year/default') ?>';
 
 //Filter on place
 <?php if ($place) : ?>
@@ -176,13 +177,15 @@ function createCalendar(callback) {
 
       allDaySlot: true,
       allDayText: '<?php echo $this->translate('Day', 'ppit-core', $context->getLocale()) ?>',
+
+      datesRender: function (info) {
+        getEvents(calendar, moment(info.view.activeStart).format('YYYY-MM-DD'), moment(info.view.activeEnd).format('YYYY-MM-DD'));
+      },
     	    		  
       eventClick: callback
     });
 
     calendar.render();
-    
-  getEvents(calendar);
 }
 
 function showStatic(route, target) {
