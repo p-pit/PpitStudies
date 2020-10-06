@@ -1248,6 +1248,7 @@ class StudentController extends AbstractActionController
     
     	$filters = [];
     	$filters['group_id'] = explode(',', $group_id);
+    	if ($account) $filters['place_id'] = $account->place_id;
 //    	$filters['place_id'] = $account->place_id;
 //    	$filters['class'] = $account->property_7;
     	if ($subject) $filters['subject'] = $subject;
