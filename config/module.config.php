@@ -1264,6 +1264,8 @@ return array_merge(
 	'currentPeriodStart' => '2017-09-01',
 	'currentPeriodEnd' => '2017-10-20',
 
+	'studentHome' => 'student/studentHomeV2',
+	
 	'place_config/default' => array(
 			'school_periods' => array(
 					'type' => 'periods',
