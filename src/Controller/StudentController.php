@@ -132,7 +132,7 @@ class StudentController extends AbstractActionController
     	if ($account_id) $profile = Account::get($account_id);
     	else {
     		$candidates = Account::getList('p-pit-studies', ['contact_1_id' => $context->getContactId()]);
-    		foreach ($candidates as $candidate) if ($candidate->status != 'gone') {
+    		foreach ($candidates as $candidate) if (!in_array($candidate->status, ['gone', 'canceled'])) {
     			$profile = $candidate;
     			break;
     		}
