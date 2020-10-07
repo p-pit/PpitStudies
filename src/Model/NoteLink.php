@@ -538,6 +538,7 @@ class NoteLink
 				// Cast number to int or float depending on the precision defined for this property
 				elseif ($property['type'] == 'number') {
 					if ($value !== null) {
+						$value = preg_replace('/,/', '.', $value);
 						if (array_key_exists('precision', $property) && $property['precision'] > 0) $value = (float) $value;
 						else $value = (int) $value;
 					}

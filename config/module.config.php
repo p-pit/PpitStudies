@@ -5143,6 +5143,7 @@ table.note-report tr.period {
 					'en_US' => 'Value',
 					'fr_FR' => 'Valeur',
 			),
+			'precision' => 2,
 	),
 	'note/property/reference_value' => array(
 			'type' => 'number',
