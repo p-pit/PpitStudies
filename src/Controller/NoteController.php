@@ -695,7 +695,6 @@ class NoteController extends AbstractActionController
 			return $this->response;
 		}
 		$id = $this->params()->fromRoute('id');
-		$places = Place::getList(array());
 
 		$accounts = null; // If no account is provided in parameters, all the group is evaluated
 		$accounts = $this->params()->fromQuery('accounts');
@@ -757,7 +756,8 @@ class NoteController extends AbstractActionController
 			else $content['group'] = null;
 			$place = Place::get($note->place_id);
 			$content['place'] = $place->properties;
-				
+			$content['places'] = [$place];
+
 			$noteLinks = $note->links;
 			$content['note']['status'] = $note->status;
 			$content['note']['place_id'] = $place->id;
@@ -792,19 +792,27 @@ class NoteController extends AbstractActionController
 			}
 			$content['group'] = $group->properties;
 			$place = Place::get($group->place_id);
+			if ($place) $content['places'] = [$place];
+			else {
+				$place = $context->getPlace();
+				$places = Place::getList(array());
+				$content['places'] = $places;
+			}
 			$content['place'] = $place->properties;
-			
+				
 			$note = Note::instanciate($type, null, $group_id);
 			$noteLinks = [];
 			foreach ($group->members as $member_id => $member) {
-				if (!$accounts || in_array($member_id, $accounts)) {
-					$noteLink = [
-						'account_id' => $member_id,
-						'n_fn' => $member->n_fn,
-						'value' => null,
-						'assessment' => '',
-					];
-					$noteLinks[] = $noteLink;
+				if ($member->type == 'p-pit-studies') {
+					if (!$accounts || in_array($member_id, $accounts)) {
+						$noteLink = [
+							'account_id' => $member_id,
+							'n_fn' => $member->n_fn,
+							'value' => null,
+							'assessment' => '',
+						];
+						$noteLinks[] = $noteLink;
+					}
 				}
 			}
 			$content['note']['status'] = 'current';
@@ -894,6 +902,7 @@ class NoteController extends AbstractActionController
 	
 			$content['note']['teacher_id'] = $this->request->getPost('teacher_id');
 	
+			$content['note']['place_id'] = $this->request->getPost('place_id');
 			$content['note']['school_period'] = $this->request->getPost('school_period');
 			$content['note']['level'] = $this->request->getPost('level');
 			$content['note']['subject'] = $this->request->getPost('subject');
