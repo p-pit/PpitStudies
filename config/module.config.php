@@ -2721,13 +2721,26 @@ return array_merge(
 	),
 	
 	'core_account/p-pit-studies/property/property_16' => array('definition' => 'student/property/school_year'),
-
+/*
 	'core_account/p-pit-studies/property/property_17' => array(
 		'definition' => 'inline',
 		'type' => 'input',
 		'labels' => array(
 			'en_US' => 'Real-time global average',
 			'fr_FR' => 'Moyenne générale temps-réel',
+		),
+	),*/
+	
+	'core_account/p-pit-studies/property/property_17' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => [
+			'parcours_sport_etudes' => ['default' => 'Parcours Sport Études'],
+			'parcours_sportif_de_haut_niveau' => ['default' => 'Parcours sportif de haut niveau'],
+		],
+		'labels' => array(
+			'en_US' => 'Journey',
+			'fr_FR' => 'Parcours',
 		),
 	),
 
