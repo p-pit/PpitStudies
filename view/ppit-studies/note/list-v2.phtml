@@ -79,7 +79,15 @@ table td {
 		<td><?php if ($note->school_period) echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$note->school_period]) ?></td>
 
         <?php elseif ($propertyId == 'group_id') : ?>
-        <td><?php if ($note->group_id) echo $groups[$note->group_id]->name ?></td>
+          <?php
+          if ($note->group_id) {
+	          $group = $groups[$note->group_id];
+    	      $label = $group->name;
+        	  if ($group->place_id) $label .= ' (' . $places[$group->place_id]->caption . ')';
+          }
+          else $label = '';
+          ?>
+        <td><?php echo $label ?></td>
 
 		<?php elseif ($propertyId == 'class') : ?>
 		<td><?php if ($note->class) echo $context->localize($context->getConfig('student/property/class')['modalities'][$note->class]) ?></td>
