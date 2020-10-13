@@ -175,6 +175,22 @@
 		</div>
 
 <?php foreach ($content['noteLinks'] as $noteLink) : ?>
+
+  <?php if (!$noteLink['account_id']) : ?>
+<!-- Select the individual student -->
+        <div class="form-group row">
+          <label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Student', 'ppit-studies', $context->getLocale()) ?></label>
+          <div class="col-sm-7">
+            <select class="form-control form-control-sm update_input update_input_select" id="account_id" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+              <option value=""></option>
+    <?php foreach ($content['accountsData'] as $account_id => $account) : ?>
+              <option value="<?php echo $account_id ?>"><?php echo $account->name ?></option>
+    <?php endforeach;?>
+            </select>
+          </div>
+        </div>
+  <?php endif;?>
+
 <!-- Value -->
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $noteLink['n_fn'] ?></label>

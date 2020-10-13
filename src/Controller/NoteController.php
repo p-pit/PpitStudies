@@ -699,6 +699,10 @@ class NoteController extends AbstractActionController
 		$accounts = null; // If no account is provided in parameters, all the group is evaluated
 		$accounts = $this->params()->fromQuery('accounts');
 		if ($accounts) $accounts = explode(',', $accounts);
+		else {
+			$accounts = null;
+			$accountsData = Account::getList('p-pit-studies', ['status' => 'active,interested,converted,committed,undefined,retention,alumni,canceled'], '+name', null);
+		}
 		
 		$subject = $this->params()->fromQuery('subject');
 		$level = $this->params()->fromQuery('level');
@@ -742,6 +746,8 @@ class NoteController extends AbstractActionController
 		$content['note']['type'] = $type;
 		$content['noteLinks'] = [];
 		$content['teachers'] = $teachers;
+		$content['accounts'] = $accounts;
+		$content['accountsData'] = $accountsData;
 		
 		if ($id) {
 			
@@ -780,18 +786,24 @@ class NoteController extends AbstractActionController
 			$group_id = $this->params()->fromQuery('group_id');
 			$content['note']['group_id'] = $group_id;
 			$group = Account::get($group_id);
-			if (!$group || $group->type != 'group') {
-				$this->response->setStatusCode('400');
-				$this->response->setReasonPhrase('Not existing group');
-				return $this->response;
+			if (!$group) {
+				$content['group'] = null;
+				$place = null;
 			}
-			if (!$context->hasRole('manager') && !in_array($group_id, $teachers[$myAccount->contact_1_id]['groups'])) {
-				$this->response->setStatusCode('403');
-				$this->response->setReasonPhrase('Group not allowed for this user');
-				return $this->response;
+			else {
+				if (!$group || $group->type != 'group') {
+					$this->response->setStatusCode('400');
+					$this->response->setReasonPhrase('Not existing group');
+					return $this->response;
+				}
+				if (!$context->hasRole('manager') && !in_array($group_id, $teachers[$myAccount->contact_1_id]['groups'])) {
+					$this->response->setStatusCode('403');
+					$this->response->setReasonPhrase('Group not allowed for this user');
+					return $this->response;
+				}
+				$content['group'] = $group->properties;
+				$place = Place::get($group->place_id);
 			}
-			$content['group'] = $group->properties;
-			$place = Place::get($group->place_id);
 			if ($place) $content['places'] = [$place];
 			else {
 				$place = $context->getPlace();
@@ -802,21 +814,25 @@ class NoteController extends AbstractActionController
 				
 			$note = Note::instanciate($type, null, $group_id);
 			$noteLinks = [];
-			foreach ($group->members as $member_id => $member) {
-				if ($member->type == 'p-pit-studies') {
-					if (!$accounts || in_array($member_id, $accounts)) {
-						$noteLink = [
-							'account_id' => $member_id,
-							'n_fn' => $member->n_fn,
-							'value' => null,
-							'assessment' => '',
-						];
-						$noteLinks[] = $noteLink;
+			if ($group) {
+				foreach ($group->members as $member_id => $member) {
+					if ($member->type == 'p-pit-studies') {
+						if (!$accounts || in_array($member_id, $accounts)) {
+							$noteLink = [
+								'account_id' => $member_id,
+								'n_fn' => $member->n_fn,
+								'value' => null,
+								'assessment' => '',
+							];
+							$noteLinks[] = $noteLink;
+						}
 					}
 				}
 			}
+			else $noteLinks[] = ['account_id' => null, 'n_fn' => null, 'value' => null, 'assessment' => ''];
+
 			$content['note']['status'] = 'current';
-			$content['note']['place_id'] = $group->place_id;
+			$content['note']['place_id'] = $place->id;
 			if ($context->hasRole('manager')) $content['note']['teacher_id'] = null;
 			else $content['note']['teacher_id'] = $myAccount->contact_1_id;
 			$content['note']['subject'] = $subject;
@@ -911,15 +927,23 @@ class NoteController extends AbstractActionController
 			$content['note']['weight'] = $this->request->getPost('weight');
 			$content['note']['observations'] = $this->request->getPost('observations');
 	
-//			$note->links = [];
+			$note->links = [];
 			foreach ($content['noteLinks'] as &$noteLinkData) {
 				$account_id = $noteLinkData['account_id'];
-				if (!$id) $noteLink = NoteLink::instanciate($account_id);
-				else $noteLink = $note->links[$account_id];
 				$value = $this->request->getPost('value-' . $account_id);
 				if ($value == '') $value = null;
-//				$mention = $this->request->getPost('mention-' . $account_id);
 				$assessment = $this->request->getPost('assessment-' . $account_id);
+				
+				if (!$account_id) {
+					$account_id = $this->request->getPost('account_id');
+					$noteLinkData['account_id'] = $account_id;
+					$noteLink = NoteLink::instanciate($account_id);
+				}
+				else {
+					if (!$id) $noteLink = NoteLink::instanciate($account_id);
+					else $noteLink = $note->links[$account_id];
+				}
+//				$mention = $this->request->getPost('mention-' . $account_id);
 				$audit = [];
 				if ($value !== null || $assessment) {
 					$noteLinkData['value'] = $value;
