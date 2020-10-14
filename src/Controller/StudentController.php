@@ -1247,7 +1247,7 @@ class StudentController extends AbstractActionController
     	$date = $this->params()->fromQuery('date');
     
     	$filters = [];
-    	$filters['group_id'] = explode(',', $group_id);
+    	$filters['group_id'] = $group_id;
     	if ($account) $filters['place_id'] = $account->place_id;
 //    	$filters['place_id'] = $account->place_id;
 //    	$filters['class'] = $account->property_7;
