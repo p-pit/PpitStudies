@@ -292,7 +292,7 @@ class NoteController extends AbstractActionController
     		$noteLinks = NoteLink::GetList(null, array('category' => 'homework', 'account_id' => $account_id, 'school_year' => $context->getConfig('student/property/school_year/default')), 'date', 'DESC', 'search');
     	}
 
-    	$group_id = explode(',', $this->params()->fromQuery('group_id'));
+    	$group_id = $this->params()->fromQuery('group_id');
     	$filters = ['group_id' => $group_id];
     	if ($account) $filters['place_id'] = $account->place_id;
 		$notes = Note::getList('homework', null, $filters, 'id', 'ASC', 'search', null); 
