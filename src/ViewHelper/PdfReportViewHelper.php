@@ -162,7 +162,7 @@ class PdfReportViewHelper
 						}
 						$arguments[] = implode(',', $groups);
 					}
-					elseif ($propertyId == 'property_7' && $class) $arguments[] = $context->localize($property['modalities'][$class]);
+					elseif ($propertyId == 'property_7' && $class) $arguments[] = (array_key_exists($class, $property['modalities'])) ? $context->localize($property['modalities'][$class]) : '';
 					elseif ($property['type'] == 'date') $arguments[] = $context->decodeDate($account->properties[$propertyId]);
 	    			elseif ($property['type'] == 'number') $arguments[] = $context->formatFloat($account->properties[$propertyId], 2);
 	    			elseif (in_array($property['type'], ['select', 'multiselect']) && array_key_exists($account->properties[$propertyId], $property['modalities'])) $arguments[] = $context->localize($property['modalities'][$account->properties[$propertyId]]);
