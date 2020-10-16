@@ -21,6 +21,10 @@ table td {
       <th>&nbsp;</th>
       <th>&nbsp;</th>
 
+<?php if ($type == 'report') : ?>
+      <th>&nbsp;</th>
+<?php endif;?>
+
 <?php foreach ($content['config']['list'] as $propertyId => $property) : ?>
   <?php 
 	if (substr($order, 0, 1) == '-') {
@@ -72,6 +76,18 @@ table td {
       <td>
         <input type="checkbox" class="noteLink-checkbox noteLink-checkbox-row" id="noteLink_checkbox-<?php echo $link['id'] ?>"></input>
       </td>
+
+<?php if ($type == 'report') : ?>
+      <td>
+  <?php if ($link['subject'] == 'global') : ?>
+    <?php if ($context->getInstance()->caption == 'ESI') : ?>
+        <a href="<?php echo $this->url('myGema/downloadReport', ['category' => 'report', 'account_id' => $link['account_id'], 'school_year' => $link['school_year']]) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a>
+    <?php else : ?>
+        <a href="<?php echo $this->url('student/download', ['category' => 'report', 'account_id' => $link['account_id'], 'school_year' => $link['school_year'], 'school_period' => $link['school_period']]) ?>"><?php echo $this->translate('Download in PDF format', 'ppit-studies', $context->getLocale()) ?></a>
+    <?php endif;?>
+  <?php endif;?>        
+      </td>
+<?php endif;?>
 
       <td style="text-align: center">
         <button type="button" class="btn btn-sm btn-outline-primary index-btn noteLink-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $link['note_id'] ?>">
@@ -142,12 +158,16 @@ table td {
 <?php else : ?>
         <td>&nbsp;</td>
 <?php endif;?>
-        <td colspan="<?php echo count($listPage['properties']) - 1 ?>">&nbsp;</td>
+        <td colspan="<?php echo count($listPage['properties']) ?>">&nbsp;</td>
       </tr>
 
   <tr class="table-info">
     <th>&nbsp;</th>
     <th>&nbsp;</th>
+
+<?php if ($type == 'report') : ?>
+      <th>&nbsp;</th>
+<?php endif;?>
 
     <?php $subjectProperty = $content['config']['list']['subject'] ?>
 
