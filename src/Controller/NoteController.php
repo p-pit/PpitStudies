@@ -927,7 +927,7 @@ class NoteController extends AbstractActionController
 			$content['note']['weight'] = $this->request->getPost('weight');
 			$content['note']['observations'] = $this->request->getPost('observations');
 	
-			if (!$id) $note->links = [];
+			$newLinks = [];
 			foreach ($content['noteLinks'] as &$noteLinkData) {
 				$account_id = $noteLinkData['account_id'];
 				$value = $this->request->getPost('value-' . $account_id);
@@ -950,7 +950,7 @@ class NoteController extends AbstractActionController
 //					$noteLinkData['evaluation'] = $mention;
 					$noteLinkData['assessment'] = $assessment;
 					$noteLink->loadData($noteLinkData);
-					if (!$id) $note->links[$account_id] = $noteLink;
+					$newLinks[$account_id] = $noteLink;
 				}
 			}
 			$rc = $note->loadData($content['note']);
@@ -967,7 +967,7 @@ class NoteController extends AbstractActionController
 				try {
 					$update_time = $this->request->getPost('update_time');
 					if ($note->id) $rc = $note->update('update_time');
-					elseif (count($note->links)) {
+					elseif (count($newLinks)) {
 						$rc = $note->add();
 						$content['id'] = $note->id;
 					}
@@ -979,16 +979,11 @@ class NoteController extends AbstractActionController
 					}
 
 					// Save the note at the student level
+					if ($id) foreach ($note->links as $noteLink) $noteLink->drop();
+					$note->links = $newLinks;
 					foreach ($note->links as $noteLink) {
-						if (!$noteLink->id) {
-							$noteLink->note_id = $note->id;
-							$rc = $noteLink->add();
-						}
-						else {
-							$rc = $noteLink->drop();
-							$noteLink->id = null;
-							$rc = $noteLink->add(null);
-						}
+						$noteLink->note_id = $note->id;
+						$rc = $noteLink->add();
 						if ($rc != 'OK') {
 							$connection->rollback();
 							$this->response->setStatusCode('409');
