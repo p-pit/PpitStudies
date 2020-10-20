@@ -886,13 +886,13 @@ class NoteController extends AbstractActionController
 				
 				// Update the subject and global averages (for admin only)
 //				if ($context->hasRole('admin')) {
-					$rc = Note::updateAverage($content['note']['place_id'], $class, $group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
+/*					$rc = Note::updateAverage($content['note']['place_id'], $class, $group_id, $content['note']['subject'], $content['note']['school_year'], $content['note']['school_period']);
 					if ($rc) {
 						$connection->rollback();
 						$this->response->setStatusCode('409');
 						$this->response->setReasonPhrase($rc);
 						return null;
-					}
+					}*/
 //				}
 
 				$connection->commit();
@@ -927,7 +927,7 @@ class NoteController extends AbstractActionController
 			$content['note']['weight'] = $this->request->getPost('weight');
 			$content['note']['observations'] = $this->request->getPost('observations');
 	
-			$note->links = [];
+			if (!$id) $note->links = [];
 			foreach ($content['noteLinks'] as &$noteLinkData) {
 				$account_id = $noteLinkData['account_id'];
 				$value = $this->request->getPost('value-' . $account_id);
@@ -950,7 +950,7 @@ class NoteController extends AbstractActionController
 //					$noteLinkData['evaluation'] = $mention;
 					$noteLinkData['assessment'] = $assessment;
 					$noteLink->loadData($noteLinkData);
-					$note->links[$account_id] = $noteLink;
+					if (!$id) $note->links[$account_id] = $noteLink;
 				}
 			}
 			$rc = $note->loadData($content['note']);
