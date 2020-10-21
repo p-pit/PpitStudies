@@ -4684,7 +4684,7 @@ table.note-report tr.period {
 	
 	'event/update/calendar' => array(
 		'status' => ['mandatory' => true],
-		'place_id' => ['mandatory' => true],
+		'place_id' => ['mandatory' => false],
 		'groups' => [],
 		'property_1' => ['mandatory' => true, 'default' => 'student/property/school_year/default'],
 		'account_id' => [],
