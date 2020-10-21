@@ -4320,11 +4320,16 @@ table.note-report td {
 			'right' => array('en_US' => '%s - %s - %s', 'fr_FR' => '%s - %s - %s'),
 			'params' => array('n_fn', 'property_1', 'property_6'),
 		),
-		array(
+/*		array(
 			'left' => array('en_US' => 'Class', 'fr_FR' => 'Classe'),
 			'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
 			'params' => array('property_7'),
-		),
+		),*/
+		array(
+				'left' => array('en_US' => 'Group', 'fr_FR' => 'Groupe'),
+				'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
+				'params' => array('groups'),
+			),
 		array(
 			'left' => array('en_US' => 'Birth date', 'fr_FR' => 'Date de naissance'),
 			'right' => array('en_US' => '%s', 'fr_FR' => '%s'),
