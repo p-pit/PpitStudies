@@ -64,6 +64,19 @@
       </div>
     </div>
 
+<!-- Evaluation year -->
+    <div class="form-group row">
+      <label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $context->localize($context->getConfig('student/property/school_year')['labels']) ?></label>
+      <div class="col-sm-7">
+        <select class="form-control form-control-sm update_input update_input_select" id="school_year" <?php if ($isDisabled || ($content['type'] == 'report' && $content['id'])) echo 'disabled="disabled"'?> required>
+          <option />
+  <?php foreach ($context->getConfig('student/property/school_year')['modalities'] as $modalityId => $modality) : ?>
+          <option value="<?php echo $modalityId ?>" <?php if ($modalityId == $content['note']['school_year']) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
+  <?php endforeach;?>
+        </select>
+      </div>
+    </div>
+
 <!-- Evaluation period -->
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $context->localize($context->getConfig('student/property/school_period')['labels']) ?></label>

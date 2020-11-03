@@ -919,6 +919,7 @@ class NoteController extends AbstractActionController
 			$content['note']['teacher_id'] = $this->request->getPost('teacher_id');
 	
 			$content['note']['place_id'] = $this->request->getPost('place_id');
+			$content['note']['school_year'] = $this->request->getPost('school_year');
 			$content['note']['school_period'] = $this->request->getPost('school_period');
 			$content['note']['level'] = $this->request->getPost('level');
 			$content['note']['subject'] = $this->request->getPost('subject');
