@@ -5424,6 +5424,22 @@ table.note-report tr.period {
 			'group_id' => 'R',
 		),
 	),
+
+	'note/update/evaluation' => [
+		'properties' => [
+			'place_id' => [],
+			'school_year' => [],
+			'school_period' => [],
+			'teacher_id' => [],
+			'subject' => [],
+			'level' => [],
+			'date' => [],
+			'reference_value' => [],
+			'weight' => [],
+			'assessment' => [],
+			'observations' => [],
+		],
+	],
 	
 	// Note link
 
