@@ -41,7 +41,7 @@
 			$modalities[$place->id] = $place->caption;
 		} 
 		else foreach ($property['modalities'] as $modalityId => $modality) {
-			$modalities[$modalityId] = $context->localize($modality);
+			if (!array_key_exists('archive', $modality) || !$modality['archive']) $modalities[$modalityId] = $context->localize($modality);
 		}
 
 		if (array_key_exists('multiple', $options) && $options['multiple']) $multiple = true; else $multiple = false;

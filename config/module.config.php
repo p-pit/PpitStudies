@@ -4757,6 +4757,7 @@ table.note-report tr.period {
 		),
 	),
 
+	'event/absence/property/account_property_15' => array('definition' => 'core_account/p-pit-studies/property/property_15'),
 	'event/absence/property/account_property_19' => array('definition' => 'core_account/p-pit-studies/property/property_19'),
 	
 	'event/absence' => array(
@@ -4766,7 +4767,7 @@ table.note-report tr.period {
 		'properties' => array(
 			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn', 'account_groups',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
-			'property_1', 'property_2', 'property_3', 'property_11', 'property_12', 'account_property_19',
+			'property_1', 'property_2', 'property_3', 'property_11', 'property_12', 'account_property_15',
 			'update_time',
 		),
 	),
