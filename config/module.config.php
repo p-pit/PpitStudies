@@ -1403,12 +1403,39 @@ return array_merge(
 		),
 	),
 
+	'commitment/p-pit-studies/property/adr_street' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Address',
+			'fr_FR' => 'Adresse',
+		),
+	),
+	
 	'commitment/p-pit-studies/property/adr_zip' => array(
 		'definition' => 'inline',
 		'type' => 'input',
 		'labels' => array(
 			'en_US' => 'Zip code',
 			'fr_FR' => 'Code postal',
+		),
+	),
+
+	'commitment/p-pit-studies/property/adr_city' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'City',
+			'fr_FR' => 'Ville',
+		),
+	),
+
+	'commitment/p-pit-studies/property/adr_country' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Country',
+			'fr_FR' => 'Pays',
 		),
 	),
 	
@@ -1606,7 +1633,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year', 'adr_zip',
+			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -2501,7 +2528,7 @@ return array_merge(
 			'fr_FR' => 'Adresse contact étranger',
 		),
 	),
-
+	
 	'core_account/generic/property/date_4' => array(
 		'definition' => 'inline',
 		'type' => 'date',
