@@ -59,6 +59,11 @@ function getNoteList(params) {
               $(this).removeClass("btn-outline-primary").addClass("btn-primary");
               $('#modalForm').modal('toggle');
             });
+
+            $('#more-anchor').click(function () { 
+              $('#limit').val(null);
+              getNoteList(getSearchParams(''));
+            });
 		}
 	}
 	xhttp.send();
