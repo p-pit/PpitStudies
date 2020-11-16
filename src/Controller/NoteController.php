@@ -1629,7 +1629,7 @@ class NoteController extends AbstractActionController
 			else {
 				echo 'In note ' . $note->id . ', teacher ' . $note->teacher_id . ' replaced by ' . $teacher->contact_1_id . "\n";
 				$note->teacher_id = $teacher->contact_1_id;
-				$note->update(null);
+//				$note->update(null);
 			}
 		}
 		
