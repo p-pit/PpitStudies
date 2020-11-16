@@ -265,8 +265,17 @@ class StudentController extends AbstractActionController
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
-    	$groups = Account::getList('group', ['status' => 'active'], '+id', null);
-    	$myAccount = Account::get($context->getContactId(), 'contact_1_id');
+
+		$places = Place::getList(array());
+		$cursor = Account::getList('group', ['status' => 'active'], '+id', null);
+		$groups = [];
+		foreach ($cursor as $group) {
+			$label = $group->name;
+			if ($group->place_id && array_key_exists($group->place_id, $places)) $label .= ' (' . $places[$group->place_id]->caption . ')';
+			$groups[$group->id] = ['default' => $label];
+		}
+		
+		$myAccount = Account::get($context->getContactId(), 'contact_1_id');
     	if ($myAccount && $myAccount->groups) $myGroups = explode(',', $myAccount->groups);
     	else $myGroups = [];
     	

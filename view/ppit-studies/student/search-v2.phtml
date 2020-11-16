@@ -21,8 +21,8 @@
 
 	if ($propertyId == 'groups') {
 		$property['modalities'] = array();
-		foreach ($groups as $group) {
-			if ($context->hasRole('manager') || !$myGroups || in_array($group->id, $myGroups)) $property['modalities'][$group->id] = ['default' => $group->name];
+		foreach ($groups as $group_id => $group) {
+			if ($context->hasRole('manager') || !$myGroups || in_array($group_id, $myGroups)) $property['modalities'][$group_id] = $group;
 		}
 	}
 	
