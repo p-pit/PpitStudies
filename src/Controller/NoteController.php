@@ -1627,8 +1627,8 @@ class NoteController extends AbstractActionController
 			$teacher = Account::get($note->teacher_id);
 			if (!$teacher || $teacher->type != 'teacher') echo 'Teacher ' . $note->teacher_id . " not found\n";
 			else {
-				$note->teacher_id = $teacher->contact_1_id;
 				echo 'In note ' . $note->id . ', teacher ' . $note->teacher_id . ' replaced by ' . $teacher->contact_1_id . "\n";
+				$note->teacher_id = $teacher->contact_1_id;
 //				$note->update(null);
 			}
 		}
