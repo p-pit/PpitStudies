@@ -118,7 +118,7 @@ table td {
 		<td><?php echo $link[$propertyId] ?></td>
 	
 		<?php elseif (in_array($property['type'], ['select', 'dynamic'])) : ?>
-		<td><?php echo ($link[$propertyId]) ? $context->localize($property['modalities'][$link[$propertyId]]) : '' ?></td>
+		<td><?php echo ($link[$propertyId] && array_key_exists($link[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$link[$propertyId]]) : (($link[$propertyId]) ? $link[$propertyId] : '') ?></td>
 	
 		<?php elseif ($property['type'] == 'number') : ?>
 		<td style="text-align: right"><?php echo $context->formatFloat($link[$propertyId], 2) ?></td>

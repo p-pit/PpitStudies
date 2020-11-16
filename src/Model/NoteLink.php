@@ -100,7 +100,13 @@ class NoteLink
 				$property['modalities'] = [];
 				foreach (Account::getList('group', ['status' => 'active'], '+identifier', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name];
 			}
-	
+
+			// Cache the teachers retrieved from the database for the current instance in the group_id property description
+			elseif ($propertyId == 'teacher_id') {
+				$property['modalities'] = [];
+				foreach (Account::getList('teacher', ['status' => 'active'], '+identifier', null) as $teacher) $property['modalities'][$teacher->contact_1_id] = ['default' => $teacher->name];
+			}
+				
 			// Cache the referred modalities definition for modalities not defined inline
 			elseif (in_array($property['type'], ['select', 'multiselect']) && array_key_exists('definition', $property['modalities']) && $property['modalities']['definition'] != 'inline') {
 				$definition = $context->getConfig($property['modalities']['definition']);
