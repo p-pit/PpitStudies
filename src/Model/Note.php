@@ -699,7 +699,7 @@ class Note
 		
        	if (array_key_exists('class', $data)) {
 	    	$this->class = trim(strip_tags($data['class']));
-		    if (!$this->class || strlen($this->class) > 255) return 'Integrity';
+		    if (strlen($this->class) > 255) return 'Integrity';
 		}
         if (array_key_exists('groups', $data)) {
 	    	$this->groups = trim(strip_tags($data['groups']));

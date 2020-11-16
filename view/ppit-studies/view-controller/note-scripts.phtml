@@ -92,8 +92,9 @@ function connectAuditPanel()
 <?php 
 $properties = array();
 $properties['place_id'] = array('type' => 'select', 'mandatory' => true);
-$properties['class'] = array('type' => 'select', 'mandatory' => true);
-$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
+$properties['group_id'] = array('type' => 'select', 'mandatory' => true);
+$properties['class'] = array('type' => 'select', 'mandatory' => false);
+//$properties['school_period'] = array('type' => 'select', 'mandatory' => true);
 $properties['subject'] = array('type' => 'select', 'mandatory' => true);
 $properties['date'] = array('type' => 'date', 'mandatory' => true);
 $properties['type'] = array('type' => 'select', 'mandatory' => true);
@@ -131,7 +132,7 @@ function connectNoteUpdateForm(id, action)
 		<?php if ($property['type'] == 'ckeditor') : ?>
 					formData.append('<?php echo $propertyId ?>', CKEDITOR.instances.<?php echo $propertyId ?>.getData());
 		<?php else : ?>	
-					formData.append('<?php echo $propertyId ?>', document.getElementById('<?php echo $propertyId ?>').value);
+					formData.append('<?php echo $propertyId ?>', $('#<?php echo $propertyId ?>').val());
 		<?php endif;?>
 	<?php endforeach ?>
 			}
@@ -201,6 +202,10 @@ function getNoteUpdate(id, action) {
 				$('#delete-anchor').click(function () { getNoteUpdate(id, 'delete'); });
 			}
 			else $('#add-anchor').click(function () { getNoteUpdate(id, 'add'); });
+
+			$('#modalForm').on('hidden.bs.modal', function (e) {
+				getNoteList(getSearchParams(''));
+			})
 		}
 	}
 	xhttp.send();

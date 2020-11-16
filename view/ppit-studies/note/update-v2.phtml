@@ -131,8 +131,22 @@
 			</div>
 		</div>
 
+<!-- Group -->
+    <div class="form-group row" id="group_id_group">
+      <label class="col-sm-5 col-form-label col-form-label-sm">* <?php echo $this->translate('Group', 'ppit-core', $context->getLocale()) ?></label>
+      <div class="col-sm-7">
+        <select class="form-control form-control-sm" id="group_id" <?php if ($isDisabled || $note->group_id) echo 'disabled="disabled"'?>>
+          <option />
+  <?php foreach ($groups as $group_id => $group) : ?>
+          <option value="<?php echo $group_id ?>" <?php if ($note->group_id == $group_id) echo 'selected="selected"' ?>><?php echo $group->name ?></option>
+  <?php endforeach;?>
+        </select>
+                <div class="invalid-feedback" id="group_id_error"></div>
+      </div>
+    </div>
+
 <!-- Class -->
-		<div class="form-group row" id="class_group">
+<!--		<div class="form-group row" id="class_group">
 			<label class="col-sm-5 col-form-label col-form-label-sm">* <?php echo $context->localize($context->getConfig('student/property/class')['labels']) ?></label>
 			<div class="col-sm-7">
 				<select class="form-control form-control-sm" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
@@ -143,10 +157,10 @@
 				</select>
                 <div class="invalid-feedback" id="class_error"></div>
 			</div>
-		</div>
+		</div> -->
 
 <!-- Evaluation period -->
-		<div class="form-group row" id="school_period_group">
+<!--		<div class="form-group row" id="school_period_group">
 			<label class="col-sm-5 col-form-label col-form-label-sm">* <?php echo $context->localize($context->getConfig('student/property/school_period')['labels']) ?></label>
 			<div class="col-sm-7">
 				<select class="form-control form-control-sm" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
@@ -157,7 +171,7 @@
 				</select>
                 <div class="invalid-feedback" id="school_period_error"></div>
 			</div>
-		</div>
+		</div> -->
 
 <!-- Subject -->
 <?php 

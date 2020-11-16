@@ -530,18 +530,19 @@ class NoteController extends AbstractActionController
     				$data['place_id'] = $request->getPost('place_id');
     				if ($context->hasRole('manager') || $context->hasRole('admin')) $data['teacher_id'] = $request->getPost('teacher_id');
     				if (!array_key_exists('teacher_id', $data) || !$data['teacher_id']) $data['teacher_id'] = $context->getContactId();
-    				$data['class'] = $request->getPost('class');
+    				$data['group_id'] = $request->getPost('group_id');
+//    				$data['class'] = $request->getPost('class');
     				$data['school_period'] = $request->getPost('school_period');
     				$data['level'] = $request->getPost('level');
     				$data['subject'] = $request->getPost('subject');
-    				$data['date'] = $request->getPost('date');
-    				$data['type'] = $request->getPost('type');
+//    				$data['date'] = $request->getPost('date');
+//    				$data['type'] = $request->getPost('type');
     				$data['target_date'] = $request->getPost('target_date');
     				$data['document'] = $document_id;
     				$data['observations'] = $request->getPost('observations');
     				$data['comment'] = $request->getPost('comment');
     				$rc = $note->loadData($data);
-    				if ($rc != 'OK') throw new \Exception('View error');
+    				if ($rc != 'OK') throw new \Exception('View error: ' . $rc);
     			}
     
     			// Atomically save
@@ -577,6 +578,7 @@ class NoteController extends AbstractActionController
     		'id' => $id,
     		'action' => $action,
     		'note' => $note,
+    		'groups' => Account::getList('group', [], '+name', null),
     		'school_periods' => $school_periods,
     		'document' => $document,
     		'csrfForm' => $csrfForm,
@@ -1610,4 +1612,27 @@ class NoteController extends AbstractActionController
 		echo implode(',', $deleted) . "\n";
 		return $this->response;
 	}*/
+	
+	/**
+	 * Pour les évaluations (note et report) note.teacher_id = vcard.id et non account.id
+	 */
+	public function repriseAction()
+	{
+		$context = Context::getCurrent();
+		$place_id = $this->params()->fromQuery('place_id');
+		$where = ['school_year' => '2020-2021'];
+		if ($place_id) $where['place_id'] = $place_id;
+		$notes = Note::getList('evaluation', 'note', $where, 'id', 'ASC', 'search', null);
+		foreach ($notes as $note) {
+			$teacher = Account::get($note->teacher_id);
+			if (!$teacher || $teacher->type != 'teacher') echo 'Teacher ' . $note->teacher_id . " not found\n";
+			else {
+				$note->teacher_id = $teacher->contact_1_id;
+				echo 'In note ' . $note->id . ', teacher ' . $note->teacher_id . ' replaced by ' . $teacher->contact_1_id . "\n";
+//				$note->update(null);
+			}
+		}
+		
+		return $this->response;
+	}
 }
