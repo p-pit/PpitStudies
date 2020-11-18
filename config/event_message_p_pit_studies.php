@@ -103,8 +103,8 @@ define('EVENT_MESSAGE_P_PIT_STUDIES', [
 					[
 						'class' => 'text-justify',
 						'header' => ['default' => '<strong>Trainee</strong>', 'fr_FR' => '<strong>Stagiaire</strong>'],
-						'label' => ['default' => '<span class="%s">%s %s</span>'],
-						'params' => ['account:view_class', 'account:n_fn', 'account:group' => '(%s)'],
+						'label' => ['default' => '<span class="%s">%s %s %s</span>'],
+						'params' => ['account:view_class', 'account:n_fn', 'account:group' => '(%s)', 'account:property_15' => ' - %s'],
 					],
 					[
 						'class' => 'text-justify',
