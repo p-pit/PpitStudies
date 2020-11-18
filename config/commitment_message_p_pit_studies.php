@@ -116,7 +116,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 				'paragraphs' => [
 					[
 						'type' => 'p',
-						'label' => ['default' => 'Fait à Boulogne Billancourt, le %s'],
+						'label' => ['default' => 'Fait à Paris, le %s'],
 						'params' => ['current_date'],
 					],
 					['type' => 'br'], ['type' => 'br'], ['type' => 'br'], ['type' => 'br'],
@@ -166,7 +166,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_state']],
 					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => '%s %s'], 'params' => ['addressee_adr_state', 'addressee_adr_country']],
 					['type' => 'br'], ['type' => 'br'], ['type' => 'br'],
-					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => 'Boulogne, le %s'], 'params' => ['current_date']],
+					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => 'Paris, le %s'], 'params' => ['current_date']],
 				],
 			],
 			'body' => [
@@ -503,7 +503,7 @@ define('COMMITMENT_MESSAGE_P_PIT_STUDIES', [
 					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => '%s'], 'params' => ['addressee_adr_state']],
 					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => '%s %s'], 'params' => ['addressee_adr_state', 'addressee_adr_country']],
 					['type' => 'br'],
-					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => 'Boulogne, le %s'], 'params' => ['current_date']],
+					['type' => 'p', 'class' => 'addressee', 'label' => ['default' => 'Paris, le %s'], 'params' => ['current_date']],
 					['type' => 'br'],
 				],
 			],
