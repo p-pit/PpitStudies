@@ -700,7 +700,10 @@ class NoteController extends AbstractActionController
 
 		$accounts = null; // If no account is provided in parameters, all the group is evaluated
 		$accounts = $this->params()->fromQuery('accounts');
-		if ($accounts) $accounts = explode(',', $accounts);
+		if ($accounts) {
+			$accountsData = Account::getList('p-pit-studies', ['id' => $accounts], '+name', null);
+			$accounts = explode(',', $accounts);
+		}
 		else {
 			$accounts = null;
 			$accountsData = Account::getList('p-pit-studies', ['status' => 'active,interested,converted,committed,undefined,retention,alumni,canceled'], '+name', null);
@@ -828,6 +831,20 @@ class NoteController extends AbstractActionController
 							];
 							$noteLinks[] = $noteLink;
 						}
+					}
+				}
+			}
+			elseif ($accounts) {
+				foreach ($accounts as $account_id) {
+					if (array_key_exists($account_id, $accountsData)) {
+						$account = $accountsData[$account_id];
+						$noteLink = [
+							'account_id' => $account_id,
+							'n_fn' => $account->n_fn,
+							'value' => null,
+							'assessment' => '',
+						];
+						$noteLinks[] = $noteLink;
 					}
 				}
 			}
