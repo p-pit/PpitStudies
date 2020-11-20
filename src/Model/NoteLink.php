@@ -367,7 +367,7 @@ class NoteLink
     {
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
-    		->order(array($major.' '.$dir, 'date DESC', 'type ASC'))
+    		->order(array($major.' '.$dir, 'name ASC', 'type ASC'))
     		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id' , 'class', 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
     		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7'), 'left')
