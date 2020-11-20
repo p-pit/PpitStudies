@@ -1443,7 +1443,7 @@ class NoteController extends AbstractActionController
 		}
 		if (!$school_period) $school_period = 'q1';
 		
-		$where = array(/*, 'place_id' => $place->id,*/ 'school_year' => $school_year, 'school_period' => $school_period);
+		$where = array('place_id' => $place->id, 'school_year' => $school_year, 'school_period' => $school_period);
 		
 		$computedReports = [];
 		$existingReports = [];
