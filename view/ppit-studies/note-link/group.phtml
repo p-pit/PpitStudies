@@ -10,7 +10,7 @@
         <div class="card mt-3">
           <div class="card-body">
 
-<?php if ($requestType == 'DELETE') : ?>
+<?php if (in_array($requestType, ['POST', 'DELETE'])) : ?>
 
 <!-- Global message -->
             <div id="message">
@@ -38,19 +38,45 @@
           <div class="card-header">
 			
 			<ul class="nav nav-tabs card-header-tabs">
-			  <li class="nav-item"><a class="nav-link group-tab active" id="update-tab"><?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?></a></li>
+              <li class="nav-item"><a class="nav-link group-tab active" id="group-update-tab"><?php echo $this->translate('Update', 'ppit-core', $context->getLocale()) ?></a></li>
+			  <li class="nav-item"><a class="nav-link group-tab" id="group-delete-tab"><?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?></a></li>
 			</ul>
           </div>
           
           <div class="card-body">
 
-<?php if ($requestType != 'DELETE') : ?>
+<?php if (!in_array($requestType, ['POST', 'DELETE'])) : ?>
+
+            <div class="group-panel" id="group-update-panel">
+              <div class="form-group row">
+                <label class="col-sm-5 control-label">Intervenant</label>
+                <div class="col-sm-1">
+                  <input type="checkbox" class="form-control" id="noteLinkCheck-teacher_id" />
+                </div>
+
+                <div class="col-sm-6">
+
+                  <select class="form-control noteLink-group" id="noteLinkGroup-teacher_id" name="teacher_id">
+                    <option />
+    <?php foreach ($teachers as $teacher) : ?>
+                    <option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->n_fn . ' - ' . $teacher->place_caption ?></option>
+    <?php endforeach;?>
+                  </select>
+                </div>
+              </div>
+  
+              <div class="form-group row">
+                <div class="col-sm-5">&nbsp;</div>
+                <div class="col-sm-7">
+                  <input name="submit" type="submit" id="group-update-button" class="btn btn-warning" value="<?php echo $this->translate('Update', 'ppit-core', $context->getLocale()) ?>">
+                </div>
+            </div>
 
 			<div class="group-panel" id="group-delete-panel">
 			    <div class="form-group row">
 					<div class="col-sm-5">&nbsp;</div>
 					<div class="col-sm-7">
-						<input name="submit" type="submit" id="submit-button" class="btn btn-warning" value="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>">
+						<input name="submit" type="submit" id="group-delete-button" class="btn btn-warning" value="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>">
 					</div>
 				</div>
             </div>

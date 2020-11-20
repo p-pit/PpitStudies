@@ -118,6 +118,20 @@ function exportNoteLinkList() {
 	document.location.href = '<?php echo $this->url('note/export', array('category' => 'evaluation', 'type' => 'note')) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 }
 
+function updateGroup(ids) {    
+  let route = '<?php echo $this->url('noteLink/group', ['category' => $category, 'type' => $type]) ?>' + '?id=' + ids;
+  let xhttp = new XMLHttpRequest(), formData = new FormData();
+  if ($('#noteLinkCheck-teacher_id').prop('checked')) formData.append('teacher_id', $('#noteLinkGroup-teacher_id').val());
+  xhttp.open("POST", route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      $('#note-update-panel').html(xhttp.responseText);
+    }
+  };
+  xhttp.send(formData);
+}
+
 function deleteGroup(ids) {    
   let route = '<?php echo $this->url('noteLink/group', ['category' => $category, 'type' => $type]) ?>' + '?id=' + ids;
   let xhttp = new XMLHttpRequest();
@@ -139,7 +153,35 @@ function getGroup(ids) {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
     if (xhttp.readyState == 4 && xhttp.status == 200) {
       $('#note-update-panel').html(xhttp.responseText);
-      $('#submit-button').click(function () {
+
+      $('.group-panel').hide();
+      $('#group-update-tab').addClass('active');
+      $('#group-update-panel').show();
+    
+      $('#group-update-tab').click(function () {
+        $('.group-tab').removeClass('active');
+        $('#group-update-tab').addClass('active');
+        $('.group-panel').hide();
+        $('#group-update-panel').show();
+      });
+      
+      $('#group-delete-tab').click(function () {
+        $('.group-tab').removeClass('active');
+        $('#group-delete-tab').addClass('active');
+        $('.group-panel').hide();
+        $('#group-delete-panel').show();
+      });
+
+      $('.noteLink-group').change(function () {
+        let id = $(this).attr('id').split('-')[1];
+        $('#noteLinkCheck-' + id).prop('checked', true);
+      });
+      
+      $('#group-update-button').click(function () {
+          updateGroup(ids);
+      });
+      
+      $('#group-delete-button').click(function () {
           deleteGroup(ids);
       });
     }

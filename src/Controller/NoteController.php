@@ -1453,7 +1453,7 @@ class NoteController extends AbstractActionController
 				
 			$computedKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject;
 			if (!array_key_exists($computedKey, $computedReports)) $computedReports[$computedKey] = ['evaluations' => [], 'reports' => []];
-			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id];
+			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'teacher_id' => $evaluation->teacher_id, 'id' => $evaluation->id];
 		}
 
 		// Retrieve all the reports in the required scope
@@ -1484,6 +1484,9 @@ class NoteController extends AbstractActionController
 					$newReport->school_year = $computedReport['evaluations'][0]['school_year'];
 					$newReport->school_period = $computedReport['evaluations'][0]['school_period'];
 					$newReport->subject = $computedReport['evaluations'][0]['subject'];
+					$newReport->teacher_id = $computedReport['evaluations'][0]['teacher_id'];
+					$newReport->weight = 1;
+					$newReport->reference_value = $context->getConfig('student/parameter/average_computation')['reference_value'];
 					$newReport->add();
 				}
 			}

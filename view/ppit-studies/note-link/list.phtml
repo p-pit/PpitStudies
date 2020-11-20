@@ -161,6 +161,8 @@ table td {
         <td colspan="<?php echo count($listPage['properties']) ?>">&nbsp;</td>
       </tr>
 
+<?php if ($type == 'note') : ?>
+
   <tr class="table-info">
     <th>&nbsp;</th>
     <th>&nbsp;</th>
@@ -203,6 +205,8 @@ table td {
     
     </th>
   </tr>
+    
+<?php endif;?>
 
   </table>
 </div>

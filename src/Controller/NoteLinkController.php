@@ -2,6 +2,7 @@
 
 namespace PpitStudies\Controller;
 
+use PpitCore\Model\Account;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
@@ -351,14 +352,29 @@ class NoteLinkController extends AbstractActionController
 /*		$noteLinks = [];
 		foreach ($id as $note_link_id) $noteLinks[$note_link_id] = NoteLink::get($note_link_id);*/
 		
-		if ($requestType == 'DELETE') $this->delete($id);
+		$params = ['status' => $context->getConfig('event/calendar/property/account_id')['account_status']];
+		$teachers = Account::getList('teacher', $params, '+n_fn', null, ['id', 'n_fn', 'email', 'place_caption']);
 
+		if ($requestType == 'DELETE') $this->delete($id);
+		elseif ($requestType == 'POST') {
+			$noteIds = [];
+			foreach ($noteLinks as $noteLink) {
+				$noteIds[$noteLink->note_id] = null;
+			}
+			foreach ($noteIds as $note_id => $unused) {
+				$note = Note::get($note_id);
+				$note->teacher_id = $this->request->getPost('teacher_id');
+				$note->update(null);
+			}
+		}
+		
 		$view = new ViewModel(array(
 			'requestType' => $requestType,
 			'context' => $context,
 			'category' => $category,
 			'type' => $type,
 			'noteLinks' => $noteLinks,
+			'teachers' => $teachers,
 		));
 		$view->setTerminal(true);
 		return $view;
