@@ -1520,7 +1520,8 @@ class StudentController extends AbstractActionController
     	if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
 
     	if ($category == 'report') {
-
+    		$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+    		
 	    	// Compute the averages
 	    	$computed = AverageComputer::compute($notes);
 	    	$indicators = $computed['indicators'];
@@ -1528,9 +1529,11 @@ class StudentController extends AbstractActionController
 	    	foreach ($averages as $average) {
 	    		if (array_key_exists($average->subject, $computed[$average->account_id])) {
 	    			$average->value = $computed[$average->account_id][$average->subject][0] / $computed[$average->account_id][$average->subject][1] * $averageReference;
-	    			$average->higher_note = $indicators[$average->subject]['higher_note'];
-	    			$average->lower_note = $indicators[$average->subject]['lower_note'];
-	    			$average->average_note = $indicators[$average->subject]['average_note'][0] / $indicators[$average->subject]['average_note'][1];
+    				if (array_key_exists($average->subject, $indicators)) {
+		    			$average->higher_note = $indicators[$average->subject]['higher_note'];
+		    			$average->lower_note = $indicators[$average->subject]['lower_note'];
+		    			$average->average_note = $indicators[$average->subject]['average_note'][0] / $indicators[$average->subject]['average_note'][1];
+    				}
 	    		}
 	    	}
     	}
