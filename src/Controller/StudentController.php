@@ -1407,7 +1407,7 @@ class StudentController extends AbstractActionController
 	    		$notesGroup = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     		}
     		
-    		$notes = array_merge($notesAccount, $noteGroups);
+    		$notes = array_merge($notesAccount, $notesGroup);
     		
     		// Compute the averages
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
