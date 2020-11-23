@@ -1513,7 +1513,7 @@ class StudentController extends AbstractActionController
     	else $averages = null;
     
     	$params = array('school_year' => $school_year, 'school_period' => $school_period);
-    	if ($account->groups) $params['group_id'] = $account->groups;
+    	if ($account->groups) $params['group_id'] = explode(',', $account->groups);
     	else $params['account_id'] = $account_id;
     	if ($level) $params['level'] = $level;
     	$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
