@@ -1398,11 +1398,16 @@ class StudentController extends AbstractActionController
     		$periodId = explode('.', $periodId);
     		$school_year = $periodId[0];
     		$school_period = $periodId[1];
+
+    		$params = array('school_year' => $school_year, 'school_period' => $school_period, 'account_id' => $account_id);
+    		$notesAccount = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     		
-    		$params = array('school_year' => $school_year, 'school_period' => $school_period);
-    		if ($period[0]->group_id) $params['group_id'] = $period[0]->group_id;
-    		else $params['account_id'] = $account_id;
-    		$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+    		if ($period[0]->group_id) {
+	    		$params = array('school_year' => $school_year, 'school_period' => $school_period, 'group_id' => $period[0]->group_id);
+	    		$notesGroup = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+    		}
+    		
+    		$notes = array_merge($notesAccount, $noteGroups);
     		
     		// Compute the averages
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
@@ -1411,11 +1416,11 @@ class StudentController extends AbstractActionController
     		$averages = $computed['averages'];
     		foreach ($period as $row) {
     			if (array_key_exists($row->subject, $averages[$row->account_id])) {
-    				$row->value = $averages[$row->account_id][$row->subject][0] / $averages[$row->account_id][$row->subject][1] * $averageReference;
+    				if (!$row->value) $row->value = $averages[$row->account_id][$row->subject][0] / $averages[$row->account_id][$row->subject][1] * $averageReference;
     				if (array_key_exists($row->subject, $indicators)) {
-	    				$row->higher_note = $indicators[$row->subject]['higher_note'];
-    					$row->lower_note = $indicators[$row->subject]['lower_note'];
-    					$row->average_note = $indicators[$row->subject]['average_note'][0] / $indicators[$row->subject]['average_note'][1];
+	    				if (!$row->higher_note) $row->higher_note = $indicators[$row->subject]['higher_note'];
+    					if (!$row->lower_note) $row->lower_note = $indicators[$row->subject]['lower_note'];
+    					if (!$row->average_note) $row->average_note = $indicators[$row->subject]['average_note'][0] / $indicators[$row->subject]['average_note'][1];
     				}
     			}
     		}
