@@ -1406,6 +1406,7 @@ class StudentController extends AbstractActionController
 	    		$params = array('school_year' => $school_year, 'school_period' => $school_period, 'group_id' => $period[0]->group_id);
 	    		$notesGroup = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     		}
+    		else $notesGroup = [];
     		
     		$notes = array_merge($notesAccount, $notesGroup);
     		
