@@ -47,7 +47,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 		    <div class="form-group row">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
-					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" <?php if ($content['type'] == 'report') : ?>disabled<?php endif;?> />
+					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" />
   <?php if ($content['id'] && $content['type'] != 'report') : ?>
                     <button type="button" class="note_evaluation_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
   <?php endif;?>
@@ -244,6 +244,16 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $noteLink['n_fn'] ?></label>
 			<div class="col-sm-7">
+  <?php if ($content['type'] == 'report') : ?>
+          <select class="form-control form-control-sm update_input update_input_select" id="mention-<?php echo $noteLink['account_id'] ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+            <option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+    <?php foreach ($context->getConfig('student/property/reportMention')['modalities'] as $categoryId => $category) : ?>
+      <?php $context->localize($caption = $category); ?>
+            <option value="<?php echo $categoryId ?>" <?php if ($noteLink['evaluation'] == $categoryId) echo 'selected="selected"' ?>><?php echo $context->localize($caption) ?></option>
+    <?php endforeach;?>
+          </select>
+  <?php endif?>
+
   <?php if ($context->getConfig('note/property/value')['type'] == 'number') : ?>
 				<input class="form-control form-control-sm update_input update_input_text" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$noteLink['value'].'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> />
   <?php else : ?>
@@ -314,7 +324,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 		    <div class="form-group row">
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
-					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" <?php if ($content['type'] == 'report') : ?>disabled<?php endif;?> />
+					<input type="submit" class="note_evaluation_submit_button btn btn-warning" value="<?php echo $this->translate(($content['id']) ? 'Update' : 'Add', 'ppit-core', $context->getLocale()) ?>" />
                     <span class="spinner-border note-evaluation-spinner invisible" role="status"><span class="sr-only">Loading...</span></span>
   <?php if ($content['id']) : ?>
                     <button type="button" class="note_evaluation_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>

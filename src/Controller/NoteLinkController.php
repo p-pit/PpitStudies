@@ -450,7 +450,14 @@ class NoteLinkController extends AbstractActionController
 		foreach (NoteLink::getList(null, $where, 'id', 'asc', 'search') as $evaluation) {
 			
 			$computedKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject . '_' . $evaluation->account_id;
-			if (!array_key_exists($computedKey, $computedReportLinks)) $computedReportLinks[$computedKey] = ['evaluations' => [], 'reports' => []];
+			if (!array_key_exists($computedKey, $computedReportLinks)) {
+				$computedReportLinks[$computedKey] = ['evaluations' => [], 'reports' => []];
+				$computedGlobalKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . 'global' . '_' . $evaluation->account_id;
+				if (!array_key_exists($computedGlobalKey, $computedReportLinks)) {
+					$computedReportLinks[$computedGlobalKey] = ['evaluations' => [], 'reports' => []];
+					$computedReportLinks[$computedGlobalKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => 'global', 'id' => null, 'note_id' => null, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => null, 'assessment' => null];
+				}
+			}
 			$computedReportLinks[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id, 'note_id' => $evaluation->note_id, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => $evaluation->value, 'assessment' => $evaluation->assessment];
 		}
 
@@ -478,10 +485,10 @@ class NoteLinkController extends AbstractActionController
 		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search', null) as $report) {
 		
 			$existingKey = $report->place_id . '_' . $report->group_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
-			if ($report->subject != 'global') {
+//			if ($report->subject != 'global') {
 //				if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
 				$existingReports[$existingKey] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
-			}
+//			}
 		}
 		
 		$result = ['duplicate_or_missing_report' => [], 'report_without_note' => []];

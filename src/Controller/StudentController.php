@@ -24,6 +24,7 @@ use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
 use PpitStudies\Model\Progress;
 use PpitStudies\Model\StudentSportImport;
+use PpitStudies\ViewHelper\AverageComputer;
 use PpitStudies\ViewHelper\DocumentTemplate;
 use PpitStudies\ViewHelper\PdfReportTableViewHelper;
 use PpitStudies\ViewHelper\PdfReportViewHelper;
@@ -1391,6 +1392,34 @@ class StudentController extends AbstractActionController
     	$account = Account::get($account_id);
 
     	$periods = $this->getReport($account);
+
+    	foreach ($periods as $periodId => $period) {
+
+    		$periodId = explode('.', $periodId);
+    		$school_year = $periodId[0];
+    		$school_period = $periodId[1];
+    		
+    		$params = array('school_year' => $school_year, 'school_period' => $school_period);
+    		if ($period[0]->group_id) $params['group_id'] = $period[0]->group_id;
+    		else $params['account_id'] = $account_id;
+    		$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+    		
+    		// Compute the averages
+			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+    		$computed = AverageComputer::compute($notes);
+    		$indicators = $computed['indicators'];
+    		$averages = $computed['averages'];
+    		foreach ($period as $row) {
+    			if (array_key_exists($row->subject, $averages[$row->account_id])) {
+    				$row->value = $averages[$row->account_id][$row->subject][0] / $averages[$row->account_id][$row->subject][1] * $averageReference;
+    				if (array_key_exists($row->subject, $indicators)) {
+	    				$row->higher_note = $indicators[$row->subject]['higher_note'];
+    					$row->lower_note = $indicators[$row->subject]['lower_note'];
+    					$row->average_note = $indicators[$row->subject]['average_note'][0] / $indicators[$row->subject]['average_note'][1];
+    				}
+    			}
+    		}
+    	}
     
     	// Return the link list
     	$view = new ViewModel(array(
@@ -1476,17 +1505,36 @@ class StudentController extends AbstractActionController
     	if ($category == 'report') {
     		$averages = NoteLink::GetList($category, array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period), 'date', 'DESC', 'search');
     		foreach ($averages as $average) if ($average->subject == 'global') {
+    			$group_id = $average->group_id;
     			$date = $average->date;
     			$classSize = count(NoteLink::GetList($category, array('note_id' => $average->note_id), 'date', 'DESC', 'search'));
     		}
     	}
     	else $averages = null;
     
-    	$params = array('account_id' => $account_id, 'school_year' => $school_year, 'school_period' => $school_period);
+    	$params = array('school_year' => $school_year, 'school_period' => $school_period);
+    	if ($group_id) $params['group_id'] = $group_id;
+    	else $params['account_id'] = $account_id;
     	if ($level) $params['level'] = $level;
     	$notes = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
-    
+
+    	if ($category == 'report') {
+
+	    	// Compute the averages
+	    	$computed = AverageComputer::compute($notes);
+	    	$indicators = $computed['indicators'];
+	    	$computed = $computed['averages'];
+	    	foreach ($averages as $average) {
+	    		if (array_key_exists($average->subject, $computed[$average->account_id])) {
+	    			$average->value = $computed[$average->account_id][$average->subject][0] / $computed[$average->account_id][$average->subject][1] * $averageReference;
+	    			$average->higher_note = $indicators[$average->subject]['higher_note'];
+	    			$average->lower_note = $indicators[$average->subject]['lower_note'];
+	    			$average->average_note = $indicators[$average->subject]['average_note'][0] / $indicators[$average->subject]['average_note'][1];
+	    		}
+	    	}
+    	}
+    	 
     	// create new PDF document
     	$pdf = new PpitPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     	PdfReportViewHelper::render($category, $pdf, $place, $school_year, $school_period, $date, $account, $addressee, $averages, $notes, $absenceCount, $cumulativeAbsence, $latenessCount, $cumulativeLateness, $absences, $latenesss, $classSize, $absLates, $level);
