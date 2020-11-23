@@ -40,8 +40,13 @@
 		if ($propertyId == 'place_id') foreach ($places as $place) {
 			$modalities[$place->id] = $place->caption;
 		} 
-		else foreach ($property['modalities'] as $modalityId => $modality) {
-			if (!array_key_exists('archive', $modality) || !$modality['archive']) $modalities[$modalityId] = $context->localize($modality);
+		else {
+			foreach ($property['modalities'] as $modalityId => $modality) {
+				if (!array_key_exists('archive', $modality) || !$modality['archive']) $modalities[$modalityId] = $context->localize($modality);
+			}
+			if ($propertyId == 'subject' && $type == 'report') {
+				$modalities['global'] = $this->translate('Global average', 'ppit-studies', $context->getLocale());
+			}
 		}
 
 		if (array_key_exists('multiple', $options) && $options['multiple']) $multiple = true; else $multiple = false;
