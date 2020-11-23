@@ -1416,7 +1416,7 @@ class StudentController extends AbstractActionController
     		$indicators = $computed['indicators'];
     		$averages = $computed['averages'];
     		foreach ($period as $row) {
-    			if (array_key_exists($row->subject, $averages[$row->account_id])) {
+    			if (array_key_exists($row->account_id, $averages) && array_key_exists($row->subject, $averages[$row->account_id])) {
     				if (!$row->value) $row->value = $averages[$row->account_id][$row->subject][0] / $averages[$row->account_id][$row->subject][1] * $averageReference;
     				if (array_key_exists($row->subject, $indicators)) {
 	    				if (!$row->higher_note) $row->higher_note = $indicators[$row->subject]['higher_note'];
