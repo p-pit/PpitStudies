@@ -1367,13 +1367,15 @@ class StudentController extends AbstractActionController
     	return $view;
     }
 
-    public function getReport($account)
+    public function getReport($account, $currentYear = false)
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
     	
     	$periods = array();
-    	$notes = NoteLink::GetList('report', array('account_id' => $account->id), 'date', 'DESC', 'search');
+    	$select = array('account_id' => $account->id);
+    	if ($currentYear) $select['school_year'] = $context->getConfig('student/property/school_year/default');
+    	$notes = NoteLink::GetList('report', $select, 'date', 'DESC', 'search');
     	foreach($notes as $note) {
     		$key = $note->school_year.'.'.$note->school_period;
     		if (!array_key_exists($key, $periods)) $periods[$key] = array();
@@ -1391,7 +1393,7 @@ class StudentController extends AbstractActionController
     	$account_id = (int) $this->params()->fromRoute('id');
     	$account = Account::get($account_id);
 
-    	$periods = $this->getReport($account);
+    	$periods = $this->getReport($account, true);
 
     	foreach ($periods as $periodId => $period) {
 
