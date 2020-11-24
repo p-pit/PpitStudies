@@ -1308,7 +1308,7 @@ class StudentController extends AbstractActionController
     	$mock = $this->params()->fromRoute('mock');
     
     	$periods = array();
-    	$params = array('account_id' => $account->id/*, 'school_year' => $school_year, 'school_period' => $school_period*/);
+    	$params = array('account_id' => $account->id, 'school_year' => $school_year/*, 'school_period' => $school_period*/);
     	if ($mock) $params['level'] = "mock";
     	$notes = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
     	foreach($notes as $note) {
