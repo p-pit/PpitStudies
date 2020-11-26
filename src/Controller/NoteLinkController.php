@@ -343,6 +343,19 @@ class NoteLinkController extends AbstractActionController
 		elseif ($this->request->isPost()) $requestType = 'POST';
 		elseif ($this->request->isDelete()) $requestType = 'DELETE';
 		
+		$places = Place::getList(array());
+		$cursor = Account::getList('group', ['status' => 'active'], '+name', null);
+		$groups = [];
+		foreach ($cursor as $group) {
+			$label = $group->name;
+			if ($group->place_id && array_key_exists($group->place_id, $places)) $label .= ' (' . $places[$group->place_id]->caption . ')';
+			$groups[$group->id] = ['default' => $label];
+		}
+		
+		$myAccount = Account::get($context->getContactId(), 'contact_1_id');
+		if ($myAccount && $myAccount->groups) $myGroups = explode(',', $myAccount->groups);
+		else $myGroups = [];
+		
 		// Retrieve the parameters and the panel configuration
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
@@ -363,7 +376,8 @@ class NoteLinkController extends AbstractActionController
 			}
 			foreach ($noteIds as $note_id => $unused) {
 				$note = Note::get($note_id);
-				$note->teacher_id = $this->request->getPost('teacher_id');
+				if ($this->request->getPost('group_id_checked')) $note->group_id = $this->request->getPost('group_id');
+				if ($this->request->getPost('teacher_id_checked')) $note->teacher_id = $this->request->getPost('teacher_id');
 				$note->update(null);
 			}
 		}
@@ -373,6 +387,8 @@ class NoteLinkController extends AbstractActionController
 			'context' => $context,
 			'category' => $category,
 			'type' => $type,
+    		'groups' => $groups,
+    		'myGroups' => $myGroups,
 			'noteLinks' => $noteLinks,
 			'teachers' => $teachers,
 		));

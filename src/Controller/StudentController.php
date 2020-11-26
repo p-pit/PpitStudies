@@ -268,7 +268,7 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
 
 		$places = Place::getList(array());
-		$cursor = Account::getList('group', ['status' => 'active'], '+id', null);
+		$cursor = Account::getList('group', ['status' => 'active'], '+name', null);
 		$groups = [];
 		foreach ($cursor as $group) {
 			$label = $group->name;

@@ -121,7 +121,14 @@ function exportNoteLinkList() {
 function updateGroup(ids) {    
   let route = '<?php echo $this->url('noteLink/group', ['category' => $category, 'type' => $type]) ?>' + '?id=' + ids;
   let xhttp = new XMLHttpRequest(), formData = new FormData();
-  if ($('#noteLinkCheck-teacher_id').prop('checked')) formData.append('teacher_id', $('#noteLinkGroup-teacher_id').val());
+  if ($('#noteLinkCheck-group_id').prop('checked')) {
+      formData.append('group_id_checked', 1);
+      formData.append('group_id', $('#noteLinkGroup-group_id').val());
+    }
+  if ($('#noteLinkCheck-teacher_id').prop('checked')) {
+    formData.append('teacher_id_checked', 1);
+    formData.append('teacher_id', $('#noteLinkGroup-teacher_id').val());
+  }
   xhttp.open("POST", route, true);
   xhttp.onreadystatechange = function() {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
