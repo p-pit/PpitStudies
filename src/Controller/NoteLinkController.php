@@ -483,7 +483,7 @@ class NoteLinkController extends AbstractActionController
 		
 			$existingKey = $report->place_id/* . '_' . $report->group_id*/ . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject . '_' . $report->account_id;
 			if (array_key_exists($existingKey, $computedReportLinks)) {
-				$computedReportLinks[$existingKey]['reports'][] = ['id' => $report->id, 'place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment, 'creation_user' => $report->creation_user, $row = $report];
+				$computedReportLinks[$existingKey]['reports'][] = ['id' => $report->id, 'place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment, 'creation_user' => $report->creation_user, 'row' => $report];
 			}
 			else {
 				if ($report->subject != 'global') {
