@@ -521,7 +521,7 @@ class NoteLinkController extends AbstractActionController
 				// Transient
 				else {
 					$assessment = null;
-					foreach ($computedReport['reports'] as $report) {
+					foreach ($computedReport['reports'] as &$report) {
 						if (!$assessment && $report['assessment']) $assessment = $report['assessment'];
 						elseif ($assessment && !$report['assessment']) $report['assessment'] = $assessment;
 					}
