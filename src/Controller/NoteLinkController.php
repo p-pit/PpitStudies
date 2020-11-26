@@ -518,6 +518,14 @@ class NoteLinkController extends AbstractActionController
 					$result['duplicate_or_missing_report'][$computedKey]['report_id'] = $newReport->note_id;
 //					$newReport->add();
 				}
+				// Transient
+				else {
+					$assessment = null;
+					foreach ($computedReport['reports'] as $report) {
+						if (!$assessment && $report['assessment']) $assessment = $report['assessment'];
+						elseif ($assessment && !$report['assessment']) $report['assessment'] = $assessment;
+					}
+				}
 			}
 		}
 	
