@@ -483,7 +483,7 @@ class NoteLinkController extends AbstractActionController
 		
 			$existingKey = $report->place_id/* . '_' . $report->group_id*/ . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject . '_' . $report->account_id;
 			if (array_key_exists($existingKey, $computedReportLinks)) {
-				$computedReportLinks[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment, 'creation_user' => $report->creation_user];
+				$computedReportLinks[$existingKey]['reports'][] = ['id' => $report->id, 'place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment, 'creation_user' => $report->creation_user];
 			}
 			else {
 				if ($report->subject != 'global') {
@@ -522,11 +522,19 @@ class NoteLinkController extends AbstractActionController
 				else {
 					$assessment = null; $value = null;
 					foreach ($computedReport['reports'] as &$report) {
+						$update = false;
 						if (!$assessment && $report['assessment']) $assessment = $report['assessment'];
-						elseif ($assessment && !$report['assessment']) $report['assessment'] = $assessment;
+						elseif ($assessment && !$report['assessment']) {
+							$report['assessment'] = $assessment;
+							$update = true;
+						}
 
 						if (!$value && $report['value']) $value = $report['value'];
-						elseif ($value && !$report['value']) $report['value'] = $value;
+						elseif ($value && !$report['value']) {
+							$report['value'] = $value;
+							$update = true;
+						}
+						if ($update && $report['creation_user'] == 83) $report->update(null);
 					}
 				}
 			}
