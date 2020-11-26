@@ -509,7 +509,7 @@ class NoteLinkController extends AbstractActionController
 		
 		$result = ['duplicate_or_missing_report' => [], 'report_without_note' => []];
 
-		foreach ($computedReportLinks as $computedKey => $computedReport) {
+		foreach ($computedReportLinks as $computedKey => &$computedReport) {
 			if (count($computedReport['reports']) != 1) {
 				$result['duplicate_or_missing_report'][$computedKey] = $computedReport;
 				if (count($computedReport['reports']) == 0) {
