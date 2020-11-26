@@ -230,6 +230,9 @@ class NoteLink
     public $higher_note;
     public $average_note;
     
+    // Transient
+    public $creation_user;
+    
     protected $inputFilter;
 
     // Static fields
@@ -281,6 +284,8 @@ class NoteLink
         $this->average_note = (isset($data['average_note'])) ? $data['average_note'] : null;
         $this->lower_note = (isset($data['lower_note'])) ? $data['lower_note'] : null;
         $this->higher_note = (isset($data['higher_note'])) ? $data['higher_note'] : null;
+
+        $this->creation_user = (isset($data['creation_user'])) ? $data['creation_user'] : null;
     }
 
     public function getProperties()
