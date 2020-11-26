@@ -520,10 +520,13 @@ class NoteLinkController extends AbstractActionController
 				}
 				// Transient
 				else {
-					$assessment = null;
+					$assessment = null; $value = null;
 					foreach ($computedReport['reports'] as &$report) {
 						if (!$assessment && $report['assessment']) $assessment = $report['assessment'];
 						elseif ($assessment && !$report['assessment']) $report['assessment'] = $assessment;
+
+						if (!$value && $report['value']) $value = $report['value'];
+						elseif ($value && !$report['value']) $report['value'] = $value;
 					}
 				}
 			}
