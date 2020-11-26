@@ -509,6 +509,7 @@ class NoteLinkController extends AbstractActionController
 		
 		$result = ['duplicate_or_missing_report' => [], 'report_without_note' => []];
 
+		$removeList = []; // Transient
 		foreach ($computedReportLinks as $computedKey => &$computedReport) {
 			if (count($computedReport['reports']) != 1) {
 				$result['duplicate_or_missing_report'][$computedKey] = &$computedReport;
@@ -519,10 +520,10 @@ class NoteLinkController extends AbstractActionController
 //					$newReport->add();
 				}
 				// Transient
-/*				else {
+				else {
 					$assessment = null; $value = null;
 					foreach ($computedReport['reports'] as &$report) {
-						$update = false;
+/*						$update = false;
 						if (!$assessment && $report['assessment']) $assessment = $report['assessment'];
 						elseif ($assessment && !$report['assessment']) {
 							$report['assessment'] = $assessment;
@@ -534,9 +535,10 @@ class NoteLinkController extends AbstractActionController
 							$report['value'] = $value;
 							$update = true;
 						}
-						if ($update && $report['creation_user'] == 83) $report->update(null);
+						if ($update && $report['creation_user'] == 83) $report['row']->update(null);*/
+						if ($report['creation_user'] != 83) $removeList[] = $report['id'];
 					}
-				}*/
+				}
 			}
 		}
 	
@@ -544,6 +546,7 @@ class NoteLinkController extends AbstractActionController
 			$result['report_without_note'][] = [$existingKey => $existingReport];
 		}
 
+		echo implode(',', $removeList);
 		echo json_encode($result, JSON_PRETTY_PRINT);
 		return $this->response;
 	}
