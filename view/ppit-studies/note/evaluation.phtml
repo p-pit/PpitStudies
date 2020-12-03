@@ -204,7 +204,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 		<div class="form-group row">
 			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Reference value', 'ppit-studies', $context->getLocale()) ?></label>
 			<div class="col-sm-7">
-				<input class="form-control form-control-sm update_input update_input_number" id="reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" <?php if (!$context->hasRole('manager')) : ?>disabled="disabled"<?php endif;?> required />
+				<input class="form-control form-control-sm update_input update_input_number" id="reference_value" value="<?php echo $context->formatFloat($reference_value, 2) ?>" <?php if ($content['type'] == 'report' && !$context->hasRole('manager')) : ?>disabled="disabled"<?php endif;?> required />
 			</div>
 		</div>
 <?php endif;?>
