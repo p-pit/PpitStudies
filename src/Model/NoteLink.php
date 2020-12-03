@@ -98,7 +98,7 @@ class NoteLink
 			// Cache the groups retrieved from the database for the current instance in the group_id property description
 			elseif ($propertyId == 'group_id') {
 				$property['modalities'] = [];
-				foreach (Account::getList('group', ['status' => 'active'], '+identifier', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name];
+				foreach (Account::getList('group', ['status' => 'active'], '+identifier', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name . (($group->place_caption) ? ' (' . $group->place_caption . ')' : '')];
 			}
 
 			// Cache the teachers retrieved from the database for the current instance in the group_id property description

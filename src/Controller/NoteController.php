@@ -965,7 +965,7 @@ class NoteController extends AbstractActionController
 				}
 				$mention = $this->request->getPost('mention-' . $account_id);
 				$audit = [];
-				if ($value !== null || $assessment) {
+				if ($value !== null || $assessment || $mention) {
 					$noteLinkData['value'] = $value;
 					$noteLinkData['evaluation'] = $mention;
 					$noteLinkData['assessment'] = $assessment;
