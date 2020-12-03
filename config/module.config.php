@@ -1561,6 +1561,7 @@ return array_merge(
 			'training_course' => array('default' => 'Stage'),
 			'student' => array('default' => 'Job étudiant'),
 			'service_civique' => array('default' => 'Service civique'),
+			'reclassement' => array('default' => 'Reclassement'),
 		),
 		'labels' => array(
 			'default' => 'Student follow-up',
