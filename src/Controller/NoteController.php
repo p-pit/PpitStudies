@@ -1451,13 +1451,13 @@ class NoteController extends AbstractActionController
 		// Retrieve all the notes in the required scope
 		foreach (Note::getList('evaluation', 'note', $where, 'id', 'asc', 'search', null) as $evaluation) {
 				
-			$computedKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject;
+			$computedKey = $evaluation->place_id/* . '_' . $evaluation->group_id*/ . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . $evaluation->subject;
 			if (!array_key_exists($computedKey, $computedReports)) {
 				$computedReports[$computedKey] = ['evaluations' => [], 'reports' => []];
-				$computedGlobalKey = $evaluation->place_id . '_' . $evaluation->group_id . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . 'global';
+				$computedGlobalKey = $evaluation->place_id/* . '_' . $evaluation->group_id*/ . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . 'global';
 				if (!array_key_exists($computedGlobalKey, $computedReports)) {
 					$computedReports[$computedGlobalKey] = ['evaluations' => [], 'reports' => []];
-					$computedReports[$computedGlobalKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => 'global', 'teacher_id' => null, 'id' => null];
+					$computedReports[$computedGlobalKey]['evaluations'][] = ['place_id' => $evaluation->place_id/*, 'group_id' => $evaluation->group_id*/, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => 'global', 'teacher_id' => null, 'id' => null];
 				}
 			}
 			$computedReports[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'teacher_id' => $evaluation->teacher_id, 'id' => $evaluation->id];
@@ -1466,14 +1466,14 @@ class NoteController extends AbstractActionController
 		// Retrieve all the reports in the required scope
 		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search', null) as $report) {
 		
-			$existingKey = $report->place_id . '_' . $report->group_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
+			$existingKey = $report->place_id/* . '_' . $report->group_id*/ . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
 			if (array_key_exists($existingKey, $computedReports)) {
 				$computedReports[$existingKey]['reports'][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
 			}
 			else {
 //				if ($report->subject != 'global') {
 					if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
-					$existingReports[$existingKey][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
+					$existingReports[$existingKey][] = ['place_id' => $report->place_id/*, 'group_id' => $report->group_id*/, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
 //				}
 			}
 		}
@@ -1487,7 +1487,7 @@ class NoteController extends AbstractActionController
 					$newReport = Note::instanciate('report');
 					$newReport->category = 'evaluation';
 					$newReport->place_id = $computedReport['evaluations'][0]['place_id'];
-					$newReport->group_id = $computedReport['evaluations'][0]['group_id'];
+					if ($computedReport['evaluations'][0]['subject'] != 'global') $newReport->group_id = $computedReport['evaluations'][0]['group_id'];
 					$newReport->school_year = $computedReport['evaluations'][0]['school_year'];
 					$newReport->school_period = $computedReport['evaluations'][0]['school_period'];
 					$newReport->subject = $computedReport['evaluations'][0]['subject'];
