@@ -471,7 +471,7 @@ class NoteLinkController extends AbstractActionController
 				$computedGlobalKey = $evaluation->place_id/* . '_' . $evaluation->group_id*/ . '_' . $evaluation->school_year . '_' . $evaluation->school_period . '_' . 'global' . '_' . $evaluation->account_id;
 				if (!array_key_exists($computedGlobalKey, $computedReportLinks)) {
 					$computedReportLinks[$computedGlobalKey] = ['evaluations' => [], 'reports' => []];
-					$computedReportLinks[$computedGlobalKey]['evaluations'][] = ['place_id' => $evaluation->place_id/*, 'group_id' => $evaluation->group_id*/, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => 'global', 'id' => null, 'note_id' => null, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => null, 'assessment' => null];
+					$computedReportLinks[$computedGlobalKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => null, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => 'global', 'id' => null, 'note_id' => null, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => null, 'assessment' => null];
 				}
 			}
 			$computedReportLinks[$computedKey]['evaluations'][] = ['place_id' => $evaluation->place_id, 'group_id' => $evaluation->group_id, 'school_year' => $evaluation->school_year, 'school_period' => $evaluation->school_period, 'subject' => $evaluation->subject, 'id' => $evaluation->id, 'note_id' => $evaluation->note_id, 'account_id' => $evaluation->account_id, 'name' => $evaluation->name, 'value' => $evaluation->value, 'assessment' => $evaluation->assessment];
@@ -488,7 +488,7 @@ class NoteLinkController extends AbstractActionController
 			else {
 //				if ($report->subject != 'global') {
 					if (!array_key_exists($existingKey, $existingReportLinks)) $existingReportLinks[$existingKey] = [];
-					$existingReportLinks[$existingKey][] = ['place_id' => $report->place_id/*, 'group_id' => $report->group_id*/, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
+					$existingReportLinks[$existingKey][] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id, 'note_id' => $report->note_id, 'account_id' => $report->account_id, 'name' => $report->name, 'value' => $report->value, 'assessment' => $report->assessment];
 					
 					// Drop the report not corresponding to any evaluation
 //					if (!$report->assessment) $report->drop();
@@ -500,10 +500,10 @@ class NoteLinkController extends AbstractActionController
 		$existingReports = [];
 		foreach (Note::getList('evaluation', 'report', $where, 'id', 'asc', 'search', null) as $report) {
 		
-			$existingKey = $report->place_id/* . '_' . $report->group_id*/ . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
+			$existingKey = $report->place_id . '_' . $report->group_id . '_' . $report->school_year . '_' . $report->school_period . '_' . $report->subject;
 //			if ($report->subject != 'global') {
-//				if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
-				$existingReports[$existingKey] = ['place_id' => $report->place_id/*, 'group_id' => $report->group_id*/, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
+				if (!array_key_exists($existingKey, $existingReports)) $existingReports[$existingKey] = [];
+				$existingReports[$existingKey] = ['place_id' => $report->place_id, 'group_id' => $report->group_id, 'school_year' => $report->school_year, 'school_period' => $report->school_period, 'subject' => $report->subject, 'id' => $report->id];
 //			}
 		}
 		
@@ -514,7 +514,7 @@ class NoteLinkController extends AbstractActionController
 			if (count($computedReport['reports']) != 1) {
 				$result['duplicate_or_missing_report'][$computedKey] = &$computedReport;
 				if (count($computedReport['reports']) == 0) {
-					$existingReportKey = $computedReport['evaluations'][0]['place_id']/* . '_' . $computedReport['evaluations'][0]['group_id']*/ . '_' . $computedReport['evaluations'][0]['school_year'] . '_' . $computedReport['evaluations'][0]['school_period'] . '_' . $computedReport['evaluations'][0]['subject'];
+					$existingReportKey = $computedReport['evaluations'][0]['place_id'] . '_' . $computedReport['evaluations'][0]['group_id'] . '_' . $computedReport['evaluations'][0]['school_year'] . '_' . $computedReport['evaluations'][0]['school_period'] . '_' . $computedReport['evaluations'][0]['subject'];
 					$newReport = NoteLink::instanciate($computedReport['evaluations'][0]['account_id'], $existingReports[$existingReportKey]['id']);
 					$result['duplicate_or_missing_report'][$computedKey]['report_id'] = $newReport->note_id;
 					$newReport->add();
