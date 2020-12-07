@@ -1525,7 +1525,7 @@ class StudentController extends AbstractActionController
     	$notesAccount = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	
     	if ($category == 'report' && $account->groups) {
-    		$params = array('school_year' => $school_year, 'school_period' => $school_period, 'group_id' => $account->groups);
+    		$params = array('school_year' => $school_year, 'school_period' => $school_period, 'place_id' => $account->place_id, 'group_id' => $account->groups);
     		if ($level) $params['level'] = $level;
     		$notesGroup = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	}
