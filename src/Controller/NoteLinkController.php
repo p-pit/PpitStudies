@@ -514,7 +514,7 @@ class NoteLinkController extends AbstractActionController
 			if (count($computedReport['reports']) != 1) {
 				$result['duplicate_or_missing_report'][$computedKey] = &$computedReport;
 				if (count($computedReport['reports']) == 0) {
-					$existingReportKey = $computedReport['evaluations'][0]['place_id'] . '_' . $computedReport['evaluations'][0]['group_id'] . '_' . $computedReport['evaluations'][0]['school_year'] . '_' . $computedReport['evaluations'][0]['school_period'] . '_' . $computedReport['evaluations'][0]['subject'];
+					$existingReportKey = $computedReport['evaluations'][0]['place_id'] . '_' . (int) $computedReport['evaluations'][0]['group_id'] . '_' . $computedReport['evaluations'][0]['school_year'] . '_' . $computedReport['evaluations'][0]['school_period'] . '_' . $computedReport['evaluations'][0]['subject'];
 					$newReport = NoteLink::instanciate($computedReport['evaluations'][0]['account_id'], $existingReports[$existingReportKey]['id']);
 					$result['duplicate_or_missing_report'][$computedKey]['report_id'] = $newReport->note_id;
 					$newReport->add();
