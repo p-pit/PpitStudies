@@ -5615,7 +5615,7 @@ table.note-report tr.period {
 
 	'note_link/generic/property/assessment' => [
 		'definition' => 'inline',
-		'type' => 'input',
+		'type' => 'textarea',
 		'labels' => ['default' => 'Commentaire'],
 	],
 
