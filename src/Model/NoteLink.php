@@ -527,7 +527,7 @@ class NoteLink
 					if (strlen($value) > 255) $errors[$propertyId] = "$propertyId should not be longer than 255 characters";
 				}
 				elseif (in_array($property['type'], ['textarea', 'log'])) {
-					$maxLength = (array_key_exists('max_length', $property)) ? $property['max_length'] : 2047;
+					$maxLength = (array_key_exists('max_length', $property)) ? $property['max_length'] : 32767;
 					if (strlen($value) > $maxLength) $errors[$propertyId] = "$propertyId should not be longer than $maxLength characters";
 				}
 	
