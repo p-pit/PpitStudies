@@ -257,10 +257,10 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
   <?php if ($context->getConfig('note/property/value')['type'] == 'number') : ?>
 				<input class="form-control form-control-sm update_input update_input_text" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$noteLink['value'].'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> />
   <?php else : ?>
-                <select class="form-control form-control-sm update_input update_input_select" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?> <?php if ($isDisabled) echo 'disabled="disabled"'?>>
+                <select class="form-control form-control-sm update_input update_input_select" id="value-<?php echo $noteLink['account_id'] ?>" placeholder="<?php echo $this->translate((in_array($content['type'], ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink['value'] !== null) echo 'value="'.$context->formatFloat($noteLink['value'], 2).'"' ?> <?php if ($isDisabled || $content['type'] == 'report') echo 'disabled="disabled"' ?>>
                   <option value=""></option>
   <?php foreach ($context->getConfig('note/property/value')['modalities'] as $modalityId => $modality) : ?>
-                  <option value="<?php echo $modalityId ?>" <?php if ($noteLink['value'] === $modalityId) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
+                  <option value="<?php echo $modalityId ?>" <?php if ($noteLink['value'] !== NULL && $noteLink['value'] == $modality['value']) echo 'selected="selected"' ?>><?php echo $context->localize($modality) ?></option>
   <?php endforeach;?>
                 </select>
   <?php endif;?>
