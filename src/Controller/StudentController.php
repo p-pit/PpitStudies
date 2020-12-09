@@ -1393,7 +1393,7 @@ class StudentController extends AbstractActionController
     	$account_id = (int) $this->params()->fromRoute('id');
     	$account = Account::get($account_id);
 
-    	$periods = $this->getReport($account, true);
+    	$periods = $this->getReport($account, false);
 
     	foreach ($periods as $periodId => $period) {
 
