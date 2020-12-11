@@ -30,6 +30,7 @@ class NoteLink
 			'distribution' => 		['entity' => 'student_note_link', 'column' => 'distribution'],
 			'evaluation' => 		['entity' => 'student_note_link', 'column' => 'evaluation'],
 			'assessment' => 		['entity' => 'student_note_link', 'column' => 'assessment'],
+			'class' => 				['entity' => 'student_note_link', 'column' => 'class'],
 			'distribution' => 		['entity' => 'student_note_link', 'column' => 'distribution'],
 			'update_time' => 		['entity' => 'student_note_link', 'column' => 'update_time'],
 			'place_id' => 			['entity' => 'core_account', 'column' => 'place_id'],
@@ -42,7 +43,8 @@ class NoteLink
 			'type' => 				['entity' => 'student_note', 'column' => 'type'],
 			'school_year' => 		['entity' => 'student_note', 'column' => 'school_year'],
 			'level' => 				['entity' => 'student_note', 'column' => 'level'],
-			'class' => 				['entity' => 'student_note', 'column' => 'class'], // Deprecated
+//			'class' => 				['entity' => 'student_note', 'column' => 'class'], // Deprecated
+			'class' => 				['entity' => 'student_note_link', 'column' => 'class'], // Deprecated
 			'group_id' => 			['entity' => 'student_note', 'column' => 'group_id'],
 			'school_period' => 		['entity' => 'student_note', 'column' => 'school_period'],
 			'subject' => 			['entity' => 'student_note', 'column' => 'subject'],
@@ -198,6 +200,7 @@ class NoteLink
     public $distribution;
     public $evaluation;
     public $assessment;
+    public $class;
     public $audit;
     public $update_time;
 
@@ -215,7 +218,6 @@ class NoteLink
     public $school_year;
     public $level;
     public $group_id;
-    public $class;
     public $school_period;
     public $subject;
     public $teacher_id;
@@ -254,6 +256,7 @@ class NoteLink
         $this->distribution = (isset($data['distribution'])) ? json_decode($data['distribution'], true) : array();
         $this->evaluation = (isset($data['evaluation'])) ? $data['evaluation'] : null;
         $this->assessment = (isset($data['assessment'])) ? $data['assessment'] : null;
+        $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->audit = (isset($data['audit'])) ? json_decode($data['audit'], true) : null;
         
         // Joined properties
@@ -270,7 +273,6 @@ class NoteLink
         $this->school_year = (isset($data['school_year'])) ? $data['school_year'] : null;
         $this->level = (isset($data['level'])) ? $data['level'] : null;
         $this->group_id = (isset($data['group_id'])) ? $data['group_id'] : null;
-        $this->class = (isset($data['class'])) ? $data['class'] : null;
         $this->school_period = (isset($data['school_period'])) ? $data['school_period'] : null;
         $this->subject = (isset($data['subject'])) ? $data['subject'] : null;
         $this->teacher_id = (isset($data['teacher_id'])) ? $data['teacher_id'] : null;
@@ -300,6 +302,7 @@ class NoteLink
     	$data['distribution'] = $this->distribution;
     	$data['evaluation'] = $this->evaluation;
     	$data['assessment'] = $this->assessment;
+    	$data['class'] =  $this->class;
     	$data['audit'] =  $this->audit;
 
     	$data['place_id'] = (int) $this->place_id;
@@ -315,7 +318,6 @@ class NoteLink
     	$data['school_year'] =  $this->school_year;
     	$data['level'] =  $this->level;
     	$data['group_id'] =  $this->group_id;
-    	$data['class'] =  $this->class;
     	$data['school_period'] =  $this->school_period;
     	$data['subject'] =  $this->subject;
     	$data['teacher_id'] =  $this->teacher_id;
@@ -351,7 +353,7 @@ class NoteLink
     	unset($data['school_year']);
     	unset($data['level']);
     	unset($data['group_id']);
-    	unset($data['class']); // Deprecated
+//    	unset($data['class']); // Deprecated
     	unset($data['school_period']);
     	unset($data['subject']);
     	unset($data['teacher_id']);
@@ -373,7 +375,7 @@ class NoteLink
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
     		->order(array($major.' '.$dir, 'name ASC', 'type ASC'))
-    		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id' , 'class', 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
+    		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id'/*, 'class'*/, 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
     		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7'), 'left')
     		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('n_fn'), 'left');
@@ -430,7 +432,7 @@ class NoteLink
     	$noteLink->type = $note->type;
     	$noteLink->school_year = $note->school_year;
     	$noteLink->level = $note->level;
-    	$noteLink->class = $note->class;
+//    	$noteLink->class = $note->class;
     	$noteLink->school_period = $note->school_period;
     	$noteLink->subject = $note->subject;
     	$noteLink->n_fn = $account->n_fn;
@@ -451,7 +453,7 @@ class NoteLink
     {
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
-	    	->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
+	    	->join('student_note', 'student_note_link.note_id = student_note.id', array('note_status' => 'status', 'type', 'school_year', 'level'/*, 'class'*/, 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
 	    	->order(array('date DESC', 'subject ASC'));
     	$where = new Where;
     	$where->notEqualTo('student_note.status', 'deleted');
