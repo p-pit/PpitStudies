@@ -325,6 +325,7 @@ class NoteLinkController extends AbstractActionController
 			$filters = ['category' => $category];
 			foreach ($context->getConfig() as $propertyId => $property) {
 				$value = $this->params()->fromQuery($propertyId, null);
+				if ($propertyId == 'name') $propertyId = 'n_fn';
 				if ($value !== null) $filters[$propertyId] = $value;
 			}
 			$notes = NoteLink::GetList('note', $filters, 'subject', 'ASC', 'search');
