@@ -197,25 +197,29 @@ function getGroup(ids) {
 }
 
 function postNoteLinkUpdate(id, panel) {
-  let xhttp = new XMLHttpRequest(), route = '<?php echo $this->url('noteLink/update') ?>/' + id;
-  let formData = new FormData();
-  formData.append('date', $('#date').val());
-  formData.append('mention', $('#mention').val());
-  formData.append('assessment', $('#assessment').val());
-
-  xhttp.open('POST', route, true);
-  xhttp.onreadystatechange = function() {
-    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-    if (xhttp.readyState == 4) {
-      if (xhttp.status == 200) {
-        $('#' + panel).html(xhttp.responseText);
-      }
-      else {
-        toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
+  var form = document.getElementById('note-evaluation-form');
+  form.onsubmit = function(event) {
+    event.preventDefault();
+    let xhttp = new XMLHttpRequest(), route = '<?php echo $this->url('noteLink/update') ?>/' + id;
+    let formData = new FormData();
+    formData.append('date', encodeDate($('#date').val()));
+    formData.append('mention', $('#mention').val());
+    formData.append('assessment', $('#assessment').val());
+  
+    xhttp.open('POST', route, true);
+    xhttp.onreadystatechange = function() {
+      if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+      if (xhttp.readyState == 4) {
+        if (xhttp.status == 200) {
+          $('#' + panel).html(xhttp.responseText);
+        }
+        else {
+          toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
+        }
       }
     }
+    xhttp.send(formData);
   }
-  xhttp.send(formData);
 }
 
 function getNoteLinkUpdate(id, panel) {
