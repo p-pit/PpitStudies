@@ -121,7 +121,7 @@ table td {
 				$average = $averages[$link['school_year'] . '_' . $link['school_period'] . '_' . $link['account_id'] . '_' . $link['subject']];
 				$average = $context->formatFloat($average['num'] / $average['den'] * $averageReference, 2);
             }
-            else $average = 'Non noté';
+            else $average = 'Non calculé';
 			?>
             <?php echo $average ?>
           <?php endif;?>

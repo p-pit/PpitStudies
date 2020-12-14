@@ -320,7 +320,7 @@ class NoteLinkController extends AbstractActionController
 		$order = $this->params()->fromQuery('order', '-date');
 		
 		// Compute the average
-		if ($type == 'report') {
+		if ($type == 'report' && ($this->params()->fromQuery('name', null) || $this->params()->fromQuery('n_fn', null))) {
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			$filters = ['category' => $category];
 			foreach ($context->getConfig() as $propertyId => $property) {
