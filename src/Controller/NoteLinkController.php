@@ -358,8 +358,10 @@ class NoteLinkController extends AbstractActionController
 						'den' => 0
 					];
 				}
-				$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['num'] += $average['num'] / $average['den'] * $averageReference;
-				$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['den'] += $averageReference;
+				if ($average['den']) {
+					$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['num'] += $average['num'] / $average['den'] * $averageReference;
+					$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['den'] += $averageReference;
+				}
 			}
 			$averages = array_merge($averages, $globalAverages);
 		}
