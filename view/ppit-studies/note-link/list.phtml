@@ -90,7 +90,7 @@ table td {
 <?php endif;?>
 
       <td style="text-align: center">
-        <button type="button" class="btn btn-sm btn-outline-primary index-btn noteLink-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $link['note_id'] ?>">
+        <button type="button" class="btn btn-sm btn-outline-primary index-btn noteLink-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo ($type == 'report') ? $link['id'] : $link['note_id'] ?>">
           <i class="fas fa-search" id="group-glyphicon"></i>
         </button>
       </td>
@@ -105,12 +105,25 @@ table td {
     
         <?php elseif ($propertyId == 'value') : ?>
         <td>  
-          <?php if (true) : //$content['config']['list']['value']['type'] == 'number') : ?>
-		  <?php echo ($link['value'] !== null) ? $link['value'] : 'Non noté' ?>
+          <?php if ($type == 'note') : ?>
+            <?php if ($content['config']['list']['value']['type'] == 'number') : ?>
+	     	  <?php echo ($link['value'] !== null) ? $link['value'] : 'Non noté' ?>
 
-          <?php else : ?>
-            <?php echo $context->localize($content['config']['list']['value']['modalities'][sprintf($link['value'])]) ?>
+            <?php else : ?>
+              <?php echo $context->localize($content['config']['list']['value']['modalities'][sprintf($link['value'])]) ?>
             
+            <?php endif;?>
+          
+          <?php else : ?>
+            <?php 
+	    	$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+            if (array_key_exists($link['school_year'] . '_' . $link['school_period'] . '_' . $link['account_id'] . '_' . $link['subject'], $averages)) {
+				$average = $averages[$link['school_year'] . '_' . $link['school_period'] . '_' . $link['account_id'] . '_' . $link['subject']];
+				$average = $context->formatFloat($average['num'] / $average['den'] * $averageReference, 1);
+            }
+            else $average = 'Non noté';
+			?>
+            <?php echo $average ?>
           <?php endif;?>
         </td>
     

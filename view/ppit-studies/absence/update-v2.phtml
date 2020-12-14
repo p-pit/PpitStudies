@@ -126,7 +126,7 @@ if ($absence->id && $action != 'update' || $message == 'OK') $isDisabled = true;
 
 <!-- Evaluation period -->
 		<div class="form-group row" id="school_period_group">
-			<label class="col-sm-5 col-form-label col-form-label-sm">* <?php echo $context->localize($context->getConfig('student/property/school_period')['labels']) ?></label>
+			<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $context->localize($context->getConfig('student/property/school_period')['labels']) ?></label>
 			<div class="col-sm-7">
 				<select class="form-control form-control-sm" id="school_period" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
 					<option />

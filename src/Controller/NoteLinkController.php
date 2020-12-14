@@ -6,9 +6,11 @@ use PpitCore\Model\Account;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Place;
+use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
+use Zend\Db\Sql\Where;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -316,12 +318,59 @@ class NoteLinkController extends AbstractActionController
 		$type = $this->params()->fromRoute('type');
 		$content = $this->getList();
 		$order = $this->params()->fromQuery('order', '-date');
-
+		
+		// Compute the average
+		if ($type == 'report') {
+			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			$filters = ['category' => $category];
+			foreach ($context->getConfig() as $propertyId => $property) {
+				$value = $this->params()->fromQuery($propertyId, null);
+				if ($value !== null) $filters[$propertyId] = $value;
+			}
+			$notes = NoteLink::GetList('note', $filters, 'subject', 'ASC', 'search');
+			$averages = [];
+			foreach ($notes as $link) {
+				if (!array_key_exists($link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject, $averages)) {
+					$averages[$link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject] = [
+						'school_year' => $link->school_year,
+						'school_period' => $link->school_period,
+						'account_id' => $link->account_id,
+						'subject' => $link->subject,
+						'num' => 0,
+						'den' => 0
+					];
+				}
+				if ($link->value !== null) {
+					$averages[$link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject]['num'] += $link->value * $link->weight;
+					$averages[$link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject]['den'] += $link->reference_value * $link->weight;
+				}
+			}
+	    	$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			$globalAverages = [];
+			foreach ($averages as $averageKey => $average) {
+				if (!array_key_exists($average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global', $globalAverages)) {
+					$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global'] = [
+						'school_year' => $average['school_year'],
+						'school_period' => $average['school_period'],
+						'account_id' => $average['account_id'],
+						'subject' => 'global',
+						'num' => 0,
+						'den' => 0
+					];
+				}
+				$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['num'] += $average['num'] / $average['den'] * $averageReference;
+				$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['den'] += $averageReference;
+			}
+			$averages = array_merge($averages, $globalAverages);
+		}
+		else $averages = NULL;
+		
 		$view = new ViewModel(array(
 			'context' => $context,
 			'category' => $category,
 			'type' => $type,
 			'content' => $content,
+			'averages' => $averages,
 			'statusCode' => $this->response->getStatusCode(),
 			'reasonPhrase' => $this->response->getReasonPhrase(),
 			'order' => $order,
@@ -391,6 +440,101 @@ class NoteLinkController extends AbstractActionController
     		'myGroups' => $myGroups,
 			'noteLinks' => $noteLinks,
 			'teachers' => $teachers,
+		));
+		$view->setTerminal(true);
+		return $view;
+	}
+
+	public function updateAction()
+	{
+		$context = Context::getCurrent();
+		$request = ($this->getRequest()->isPost()) ? 'POST' : (($this->getRequest()->isDelete()) ? 'DELETE' : 'GET');
+		$id = $this->params()->fromRoute('id');
+		if (!$id) $this->redirect()->toRoute('home');
+		$noteLink = NoteLink::get($id);
+		$place = Place::get($noteLink->place_id);
+		
+		// Compute the average
+	    $averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+		$notes = NoteLink::GetList('note', ['school_year' => $noteLink->school_year, 'school_period' => $noteLink->school_period, 'account_id' => $noteLink->account_id], 'subject', 'ASC', 'search');
+		$averages = [];
+		foreach ($notes as $link) {
+			if (!array_key_exists($link->subject, $averages)) $averages[$link->subject] = [0, 0];
+			if ($link->value !== null) {
+				$averages[$link->subject][0] += $link->value * $link->weight;
+				$averages[$link->subject][1] += $link->reference_value * $link->weight;
+			}
+		}
+		$globalAverage = [0, 0];
+		foreach ($averages as $averageKey => $average) {
+			$globalAverage[0] += $average[0] / $average[1] * $averageReference;
+			$globalAverage[1] += $averageReference;
+		}
+		$averages['global'] = $globalAverage;
+		
+		// Retrieve the teachers
+		$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
+		$where = new Where;
+		$where->notEqualTo('status', 'deleted');
+		$where->like('roles', '%teacher%');
+		$select->where($where);
+		$cursor = Vcard::getTable()->selectWith($select);
+		$contact = null;
+		$teachers = array();
+		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;
+
+		// Retrieve the subject list. As a teacher my subject list is restricted according to my competences
+		$subjects = [];
+		foreach ($place->getConfig('student/property/school_subject')['modalities'] as $subjectId => $subject) {
+			if (!array_key_exists('archive', $subject) || !$subject['archive']) {
+				if ($context->hasRole('manager')) $subjects[$subjectId] = $subject;
+				else {
+					$subjects[$subjectId] = $subject;
+				}
+			}
+		}
+		
+		if ($request == 'POST') {
+			$data = [];
+			$data['assessment'] = $this->getRequest()->getPost('assessment');
+			$data['evaluation'] = $this->getRequest()->getPost('mention');
+			$data['date'] = $this->getRequest()->getPost('date');
+			$rc = $noteLink->loadData($data);
+			if ($rc != 'OK') {
+				$this->response->setStatusCode('409');
+				$this->response->setReasonPhrase($rc);
+			}
+			else {
+			
+				// Atomically save
+				$connection = NoteLink::getTable()->getAdapter()->getDriver()->getConnection();
+				$connection->beginTransaction();
+				try {
+					$update_time = $this->request->getPost('update_time');
+					$noteLink->update($update_time);
+					$connection->commit();
+					$this->response->setStatusCode('200');
+				}
+				catch (\Exception $e) {
+					$connection->rollback();
+					$this->response->setStatusCode('409');
+					$this->response->setReasonPhrase('Exception: ' . $e);
+					return null;
+				}
+			}
+		}
+		
+		$view = new ViewModel(array(
+			'context' => $context,
+			'request' => ($this->getRequest()->isPost()) ? 'POST' : (($this->getRequest()->isDelete()) ? 'DELETE' : 'GET'),
+			'noteLink' => $noteLink,
+    		'places' => Place::getList([]),
+    		'teachers' => $teachers,
+			'subjects' => $subjects,
+			'averages' => $averages,
+			'indicators' => NULL,
+			'statusCode' => $this->response->getStatusCode(),
+			'reasonPhrase' => $this->response->getReasonPhrase(),
 		));
 		$view->setTerminal(true);
 		return $view;

@@ -519,6 +519,15 @@ return array_merge(
 							],
 						],
 					],
+	       			'update' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/update[/:id]',
+							'defaults' => [
+								'action' => 'update',
+							],
+						],
+					],
 	       			'v1' => [
 						'type' => 'segment',
 						'options' => [
@@ -1057,6 +1066,7 @@ return array_merge(
 				array('route' => 'noteLink/list', 'roles' => array('manager', 'coach')),
 				array('route' => 'noteLink/studentList', 'roles' => array('manager', 'coach')),
 				array('route' => 'noteLink/group', 'roles' => array('manager', 'coach')),
+				array('route' => 'noteLink/update', 'roles' => array('manager')),
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
 				array('route' => 'noteLink/repair', 'roles' => array('admin')),
 				
@@ -2969,7 +2979,7 @@ return array_merge(
 	'core_account/p-pit-studies' => array(
 		'properties' => array(
 			'title_1', 'title_2', 'title_3', 'status', 'state', 'place_id', 'owner_id', 'identifier', 'name', 'email_work', 'photo_link_id', 'basket',
-			'contact_1_id', 'n_title', 'n_first', 'n_last', 'n_fn', 'email', 'tel_work', 'tel_cell',
+			'contact_1_id', 'contact_2_id', 'n_title', 'n_first', 'n_last', 'n_fn', 'email', 'tel_work', 'tel_cell',
 			'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'birth_date', 'gender', 'nationality',
 			'contact_2_role', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
 			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',

@@ -428,6 +428,7 @@ class NoteLink
     	$note = Note::get($noteLink->note_id);
     	$account = Account::get($noteLink->account_id);
     	$noteLink->status = $note->status;
+    	$noteLink->place_id = $note->place_id;
     	$noteLink->category = $note->category;
     	$noteLink->type = $note->type;
     	$noteLink->school_year = $note->school_year;

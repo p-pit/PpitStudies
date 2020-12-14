@@ -195,6 +195,50 @@ function getGroup(ids) {
   };
   xhttp.send();
 }
+
+function postNoteLinkUpdate(id, panel) {
+  let xhttp = new XMLHttpRequest(), route = '<?php echo $this->url('noteLink/update') ?>/' + id;
+  let formData = new FormData();
+  formData.append('date', $('#date').val());
+  formData.append('mention', $('#mention').val());
+  formData.append('assessment', $('#assessment').val());
+
+  xhttp.open('POST', route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        $('#' + panel).html(xhttp.responseText);
+      }
+      else {
+        toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
+      }
+    }
+  }
+  xhttp.send(formData);
+}
+
+function getNoteLinkUpdate(id, panel) {
+  let xhttp = new XMLHttpRequest(), route = '<?php echo $this->url('noteLink/update') ?>/' + id;
+
+  xhttp.open('GET', route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        $('#' + panel).html(xhttp.responseText);
+        $('#date').datepicker(); 
+        $('.noteLink_update_submit_button').click(function () { 
+          postNoteLinkUpdate(id, panel);
+        });
+      }
+      else {
+        toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
+      }
+    }
+  }
+  xhttp.send();
+}
  
 // Load the list
 function getNoteLinkList(params) {		
@@ -228,8 +272,15 @@ function getNoteLinkList(params) {
       // Connect the detail anchors
       $('.noteLink-detail-anchor').click(function () {
         var id = $(this).attr('id').split('_')[1];
-        if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
-        else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(),  id, 'note-update-panel');
+<?php if ($category == 'homework') : ?>
+        getNoteUpdate(id);
+<?php elseif ($category == 'evaluation') : ?>
+  <?php if ($type == 'note') : ?>
+        getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(),  id, 'note-update-panel');
+  <?php else : ?>
+        getNoteLinkUpdate(id, 'note-update-panel');
+  <?php endif;?>
+<?php endif;?>
         $(this).removeClass("btn-outline-primary").addClass("btn-primary");
         $('#modalForm').modal('toggle');
       });
