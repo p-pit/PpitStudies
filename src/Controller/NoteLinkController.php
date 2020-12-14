@@ -366,7 +366,7 @@ class NoteLinkController extends AbstractActionController
 			}
 			$averages = array_merge($averages, $globalAverages);
 		}
-		else $averages = NULL;
+		else $averages = [];
 		
 		$view = new ViewModel(array(
 			'context' => $context,
