@@ -235,7 +235,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
     if (!array_key_exists($noteLink->subject, $averages)) $average = 'Non noté';
     else {
 	    $averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
-    	$average = round($averages[$noteLink->subject][0] / $averages[$noteLink->subject][1] * $averageReference, 1);
+    	$average = round($averages[$noteLink->subject][0] / $averages[$noteLink->subject][1] * $averageReference, 2);
     }
     ?>
         <input class="form-control form-control-sm" value="<?php echo $average ?>" disabled="disabled" />
