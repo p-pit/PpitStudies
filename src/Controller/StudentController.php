@@ -1549,10 +1549,12 @@ class StudentController extends AbstractActionController
     		}
     	}
     	foreach ($cursor as $noteLink) {
-    		$notesAccount[$noteLink->note_id]->sum += $noteLink->value;
-    		$notesAccount[$noteLink->note_id]->number++;
-    		if ($noteLink->value < $notesAccount[$noteLink->note_id]->min) $notesAccount[$noteLink->note_id]->min = $noteLink->value;
-    		if ($noteLink->value > $notesAccount[$noteLink->note_id]->max) $notesAccount[$noteLink->note_id]->max = $noteLink->value;
+    		if (array_key_exists($noteLink->note_id, $notesAccount)) {
+	    		$notesAccount[$noteLink->note_id]->sum += $noteLink->value;
+	    		$notesAccount[$noteLink->note_id]->number++;
+	    		if ($noteLink->value < $notesAccount[$noteLink->note_id]->min) $notesAccount[$noteLink->note_id]->min = $noteLink->value;
+	    		if ($noteLink->value > $notesAccount[$noteLink->note_id]->max) $notesAccount[$noteLink->note_id]->max = $noteLink->value;
+    		}
     	}
     	
     	if ($category == 'report' && $account->groups) {
