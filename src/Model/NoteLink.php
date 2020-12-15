@@ -427,6 +427,7 @@ class NoteLink
     {
     	$noteLink = NoteLink::getTable()->get($id, $column);
     	$note = Note::get($noteLink->note_id);
+    	$noteLink->note = $note;
     	$account = Account::get($noteLink->account_id);
     	$noteLink->status = $note->status;
     	$noteLink->place_id = $note->place_id;

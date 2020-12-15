@@ -501,14 +501,18 @@ class NoteLinkController extends AbstractActionController
 			$data = [];
 			$data['assessment'] = $this->getRequest()->getPost('assessment');
 			$data['evaluation'] = $this->getRequest()->getPost('mention');
-			$data['date'] = $this->getRequest()->getPost('date');
 			$rc = $noteLink->loadData($data);
 			if ($rc != 'OK') {
 				$this->response->setStatusCode('409');
 				$this->response->setReasonPhrase($rc);
 			}
 			else {
-			
+
+				if ($this->getRequest()->getPost('date')) {
+					$noteLink->note->date = $this->getRequest()->getPost('date');
+					$noteLink->note->update(null);
+				}
+				
 				// Atomically save
 				$connection = NoteLink::getTable()->getAdapter()->getDriver()->getConnection();
 				$connection->beginTransaction();

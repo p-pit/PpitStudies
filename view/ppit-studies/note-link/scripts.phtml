@@ -279,11 +279,11 @@ function getNoteLinkList(params) {
 <?php if ($category == 'homework') : ?>
         getNoteUpdate(id);
 <?php elseif ($category == 'evaluation') : ?>
-  <?php if ($type == 'note') : ?>
-        getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(),  id, 'note-update-panel');
-  <?php else : ?>
-        getNoteLinkUpdate(id, 'note-update-panel');
-  <?php endif;?>
+console.log(id);
+        if ('<?php echo $type ?>' == 'note' || id == 0) {
+          getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(),  id, 'note-update-panel');
+        }
+        else getNoteLinkUpdate(id, 'note-update-panel');
 <?php endif;?>
         $(this).removeClass("btn-outline-primary").addClass("btn-primary");
         $('#modalForm').modal('toggle');
