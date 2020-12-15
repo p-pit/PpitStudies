@@ -1308,16 +1308,30 @@ class StudentController extends AbstractActionController
     	$mock = $this->params()->fromRoute('mock');
     
     	$periods = array();
-    	$params = array('account_id' => $account->id, 'school_year' => $school_year/*, 'school_period' => $school_period*/);
+    	$params = array(/*'account_id' => $account->id, */'school_year' => $school_year/*, 'school_period' => $school_period*/);
     	if ($mock) $params['level'] = "mock";
-    	$notes = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
-    	foreach($notes as $note) {
-    		$key = $note->school_year.'.'.$note->school_period;
-    		if (!array_key_exists($key, $periods)) $periods[$key] = array();
-    		$periods[$key][] = $note;
+    	$noteLinks = NoteLink::GetList('note', $params, 'date', 'DESC', 'search');
+    	foreach($noteLinks as $noteLink) {
+	    	$key = $noteLink->school_year.'.'.$noteLink->school_period;
+	    	if (!array_key_exists($key, $periods)) $periods[$key] = array();
+    		if ($noteLink->account_id == $account->id) {
+    			$noteLink->sum = 0;
+    			$noteLink->number = 0;
+    			$noteLink->min = 100;
+    			$noteLink->max = 0;
+    			$periods[$key][$noteLink->note_id] = $noteLink;
+    		}
     	}
     	krsort($periods);
-    
+
+    	foreach($noteLinks as $noteLink) {
+    		$key = $noteLink->school_year.'.'.$noteLink->school_period;
+    		$periods[$key][$noteLink->note_id]->sum += $noteLink->value;
+    		$periods[$key][$noteLink->note_id]->number ++;
+    		if ($noteLink->value < $periods[$key][$noteLink->note_id]->min) $periods[$key][$noteLink->note_id]->min = $noteLink->value;
+    		if ($noteLink->value > $periods[$key][$noteLink->note_id]->max) $periods[$key][$noteLink->note_id]->max = $noteLink->value;
+    	}
+    	 
     	// Return the link list
     	$view = new ViewModel(array(
     		'context' => $context,
@@ -1520,9 +1534,24 @@ class StudentController extends AbstractActionController
     	}
     	else $averages = null;
 
-    	$params = array('school_year' => $school_year, 'school_period' => $school_period, 'account_id' => $account_id);
+    	$params = array('school_year' => $school_year, 'school_period' => $school_period/*, 'account_id' => $account_id*/);
     	if ($level) $params['level'] = $level;
-    	$notesAccount = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+    	$cursor = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
+    	foreach ($cursor as $noteLink) {
+    		if ($noteLink->account_id == $account_id) {
+    			$notesAccount[$noteLink->note_id] = $noteLink;
+    			$noteLink->sum = 0;
+    			$noteLink->number = 0;
+    			$noteLink->min = 100;
+    			$noteLink->max = 0;
+    		}
+    	}
+    	foreach ($cursor as $noteLink) {
+    		$notesAccount[$noteLink->note_id]->sum += $noteLink->value;
+    		$notesAccount[$noteLink->note_id]->number++;
+    		if ($noteLink->value < $notesAccount[$noteLink->note_id]->min) $notesAccount[$noteLink->note_id]->min = $noteLink->value;
+    		if ($noteLink->value > $notesAccount[$noteLink->note_id]->max) $notesAccount[$noteLink->note_id]->max = $noteLink->value;
+    	}
     	
     	if ($category == 'report' && $account->groups) {
     		$params = array('school_year' => $school_year, 'school_period' => $school_period, 'place_id' => $account->place_id, 'group_id' => $account->groups);

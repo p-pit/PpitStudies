@@ -64,9 +64,9 @@ class PdfEvaluationTableViewHelper
 		   				$caption,
 		   				$context->formatFloat($evaluation->weight, 1),
 		   				$value,
-		   				$context->formatFloat($evaluation->higher_note, 2),
-		   				$context->formatFloat($evaluation->average_note, 2),
-						$context->formatFloat($evaluation->lower_note, 2),
+		   				$context->formatFloat($evaluation->max, 2),
+		   				$context->formatFloat($evaluation->sum / $evaluation->number, 2),
+						$context->formatFloat($evaluation->min, 2),
 						$context->decodeDate($evaluation->date)/*,
 						$evaluation->assessment*/
 		   		);
