@@ -323,7 +323,6 @@ class NoteLinkController extends AbstractActionController
 		$filters = [];
 		foreach (NoteLink::getConfig() as $propertyId => $property) {
 			$value = $this->params()->fromQuery($propertyId, null);
-			if ($propertyId == 'name') $propertyId = 'n_fn';
 			if ($value !== null) $filters[$propertyId] = $value;
 		}
 		if ($type == 'report' && $filters) {
