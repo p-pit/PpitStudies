@@ -1325,11 +1325,13 @@ class StudentController extends AbstractActionController
     	krsort($periods);
 
     	foreach($noteLinks as $noteLink) {
-    		$key = $noteLink->school_year.'.'.$noteLink->school_period;
-    		$periods[$key][$noteLink->note_id]->sum += $noteLink->value;
-    		$periods[$key][$noteLink->note_id]->number ++;
-    		if ($noteLink->value < $periods[$key][$noteLink->note_id]->min) $periods[$key][$noteLink->note_id]->min = $noteLink->value;
-    		if ($noteLink->value > $periods[$key][$noteLink->note_id]->max) $periods[$key][$noteLink->note_id]->max = $noteLink->value;
+    		if (array_key_exists($noteLink->note_id, $periods[$key])) {
+	    		$key = $noteLink->school_year.'.'.$noteLink->school_period;
+    			$periods[$key][$noteLink->note_id]->sum += $noteLink->value;
+    			$periods[$key][$noteLink->note_id]->number ++;
+    			if ($noteLink->value < $periods[$key][$noteLink->note_id]->min) $periods[$key][$noteLink->note_id]->min = $noteLink->value;
+	    		if ($noteLink->value > $periods[$key][$noteLink->note_id]->max) $periods[$key][$noteLink->note_id]->max = $noteLink->value;
+    		}
     	}
     	 
     	// Return the link list
