@@ -304,6 +304,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 				<div class="col-sm-5">&nbsp;</div>
 				<div class="col-sm-7">
 					<input type="submit" class="noteLink_update_submit_button btn btn-warning" value="<?php echo $this->translate('Update', 'ppit-core', $context->getLocale()) ?>" />
+                    <button type="button" class="noteLink_update_delete_button btn btn-outline-primary" data-toggle="tooltip" title="<?php echo $this->translate('Delete', 'ppit-core', $context->getLocale()) ?>"><i class="fa fa-trash-alt"></i></button>
 				</div>
 			</div>
 <?php endif;?>

@@ -529,6 +529,11 @@ class NoteLinkController extends AbstractActionController
 				}
 			}
 		}
+
+		if ($request == 'DELETE') {
+			$noteLink->delete(null);
+			$this->response->setStatusCode('200');
+		}
 		
 		$view = new ViewModel(array(
 			'context' => $context,

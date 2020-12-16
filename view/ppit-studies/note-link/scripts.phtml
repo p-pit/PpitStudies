@@ -222,6 +222,24 @@ function postNoteLinkUpdate(id, panel) {
   }
 }
 
+function deleteNoteLinkUpdate(id, panel) {
+    let xhttp = new XMLHttpRequest(), route = '<?php echo $this->url('noteLink/update') ?>/' + id;
+  
+    xhttp.open('DELETE', route, true);
+    xhttp.onreadystatechange = function() {
+      if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+      if (xhttp.readyState == 4) {
+        if (xhttp.status == 200) {
+          $('#' + panel).html(xhttp.responseText);
+        }
+        else {
+          toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
+        }
+      }
+    }
+    xhttp.send();
+}
+
 function getNoteLinkUpdate(id, panel) {
   let xhttp = new XMLHttpRequest(), route = '<?php echo $this->url('noteLink/update') ?>/' + id;
 
@@ -234,6 +252,15 @@ function getNoteLinkUpdate(id, panel) {
         $('#date').datepicker(); 
         $('.noteLink_update_submit_button').click(function () { 
           postNoteLinkUpdate(id, panel);
+        });
+
+        $('.noteLink_update_delete_confirmation').hide();
+        $('.noteLink_update_delete_button').click(function () { 
+          $('.noteLink_update_delete_confirmation').show();
+          $('.noteLink_update_delete_button').removeClass('btn-outline-primary').addClass('btn-danger').unbind();
+	      $('.noteLink_update_delete_button').click(function () { 
+	        deleteNoteLinkUpdate(id, panel);
+	      });
         });
       }
       else {
