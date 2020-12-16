@@ -24,7 +24,7 @@ class PdfReportTableViewHelper
 		return call_user_func_array('sprintf', $arguments);
 	}
 
-	public static function render($period, $category = 'report')
+	public static function render($period, $category = 'report', $orderedSubjects = [])
     {
     	// Retrieve the context
     	$context = Context::getCurrent();
@@ -35,45 +35,42 @@ class PdfReportTableViewHelper
 	    $color = 0;
 	    $globalEvaluation = '';
 	    $globalAverage = null;
-	    foreach ($period as $evaluation) {
-/*	    	if ($category == 'note' && $evaluation->level) $distribution = $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level]).'&nbsp;'.$context->decodeDate($evaluation->date);
-    		else {
-		   		$distribution = array();
-		   		foreach ($evaluation->distribution as $category => $value) {
-		   			if ($category && $category != 'global') {
-		   				$distribution[] = $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$category]).':&nbsp;'.$context->formatFloat($value, 2);
-		   			}
-		   		}
-		   		$distribution = implode('<br>', $distribution);
-    		}*/
-    		if ($evaluation->subject == 'global') $globalAverage = $evaluation;
-    		else {
-    			$subject = (!$evaluation->subject) ? '' : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject]);
-	    		if ($evaluation->value === null) $note = $translator->translate('Not eval.', 'ppit-studies', $context->getLocale());
+
+	    $evaluations = [];
+	    foreach ($orderedSubjects as $subject) $evaluations[$subject] = null;
+	    foreach ($period as $evaluation) $evaluations[$evaluation->subject] = $evaluation;
+	    	 
+	    foreach ($evaluations as $evaluation) {
+	    	if ($evaluation) {
+	    		if ($evaluation->subject == 'global') $globalAverage = $evaluation;
 	    		else {
-	    			$score = null;
-	    			if (array_key_exists('segmentation', $context->getConfig('student/parameter/average_computation'))) {
-		    			foreach ($context->getConfig('student/parameter/average_computation')['segmentation'] as $score => $ceiling) {
-		    				if ($ceiling >= $evaluation->value) break;
-		    			}
+	    			$subject = (!$evaluation->subject) ? '' : $context->localize($context->getConfig('student/property/school_subject')['modalities'][$evaluation->subject]);
+		    		if ($evaluation->value === null) $note = $translator->translate('Not eval.', 'ppit-studies', $context->getLocale());
+		    		else {
+		    			$score = null;
+		    			if (array_key_exists('segmentation', $context->getConfig('student/parameter/average_computation'))) {
+			    			foreach ($context->getConfig('student/parameter/average_computation')['segmentation'] as $score => $ceiling) {
+			    				if ($ceiling >= $evaluation->value) break;
+			    			}
+			    		}
+		    			$note = $context->formatFloat($evaluation->value, 2);
+			    		if ($evaluation->reference_value != 20) $note .= '/'.$context->formatFloat($evaluation->reference_value, 0);
+		    			if ($score) $note = $score .' ('.$note.')';
 		    		}
-	    			$note = $context->formatFloat($evaluation->value, 2);
-		    		if ($evaluation->reference_value != 20) $note .= '/'.$context->formatFloat($evaluation->reference_value, 0);
-	    			if ($score) $note = $score .' ('.$note.')';
+			   		$rows.= sprintf(
+			   				$context->getConfig('student/report/detailRow')['html'], 
+			   				(($color) ? 'style="background-color: #EEE"' : ''),
+			   				$subject,
+							$evaluation->n_fn,
+			   				$context->formatFloat($evaluation->weight, 1),
+			   				$note,
+			   				$context->formatFloat($evaluation->higher_note, 2),
+			   				$context->formatFloat($evaluation->average_note, 2),
+							$context->formatFloat($evaluation->lower_note, 2),
+							$evaluation->assessment
+			   		);
+			   		$color = ($color+1)%2;
 	    		}
-		   		$rows.= sprintf(
-		   				$context->getConfig('student/report/detailRow')['html'], 
-		   				(($color) ? 'style="background-color: #EEE"' : ''),
-		   				$subject,
-						$evaluation->n_fn,
-		   				$context->formatFloat($evaluation->weight, 1),
-		   				$note,
-		   				$context->formatFloat($evaluation->higher_note, 2),
-		   				$context->formatFloat($evaluation->average_note, 2),
-						$context->formatFloat($evaluation->lower_note, 2),
-						$evaluation->assessment
-		   		);
-		   		$color = ($color+1)%2;
     		}
 	    }
 	    if ($globalAverage) {

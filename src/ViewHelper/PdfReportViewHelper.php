@@ -184,7 +184,12 @@ class PdfReportViewHelper
 	    $pdf->SetDrawColor(0, 0, 0);
 
 	    if (in_array($category, ['report', 'exam'])) {
-	    	$text = PdfReportTableViewHelper::render($averages, $category);
+	    	$classDefinition = $context->getConfig('student/property/class')['modalities'];
+	    	if (array_key_exists($account->property_7, $classDefinition) && array_key_exists('subjects', $classDefinition[$account->property_7])) {
+	    		$orderedSubjects = $classDefinition[$account->property_7]['subjects'];
+	    	}
+	    	else $orderedSubjects = [];
+	    	$text = PdfReportTableViewHelper::render($averages, $category, $orderedSubjects);
 	    	$pdf->writeHTML($text, true, 0, true, 0);
 	
 			$pdf->SetDrawColor(255, 255, 255);
