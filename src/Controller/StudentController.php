@@ -1536,6 +1536,7 @@ class StudentController extends AbstractActionController
     	}
     	else $averages = null;
 
+    	$notesAccount = [];
     	$params = array('school_year' => $school_year, 'school_period' => $school_period/*, 'account_id' => $account_id*/);
     	if ($level) $params['level'] = $level;
     	$cursor = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
