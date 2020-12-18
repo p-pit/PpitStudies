@@ -28,7 +28,7 @@ class AverageComputer
 					$normalized = $average[0] / $average[1] * $averageReference;
 					if ($subject == 'study-period') $normalized *= 0.5; // To make generic using subject's weight in report
 					$globalComputed[$account_id][0] += $normalized;
-					$globalComputed[$account_id][1] += $averageReference;
+					$globalComputed[$account_id][1] += ($subject == 'study-period') ? $averageReference * 0.5 : $averageReference;
 					if ($indicators[$subject]['higher_note'] < $normalized) $indicators[$subject]['higher_note'] = $normalized;
 					if ($indicators[$subject]['lower_note'] > $normalized) $indicators[$subject]['lower_note'] = $normalized;
 					$indicators[$subject]['average_note'][0] += $normalized;
