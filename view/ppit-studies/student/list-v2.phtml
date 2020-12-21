@@ -96,8 +96,14 @@ table td {
     <?php elseif ($rendering == 'photo') : ?>
       <td>
         <span class="info">
-          <img height="40" src="<?php echo $this->basePath('photos/' . (($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/>
-          <span><img height="150" src="<?php echo $this->basePath('photos/'. (($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/></span>
+      <?php if ($context->getInstance()->caption == 'studency') : ?>
+          <a href="<?php echo $this->url('myStudy/studentHome', ['account_id' => $account->id]) ?>" target="_blank">
+      <?php endif;?>
+            <img height="40" src="<?php echo $this->basePath('photos/' . (($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/>
+            <span><img height="150" src="<?php echo $this->basePath('photos/'. (($account->photo_link_id) ? $account->photo_link_id :  $account->contact_1_id.'.jpg')) ?>"/></span>
+      <?php if ($context->getInstance()->caption == 'studency') : ?>
+          </a>
+      <?php endif;?>
         </span>
       </td>
 
