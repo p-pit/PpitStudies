@@ -5580,6 +5580,20 @@ table.note-report tr.period {
 			'observations' => [],
 		],
 	],
+
+	'report/update/evaluation' => [
+		'properties' => [
+			'place_id' => [],
+			'school_year' => [],
+			'school_period' => [],
+			'teacher_id' => [],
+			'subject' => [],
+			'date' => [],
+			'reference_value' => [],
+			'weight' => [],
+			'assessment' => [],
+		],
+	],
 	
 	// Note link
 

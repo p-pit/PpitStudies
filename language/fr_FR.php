@@ -131,6 +131,7 @@
 		'Primary doctor' => 'Médecin principal',
 		'Reference value' => 'Valeur de référence',
 		'Report' => 'Bulletin',
+		'Report row' => 'Ligne de bulletin',
 		'Report to keep carefully. No duplicate will be provided' => 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré.',
 		'Results' => 'Résultats',
 		'Return to student list' => 'Retour à la liste des élèves',

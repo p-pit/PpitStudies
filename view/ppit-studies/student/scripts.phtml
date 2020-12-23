@@ -1121,7 +1121,8 @@ function getStudentGroup() {
 
 			$('#report-add-anchor').click(function () { 
 				$('#grouped-action-panel').show();
-				getAddEvaluation('report', $('#search-property_7').val()); // Class
+                getNoteEvaluation('report', $('#search-groups').val());
+//				getAddEvaluation('report', $('#search-property_7').val()); // Class
 			});
 
 			$('#exam-add-anchor').click(function () { 

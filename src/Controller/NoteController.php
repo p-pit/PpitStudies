@@ -965,7 +965,7 @@ class NoteController extends AbstractActionController
 				}
 				$mention = $this->request->getPost('mention-' . $account_id);
 				$audit = [];
-				if ($value !== null || $assessment || $mention) {
+				if ($value !== null || $type == 'report' || $assessment || $mention) {
 					$noteLinkData['value'] = $value;
 					$noteLinkData['evaluation'] = $mention;
 					$noteLinkData['assessment'] = $assessment;
@@ -973,6 +973,7 @@ class NoteController extends AbstractActionController
 					$newLinks[$account_id] = $noteLink;
 				}
 			}
+
 			$rc = $note->loadData($content['note']);
 			if ($rc != 'OK') {
 				$this->response->setStatusCode('409');

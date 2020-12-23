@@ -1,5 +1,5 @@
 <?php 
-$updateProperties = $context->getConfig('note/update/evaluation')['properties'];
+$updateProperties = $context->getConfig($content['type'] . '/update/evaluation')['properties'];
 ?>
 
 <?php if ($statusCode == '200') : ?>
@@ -248,8 +248,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
           <select class="form-control form-control-sm update_input update_input_select" id="mention-<?php echo $noteLink['account_id'] ?>" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
             <option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
     <?php foreach ($context->getConfig('student/property/reportMention')['modalities'] as $categoryId => $category) : ?>
-      <?php $context->localize($caption = $category); ?>
-            <option value="<?php echo $categoryId ?>" <?php if ($noteLink['evaluation'] == $categoryId) echo 'selected="selected"' ?>><?php echo $context->localize($caption) ?></option>
+            <option value="<?php echo $categoryId ?>" <?php if ($noteLink['value'] == $categoryId) echo 'selected="selected"' ?>><?php echo $context->localize($category) ?></option>
     <?php endforeach;?>
           </select>
   <?php endif?>

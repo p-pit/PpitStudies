@@ -525,7 +525,7 @@ class NoteLink
 				$property = $configProperties[$propertyId];
 	
 				// Suppress white spaces and tags in the string values
-				if (in_array($property['type'], ['array', 'key_value', 'structure', 'number'])) $value = $data[$propertyId];
+				if (in_array($property['type'], ['array', 'key_value', 'structure', 'number', 'select', 'multiselect'])) $value = $data[$propertyId];
 				else $value = trim(strip_tags($data[$propertyId]));
 	
 				// Check for maximum sizes
