@@ -4630,6 +4630,26 @@ table.note-report tr.period {
 	
 	// Calendar event
 
+	'event/calendar/property/status' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'new' => array('en_US' => 'New', 'fr_FR' => 'Nouveau'),
+			'completed' => array('en_US' => 'Completed', 'fr_FR' => 'Complété'),
+			'scheduled' => array('en_US' => 'Scheduled', 'fr_FR' => 'Planifié'),
+			'realized' => array('en_US' => 'Realized', 'fr_FR' => 'Réalisé'),
+			'invoiced' => array('en_US' => 'Invoiced', 'fr_FR' => 'Facturé'),
+			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
+		),
+		'labels' => array(
+			'en_US' => 'Status',
+			'fr_FR' => 'Statut',
+		),
+		'perspectives' => array(
+			'generic' => array('', 'new', 'scheduled'),
+		),
+	),
+	
 	'event/calendar/property/account_status' => array(
 		'definition' => 'core_account/teacher/property/status',
 		'labels' => array(
@@ -4691,6 +4711,7 @@ table.note-report tr.period {
 			'subcategory' => ['multiple' => true],
 			'property_3' => ['multiple' => true],
 			'account_id' => ['multiple' => true],
+			'status' => ['multiple' => true],
 			'account_status' => ['multiple' => true],
 			'begin_date' => [],
 			'end_date' => [],
@@ -4707,6 +4728,7 @@ table.note-report tr.period {
 		'subcategory' => ['multiple' => true],
 		'property_3' => [],
 		'account_id' => [],
+		'status' => [],
 		'account_status' => ['readonly' => true],
 		'begin_date' => ['mandatory' => true],
 		'end_date' => [],
