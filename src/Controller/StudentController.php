@@ -1408,6 +1408,7 @@ class StudentController extends AbstractActionController
     
     	$account_id = (int) $this->params()->fromRoute('id');
     	$account = Account::get($account_id);
+    	$place = Place::get($account->place_id);
 
     	$periods = $this->getReport($account, false);
 
@@ -1450,6 +1451,7 @@ class StudentController extends AbstractActionController
     		'context' => $context,
     		'config' => $context->getconfig(),
     		'account' => $account,
+    		'place' => $place,
     		'periods' => $periods,
     	));
     	$view->setTerminal(true);

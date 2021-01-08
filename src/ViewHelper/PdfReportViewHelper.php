@@ -107,11 +107,14 @@ class PdfReportViewHelper
     	 
     	// Title
     	$pdf->SetFont('', '', 12);
+		$school_periods = ($place) ? $place->getConfig('school_periods') : null;
+		if ($school_periods && array_key_exists($school_period, $school_periods['labels'])) $school_period_label = $school_periods['labels'][$school_period];
+    	else $school_period_label = $context->getConfig('student/property/school_period')['modalities'][$school_period];
     	if ($category == 'report') {
 //	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
 	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire';
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-	    	$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]).'</strong></div>';
+	    	$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($school_period_label).'</strong></div>';
     	}
 		elseif ($category == 'exam') {
     		$text = '<div style="text-align: center"><strong>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$school_period]).'</strong></div>';
@@ -120,13 +123,13 @@ class PdfReportViewHelper
     		$text = '<div style="text-align: center"><strong>Relevé d\'absences au '.$context->decodeDate(date('Y-m-d'));
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
     		$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]);
-    		if ($school_period) $text .= ' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]);
+    		if ($school_period) $text .= ' - '.$context->localize($school_period_label);
     		$text .= '</strong></div>';
     	}
     	else {
     		$text = '<div style="text-align: center"><strong>'.(($mock) ? 'Epreuve blanche' : 'Relevé de notes').' au '.$context->decodeDate(date('Y-m-d'));
 	    	if ($date) $text .= ' au '.$context->decodeDate($date);
-    		$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]).'</strong></div>';
+    		$text .= '<br>Année '.$context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]).' - '.$context->localize($school_period_label).'</strong></div>';
     	}
     	$pdf->writeHTML($text, true, 0, true, 0);
     	$pdf->Ln(4);

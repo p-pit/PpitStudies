@@ -1,5 +1,6 @@
 <?php 
 use PpitStudies\ViewHelper\PdfReportTableViewHelper;
+$school_periods = ($place) ? $place->getConfig('school_periods') : null;
 ?>
 
 <style>
@@ -62,7 +63,11 @@ table.note-report tr.period {
 	                	<?php echo $context->localize($context->getConfig('student/property/school_year')['labels']) ?>:
 	                	<?php echo $context->localize($context->getConfig('student/property/school_year')['modalities'][$school_year]) ?> &mdash;
       <?php endif;?>
+      <?php if ($school_periods && array_key_exists($school_period, $school_periods['labels'])) : ?>
+                        <?php echo $context->localize($school_periods['labels'][$school_period]) ?>
+      <?php else : ?>
 	                	<?php echo $context->localize($context->getConfig('student/property/school_period')['modalities'][$school_period]) ?>
+      <?php endif;?>
 	                	<?php if (!$visible) echo '('.$this->translate('Non yet visible', 'ppit-studies', $context->getLocale()).')' ?>
 	                </h4>
 	                <!--Text-->
