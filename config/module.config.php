@@ -3676,6 +3676,10 @@ table.note-report td {
 	),
 
 	'commitmentTerm/credit/p-pit-studies' => [
+		'InstrId' => [
+			'labels' => ['default' => '%s/Remb.'],
+			'params' => ['name'],
+		],
 		'EndToEndId' => [
 			'labels' => ['default' => '%s / Remboursement frais scolarité'],
 			'params' => ['name'],
