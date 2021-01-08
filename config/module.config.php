@@ -1572,6 +1572,8 @@ return array_merge(
 			'student' => array('default' => 'Job étudiant'),
 			'service_civique' => array('default' => 'Service civique'),
 			'reclassement' => array('default' => 'Reclassement'),
+			'pole_emploi' => array('default' => 'Pôle emploi'),
+			'cpf' => array('default' => 'CPF'),
 		),
 		'labels' => array(
 			'default' => 'Student follow-up',
