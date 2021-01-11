@@ -108,7 +108,7 @@ class PdfReportViewHelper
     	// Title
     	$pdf->SetFont('', '', 12);
 		$school_periods = ($place) ? $place->getConfig('school_periods') : null;
-		if ($school_periods && array_key_exists($school_period, $school_periods['labels'])) $school_period_label = $school_periods['labels'][$school_period];
+		if ($school_periods && array_key_exists('labels', $school_periods) && array_key_exists($school_period, $school_periods['labels'])) $school_period_label = $school_periods['labels'][$school_period];
     	else $school_period_label = $context->getConfig('student/property/school_period')['modalities'][$school_period];
     	if ($category == 'report') {
 //	    	$text = '<div style="text-align: center"><strong>Bulletin scolaire</strong></div><div style="text-align: center"><strong>Période du '.$context->decodeDate($context->getConfig('currentPeriodStart')).' au '.$context->decodeDate($context->getConfig('currentPeriodEnd')).'</strong></div>';
