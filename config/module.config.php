@@ -1373,12 +1373,13 @@ return array_merge(
 			'visa' => array('en_US' => 'Waiting for a visa', 'fr_FR' => 'En attente de visa'),
 			'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
 			'retention' => array('en_US' => 'Retention', 'fr_FR' => 'Ré-inscrit'),
+			'suspended' => array('en_US' => 'Suspended', 'fr_FR' => 'Suspendu'),
 			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
 			'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
 		'perspectives' => array(
 				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
-				'account' => array('committed', 'visa', 'active', 'retention', 'canceled'),
+				'account' => array('committed', 'visa', 'active', 'retention', 'suspended', 'canceled'),
 		),
 		'labels' => array(
 			'en_US' => 'Account status',
@@ -2129,6 +2130,7 @@ return array_merge(
 				'visa' => array('en_US' => 'Waiting for a visa', 'fr_FR' => 'En attente de visa'),
 				'active' => array('en_US' => 'Registered', 'fr_FR' => 'Inscrit'),
 				'retention' => array('en_US' => 'Retention', 'fr_FR' => 'Ré-inscrit'),
+				'suspended' => array('en_US' => 'Suspended', 'fr_FR' => 'Suspendu'),
 				'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
 				'gone' => array('en_US' => 'Gone', 'fr_FR' => 'Parti'),
 		),
@@ -2138,7 +2140,7 @@ return array_merge(
 		),
 		'perspectives' => array(
 				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone'),
-				'account' => array('committed', 'visa', 'active', 'retention', 'canceled'),
+				'account' => array('committed', 'visa', 'active', 'retention', 'suspended', 'canceled'),
 		),
 		'mandatory' => true,
 	),
