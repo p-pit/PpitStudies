@@ -110,7 +110,10 @@ table td {
 	     	  <?php echo ($link['value'] !== null) ? $link['value'] : 'Non noté' ?>
 
             <?php else : ?>
-              <?php echo $context->localize($content['config']['list']['value']['modalities'][sprintf($link['value'])]) ?>
+              <?php //echo $context->localize($content['config']['list']['value']['modalities'][sprintf($link['value'])]) ?>
+    <?php foreach ($content['config']['list']['value']['modalities'] as $categoryId => $category) : ?>
+              <?php if ($link['value'] == $categoryId) echo $context->localize($category) ?>
+    <?php endforeach;?>
             
             <?php endif;?>
           

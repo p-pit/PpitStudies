@@ -1166,8 +1166,9 @@ class NoteController extends AbstractActionController
 							$value = $computedAverages[$noteLink->account_id]['global']['note'];
     				    }
     				}
-    				elseif ($note->type == 'report' /*&& $value === null*/) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
-    				    if ($data['subject'] == 'global') {
+    				//elseif ($note->type == 'report' /*&& $value === null*/) { // 2018-09 : Retour arrière suite pbme ESI de la demande SEA de forcer la moyenne aussi dans le cas où elle n'est pas explicitement effacée par l'utilisateur
+    				elseif ($note->type == 'report' && $value === null) {
+    					if ($data['subject'] == 'global') {
     			    		$value = $noteLink->computeStudentAverage($note->school_year, $data['school_period']);
     			    	}
     					elseif (array_key_exists($noteLink->account_id, $computedAverages)) {

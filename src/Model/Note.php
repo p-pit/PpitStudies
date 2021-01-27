@@ -497,7 +497,7 @@ class Note
     	else $where->equalTo('type', 'note');
     	$where->equalTo('place_id', $place_id);
     	$where->equalTo('school_year', $school_year);
-    	if ($class) $where->equalTo('class', $class);
+    	if ($class) $where->equalTo('student_note.class', $class);
     	if ($period) $where->equalTo('school_period', $period);
     	if ($subject == 'global') $where->notEqualTo('subject', 'global');
     	else $where->equalTo('subject', $subject);
