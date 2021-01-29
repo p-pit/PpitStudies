@@ -36,7 +36,10 @@ class AverageComputer
 				}
 			}
 			$computed[$account_id]['global'] = $globalComputed[$account_id];
-			$normalized = $globalComputed[$account_id][0] / $globalComputed[$account_id][1] * $averageReference;
+			if ($globalComputed[$account_id][1] * $averageReference) {
+				$normalized = $globalComputed[$account_id][0] / $globalComputed[$account_id][1] * $averageReference;
+			}
+			else $normalized = 1;
 			if (array_key_exists('global', $indicators)) {
 				if ($indicators['global']['higher_note'] < $normalized) $indicators['global']['higher_note'] = $normalized;
 				if ($indicators['global']['lower_note'] > $normalized) $indicators['global']['lower_note'] = $normalized;

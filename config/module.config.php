@@ -3236,6 +3236,8 @@ return array_merge(
 			'contact_history' => array('mandatory' => false),
 	),
 
+	'core_account/groupAddForms/p-pit-studies' => null,
+	
 	'core_account/indexCard/p-pit-studies' => array(
 			'title' => array('en_US' => 'Student index card', 'fr_FR' => 'Fiche élève'),
 			'header' => array(
