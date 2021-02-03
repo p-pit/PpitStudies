@@ -1580,7 +1580,7 @@ class StudentController extends AbstractActionController
 	    	foreach ($averages as $average) {
 	    		if (array_key_exists($average->account_id, $computed) && array_key_exists($average->subject, $computed[$average->account_id])) {
 	    			if (!$average->value && $computed[$average->account_id][$average->subject][1]) $average->value = $computed[$average->account_id][$average->subject][0] / $computed[$average->account_id][$average->subject][1] * $averageReference;
-    				if (array_key_exists($average->subject, $indicators)) {
+    				if (array_key_exists($average->subject, $indicators) && $indicators[$average->subject]['average_note'][1]) {
 		    			if (!$average->higher_note) $average->higher_note = $indicators[$average->subject]['higher_note'];
 		    			if (!$average->lower_note) $average->lower_note = $indicators[$average->subject]['lower_note'];
 		    			if (!$average->average_note) $average->average_note = $indicators[$average->subject]['average_note'][0] / $indicators[$average->subject]['average_note'][1];
