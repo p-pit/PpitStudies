@@ -1541,6 +1541,8 @@ class StudentController extends AbstractActionController
     	$notesAccount = [];
     	$params = array('school_year' => $school_year, 'school_period' => $school_period/*, 'account_id' => $account_id*/);
     	if ($level) $params['level'] = $level;
+    	$maxDate = $context->getConfig('note_link/maxDate');
+    	if ($maxDate) $params['max_date'] = $maxDate;
     	$cursor = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	foreach ($cursor as $noteLink) {
     		if ($noteLink->account_id == $account_id) {
