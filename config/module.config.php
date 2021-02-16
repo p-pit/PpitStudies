@@ -1646,6 +1646,48 @@ return array_merge(
 			'fr_FR' => 'Date fin contrat',
 		),
 	),
+
+	'commitment/p-pit-studies/property/property_18' => array('definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Unused',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_19' => array('definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Unused',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_20' => array('definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Unused',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_21' => array('definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Unused',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_22' => array('definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Unused',
+		),
+	),
+
+	'commitment/p-pit-studies/property/property_23' => array('definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'Unused',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
