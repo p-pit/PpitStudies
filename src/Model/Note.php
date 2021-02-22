@@ -602,7 +602,7 @@ class Note
     	$where->equalTo('type', 'note');
     	$where->equalTo('place_id', $place_id);
     	$where->equalTo('school_year', $school_year);
-    	$where->equalTo('class', $class);
+    	$where->equalTo('student_note.class', $class);
     	$where->equalTo('level', $level);
     	$select->where($where);
     	$cursor = NoteLink::getTable()->selectWith($select);

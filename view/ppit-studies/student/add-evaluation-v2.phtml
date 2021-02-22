@@ -78,7 +78,7 @@ else {
 }
 ?>
 <div class="form-group row" id="class_group">
-  <label class="col-sm-5 col-form-label col-form-label-sm">* <?php echo $context->localize($context->getConfig('student/property/class')['labels']) ?></label>
+  <label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $context->localize($context->getConfig('student/property/class')['labels']) ?></label>
   <div class="col-sm-7">
     <select class="form-control form-control-sm" id="class" <?php if ($isDisabled || $note->class) echo 'disabled="disabled"'?>>
       <option />
