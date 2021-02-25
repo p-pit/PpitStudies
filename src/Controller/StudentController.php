@@ -769,6 +769,7 @@ class StudentController extends AbstractActionController
     			// In the case of an exam, compute the average of all the note for the exam per class subjects and for all the selected students
     			if ($type == 'exam') {
     				$examAverages = Note::computeExamAverages($data['place_id'], $data['school_year'], $data['class'], $data['level']);
+var_dump($examAverages); exit;
     			}
     			 
     			foreach ($accounts as $account_id => $account) {
