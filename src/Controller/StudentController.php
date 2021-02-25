@@ -1466,11 +1466,11 @@ class StudentController extends AbstractActionController
     	$account_id = (int) $this->params()->fromRoute('account_id');
     	$account = Account::get($account_id);
     	$account->properties = $account->getProperties();
-    	if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
+    	/*if ($account->contact_2 && $account->contact_2->adr_street) $addressee = $account->contact_2;
     	elseif ($account->contact_3 && $account->contact_3->adr_street) $addressee = $account->contact_3;
     	elseif ($account->contact_4 && $account->contact_4->adr_street) $addressee = $account->contact_4;
     	elseif ($account->contact_5 && $account->contact_5->adr_street) $addressee = $account->contact_5;
-    	else $addressee = $account->contact_1;
+    	else*/ $addressee = $account->contact_1;
     
     	$school_year = $this->params()->fromRoute('school_year');
     	if (!$school_year) $school_year = $context->getConfig('student/property/school_year/default');

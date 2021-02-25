@@ -139,6 +139,7 @@
 		'Secondary posts' => 'Postes secondaires',
 		'Selected student' => 'Elève sélectionné',
 		'Selected students' => 'Elèves sélectionnés',
+		'Generate reports' => 'Générer les bulletins',
 		'School' => 'Scolaire',
 		'School year' => 'Année scolaire',
 		'Schooling' => 'Scolarité',

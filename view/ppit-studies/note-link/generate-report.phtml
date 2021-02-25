@@ -1,0 +1,51 @@
+<!-- 
+/**
+ * PpitCore V1.0 (https://github.com/p-pit/PpitCore)
+ *
+ * @link      https://github.com/p-pit/PpitCore
+ * @copyright Copyright (c) 2016 Bruno Lartillot
+ * @license   https://github.com/p-pit/PpitCore/blob/master/license.txt GNU-GPL license
+ */
+-->
+			
+<!-- Global message -->
+<?php if ($message == 'OK') : ?>
+	<div id="message">
+      <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
+	</div>
+<?php endif;?>
+
+<?php 
+if ($message == 'OK') $isDisabled = true; else $isDisabled = false;
+?>
+
+<div class="panel-body">
+
+<div class="form-group row">
+	<label class="col-sm-5 col-form-label"><?php echo $this->translate('Select the group', 'ppit-core', $context->getLocale()) ?></label>
+	<div class="col-sm-7">
+		<select class="form-control" id="group_id" <?php if ($isDisabled) echo 'disabled' ?>>
+            <option/>
+<?php foreach ($groups as $groupId => $group) : ?>
+			<option value="<?php echo $groupId?>"><?php echo $group['name'] ?> <?php if ($group['place_caption']) : ?>(<?php echo $group['place_caption'] ?>)<?php endif;?></option>
+<?php endforeach;?>
+		</select>
+	</div>
+</div>
+
+<?php if (!$message) : ?>
+<div class="form-group row">
+	<div class="col-sm-5">&nbsp;</div>
+	<div class="col-sm-7">
+		<button type="button" id="add-to-group-button" class="btn btn-outline-warning"><?php echo $this->translate('Add to group', 'ppit-core', $context->getLocale()) ?></button>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-sm-12">
+		<div class="alert alert-warning" id="add-to-group-alert" style="text-align: center">
+			<strong><?php echo $this->translate('Please confirm', 'ppit-core', $context->getLocale()) ?></strong>
+		</div>
+	</div>
+</div>
+<?php endif;?>

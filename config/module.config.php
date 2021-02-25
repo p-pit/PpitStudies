@@ -528,6 +528,15 @@ return array_merge(
 							],
 						],
 					],
+					'generateReport' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/generate-report',
+							'defaults' => [
+								'action' => 'generateReport',
+							],
+						],
+				 	],
 	       			'v1' => [
 						'type' => 'segment',
 						'options' => [
@@ -1067,6 +1076,7 @@ return array_merge(
 				array('route' => 'noteLink/studentList', 'roles' => array('manager', 'coach')),
 				array('route' => 'noteLink/group', 'roles' => array('manager', 'coach')),
 				array('route' => 'noteLink/update', 'roles' => array('manager')),
+				array('route' => 'noteLink/generateReport', 'roles' => array('manager')),
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
 				array('route' => 'noteLink/repair', 'roles' => array('admin')),
 				
@@ -3441,6 +3451,12 @@ table.note-report td {
 					'adr_country' => 'country',
 			),
 	),
+
+	// core_account (group)
+
+	'core_account/group/property/property_3' => [
+		'definition' => 'student/property/school_subject',
+	],
 
 	// Terms
 
