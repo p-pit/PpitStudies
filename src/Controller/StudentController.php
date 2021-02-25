@@ -817,7 +817,7 @@ class StudentController extends AbstractActionController
     				$data['lower_note'] = $lowerNote;
     				$data['higher_note'] = $higherNote;
     			};
-    			 
+var_dump(count($note->links)); exit;
     			if (count($note->links)) {
     				$rc = $note->loadData($data);
     				if ($rc == 'Integrity') throw new \Exception('View error');
@@ -1030,7 +1030,6 @@ class StudentController extends AbstractActionController
     							$connection->commit();
     							$message = 'OK';
     						}
-							else throw new \Exception($error);
     					}
     					catch (\Exception $e) {
     						$connection->rollback();
