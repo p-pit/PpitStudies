@@ -1030,6 +1030,7 @@ class StudentController extends AbstractActionController
     							$connection->commit();
     							$message = 'OK';
     						}
+							else throw new \Exception($error);
     					}
     					catch (\Exception $e) {
     						$connection->rollback();
