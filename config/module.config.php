@@ -5788,6 +5788,7 @@ table.note-report tr.period {
 		'group_id' => [],
 		'name' => [],
 		'subject' => [],
+		'level' => [],
 		'date' => [],
 	],
 	
@@ -5800,6 +5801,7 @@ table.note-report tr.period {
 		'group_id' => [],
 		'name' => [],
 		'subject' => [],
+		'level' => [],
 		'date' => [],
 		'reference_value' => [],
 		'weight' => [],
