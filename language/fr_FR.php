@@ -143,6 +143,7 @@
 		'School' => 'Scolaire',
 		'School year' => 'Année scolaire',
 		'Schooling' => 'Scolarité',
+		'Select the period' => 'Sélectionner la période',
 		'Selected notes' => 'Notes sélectionnées',
 		'Sisters & brothers' => 'Frères et soeurs',
 		'Shoe size' => 'Taille chaussures',

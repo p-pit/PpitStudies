@@ -553,9 +553,10 @@ class NoteLinkController extends AbstractActionController
 	
 	public function generateReportAction() {
 		$context = Context::getCurrent();
-		if ($this->request->isPut()) $requestType = 'PUT';
+		if ($this->request->isPost()) $requestType = 'POST';
 		else $requestType = 'GET';
-		$groups = $this->params()->fromQuery('groups');
+		$groupIds = $this->params()->fromQuery('groups');
+		$groups = Account::getList('group', ['id' => $groupIds], null, null);
 		$statusCode = '200';
 		$reasonCode = '';
 
@@ -568,6 +569,7 @@ class NoteLinkController extends AbstractActionController
 			'statusCode' => $statusCode,
 			'reasonCode' => $reasonCode,
 			'requestType' => $requestType,
+			'groups' => $groups,
 		]);
 		$view->setTerminal(true);
 		return $view;

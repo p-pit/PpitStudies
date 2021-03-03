@@ -9,43 +9,48 @@
 -->
 			
 <!-- Global message -->
-<?php if ($message == 'OK') : ?>
+<?php if ($requestType == 'POST' && $statusCode == '200') : ?>
 	<div id="message">
       <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
 	</div>
 <?php endif;?>
 
 <?php 
-if ($message == 'OK') $isDisabled = true; else $isDisabled = false;
+if ($requestType == 'POST' && $statusCode == '200') $isDisabled = true; else $isDisabled = false;
 ?>
 
 <div class="panel-body">
 
+<h5 class="card-title text-muted"><?php echo $this->translate('Selected groups', 'ppit-core', $context->getLocale()) ?></h5>
+     
+<?php $i = 0; foreach ($groups as $group) : ?>
+
 <div class="form-group row">
-	<label class="col-sm-5 col-form-label"><?php echo $this->translate('Select the group', 'ppit-core', $context->getLocale()) ?></label>
+	<label class="col-sm-5 control-label">&nbsp;</label>
 	<div class="col-sm-7">
-		<select class="form-control" id="group_id" <?php if ($isDisabled) echo 'disabled' ?>>
+		<input class="form-control" disabled="disabled" value="<?php echo $group->name ?>" />
+	</div>
+</div>
+	
+<?php $i++; endforeach;?>
+
+<div class="form-group row">
+	<label class="col-sm-5 col-form-label"><?php echo $this->translate('Select the period', 'ppit-studies', $context->getLocale()) ?></label>
+	<div class="col-sm-7">
+		<select class="form-control" id="period" <?php if ($isDisabled) echo 'disabled' ?>>
             <option/>
-<?php foreach ($groups as $groupId => $group) : ?>
-			<option value="<?php echo $groupId?>"><?php echo $group['name'] ?> <?php if ($group['place_caption']) : ?>(<?php echo $group['place_caption'] ?>)<?php endif;?></option>
+<?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $periodId => $period) : ?>
+			<option value="<?php echo $periodId?>"><?php echo $context->localize($period) ?></option>
 <?php endforeach;?>
 		</select>
 	</div>
 </div>
 
-<?php if (!$message) : ?>
+<?php if ($requestType == 'GET') : ?>
 <div class="form-group row">
 	<div class="col-sm-5">&nbsp;</div>
 	<div class="col-sm-7">
-		<button type="button" id="add-to-group-button" class="btn btn-outline-warning"><?php echo $this->translate('Add to group', 'ppit-core', $context->getLocale()) ?></button>
-	</div>
-</div>
-
-<div class="form-group">
-	<div class="col-sm-12">
-		<div class="alert alert-warning" id="add-to-group-alert" style="text-align: center">
-			<strong><?php echo $this->translate('Please confirm', 'ppit-core', $context->getLocale()) ?></strong>
-		</div>
+		<button type="button" id="generate-period-button" class="btn btn-warning"><?php echo $this->translate('Generate reports', 'ppit-studies', $context->getLocale()) ?></button>
 	</div>
 </div>
 <?php endif;?>
