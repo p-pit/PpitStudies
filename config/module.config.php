@@ -3457,6 +3457,7 @@ table.note-report td {
 
 	'core_account/group/property/property_3' => [
 		'definition' => 'student/property/school_subject',
+		'type' => 'multiselect',
 	],
 
 	// Terms
@@ -4128,7 +4129,7 @@ table.note-report td {
 					'2016-2017' => array('fr_FR' => '2016-2017', 'en_US' => '2016-2017', 'archive' => true),
 					'2017-2018' => array('fr_FR' => '2017-2018', 'en_US' => '2017-2018', 'archive' => true),
 					'2018-2019' => array('fr_FR' => '2018-2019', 'en_US' => '2018-2019', 'archive' => true),
-					'2019-2020' => array('fr_FR' => '2019-2020', 'en_US' => '2019-2020', 'archive' => true),
+					'2019-2020' => array('fr_FR' => '2019-2020', 'en_US' => '2019-2020'),
 					'2020-2021' => array('fr_FR' => '2020-2021', 'en_US' => '2020-2021'),
 					'2021-2022' => array('fr_FR' => '2021-2022', 'en_US' => '2021-2022'),
 					'2022-2023' => array('fr_FR' => '2022-2023', 'en_US' => '2022-2023'),
