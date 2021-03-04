@@ -1354,6 +1354,7 @@ return array_merge(
 			'invoiced' => array('en_US' => 'Invoiced', 'fr_FR' => 'Facturé', 'auto' => true),
 			'settled' => array('en_US' => 'Settled', 'fr_FR' => 'Réglé', 'auto' => true),
 			'registered' => array('en_US' => 'Registered', 'fr_FR' => 'Comptabilisé', 'auto' => true),
+			'archived' => array('en_US' => 'Archived', 'fr_FR' => 'Archivé'),
 		),
 		'labels' => array(
 			'en_US' => 'Commitment status',
