@@ -1197,7 +1197,9 @@ class StudentController extends AbstractActionController
     	$context = Context::getCurrent();
     	$start_date = $this->params()->fromRoute('start_date', $context->getConfig('student/property/school_year/start'));
     	$end_date = $this->params()->fromRoute('end_date', $context->getConfig('student/property/school_year/end'));
-    	 
+    	
+		$place = Place::get($account->place_id);
+
     	$absLates = Absence::getList('schooling', ['account_id' => $account->id, 'school_year' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_begin_date' => $end_date], 'begin_date', 'DESC', 'search', null);
     	$absences = array();
     	$latenesss = array();
@@ -1211,7 +1213,22 @@ class StudentController extends AbstractActionController
     	 
     	$absences = Event::GetList('absence', ['account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_end_date' => $end_date], '+begin_date', null);
     	foreach($absences as $absence) {
-    		$key = $absence->property_1 . '.' . '';
+			$school_periods = $place->getConfig('school_periods');
+			$school_periods = null;
+			foreach ($periods['end_dates'] as $periodId => $date) {
+				if ($date >= $absence->begin_date) {
+					$school_period = $periodId;
+					break;
+				}
+			}
+			if (!$school_period) foreach ($context->getConfig('place_config/default')['school_periods']['end_dates'] as $periodId => $date) {
+				if ($date >= $absence->begin_date) {
+					$school_period = $periodId;
+					break;
+				}
+			}
+			if (!$school_period) $school_period = 'Q1';
+			$key = $absence->property_1 . '.' . $school_period;
     		if (!array_key_exists($key, $periods)) $periods[$key] = array();
     		$periods[$key][] = ['category' => 'absence', 'subject' => $absence->property_3, 'begin_date' => $absence->begin_date, 'end_date' => $absence->end_date, 'motive' => $absence->property_12, 'observations' => ''];
     	}
