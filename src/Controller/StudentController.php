@@ -1213,9 +1213,9 @@ class StudentController extends AbstractActionController
     	 
     	$absences = Event::GetList('absence', ['account_id' => $account->id, 'property_1' => $context->getConfig('student/property/school_year/default'), 'min_begin_date' => $start_date, 'max_end_date' => $end_date], '+begin_date', null);
     	foreach($absences as $absence) {
-			$school_periods = $place->getConfig('school_periods');
-			$school_periods = null;
-			foreach ($periods['end_dates'] as $periodId => $date) {
+			$placePeriods = $place->getConfig('school_periods');
+			$school_period = null;
+			foreach ($placePeriods['end_dates'] as $periodId => $date) {
 				if ($date >= $absence->begin_date) {
 					$school_period = $periodId;
 					break;
