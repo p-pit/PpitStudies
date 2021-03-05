@@ -1530,7 +1530,23 @@ class StudentController extends AbstractActionController
     	// Retrieve the absences from attendance sheet
     	$cursor = Event::GetList('absence', array('account_id' => $account->id, 'property_1' => $school_year, 'min_begin_date' => $start_date, 'max_begin_date' => $end_date), '+begin_date', null);
     	foreach ($cursor as $absence) {
-    		if ($absence->end_time >= $absence->begin_time) {
+			$placePeriods = $place->getConfig('school_periods');
+			$period = null;
+			foreach ($placePeriods['end_dates'] as $periodId => $date) {
+				if ($date >= $absence->begin_date) {
+					$period = $periodId;
+					break;
+				}
+			}
+			if (!$period) foreach ($context->getConfig('place_config/default')['school_periods']['end_dates'] as $periodId => $date) {
+				if ($date >= $absence->begin_date) {
+					$period = $periodId;
+					break;
+				}
+			}
+			if (!$period) $period = 'Q1';
+
+			if ($period == $school_period && $absence->end_time >= $absence->begin_time) {
 				$startHour = (int) substr($absence->begin_time, 0, 2);
 				$startMin = (int) substr($absence->begin_time, 3, 2);
 				$start = $startHour * 60 + $startMin;
