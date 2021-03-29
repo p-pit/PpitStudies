@@ -403,7 +403,7 @@ class NoteLink
     			elseif ($propertyId == 'account_property_15') $where->equalTo('core_account.property_15', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
     			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
-    			elseif ($propertyId == 'level') $where->like('student_note.level', '%'.$params[$propertyId].'%');
+    			elseif ($propertyId == 'level') $where->equalTo('student_note.level', $params[$propertyId]);
 				elseif (strpos($params[$propertyId], ',')) $where->in($entity . '.' . $column, array_map('trim', explode(',', $params[$propertyId])));
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
