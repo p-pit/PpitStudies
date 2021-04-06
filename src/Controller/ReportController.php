@@ -86,7 +86,7 @@ class ReportController extends AbstractActionController
 							// Retrieve the student list by group and place
 
 							if (	!array_key_exists(((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId, $existingReports)
-								&&	array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students) ) ) {
+								&&	array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students) ) {
 
 								$report = Note::instanciate('report', null, $groupId);
 								$report->status = 'current';
