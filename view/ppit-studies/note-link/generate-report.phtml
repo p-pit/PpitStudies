@@ -7,13 +7,6 @@
  * @license   https://github.com/p-pit/PpitCore/blob/master/license.txt GNU-GPL license
  */
 -->
-			
-<!-- Global message -->
-<?php if ($requestType == 'POST' && $statusCode == '200') : ?>
-	<div id="message">
-      <h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
-	</div>
-<?php endif;?>
 
 <?php 
 if ($requestType == 'POST' && $statusCode == '200') $isDisabled = true; else $isDisabled = false;
@@ -21,36 +14,112 @@ if ($requestType == 'POST' && $statusCode == '200') $isDisabled = true; else $is
 
 <div class="panel-body">
 
-<h5 class="card-title text-muted"><?php echo $this->translate('Selected groups', 'ppit-core', $context->getLocale()) ?></h5>
-     
-<?php $i = 0; foreach ($groups as $group) : ?>
-
-<div class="form-group row">
-	<label class="col-sm-5 control-label">&nbsp;</label>
-	<div class="col-sm-7">
-		<input class="form-control" disabled="disabled" value="<?php echo $group->name ?>" />
-	</div>
-</div>
-	
-<?php $i++; endforeach;?>
-
 <div class="form-group row">
 	<label class="col-sm-5 col-form-label"><?php echo $this->translate('Select the period', 'ppit-studies', $context->getLocale()) ?></label>
 	<div class="col-sm-7">
 		<select class="form-control" id="period" <?php if ($isDisabled) echo 'disabled' ?>>
             <option/>
 <?php foreach ($context->getConfig('student/property/school_period')['modalities'] as $periodId => $period) : ?>
-			<option value="<?php echo $periodId?>"><?php echo $context->localize($period) ?></option>
+			<option value="<?php echo $periodId?>" <?php if ($periodId == $currentSchoolPeriod) : ?>selected<?php endif ?>><?php echo $context->localize($period) ?></option>
 <?php endforeach;?>
 		</select>
 	</div>
+</div>
+
+<hr>
+
+<div class="form-group row">
+	<label class="col-sm-5 col-form-label"><?php echo $this->translate('Select the places', 'ppit-core', $context->getLocale()) ?></label>
+	<div class="col-sm-7">
+		<select class="selectpicker" id="place_id" multiple="multiple" <?php if ($isDisabled) echo 'disabled' ?>>
+            <option/>
+<?php foreach ($places as $placeId => $place) : ?>
+			<option value="<?php echo $placeId?>"><?php echo $place->caption ?></option>
+<?php endforeach;?>
+		</select>
+	</div>
+</div>
+
+<hr>
+
+<h5 class="card-title text-muted text-center my-4"><?php echo $this->translate('Selected groups', 'ppit-core', $context->getLocale()) ?></h5>
+
+<?php
+$subjects = $context->getConfig('student/property/school_subjects');
+?>
+     
+<?php $i = 0; foreach ($groups as $group) : ?>
+
+<div class="section my-4">
+
+<input type="hidden" class="inputGroup" id="inputGroup-<?php echo $group->id ?>" value="<?php echo $group->id ?>" />
+<div class="form-group row">
+	<label class="col-sm-5 control-label">&nbsp;</label>
+	<div class="col-sm-7">
+		<input class="form-control" disabled="disabled" value="<?php echo $group->name ?>" />
+	</div>
+</div>
+
+<?php if (!$group->property_3) : ?>
+<div class="text-center">Aucune matière définie sur ce groupe</div>
+
+<?php else : ?>
+
+	<?php
+	$subjects = $context->getConfig('student/property/school_subject');
+	?>
+
+	<?php foreach(explode(',', $group->property_3) as $subjectId) :  ?>
+
+<div class="form-group row">
+	<div class="col-sm-1">
+		<input class="form-control form-control-sm checkSubject-<?php echo $group->id ?>" type="checkbox" id="checkSubject-<?php echo $group->id ?>-<?php echo $subjectId?>" checked>
+	</div>
+	<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $context->localize($subjects['modalities'][$subjectId]) ?></label>
+	<div class="col-sm-6">
+		<select class="form-control form-control-sm selectTeacher-<?php echo $group->id ?>" id="selectTeacher-<?php echo $group->id ?>-<?php echo $subjectId?>">
+			<option value="">Appréciation à saisir par...</option>
+		<?php foreach ($teachers as $teacherId => $teacher) : ?>
+			<option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->name ?></option>
+		<?php endforeach ?>
+		</select>
+	</div>
+</div>
+
+	<?php endforeach ?>
+
+<div class="form-group row" id="<?php echo $propertyId ?>_group">
+	<div class="col-sm-1">
+		<input class="form-control form-control-sm checkSubject-<?php echo $group->id ?>" type="checkbox" id="checkSubject-<?php echo $group->id ?>-global" checked>
+	</div>
+	<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></label>
+	<div class="col-sm-6">
+		<select class="form-control form-control-sm selectTeacher-<?php echo $group->id ?>" id="selectTeacher-<?php echo $group->id ?>-global">
+			<option value="<?php echo $context->getContactId() ?>"><?php echo $context->getContact()->n_fn ?></option>
+		<?php foreach ($teachers as $teacherId => $teacher) : ?>
+			<option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->name ?></option>
+		<?php endforeach ?>
+		</select>
+	</div>
+</div>
+
+<?php endif ?>
+
+</div>
+
+<?php $i++; endforeach;?>
+<hr>
+
+<!-- Global message -->
+<div id="message">
+	<h5 class="alert alert-success my-3 text-center"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
 </div>
 
 <?php if ($requestType == 'GET') : ?>
 <div class="form-group row">
 	<div class="col-sm-5">&nbsp;</div>
 	<div class="col-sm-7">
-		<button type="button" id="generate-period-button" class="btn btn-warning"><?php echo $this->translate('Generate reports', 'ppit-studies', $context->getLocale()) ?></button>
+		<button type="button" id="generate-report-button" class="btn btn-warning"><?php echo $this->translate('Generate reports', 'ppit-studies', $context->getLocale()) ?></button>
 	</div>
 </div>
 <?php endif;?>

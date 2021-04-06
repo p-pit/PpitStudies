@@ -557,6 +557,18 @@ class NoteLinkController extends AbstractActionController
 		else $requestType = 'GET';
 		$groupIds = $this->params()->fromQuery('groups');
 		$groups = Account::getList('group', ['id' => $groupIds], null, null);
+		$teachers = Account::getList('teacher', ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name', null);
+
+		$place_identifier = $this->params()->fromQuery('place_identifier');
+		if ($place_identifier) $place = Place::get($place_identifier, 'identifier');
+		else $place = Place::get($context->getPlaceId());
+		$places = Place::getList([]);
+
+		$schoolYear = $context->getConfig('student/property/school_year/default');
+		$schoolPeriods = $place->getConfig('school_periods');
+		$currentSchoolPeriod = $context->getCurrentPeriod($schoolPeriods);
+		if (!$currentSchoolPeriod) $currentSchoolPeriod = 'q1';
+
 		$statusCode = '200';
 		$reasonCode = '';
 
@@ -569,7 +581,10 @@ class NoteLinkController extends AbstractActionController
 			'statusCode' => $statusCode,
 			'reasonCode' => $reasonCode,
 			'requestType' => $requestType,
+			'places' => $places,
 			'groups' => $groups,
+			'teachers' => $teachers,
+			'currentSchoolPeriod' => $currentSchoolPeriod,
 		]);
 		$view->setTerminal(true);
 		return $view;

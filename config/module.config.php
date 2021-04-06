@@ -14,6 +14,7 @@ return array_merge(
         	'PpitStudies\Controller\Event' => 'PpitStudies\Controller\EventController',
         	'PpitStudies\Controller\Note' => 'PpitStudies\Controller\NoteController',
         	'PpitStudies\Controller\NoteLink' => 'PpitStudies\Controller\NoteLinkController',
+        	'PpitStudies\Controller\Report' => 'PpitStudies\Controller\ReportController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
         ),
     ),
@@ -557,6 +558,29 @@ return array_merge(
 					],
 	       		],
 	       	],
+
+			'report' => [
+				'type'    => 'literal',
+				'options' => [
+					'route'    => '/report',
+					'defaults' => [
+						'controller' => 'PpitStudies\Controller\Report',
+						'action'     => 'post',
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'post' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/post',
+							'defaults' => [
+								'action' => 'post',
+							],
+						],
+					],
+				],
+			],
 	       			
 /*        	'studentNotification' => array(
                 'type'    => 'literal',
@@ -1079,6 +1103,8 @@ return array_merge(
 				array('route' => 'noteLink/generateReport', 'roles' => array('manager')),
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
 				array('route' => 'noteLink/repair', 'roles' => array('admin')),
+
+				array('route' => 'report/post', 'roles' => array('guest')),
 				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),

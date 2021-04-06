@@ -230,7 +230,7 @@ class Note
 			if ($keep) {
 				$i++;
 				if ($limit && $i > $limit) break;
-				$notes[] = $note;
+				$notes[$note->id] = $note;
 			}
 		}
 		return $notes;
