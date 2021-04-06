@@ -96,7 +96,7 @@ class ReportController extends AbstractActionController
 								$report->school_period = $requestBody['schoolPeriod'];
 								$report->subject = $subjectId;
 								$report->reference_value = $referenceValue;
-								if (array_key_exists($subjectId, $subjectConfig[modalities]) $report->weight = $subjectConfig['modalities'][$subjectId]['credits'];
+								if (array_key_exists($subjectId, $subjectConfig[modalities])) $report->weight = $subjectConfig['modalities'][$subjectId]['credits'];
 								else $report->weight = 1;
 								if (array_key_exists('teacherId', $subjectData)) $report->teacher_id = $subjectData['teacherId'];
 								$report->add();
