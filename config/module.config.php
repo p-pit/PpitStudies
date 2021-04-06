@@ -3496,6 +3496,7 @@ table.note-report td {
 
 	'core_account/group/property/property_3' => [
 		'definition' => 'student/property/school_subject',
+		'max_length' => 2047,
 		'type' => 'multiselect',
 	],
 
