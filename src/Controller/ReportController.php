@@ -76,6 +76,8 @@ class ReportController extends AbstractActionController
 				$existingReportsById[$link->note_id]->links[$link->account_id] = $link;
 			}
 
+			$subjectConfig = $context->getConfig('student/property/school_subject');
+			$referenceValue = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			foreach ($requestBody['groups'] as $groupId => $group) {
 				if (array_key_exists('subjects', $group)) {
 					foreach ($group['subjects'] as $subjectId => $subjectData) {
@@ -84,15 +86,18 @@ class ReportController extends AbstractActionController
 							// Retrieve the student list by group and place
 
 							if (	!array_key_exists(((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId, $existingReports)
-								/*&&	array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students)*/ ) {
+								&&	array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students)
+								&&	array_key_exists($subjectId, $subjectConfig[modalities]) ) {
 
 								$report = Note::instanciate('report', null, $groupId);
-								$report->status = 'current	';
+								$report->status = 'current';
 								$report->category = 'evaluation';
 								$report->place_id = $placeId;
 								$report->school_year = $requestBody['schoolYear'];
 								$report->school_period = $requestBody['schoolPeriod'];
 								$report->subject = $subjectId;
+								$report->reference_value = $referenceValue;
+								$report->weight = $subjectConfig['modalities'][$subjectId]['credits'];
 								if (array_key_exists('teacherId', $subjectData)) $report->teacher_id = $subjectData['teacherId'];
 								$report->add();
 								$responseBody['reportCreated'][] = $report->id;
