@@ -66,7 +66,7 @@ class ReportController extends AbstractActionController
 			$existingReports = [];
 			$reportIds = [];
 			foreach ($existingReportsById as $report) {
-				$reportsIds[] = $report->id;
+				$reportIds[] = $report->id;
 				$existingReports[((int) $report->place_id) . '/' . ((int) $report->group_id) . '/' . $report->subject] = $report;
 			}
 
@@ -85,25 +85,40 @@ class ReportController extends AbstractActionController
 
 							// Retrieve the student list by group and place
 
-							if (	!array_key_exists(((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId, $existingReports)
-								&&	array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students) ) {
-
-								$report = Note::instanciate('report', null, $groupId);
-								$report->status = 'current';
-								$report->category = 'evaluation';
-								$report->place_id = $placeId;
-								$report->school_year = $requestBody['schoolYear'];
-								$report->school_period = $requestBody['schoolPeriod'];
-								$report->subject = $subjectId;
-								$report->reference_value = $referenceValue;
-								if (array_key_exists('credits', $subjectConfig[modalities][$subjectId])) $report->weight = $subjectConfig['modalities'][$subjectId]['credits'];
-								else $report->weight = 1;
-								if (array_key_exists('teacherId', $subjectData)) $report->teacher_id = $subjectData['teacherId'];
-								$report->add();
-								$responseBody['reportCreated'][] = $report->id;
+							if (array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students)) {
+								
+								if (array_key_exists(((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId, $existingReports)) {
+									$report = $existingReports[((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId];
+								}
+								else {
+									$report = Note::instanciate('report', null, $groupId);
+									$report->status = 'current';
+									$report->category = 'evaluation';
+									$report->place_id = $placeId;
+									$report->school_year = $requestBody['schoolYear'];
+									$report->school_period = $requestBody['schoolPeriod'];
+									$report->subject = $subjectId;
+									$report->reference_value = $referenceValue;
+									if (array_key_exists($subjectId, $subjectConfig[modalities])) $report->weight = $subjectConfig['modalities'][$subjectId]['credits'];
+									else $report->weight = 1;
+									if (array_key_exists('teacherId', $subjectData)) $report->teacher_id = $subjectData['teacherId'];
+									$report->add();
+									$responseBody['reportCreated'][] = $report->id;
+								}
 
 								// Generate the student links for this report
 								foreach ($students[((int) $placeId) . '/' . ((int) $groupId)] as $student) {
+
+									if (	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
+										&&  $subjectConfig[modalities][$subjectId]['full_time']
+										&& 	in_array($student->property_15, ['part_time', 'online']) ) {
+
+										continue;
+									}
+
+									// Ignore the student already having a link for the current report
+									if (array_key_exists($student->id, $report->links)) continue;
+
 									$studentLink = NoteLink::instanciate($student->id, $report->id);
 									$studentLink->add();
 									$responseBody['studentLinkCreated'][] = $studentLink->id;
