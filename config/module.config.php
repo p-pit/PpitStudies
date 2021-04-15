@@ -2981,6 +2981,19 @@ return array_merge(
 
 	'core_account/p-pit-studies/property/profile_tiny_1' => ['definition' => 'core_vcard/tiny_1'],
 
+
+	'core_account/p-pit-studies/property/int_1' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => array(
+			'1' => array('default' =>'Non'),
+			'2' => array('default' =>'Oui'),
+		),
+		'labels' => array(
+			'default' => 'RQTH',
+		),
+	),
+	
 	'core_account/p-pit-studies/property/json_property_1' => array(
 		'definition' => 'inline',
 		'type' => 'key_value',
@@ -3111,7 +3124,7 @@ return array_merge(
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19', 'property_20',
 			'profile_tiny_1',
 			'json_property_1', 'json_property_2', 'json_property_3',
-			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time'
+			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1'
 		),
 		'order' => 'n_fn',
 		'options' => ['internal_identifier' => true, 'unique_key' => true /*['n_fn', 'n_last', 'email', 'tel_cell']*/],
