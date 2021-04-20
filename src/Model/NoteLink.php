@@ -26,6 +26,7 @@ class NoteLink
 			'status' => 			['entity' => 'student_note_link', 'column' => 'status'],
 			'account_id' => 		['entity' => 'student_note_link', 'column' => 'account_id'],
 			'note_id' => 			['entity' => 'student_note_link', 'column' => 'note_id'],
+			'specific_weight' => 	['entity' => 'student_note_link', 'column' => 'specific_weight'],
 			'value' => 				['entity' => 'student_note_link', 'column' => 'value'],
 			'distribution' => 		['entity' => 'student_note_link', 'column' => 'distribution'],
 			'evaluation' => 		['entity' => 'student_note_link', 'column' => 'evaluation'],
@@ -196,6 +197,7 @@ class NoteLink
     public $status;
     public $account_id;
     public $note_id;
+    public $specific_weight;
     public $value;
     public $distribution;
     public $evaluation;
@@ -252,6 +254,7 @@ class NoteLink
         $this->status = (isset($data['status'])) ? $data['status'] : null;
         $this->account_id = (isset($data['account_id'])) ? $data['account_id'] : null;
         $this->note_id = (isset($data['note_id'])) ? $data['note_id'] : null;
+        $this->specific_weight = (isset($data['specific_weight'])) ? $data['specific_weight'] : null;
         $this->value = (isset($data['value'])) ? $data['value'] : null;
         $this->distribution = (isset($data['distribution'])) ? json_decode($data['distribution'], true) : array();
         $this->evaluation = (isset($data['evaluation'])) ? $data['evaluation'] : null;
@@ -298,6 +301,7 @@ class NoteLink
     	$data['status'] = $this->status;
     	$data['account_id'] = (int) $this->account_id;
     	$data['note_id'] = (int) $this->note_id;
+    	$data['specific_weight'] = (float) $this->specific_weight;
     	$data['value'] = $this->value; // Nullable
     	$data['distribution'] = $this->distribution;
     	$data['evaluation'] = $this->evaluation;
@@ -607,6 +611,7 @@ class NoteLink
     		if ($propertyId == 'status') $this->status = $value;
     		elseif ($propertyId == 'account_id') $this->account_id = $value;
     		elseif ($propertyId == 'note_id') $this->note_id = $value;
+    		elseif ($propertyId == 'specific_weight') $this->specific_weight = $value;
     		elseif ($propertyId == 'value') $this->value = $value;
     		elseif ($propertyId == 'evaluation') $this->evaluation = $value;
     		elseif ($propertyId == 'assessment') $this->assessment = $value;

@@ -86,7 +86,6 @@ class ReportController extends AbstractActionController
 							// Retrieve the student list by group and place
 
 							if (array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students)) {
-								
 								if (array_key_exists(((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId, $existingReports)) {
 									$report = $existingReports[((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId];
 								}
@@ -99,18 +98,20 @@ class ReportController extends AbstractActionController
 									$report->school_period = $requestBody['schoolPeriod'];
 									$report->subject = $subjectId;
 									$report->reference_value = $referenceValue;
-									if (array_key_exists($subjectId, $subjectConfig[modalities])) $report->weight = $subjectConfig['modalities'][$subjectId]['credits'];
+									if (array_key_exists($subjectId, $subjectConfig['modalities'])) $report->weight = $subjectConfig['modalities'][$subjectId]['credits'];
 									else $report->weight = 1;
 									if (array_key_exists('teacherId', $subjectData)) $report->teacher_id = $subjectData['teacherId'];
 									$report->add();
+									$report->links = [];
 									$responseBody['reportCreated'][] = $report->id;
 								}
 
 								// Generate the student links for this report
 								foreach ($students[((int) $placeId) . '/' . ((int) $groupId)] as $student) {
 
-									if (	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
-										&&  $subjectConfig[modalities][$subjectId]['full_time']
+									if (	$subjectId != 'global'
+										&&	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
+										&&  $subjectConfig['modalities'][$subjectId]['full_time']
 										&& 	in_array($student->property_15, ['part_time', 'online']) ) {
 
 										continue;
@@ -120,6 +121,13 @@ class ReportController extends AbstractActionController
 									if (array_key_exists($student->id, $report->links)) continue;
 
 									$studentLink = NoteLink::instanciate($student->id, $report->id);
+									if (	$subjectId != 'global'
+										&&	array_key_exists('credits_pt', $subjectConfig['modalities'][$subjectId]) 
+										&& 	in_array($student->property_15, ['part_time', 'online']) ) {
+
+										$studentLink->specific_weight = $subjectConfig['modalities'][$subjectId]['credits_pt'];
+									}
+
 									$studentLink->add();
 									$responseBody['studentLinkCreated'][] = $studentLink->id;
 								}
