@@ -3639,9 +3639,18 @@ table.note-report td {
 			'amount' => [],
 		),
 	),
+
 	'commitmentTerm/detail/p-pit-studies' => array(
 		'title' => array('en_US' => 'Term detail', 'fr_FR' => 'Détail de l\'échéance'),
 		'displayAudit' => true,
+		'links' => [ 
+			'proforma' => array(
+				'definition' => 'inline',
+				'route' => 'commitmentTerm/downloadInvoice',
+				'params' => [],
+				'labels' => array('default' => 'Proforma', 'fr_FR' => 'Proforma'),
+			),
+		],
 	),
 	
 	'commitmentTerm/update/p-pit-studies' => array(
