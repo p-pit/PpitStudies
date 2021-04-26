@@ -1899,6 +1899,17 @@ return array_merge(
 		),
 	),
 	
+	'commitment/account_list/p-pit-studies' => array(
+		'links' => [ 
+			'certificat_scolarite' => array(
+				'definition' => 'inline',
+				'route' => 'gemaDocument/downloadDocument',
+				'params' => ['template_identifier' => 'certificat_scolarite'],
+				'labels' => array('default' => 'Proforma', 'fr_FR' => 'Certificat de scolarité'),
+			),
+		],
+	),
+	
 	'commitment/subscriptionList/p-pit-studies' => array(
 		'properties' => array(
 			'place_id' => [],
