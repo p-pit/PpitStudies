@@ -112,7 +112,7 @@ class ReportController extends AbstractActionController
 									if (	$subjectId != 'global'
 										&&	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
 										&&  $subjectConfig['modalities'][$subjectId]['full_time']
-										&& 	in_array($student->property_15, ['part_time', 'online']) ) {
+										&& 	$student->property_15 != 'full_time' ) {
 
 										continue;
 									}
@@ -123,7 +123,7 @@ class ReportController extends AbstractActionController
 									$studentLink = NoteLink::instanciate($student->id, $report->id);
 									if (	$subjectId != 'global'
 										&&	array_key_exists('credits_pt', $subjectConfig['modalities'][$subjectId]) 
-										&& 	in_array($student->property_15, ['part_time', 'online']) ) {
+										&& 	$student->property_15 != 'full_time' ) {
 
 										$studentLink->specific_weight = $subjectConfig['modalities'][$subjectId]['credits_pt'];
 									}
