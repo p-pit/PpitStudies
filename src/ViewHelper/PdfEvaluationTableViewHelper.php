@@ -32,6 +32,7 @@ class PdfEvaluationTableViewHelper
 	    $subject = null;
 	    $globalAverage = null;
 	    foreach ($evaluations as $evaluation) {
+			
 	    	if ($evaluation->subject == 'global') $globalAverage = $evaluation;
 	    	else {
 		    	if ($evaluation->subject != $subject) {
@@ -49,11 +50,20 @@ class PdfEvaluationTableViewHelper
 		    			$value = $context->formatFloat($evaluation->value, 1).'/'.$context->formatFloat($evaluation->reference_value, 0);
 		    		}
 		    		else {
-		    		  	foreach ($context->getConfig('note/property/value')['modalities'] as $modality) {
-	  						if ($modality['value'] == $evaluation->value) {
-	  							$value = $context->localize($modality);
-	  							break;
-	  						}
+						if (array_key_exists('value', $context->getConfig('teacher/evaluation/update')['properties'])) {
+							$values = $context->getConfig('teacher/evaluation/update')['properties']['value'];
+							} else {
+							$values = $context->getConfig('note/property/value')['modalities'];
+						}
+						foreach ($values as $modality) {
+							if ($modality['value'] == $evaluation->value) {
+								if ($modality['value'] == $evaluation->evaluation) {
+									$value = $evaluation->evaluation;
+								} else {
+									$value = $context->localize($modality);
+								}
+								break;
+							}
   						}
 		    		}
 		    	}

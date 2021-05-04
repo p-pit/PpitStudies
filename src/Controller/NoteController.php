@@ -946,12 +946,21 @@ class NoteController extends AbstractActionController
 			$content['note']['reference_value'] = $this->request->getPost('reference_value');
 			$content['note']['weight'] = $this->request->getPost('weight');
 			$content['note']['observations'] = $this->request->getPost('observations');
+
+			if (array_key_exists('value', $context->getConfig('teacher/evaluation/update')['properties'])) {
+				$config = $context->getConfig('teacher/evaluation/update')['properties']['value'];
+			} else {
+				$config = $context->getConfig('note/property/value')['modalities'];
+			}
 	
 			$newLinks = [];
-			foreach ($content['noteLinks'] as &$noteLinkData) {
+			foreach ($content['noteLinks'] as $noteLinkData) {
 				$account_id = $noteLinkData['account_id'];
-				$value = $this->request->getPost('value-' . $account_id);
-				if ($value == '') $value = null;
+				$param = $this->request->getPost('value-' . $account_id);
+				
+				if ($param === '' || $param === '0') $value = null;
+				else $value = floatval($config[$param]['value']);
+					
 				$assessment = $this->request->getPost('assessment-' . $account_id);
 				
 				if (!$account_id) {
@@ -965,9 +974,14 @@ class NoteController extends AbstractActionController
 				}
 				$mention = $this->request->getPost('mention-' . $account_id);
 				$audit = [];
+	
 				if ($value !== null || $type == 'report' || $assessment || $mention) {
 					$noteLinkData['value'] = $value;
-					$noteLinkData['evaluation'] = $mention;
+
+					if ($mention) $noteLinkData['evaluation'] = $mention;
+					elseif (floatval($param)) $noteLinkData['evaluation'] = NULL; 
+					else $noteLinkData['evaluation'] = $param; 
+					
 					$noteLinkData['assessment'] = $assessment;
 					$noteLink->loadData($noteLinkData);
 					$newLinks[$account_id] = $noteLink;
