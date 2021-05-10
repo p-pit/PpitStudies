@@ -1952,6 +1952,8 @@ return array_merge(
 		'amount' => array('mandatory' => false),
 	),
 
+	'commitment/subscriptionDetail/p-pit-studies' => [],
+
 	'commitment/subscriptionUpdate/p-pit-studies' => array(
 		'status' => array('mandatory' => true),
 		'year' => array('mandatory' => true, 'accountant' => true),
@@ -3260,6 +3262,16 @@ return array_merge(
 					),
 			),
 	),
+
+	'core_account/commitments/p-pit-studies' => [
+		'index' => [
+			'route' => 'commitment/indexV2',
+			'type' => 'p-pit-studies',
+			'entryId' => 'commitment',
+			'labels' => ['default' => 'Engagements'],
+		],
+	],
+
 	'core_account/update/p-pit-studies' => array(
 			'place_id' => array('mandatory' => true),
 			'status' => array(
