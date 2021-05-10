@@ -1046,6 +1046,15 @@ return array_merge(
 		        								),
 		        						),
 		        				),
+	       						'keystone' => array(
+		        						'type' => 'segment',
+		        						'options' => array(
+		        								'route' => '/keystone',
+		        								'defaults' => array(
+		        										'action' => 'keystone',
+		        								),
+		        						),
+		        				),
 	       						'init' => array(
 		        						'type' => 'segment',
 		        						'options' => array(
@@ -1135,6 +1144,7 @@ return array_merge(
 				array('route' => 'student/download', 'roles' => array('guest')),
 				array('route' => 'student/downloadExam', 'roles' => array('guest')),
 				array('route' => 'student/nomad', 'roles' => array('guest')),
+				array('route' => 'student/keystone', 'roles' => array('guest')),
 				array('route' => 'student/init', 'roles' => array('admin')),
 			)
 		)

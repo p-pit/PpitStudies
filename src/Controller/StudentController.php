@@ -1779,84 +1779,126 @@ class StudentController extends AbstractActionController
     	return $this->nomad($request, date('Y-m-d', strtotime(date('Y-m-d').' - 1 days')), $place_identifier, $limit);
     }
 
-    public function keystoneAction() {
-    
-    	$context = Context::getCurrent();
-    	 
-    	// Authentication
-    	if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+    public function keystoneAction() 
+	{
+		$context = Context::getCurrent();
+
+		// Authentication
+		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
     		$this->getResponse()->setStatusCode('401');
     		return $this->getResponse();
     	}
-    	 
-    	$from = $this->params()->fromRoute('from', $date);
-    	$place_identifier = $this->params()->fromQuery('place_identifier', '');
-    	$limit = $this->params()->fromQuery('limit', 10);
 
-    	$safe = $context->getConfig()['ppitUserSettings']['safe'];
-    	$url = 'https://smarthub.keystoneacademic.com/api/rest/getLead';
+		/* EXPECTS
+		[
+			ID => 								1234
+			Program Name => 					MSc Business
+			Custom Program ID => 				MSC_BUS
+			Registered => 						2014-08-31 19:29:19
+			Desired Campus => 					Barcelona
+			Firstname => 						John
+			Lastname => 						Doe
+			Date of Birth => 					1977-07-12
+			Contact Email => 					student@domain.com
+			Contact Phone => 					+1 1717755953
+			Contact City => 					Oslo
+			Nationality Country Name => 		Norway
+			Free String comment from user => 	Where is this school located?
+		]
+		*/
+
+		$content = $this->request->getContent();
+		$data = json_decode($content, true);
+
+		$lead[]['identifier'] = 'KYST-' . $data[0]['id'];
+		$lead[0]['property_18'] = $data[0]['program_name'];
+		$lead[0]['property_10'] = $data[0]['custom_program_id']; 		
+		$lead[0]['place_id'] = $data[0]['school'];						
+		$lead[0]['status'] = 'new';
+		$lead[0]['origine'] = 'master_etude';
+		$lead[0]['opening_date'] = substr($data[0]['registered'], 0, 10);
+		$lead[0]['callback_date'] = date('Y-m-d');
+		$lead[0]['n_first'] = $data[0]['firstname'];
+		$lead[0]['n_last'] = $data[0]['lastname'];
+		$lead[0]['email'] = $data[0]['contact_email'];
+		$lead[0]['tel_cell'] = $data[0]['contact_phone'];
+		// $lead[0]['adr_street'] = $data[0]['contact_address'];
+		$lead[0]['adr_city'] = $data[0]['contact_city'];
+		// $lead['adr_zip'] = $data[0]['contact_zip'];
+		$lead[0]['adr_country'] = $data[0]['nationality_country_name'];
+		$lead[0]['contact_history'] = $data[0]['comments'];
+
+		// Connect to P-Pit Account API
+		$safe = $context->getConfig()['ppitUserSettings']['safe']['ESI']['ppitWebhook'];
+    	$url = $safe['protocol'] . '//' . $safe['subDomain'] . '/account/v2/p-pit-studies';
     	$client = new Client($url, ['adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30]);
-    	 
-    	$client->setHeaders([
-    		'Accept-Encoding' => 'gzip,deflate',
-    		'Accept' => 'application/json',
-    		'Content-Type' => 'application/json',
-			'x-api-key: ' . $safe[$context->getInstance()->caption]['keystone']
-    	]);
-    	$client->setMethod('POST');
-    	$response = $client->send();
-    	$body = $response->getBody();
-    	$leads = json_decode($body, true)['data'];
-    	foreach ($leads as $lead) {
-    		echo $lead['id']."\n";
-    
-    		// If the account exists, update it if the contact is a prospect (new status) and the existing account is a suspect
-    		$account = Account::get($lead['id'], 'identifier');
-    		if (!$account) {
-    			$vcard = Vcard::get($lead['email'], 'email');
-    			if ($vcard) $account = Account::get($vcard->id, 'contact_1_id');
-    		}
-    		if ($account && in_array($account->status, ['suspect', 'gone']) && $lead['type'] == 'sponsor') {
-    			$account->status = 'new';
-    			$account->callback_date = date('Y-m-d');
-    			$account->update(null);
-    			continue;
-    		}
-    
-    		$data = [];
-    		if ($place_identifier) $data['place_id'] = Place::get($place_identifier, 'identifier')->id;
-    		$data['identifier'] = $lead['id'];
-    		$data['status'] = (array_key_exists('type', $lead) && $lead['type'] == 'registration') ? 'suspect' : 'new';
-    		$data['origine'] = 'nomad';
-    		$data['callback_date'] = date('Y-m-d');
-    		foreach ($context->getConfig('core_account/nomad/p-pit-studies')['properties'] as $propertyId => $property) {
-    			if (array_key_exists($property, $lead)) $data[$propertyId] = $lead[$property];
-    		}
-    
-    		$levels = ['Terminale' => '1st', '1ère année' => '2nd', '2ème année' => '3rd', '3ème année' => '4th'];
-    		$data['property_10'] = (array_key_exists($lead['levelOfEducation'], $levels)) ? $levels[$lead['levelOfEducation']] : '';
-    
-    		$data['json_property_2'] = $lead['wishedDomain'];
-    		unset($lead['wishedDomain']);
-    		$data['json_property_3'] = $lead['engagements'];
-    		unset($lead['engagements']);
-    		if (array_key_exists('studyChoices', $lead)) {
-    			foreach ($lead['studyChoices'] as $group) {
-    				foreach ($group as $key => $value) {
-    					if ($key == 'name') {
-    						if ($value == 'Alternance') $data['property_15'] = 'part_time';
-    						elseif ($value == 'Formation initiale') $data['property_15'] = 'initial';
-    						else $data['property_15'] = $value;
-    					}
-    				}
-    			}
-    		}
-    		$data['json_property_1'] = $lead;
-    		$data['contact_history'] = 'P-Pit -> Nomad connector';
-    		$account = Account::instanciate('p-pit-studies');
-    		$account->loadAndAdd($data, Account::getConfig('p-pit-studies'));
-    	}
-    	return $this->response;
+    	$client->setHeaders(['Authorization' => $safe['auth'], 'Accept-Encoding' => 'gzip,deflate',]);
+		$client->setMethod('PUT');
+		$client->setRawBody(json_encode($lead));
+		$postResponse = $client->send();
+
+		if ($postResponse->getStatusCode() == 200) {
+			$responseBody = json_decode($postResponse->getContent(), true);
+			$account = $responseBody[$lead[0]['email']];
+			
+			if ($account['status'] == 'ok') {
+				$this->response->setStatusCode('200');
+				return $this->response;
+			}
+
+			if ($account['status'] == 'exists') {
+
+				if ((in_array($account['account_status'], ['gone', 'called', 'reminder'])) && $account['account_callback_date'] < date('Y-m-d')) {
+
+					$update['identifier'] = 'KYST-' . $data[0]['id'];
+					$update['property_18'] = $data[0]['program_name'];
+					$update['property_10'] = $data[0]['custom_program_id'];
+					$update['place_id'] = $data[0]['school'];
+					$update['status'] = 'new';
+					$update['callback_date'] = date('Y-m-d');
+					$update['tel_cell'] = $data[0]['contact_phone'];
+		
+					$rest = 'Lead réactivé => Keystone data :';
+	
+					foreach ($data[0] as $property => $value) {
+						$rest .= (' '. $property .' : ' . $value);
+					}
+					
+					$update['contact_history'] = $rest;
+
+					$url = $safe['protocol'] . '//' . $safe['subDomain'] . '/account/v2/p-pit-studies/' . $account['account_id'];
+					$client = new Client($url, ['adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30]);
+					$client->setHeaders(['Authorization' => $safe['auth'], 'Accept-Encoding' => 'gzip,deflate',]);
+					$client->setMethod('POST');
+					$client->setRawBody(json_encode($update));
+
+					$updateResponse = $client->send();
+
+					if ($updateResponse->getStatusCode() == 200) {
+						$updatedAccount = json_decode($updateResponse->getContent(), true);
+						if ($updatedAccount['status'] == 'updated') {
+							$this->response->setStatusCode('200');
+							return $this->response;
+						}
+					} 
+	
+					if ($updateResponse->getStatusCode() == 500) {
+						$this->response->setStatusCode($updateResponse->getStatusCode());
+						$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
+						return $this->response;
+					}
+				} else {
+					$this->response->setStatusCode('200');
+					return $this->response;
+				}
+			}
+		}	
+		
+		if ($postResponse->getStatusCode() == 500) {
+			$this->response->setStatusCode($postResponse->getStatusCode());
+			$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+			return $this->response;
+		}	
 	}
 	
 	public function initAction()
