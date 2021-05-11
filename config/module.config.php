@@ -2020,9 +2020,9 @@ return array_merge(
 	),
 
 	'commitment/subscriptionExport/p-pit-studies' => array(
-		'year' => 'A',
-		'invoice_identifier' => 'B',
-		'invoice_date' => 'C',
+		'place_id' => 'A',
+		'account_property_1' => 'B',
+		'property_13' => 'C',
 		'account_name' => 'D',
 		'contact_email' => 'X',
 		'invoice_n_fn' => 'E',
