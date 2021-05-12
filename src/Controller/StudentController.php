@@ -1781,6 +1781,12 @@ class StudentController extends AbstractActionController
 
     public function keystoneAction() 
 	{
+		// Initialize the logger
+		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+		$logger->info('Keystone webhook:' . ' loaded ' . json_encode($data));
+
 		$request = $this->getRequest();
 		if (!$request->isPost()) {
 			$this->getResponse()->setStatusCode('401');
@@ -1799,9 +1805,9 @@ class StudentController extends AbstractActionController
 		{
 			"data": {
 				"id": 						"16949124",
-				"place_id": 				"paris",
-				"property_18": 				"esi",
+				"property_18": 	        	"esi",
 				"property_10": 				"4th",
+				"place_identifier": 	    "1_paris",
 				"origine":	 				"master_etude",
 				"status": 					"new",
 				"n_first": 					"John",
@@ -1810,8 +1816,8 @@ class StudentController extends AbstractActionController
 				"email": 					"student@domain.com",
 				"property_6":               "Norway",
 				"adr_street": 				"2nd Quarter 2021",
-				"adr_city": 				"Oslo",
 				"adr_zip": 					"123456",
+				"adr_city": 				"Oslo",
 				"adr_country": 				"Norway",
 				"contact_history": {
 					"communication__posts": [
