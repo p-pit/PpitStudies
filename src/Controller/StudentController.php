@@ -1781,12 +1781,6 @@ class StudentController extends AbstractActionController
 
     public function keystoneAction() 
 	{
-		// Initialize the logger
-		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
-		$logger = new \Zend\Log\Logger();
-		$logger->addWriter($writer);
-		$logger->info('Keystone webhook:' . ' loaded ' . json_encode($data));
-
 		$request = $this->getRequest();
 		if (!$request->isPost()) {
 			$this->getResponse()->setStatusCode('401');
@@ -1830,6 +1824,12 @@ class StudentController extends AbstractActionController
 
 		$content = $this->request->getContent();
 		$data = json_decode($content, true);
+
+		// Initialize the logger
+		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+		$logger->info('Keystone webhook body :' . ' loaded encoded => ' . print_r($content) . ' ' . ' decoded => ' . print_r($data);
 
 		$lead[0] = $data['data'];
 		$lead[0]['identifier'] = 'KYST-' . $lead[0]['id'];
