@@ -1781,6 +1781,12 @@ class StudentController extends AbstractActionController
 
     public function keystoneAction() 
 	{
+		$request = $this->getRequest();
+		if (!$request->isPost()) {
+			$this->getResponse()->setStatusCode('401');
+    		return $this->getResponse();
+		}
+
 		$context = Context::getCurrent();
 
 		// Authentication
@@ -1819,12 +1825,11 @@ class StudentController extends AbstractActionController
 		$content = $this->request->getContent();
 		$data = json_decode($content, true);
 
-		$lead[] = $data['data'];
+		$lead[0] = $data['data'];
 		$lead[0]['identifier'] = 'KYST-' . $lead[0]['id'];
 		$lead[0]['email'] = strtolower($lead[0]['email']);
 		$lead[0]['property_6'] = (strtolower($lead[0]['property_6']) == 'france') ? strtolower($lead[0]['property_6']) : 'visa';
 		$lead[0]['contact_history'] = $lead[0]['contact_history']['communication__posts'][0];
-		// print_r($lead); exit;
 
 		// Connect to P-Pit Account API
 		$safe = $context->getConfig()['ppitUserSettings']['safe']['ESI']['ppitWebhook'];
@@ -1838,9 +1843,11 @@ class StudentController extends AbstractActionController
 		if ($postResponse->getStatusCode() == 200) {
 			$responseBody = json_decode($postResponse->getContent(), true);
 			$account = $responseBody[$lead[0]['email']];
-			
-			if ($account['status'] == 'ok') {
-				$this->response->setStatusCode('200');
+
+			if ($account['status'] == 'ok') {	
+				$this->response->setContent($postResponse->getContent()); // debugging mode only
+				$this->response->setStatusCode($postResponse->getStatusCode());
+				$this->response->setReasonPhrase($postResponse->getReasonPhrase());
 				return $this->response;
 			}
 
@@ -1851,7 +1858,6 @@ class StudentController extends AbstractActionController
 					$update['status'] = $lead[0]['status'];
 					$update['origine'] = $lead[0]['origine'];
 					$update['place_identifier'] = $lead[0]['place_identifier'];
-					// $update['property_10'] = $lead[0]['property_10'];
 		
 					$rest = 'Lead réactivé => Keystone data : ';
 	
@@ -1870,43 +1876,33 @@ class StudentController extends AbstractActionController
 					$updateResponse = $client->send();
 
 					if ($updateResponse->getStatusCode() == 200) {
-						
-						$test = json_decode($updateResponse->getContent(), true);
-						$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
-						$this->response->setStatusCode($updateResponse->getStatusCode());
-						return $this->response;
-
 						$updatedAccount = json_decode($updateResponse->getContent(), true);
-						if ($account['account_id'] == 'updated') {
-							$this->response->setStatusCode('200');
+						if ($updatedAccount[$account['account_id']] == 'Updated') {
+							$this->response->setContent($updateResponse->getContent()); // debugging mode only
+							$this->response->setStatusCode($updateResponse->getStatusCode());
+							$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
 							return $this->response;
 						}
-					} 
-	
-					if ($updateResponse->getStatusCode() == 500) {
-						$this->response->setContent(json_encode($updateResponse));
+					} else {
+						$this->response->setContent($updateResponse->getContent()); // debugging mode only
 						$this->response->setStatusCode($updateResponse->getStatusCode());
 						$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
 						return $this->response;
-
-						// $this->response->setStatusCode($updateResponse->getStatusCode());
-						// $this->response->setReasonPhrase($updateResponse->getReasonPhrase());
-						// return $this->response;
 					}
 				} else {
-					$this->response->setContent(json_encode($postResponse));
-					
-						$this->response->setStatusCode($postResponse->getStatusCode());
-						$this->response->setReasonPhrase($postResponse->getReasonPhrase());
-						return $this->response;
-
-					// $this->response->setStatusCode('200');
-					// return $this->response;
+					$this->response->setContent($postResponse->getContent()); // debugging mode only
+					$this->response->setStatusCode($postResponse->getStatusCode());
+					$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+					return $this->response;
 				}
+			} else {
+				$this->response->setContent($postResponse->getContent()); // debugging mode only
+				$this->response->setStatusCode($postResponse->getStatusCode());
+				$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+				return $this->response;
 			}
-		}	
-		
-		if ($postResponse->getStatusCode() == 500) {
+		} else {	
+			$this->response->setContent($postResponse->getContent()); // debugging mode only
 			$this->response->setStatusCode($postResponse->getStatusCode());
 			$this->response->setReasonPhrase($postResponse->getReasonPhrase());
 			return $this->response;
