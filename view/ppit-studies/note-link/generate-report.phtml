@@ -73,14 +73,14 @@ $subjects = $context->getConfig('student/property/school_subjects');
 
 <div class="form-group row">
 	<div class="col-sm-1">
-		<input class="form-control form-control-sm checkSubject-<?php echo $group->id ?>" type="checkbox" id="checkSubject_<?php echo $group->id ?>_<?php echo $subjectId?>" checked>
+		<input class="form-control form-control-sm checkSubject-<?php echo $group->id ?>" type="checkbox" id="checkSubject.<?php echo $group->id ?>.<?php echo $subjectId?>" checked>
 	</div>
 	<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $context->localize($subjects['modalities'][$subjectId]) ?></label>
 	<div class="col-sm-6">
 		<select class="form-control form-control-sm selectTeacher-<?php echo $group->id ?>" id="selectTeacher_<?php echo $group->id ?>_<?php echo $subjectId?>">
 			<option value="">Appréciation à saisir par...</option>
 		<?php foreach ($teachers as $teacherId => $teacher) : ?>
-			<option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->name ?></option>
+			<option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->n_fn ?> (<?php echo $places[$teacher->place_id]->caption ?>)</option>
 		<?php endforeach ?>
 		</select>
 	</div>
@@ -90,14 +90,14 @@ $subjects = $context->getConfig('student/property/school_subjects');
 
 <div class="form-group row" id="<?php echo $propertyId ?>_group">
 	<div class="col-sm-1">
-		<input class="form-control form-control-sm checkSubject-<?php echo $group->id ?>" type="checkbox" id="checkSubject_<?php echo $group->id ?>_global" checked>
+		<input class="form-control form-control-sm checkSubject-<?php echo $group->id ?>" type="checkbox" id="checkSubject.<?php echo $group->id ?>.global" checked>
 	</div>
 	<label class="col-sm-5 col-form-label col-form-label-sm"><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></label>
 	<div class="col-sm-6">
 		<select class="form-control form-control-sm selectTeacher-<?php echo $group->id ?>" id="selectTeacher_<?php echo $group->id ?>_global">
 			<option value="<?php echo $context->getContactId() ?>"><?php echo $context->getContact()->n_fn ?></option>
 		<?php foreach ($teachers as $teacherId => $teacher) : ?>
-			<option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->name ?></option>
+			<option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->n_fn ?> (<?php echo $places[$teacher->place_id]->caption ?>)</option>
 		<?php endforeach ?>
 		</select>
 	</div>
