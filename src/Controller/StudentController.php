@@ -1829,7 +1829,7 @@ class StudentController extends AbstractActionController
 		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
 		$logger = new \Zend\Log\Logger();
 		$logger->addWriter($writer);
-		$logger->info('Keystone webhook body :' . ' loaded encoded => ' . print_r($content) . ' ' . ' decoded => ' . print_r($data);
+		$logger->info('Keystone webhook body :' . ' loaded encoded => ' . print_r($content) . ' ' . ' decoded =>' . print_r($data));
 
 		$lead[0] = $data['data'];
 		$lead[0]['identifier'] = 'KYST-' . $lead[0]['id'];
