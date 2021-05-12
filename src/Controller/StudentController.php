@@ -1790,49 +1790,47 @@ class StudentController extends AbstractActionController
     	}
 
 		/* EXPECTS
-		[
-			ID => 								1234
-			Program Name => 					MSc Business
-			Custom Program ID => 				MSC_BUS
-			Registered => 						2014-08-31 19:29:19
-			Desired Campus => 					Barcelona
-			Firstname => 						John
-			Lastname => 						Doe
-			Date of Birth => 					1977-07-12
-			Contact Email => 					student@domain.com
-			Contact Phone => 					+1 1717755953
-			Contact City => 					Oslo
-			Nationality Country Name => 		Norway
-			Free String comment from user => 	Where is this school located?
-		]
+		{
+			"data": {
+				"id": 						"16949124",
+				"place_id": 				"paris",
+				"property_18": 				"esi",
+				"property_10": 				"4th",
+				"origine":	 				"master_etude",
+				"status": 					"new",
+				"n_first": 					"John",
+				"n_last": 					"DOE",
+				"tel_cell": 				"+1 1717755953",
+				"email": 					"student@domain.com",
+				"property_6":               "Norway",
+				"adr_street": 				"2nd Quarter 2021",
+				"adr_city": 				"Oslo",
+				"adr_zip": 					"123456",
+				"adr_country": 				"Norway",
+				"contact_history": {
+					"communication__posts": [
+											"Where is this school located?"
+					]
+				}
+			}
+		}
 		*/
 
 		$content = $this->request->getContent();
 		$data = json_decode($content, true);
 
-		$lead[]['identifier'] = 'KYST-' . $data[0]['id'];
-		$lead[0]['property_18'] = $data[0]['program_name'];
-		$lead[0]['property_10'] = $data[0]['custom_program_id']; 		
-		$lead[0]['place_id'] = $data[0]['school'];						
-		$lead[0]['status'] = 'new';
-		$lead[0]['origine'] = 'master_etude';
-		$lead[0]['opening_date'] = substr($data[0]['registered'], 0, 10);
-		$lead[0]['callback_date'] = date('Y-m-d');
-		$lead[0]['n_first'] = $data[0]['firstname'];
-		$lead[0]['n_last'] = $data[0]['lastname'];
-		$lead[0]['email'] = $data[0]['contact_email'];
-		$lead[0]['tel_cell'] = $data[0]['contact_phone'];
-		// $lead[0]['adr_street'] = $data[0]['contact_address'];
-		$lead[0]['adr_city'] = $data[0]['contact_city'];
-		// $lead['adr_zip'] = $data[0]['contact_zip'];
-		$lead[0]['adr_country'] = $data[0]['nationality_country_name'];
-		$lead[0]['contact_history'] = $data[0]['comments'];
+		$lead[] = $data['data'];
+		$lead[0]['identifier'] = 'KYST-' . $lead[0]['id'];
+		$lead[0]['email'] = strtolower($lead[0]['email']);
+		$lead[0]['property_6'] = (strtolower($lead[0]['property_6']) == 'france') ? strtolower($lead[0]['property_6']) : 'visa';
+		$lead[0]['contact_history'] = $lead[0]['contact_history']['communication__posts'][0];
+		// print_r($lead); exit;
 
 		// Connect to P-Pit Account API
 		$safe = $context->getConfig()['ppitUserSettings']['safe']['ESI']['ppitWebhook'];
     	$url = $safe['protocol'] . '//' . $safe['subDomain'] . '/account/v2/p-pit-studies';
     	$client = new Client($url, ['adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30]);
-    	$client->setHeaders(['Authorization' => $safe['auth'], 'Accept-Encoding' => 'gzip,deflate',]);
+    	$client->setHeaders(['Authorization' => $safe['auth'], 'Accept-Encoding' => 'gzip,deflate']);
 		$client->setMethod('PUT');
 		$client->setRawBody(json_encode($lead));
 		$postResponse = $client->send();
@@ -1850,20 +1848,17 @@ class StudentController extends AbstractActionController
 
 				if ((in_array($account['account_status'], ['gone', 'called', 'reminder'])) && $account['account_callback_date'] < date('Y-m-d')) {
 
-					$update['identifier'] = 'KYST-' . $data[0]['id'];
-					$update['property_18'] = $data[0]['program_name'];
-					$update['property_10'] = $data[0]['custom_program_id'];
-					$update['place_id'] = $data[0]['school'];
-					$update['status'] = 'new';
-					$update['callback_date'] = date('Y-m-d');
-					$update['tel_cell'] = $data[0]['contact_phone'];
+					$update['status'] = $lead[0]['status'];
+					$update['origine'] = $lead[0]['origine'];
+					$update['place_identifier'] = $lead[0]['place_identifier'];
+					// $update['property_10'] = $lead[0]['property_10'];
 		
-					$rest = 'Lead réactivé => Keystone data :';
+					$rest = 'Lead réactivé => Keystone data : ';
 	
-					foreach ($data[0] as $property => $value) {
-						$rest .= (' '. $property .' : ' . $value);
+					foreach ($lead[0] as $property => $value) {
+						$rest .= (' '. $property .' : ' . $value . '<br>');
 					}
-					
+
 					$update['contact_history'] = $rest;
 
 					$url = $safe['protocol'] . '//' . $safe['subDomain'] . '/account/v2/p-pit-studies/' . $account['account_id'];
@@ -1875,21 +1870,38 @@ class StudentController extends AbstractActionController
 					$updateResponse = $client->send();
 
 					if ($updateResponse->getStatusCode() == 200) {
+						
+						$test = json_decode($updateResponse->getContent(), true);
+						$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
+						$this->response->setStatusCode($updateResponse->getStatusCode());
+						return $this->response;
+
 						$updatedAccount = json_decode($updateResponse->getContent(), true);
-						if ($updatedAccount['status'] == 'updated') {
+						if ($account['account_id'] == 'updated') {
 							$this->response->setStatusCode('200');
 							return $this->response;
 						}
 					} 
 	
 					if ($updateResponse->getStatusCode() == 500) {
+						$this->response->setContent(json_encode($updateResponse));
 						$this->response->setStatusCode($updateResponse->getStatusCode());
 						$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
 						return $this->response;
+
+						// $this->response->setStatusCode($updateResponse->getStatusCode());
+						// $this->response->setReasonPhrase($updateResponse->getReasonPhrase());
+						// return $this->response;
 					}
 				} else {
-					$this->response->setStatusCode('200');
-					return $this->response;
+					$this->response->setContent(json_encode($postResponse));
+					
+						$this->response->setStatusCode($postResponse->getStatusCode());
+						$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+						return $this->response;
+
+					// $this->response->setStatusCode('200');
+					// return $this->response;
 				}
 			}
 		}	

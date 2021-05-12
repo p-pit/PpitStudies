@@ -958,7 +958,7 @@ class NoteController extends AbstractActionController
 				$account_id = $noteLinkData['account_id'];
 				$param = $this->request->getPost('value-' . $account_id);
 				
-				if ($param === '' || $param === '0') $value = null;
+				if ($param === '') $value = null;
 				else $value = floatval($config[$param]['value']);
 					
 				$assessment = $this->request->getPost('assessment-' . $account_id);
@@ -976,12 +976,12 @@ class NoteController extends AbstractActionController
 				$audit = [];
 	
 				if ($value !== null || $type == 'report' || $assessment || $mention) {
-					$noteLinkData['value'] = $value;
 
 					if ($mention) $noteLinkData['evaluation'] = $mention;
-					elseif (floatval($param)) $noteLinkData['evaluation'] = NULL; 
+					elseif ($param !== 'Non Évalué') $noteLinkData['evaluation'] = NULL; 
 					else $noteLinkData['evaluation'] = $param; 
-					
+
+					$noteLinkData['value'] = $value;
 					$noteLinkData['assessment'] = $assessment;
 					$noteLink->loadData($noteLinkData);
 					$newLinks[$account_id] = $noteLink;
