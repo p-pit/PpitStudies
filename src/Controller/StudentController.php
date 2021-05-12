@@ -1795,47 +1795,29 @@ class StudentController extends AbstractActionController
     		return $this->getResponse();
     	}
 
-		/* EXPECTS
-		{
-			"data": {
-				"id": 						"16949124",
-				"property_18": 	        	"esi",
-				"property_10": 				"4th",
-				"place_identifier": 	    "1_paris",
-				"origine":	 				"master_etude",
-				"status": 					"new",
-				"n_first": 					"John",
-				"n_last": 					"DOE",
-				"tel_cell": 				"+1 1717755953",
-				"email": 					"student@domain.com",
-				"property_6":               "Norway",
-				"adr_street": 				"2nd Quarter 2021",
-				"adr_zip": 					"123456",
-				"adr_city": 				"Oslo",
-				"adr_country": 				"Norway",
-				"contact_history": {
-					"communication__posts": [
-											"Where is this school located?"
-					]
-				}
-			}
-		}
-		*/
-
 		$content = $this->request->getContent();
 		$data = json_decode($content, true);
 
-		// Initialize the logger
-		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
-		$logger = new \Zend\Log\Logger();
-		$logger->addWriter($writer);
-		$logger->info('Keystone webhook body :' . ' loaded encoded => ' . print_r($content) . ' ' . ' decoded =>' . print_r($data));
-
-		$lead[0] = $data['data'];
+		// Mapping data
+		$lead[0]['id'] = $data['id'];
 		$lead[0]['identifier'] = 'KYST-' . $lead[0]['id'];
-		$lead[0]['email'] = strtolower($lead[0]['email']);
-		$lead[0]['property_6'] = (strtolower($lead[0]['property_6']) == 'france') ? strtolower($lead[0]['property_6']) : 'visa';
-		$lead[0]['contact_history'] = $lead[0]['contact_history']['communication__posts'][0];
+		$lead[0]['origine'] = 'master_etude';
+		$lead[0]['status'] = 'new';
+		$lead[0]['place_identifier'] = '1_paris';
+		$lead[0]['property_10'] = '4th';
+		$lead[0]['property_18'] = 'esi';
+		// $lead[0]['property_18'] = $data['program']['custom_program_id'];
+		$lead[0]['n_first'] = $data['firstname'];
+		$lead[0]['n_last'] = $data['lastname'];
+		$lead[0]['email'] = strtolower($data['contact']['email']);
+		$lead[0]['tel_cell'] = $data['contact']['phone'];
+		$lead[0]['adr_street'] = $data['contact']['address'];
+		$lead[0]['adr_zip'] = $data['contact']['zip'];
+		$lead[0]['adr_city'] = $data['contact']['city'];
+		$lead[0]['adr_country'] = $data['contact']['country']['name'];
+		$lead[0]['property_6'] = (strtolower($data['nationality_country']['country_name']) === 'france') ? 'france' : 'visa';
+		$lead[0]['gender'] = $data['gender'];
+		$lead[0]['contact_history'] = $data['communication']['posts'];
 
 		// Connect to P-Pit Account API
 		$safe = $context->getConfig()['ppitUserSettings']['safe']['ESI']['ppitWebhook'];
@@ -1854,6 +1836,8 @@ class StudentController extends AbstractActionController
 				$this->response->setContent($postResponse->getContent()); // debugging mode only
 				$this->response->setStatusCode($postResponse->getStatusCode());
 				$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+				// echo "ACCOUNT CREATED => " . "<br>\n";
+				// print_r($lead);
 				return $this->response;
 			}
 
@@ -1866,7 +1850,6 @@ class StudentController extends AbstractActionController
 					$update['place_identifier'] = $lead[0]['place_identifier'];
 		
 					$rest = 'Lead réactivé => Keystone data : ';
-	
 					foreach ($lead[0] as $property => $value) {
 						$rest .= (' '. $property .' : ' . $value . '<br>');
 					}
@@ -1887,6 +1870,8 @@ class StudentController extends AbstractActionController
 							$this->response->setContent($updateResponse->getContent()); // debugging mode only
 							$this->response->setStatusCode($updateResponse->getStatusCode());
 							$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
+							// echo "ACCOUNT UPDATED => Old Status : " . $account['account_status'] . "<br>\n";
+							// print_r($update['contact_history']);
 							return $this->response;
 						}
 					} else {
