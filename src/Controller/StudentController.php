@@ -1828,6 +1828,12 @@ class StudentController extends AbstractActionController
 		$client->setRawBody(json_encode($lead));
 		$postResponse = $client->send();
 
+		// Initialize the logger
+		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+		$logger->info('Keystone webhook body :' . ' loaded encoded => ' . print_r($content) . ' decoded => ' . print_r($data) . ' lead format => ' . print_r($lead));
+
 		if ($postResponse->getStatusCode() == 200) {
 			$responseBody = json_decode($postResponse->getContent(), true);
 			$account = $responseBody[$lead[0]['email']];
