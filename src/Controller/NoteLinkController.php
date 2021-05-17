@@ -319,6 +319,17 @@ class NoteLinkController extends AbstractActionController
 		$content = $this->getList();
 		$order = $this->params()->fromQuery('order', '-date');
 		
+		// Retrieve the teachers
+		$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
+		$where = new Where;
+		$where->notEqualTo('status', 'deleted');
+		$where->like('roles', '%teacher%');
+		$select->where($where);
+		$cursor = Vcard::getTable()->selectWith($select);
+		$contact = null;
+		$teachers = array();
+		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;
+		
 		// Compute the average
 		$filters = [];
 		foreach (NoteLink::getConfig() as $propertyId => $property) {
@@ -371,6 +382,7 @@ class NoteLinkController extends AbstractActionController
 			'context' => $context,
 			'category' => $category,
 			'type' => $type,
+			'teachers' => $teachers,
 			'content' => $content,
 			'averages' => $averages,
 			'statusCode' => $this->response->getStatusCode(),
@@ -507,10 +519,16 @@ class NoteLinkController extends AbstractActionController
 			}
 			else {
 
+				$updateNote = false;
 				if ($this->getRequest()->getPost('date')) {
 					$noteLink->note->date = $this->getRequest()->getPost('date');
-					$noteLink->note->update(null);
+					$updateNote = true;
 				}
+				if ($this->getRequest()->getPost('teacher_id')) {
+					$noteLink->note->teacher_id = $this->getRequest()->getPost('teacher_id');
+					$updateNote = true;
+				}
+				if ($updateNote) $noteLink->note->update(null);
 				
 				// Atomically save
 				$connection = NoteLink::getTable()->getAdapter()->getDriver()->getConnection();

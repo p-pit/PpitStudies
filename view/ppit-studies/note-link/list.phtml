@@ -99,6 +99,9 @@ table td {
           
         <?php if ($propertyId == 'place_id') : ?>
         <td><?php echo ($link[$propertyId]) ? $property['modalities'][$link[$propertyId]] : '' ?></td>
+	
+        <?php elseif ($propertyId == 'teacher_id') : ?>
+    		<td><?php echo ($link[$propertyId] && array_key_exists($link[$propertyId], $teachers)) ? $teachers[$link[$propertyId]]->n_fn : (($link[$propertyId]) ? $link[$propertyId] : '') ?></td>
   
         <?php elseif ($propertyId == 'subject') : ?>
         <td><?php echo ($link['subject'] == 'global') ? $this->translate('Global average', 'ppit-studies', $context->getLocale()) : (($link[$propertyId]) ? $context->localize($property['modalities'][$link[$propertyId]]) : '') ?></td>
