@@ -1781,6 +1781,12 @@ class StudentController extends AbstractActionController
 
     public function keystoneAction() 
 	{
+		$request = $this->getRequest();
+		if (!$request->isPost()) {
+			$this->getResponse()->setStatusCode('401');
+    		return $this->getResponse();
+		}
+
 		$context = Context::getCurrent();
 
 		// Authentication
@@ -1789,42 +1795,29 @@ class StudentController extends AbstractActionController
     		return $this->getResponse();
     	}
 
-		/* EXPECTS
-		{
-			"data": {
-				"id": 						"16949124",
-				"place_id": 				"paris",
-				"property_18": 				"esi",
-				"property_10": 				"4th",
-				"origine":	 				"master_etude",
-				"status": 					"new",
-				"n_first": 					"John",
-				"n_last": 					"DOE",
-				"tel_cell": 				"+1 1717755953",
-				"email": 					"student@domain.com",
-				"property_6":               "Norway",
-				"adr_street": 				"2nd Quarter 2021",
-				"adr_city": 				"Oslo",
-				"adr_zip": 					"123456",
-				"adr_country": 				"Norway",
-				"contact_history": {
-					"communication__posts": [
-											"Where is this school located?"
-					]
-				}
-			}
-		}
-		*/
-
 		$content = $this->request->getContent();
 		$data = json_decode($content, true);
 
-		$lead[] = $data['data'];
+		// Mapping data
+		$lead[0]['id'] = $data['id'];
 		$lead[0]['identifier'] = 'KYST-' . $lead[0]['id'];
-		$lead[0]['email'] = strtolower($lead[0]['email']);
-		$lead[0]['property_6'] = (strtolower($lead[0]['property_6']) == 'france') ? strtolower($lead[0]['property_6']) : 'visa';
-		$lead[0]['contact_history'] = $lead[0]['contact_history']['communication__posts'][0];
-		// print_r($lead); exit;
+		$lead[0]['origine'] = 'master_etude';
+		$lead[0]['status'] = 'new';
+		$lead[0]['place_identifier'] = '1_paris';
+		$lead[0]['property_10'] = '4th';
+		$lead[0]['property_18'] = 'esi';
+		// $lead[0]['property_18'] = $data['program']['custom_program_id'];
+		$lead[0]['n_first'] = $data['firstname'];
+		$lead[0]['n_last'] = $data['lastname'];
+		$lead[0]['email'] = strtolower($data['contact']['email']);
+		$lead[0]['tel_cell'] = $data['contact']['phone'];
+		$lead[0]['adr_street'] = $data['contact']['address'];
+		$lead[0]['adr_zip'] = $data['contact']['zip'];
+		$lead[0]['adr_city'] = $data['contact']['city'];
+		$lead[0]['adr_country'] = $data['contact']['country']['name'];
+		$lead[0]['property_6'] = (strtolower($data['nationality_country']['country_name']) === 'france') ? 'france' : 'visa';
+		$lead[0]['gender'] = $data['gender'];
+		$lead[0]['contact_history'] = $data['communication']['posts'];
 
 		// Connect to P-Pit Account API
 		$safe = $context->getConfig()['ppitUserSettings']['safe']['ESI']['ppitWebhook'];
@@ -1835,12 +1828,22 @@ class StudentController extends AbstractActionController
 		$client->setRawBody(json_encode($lead));
 		$postResponse = $client->send();
 
+		// Initialize the logger
+		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+		$logger->info('Keystone webhook body :' . ' loaded encoded => ' . print_r($content) . ' decoded => ' . print_r($data) . ' lead format => ' . print_r($lead));
+
 		if ($postResponse->getStatusCode() == 200) {
 			$responseBody = json_decode($postResponse->getContent(), true);
 			$account = $responseBody[$lead[0]['email']];
-			
-			if ($account['status'] == 'ok') {
-				$this->response->setStatusCode('200');
+
+			if ($account['status'] == 'ok') {	
+				$this->response->setContent($postResponse->getContent()); // debugging mode only
+				$this->response->setStatusCode($postResponse->getStatusCode());
+				$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+				// echo "ACCOUNT CREATED => " . "<br>\n";
+				// print_r($lead);
 				return $this->response;
 			}
 
@@ -1851,10 +1854,8 @@ class StudentController extends AbstractActionController
 					$update['status'] = $lead[0]['status'];
 					$update['origine'] = $lead[0]['origine'];
 					$update['place_identifier'] = $lead[0]['place_identifier'];
-					// $update['property_10'] = $lead[0]['property_10'];
 		
 					$rest = 'Lead réactivé => Keystone data : ';
-	
 					foreach ($lead[0] as $property => $value) {
 						$rest .= (' '. $property .' : ' . $value . '<br>');
 					}
@@ -1870,43 +1871,35 @@ class StudentController extends AbstractActionController
 					$updateResponse = $client->send();
 
 					if ($updateResponse->getStatusCode() == 200) {
-						
-						$test = json_decode($updateResponse->getContent(), true);
-						$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
-						$this->response->setStatusCode($updateResponse->getStatusCode());
-						return $this->response;
-
 						$updatedAccount = json_decode($updateResponse->getContent(), true);
-						if ($account['account_id'] == 'updated') {
-							$this->response->setStatusCode('200');
+						if ($updatedAccount[$account['account_id']] == 'Updated') {
+							$this->response->setContent($updateResponse->getContent()); // debugging mode only
+							$this->response->setStatusCode($updateResponse->getStatusCode());
+							$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
+							// echo "ACCOUNT UPDATED => Old Status : " . $account['account_status'] . "<br>\n";
+							// print_r($update['contact_history']);
 							return $this->response;
 						}
-					} 
-	
-					if ($updateResponse->getStatusCode() == 500) {
-						$this->response->setContent(json_encode($updateResponse));
+					} else {
+						$this->response->setContent($updateResponse->getContent()); // debugging mode only
 						$this->response->setStatusCode($updateResponse->getStatusCode());
 						$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
 						return $this->response;
-
-						// $this->response->setStatusCode($updateResponse->getStatusCode());
-						// $this->response->setReasonPhrase($updateResponse->getReasonPhrase());
-						// return $this->response;
 					}
 				} else {
-					$this->response->setContent(json_encode($postResponse));
-					
-						$this->response->setStatusCode($postResponse->getStatusCode());
-						$this->response->setReasonPhrase($postResponse->getReasonPhrase());
-						return $this->response;
-
-					// $this->response->setStatusCode('200');
-					// return $this->response;
+					$this->response->setContent($postResponse->getContent()); // debugging mode only
+					$this->response->setStatusCode($postResponse->getStatusCode());
+					$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+					return $this->response;
 				}
+			} else {
+				$this->response->setContent($postResponse->getContent()); // debugging mode only
+				$this->response->setStatusCode($postResponse->getStatusCode());
+				$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+				return $this->response;
 			}
-		}	
-		
-		if ($postResponse->getStatusCode() == 500) {
+		} else {	
+			$this->response->setContent($postResponse->getContent()); // debugging mode only
 			$this->response->setStatusCode($postResponse->getStatusCode());
 			$this->response->setReasonPhrase($postResponse->getReasonPhrase());
 			return $this->response;
