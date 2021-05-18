@@ -1800,13 +1800,12 @@ class StudentController extends AbstractActionController
 
 		// Mapping data
 		$lead[0]['id'] = $data['id'];
-		$lead[0]['identifier'] = 'KYST-' . $lead[0]['id'];
+		$lead[0]['identifier'] = 'KYST-' . $data['id'];
 		$lead[0]['origine'] = 'master_etude';
 		$lead[0]['status'] = 'new';
 		$lead[0]['place_identifier'] = '1_paris';
 		$lead[0]['property_10'] = '4th';
-		$lead[0]['property_18'] = 'esi';
-		// $lead[0]['property_18'] = $data['program']['custom_program_id'];
+		$lead[0]['property_18'] = $data['program']['custom_program_id'];
 		$lead[0]['n_first'] = $data['firstname'];
 		$lead[0]['n_last'] = $data['lastname'];
 		$lead[0]['email'] = strtolower($data['contact']['email']);
@@ -1818,10 +1817,11 @@ class StudentController extends AbstractActionController
 		$lead[0]['property_6'] = (strtolower($data['nationality_country']['country_name']) === 'france') ? 'france' : 'visa';
 		$lead[0]['gender'] = $data['gender'];
 		$lead[0]['contact_history'] = $data['communication']['posts'];
+		// $lead[0]['contact_history'] = $data['communication']['posts'][0]['message'];
 
 		// Connect to P-Pit Account API
 		$safe = $context->getConfig()['ppitUserSettings']['safe']['ESI']['ppitWebhook'];
-    	$url = $safe['protocol'] . '//' . $safe['subDomain'] . '/account/v2/p-pit-studies';
+    	$url = $safe['protocol'] . '://' . $safe['subDomain'] . '/account/v2/p-pit-studies';
     	$client = new Client($url, ['adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30]);
     	$client->setHeaders(['Authorization' => $safe['auth'], 'Accept-Encoding' => 'gzip,deflate']);
 		$client->setMethod('PUT');
@@ -1832,18 +1832,18 @@ class StudentController extends AbstractActionController
 		$writer = new \Zend\Log\Writer\Stream('data/log/keystone.txt');
 		$logger = new \Zend\Log\Logger();
 		$logger->addWriter($writer);
-		$logger->info('Keystone webhook body :' . ' loaded encoded => ' . print_r($content) . ' decoded => ' . print_r($data) . ' lead format => ' . print_r($lead));
+		$logger->info(print_r($content).print_r($data).print_r($lead));
+
 
 		if ($postResponse->getStatusCode() == 200) {
 			$responseBody = json_decode($postResponse->getContent(), true);
 			$account = $responseBody[$lead[0]['email']];
 
-			if ($account['status'] == 'ok') {	
+			if ($account['status'] == 'OK') {	
 				$this->response->setContent($postResponse->getContent()); // debugging mode only
 				$this->response->setStatusCode($postResponse->getStatusCode());
-				$this->response->setReasonPhrase($postResponse->getReasonPhrase());
-				// echo "ACCOUNT CREATED => " . "<br>\n";
-				// print_r($lead);
+				$this->response->setReasonPhrase("created successfully");
+				// $this->response->setReasonPhrase($postResponse->getReasonPhrase());
 				return $this->response;
 			}
 
@@ -1857,12 +1857,14 @@ class StudentController extends AbstractActionController
 		
 					$rest = 'Lead réactivé => Keystone data : ';
 					foreach ($lead[0] as $property => $value) {
-						$rest .= (' '. $property .' : ' . $value . '<br>');
+						if (in_array($lead, ['origine', 'n_first', 'n_last', 'email', 'tel_cell', 'contact_history'])) {
+							$rest .= (' '. $property .' : ' . $value . '<br>');
+						}
 					}
 
 					$update['contact_history'] = $rest;
-
-					$url = $safe['protocol'] . '//' . $safe['subDomain'] . '/account/v2/p-pit-studies/' . $account['account_id'];
+					
+					$url = $safe['protocol'] . '://' . $safe['subDomain'] . '/account/v2/p-pit-studies/' . $account['account_id'];
 					$client = new Client($url, ['adapter' => 'Zend\Http\Client\Adapter\Curl', 'maxredirects' => 0, 'timeout' => 30]);
 					$client->setHeaders(['Authorization' => $safe['auth'], 'Accept-Encoding' => 'gzip,deflate',]);
 					$client->setMethod('POST');
@@ -1875,9 +1877,8 @@ class StudentController extends AbstractActionController
 						if ($updatedAccount[$account['account_id']] == 'Updated') {
 							$this->response->setContent($updateResponse->getContent()); // debugging mode only
 							$this->response->setStatusCode($updateResponse->getStatusCode());
-							$this->response->setReasonPhrase($updateResponse->getReasonPhrase());
-							// echo "ACCOUNT UPDATED => Old Status : " . $account['account_status'] . "<br>\n";
-							// print_r($update['contact_history']);
+							$this->response->setReasonPhrase("updated successfully");
+							// $this->response->setReasonPhrase($updateResponse->getReasonPhrase());
 							return $this->response;
 						}
 					} else {
@@ -1889,13 +1890,15 @@ class StudentController extends AbstractActionController
 				} else {
 					$this->response->setContent($postResponse->getContent()); // debugging mode only
 					$this->response->setStatusCode($postResponse->getStatusCode());
-					$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+					$this->response->setReasonPhrase("update case not met");
+					// $this->response->setReasonPhrase($postResponse->getReasonPhrase());
 					return $this->response;
 				}
 			} else {
 				$this->response->setContent($postResponse->getContent()); // debugging mode only
 				$this->response->setStatusCode($postResponse->getStatusCode());
-				$this->response->setReasonPhrase($postResponse->getReasonPhrase());
+				$this->response->setReasonPhrase("already exists");
+				// $this->response->setReasonPhrase($postResponse->getReasonPhrase());
 				return $this->response;
 			}
 		} else {	
