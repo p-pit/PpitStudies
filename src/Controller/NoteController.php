@@ -946,20 +946,25 @@ class NoteController extends AbstractActionController
 			$content['note']['reference_value'] = $this->request->getPost('reference_value');
 			$content['note']['weight'] = $this->request->getPost('weight');
 			$content['note']['observations'] = $this->request->getPost('observations');
-
-			if (array_key_exists('value', $context->getConfig('teacher/evaluation/update')['properties'])) {
-				$config = $context->getConfig('teacher/evaluation/update')['properties']['value'];
-			} else {
-				$config = $context->getConfig('note/property/value')['modalities'];
-			}
 	
 			$newLinks = [];
 			foreach ($content['noteLinks'] as $noteLinkData) {
 				$account_id = $noteLinkData['account_id'];
-				$param = $this->request->getPost('value-' . $account_id);
+				$value = $this->request->getPost('value-' . $account_id);
 				
-				if ($param === '') $value = null;
-				else $value = floatval($config[$param]['value']);
+				if ($value === '') $value = null;
+				else {
+		
+					if (array_key_exists('value', $context->getConfig('teacher/evaluation/update')['properties'])) {
+						$param = $context->getConfig('teacher/evaluation/update')['properties']['value'][$value];
+					} 
+					elseif ($context->getConfig('note/property/value')['type'] == 'select') {
+						$param = $context->getConfig('note/property/value')['modalities'][$value];
+					}
+					else $param = null;
+
+					if ($param) $value = floatval($config['value']);
+				}
 					
 				$assessment = $this->request->getPost('assessment-' . $account_id);
 				
