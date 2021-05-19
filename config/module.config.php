@@ -2268,7 +2268,7 @@ return array_merge(
 				'fr_FR' => 'Statut',
 		),
 		'perspectives' => array(
-				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'gone', 'canceled'),
+				'contact' => array('new', 'interested', 'candidate', 'answer', 'conversion', 'committed', 'visa', 'active', 'retention', 'suspended', 'gone', 'canceled'),
 				'account' => array('committed', 'visa', 'active', 'retention', 'suspended', 'canceled'),
 		),
 		'mandatory' => true,
