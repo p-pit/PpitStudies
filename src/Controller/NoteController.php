@@ -939,7 +939,7 @@ class NoteController extends AbstractActionController
 	
 			$content['note']['place_id'] = $this->request->getPost('place_id');
 			$content['note']['school_year'] = $this->request->getPost('school_year');
-			$content['note']['school_period'] = $this->request->getPost('school_period');
+			$content['note']['school_period'] = ($this->request->getPost('school_period')) ? $this->request->getPost('school_period') : 'Q1';
 			$content['note']['level'] = $this->request->getPost('level');
 			$content['note']['subject'] = $this->request->getPost('subject');
 			$content['note']['date'] = $this->request->getPost('date');
@@ -954,7 +954,6 @@ class NoteController extends AbstractActionController
 				
 				if ($value === '') $value = null;
 				else {
-		
 					if (array_key_exists('value', $context->getConfig('teacher/evaluation/update')['properties'])) {
 						$param = $context->getConfig('teacher/evaluation/update')['properties']['value'][$value];
 					} 
@@ -962,8 +961,6 @@ class NoteController extends AbstractActionController
 						$param = $context->getConfig('note/property/value')['modalities'][$value];
 					}
 					else $param = null;
-
-					if ($param) $value = floatval($config['value']);
 				}
 					
 				$assessment = $this->request->getPost('assessment-' . $account_id);
@@ -983,8 +980,11 @@ class NoteController extends AbstractActionController
 				if ($value !== null || $type == 'report' || $assessment || $mention) {
 
 					if ($mention) $noteLinkData['evaluation'] = $mention;
-					elseif ($param !== 'Non Évalué') $noteLinkData['evaluation'] = NULL; 
-					else $noteLinkData['evaluation'] = $param; 
+					elseif ($value !== 'Non Évalué') $noteLinkData['evaluation'] = NULL; 
+					else {
+						$noteLinkData['evaluation'] = $value; 
+						$value = $param['value'];
+					} 
 
 					$noteLinkData['value'] = $value;
 					$noteLinkData['assessment'] = $assessment;
