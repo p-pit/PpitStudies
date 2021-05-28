@@ -1855,10 +1855,10 @@ class StudentController extends AbstractActionController
 					$update['origine'] = $lead[0]['origine'];
 					$update['place_identifier'] = $lead[0]['place_identifier'];
 		
-					$rest = 'Lead réactivé => Keystone data : ';
+					$rest = 'Lead réactivé => Keystone data : <br>';
 					foreach ($lead[0] as $property => $value) {
-						if (in_array($lead, ['origine', 'n_first', 'n_last', 'email', 'tel_cell', 'contact_history'])) {
-							$rest .= (' '. $property .' : ' . $value . '<br>');
+						if (in_array($property, ['origine', 'n_first', 'n_last', 'email', 'tel_cell', 'contact_history'])) {
+							$rest .= (' '. $property .' : ' . $value . ' <br>');
 						}
 					}
 
