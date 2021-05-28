@@ -497,6 +497,7 @@ class NoteLink
 		$noteLink->status = 'new';
 		$noteLink->account_id = $account_id;
 		$noteLink->note_id = $note_id;
+		$noteLink->weight = 1;
 		$noteLink->distribution = array();
 		$noteLink->audit = array();
 		$noteLink->properties = $noteLink->getProperties();
