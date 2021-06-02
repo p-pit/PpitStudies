@@ -1571,7 +1571,7 @@ class StudentController extends AbstractActionController
     	}
     	else $averages = null;
 
-    	$notesAccount = [];
+		$notes = [];
     	$params = array('school_year' => $school_year, 'school_period' => $school_period/*, 'account_id' => $account_id*/);
     	if ($level) $params['level'] = $level;
     	$maxDate = $context->getConfig('note_link/maxDate');
@@ -1579,7 +1579,7 @@ class StudentController extends AbstractActionController
     	$cursor = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	foreach ($cursor as $noteLink) {
     		if ($noteLink->account_id == $account_id) {
-    			$notesAccount[$noteLink->note_id] = $noteLink;
+    			$notes[$noteLink->note_id] = $noteLink;
     			$noteLink->sum = 0;
     			$noteLink->number = 0;
     			$noteLink->min = 100;
@@ -1587,11 +1587,11 @@ class StudentController extends AbstractActionController
     		}
     	}
     	foreach ($cursor as $noteLink) {
-    		if (array_key_exists($noteLink->note_id, $notesAccount)) {
-	    		$notesAccount[$noteLink->note_id]->sum += $noteLink->value;
-	    		$notesAccount[$noteLink->note_id]->number++;
-	    		if ($noteLink->value < $notesAccount[$noteLink->note_id]->min) $notesAccount[$noteLink->note_id]->min = $noteLink->value;
-	    		if ($noteLink->value > $notesAccount[$noteLink->note_id]->max) $notesAccount[$noteLink->note_id]->max = $noteLink->value;
+    		if (array_key_exists($noteLink->note_id, $notes)) {
+	    		$notes[$noteLink->note_id]->sum += $noteLink->value;
+	    		$notes[$noteLink->note_id]->number++;
+	    		if ($noteLink->value < $notes[$noteLink->note_id]->min) $notes[$noteLink->note_id]->min = $noteLink->value;
+	    		if ($noteLink->value > $notes[$noteLink->note_id]->max) $notes[$noteLink->note_id]->max = $noteLink->value;
     		}
     	}
     	
@@ -1601,8 +1601,8 @@ class StudentController extends AbstractActionController
     		$notesGroup = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	}
     	else $notesGroup = [];
+		foreach ($noteGroups as $noteGroup) $notes[$noteGroup->id] = $noteGroup;
     	
-    	$notes = array_merge($notesAccount, $notesGroup);
     	if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
 
     	if ($category == 'report') {
