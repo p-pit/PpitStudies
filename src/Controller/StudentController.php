@@ -1579,7 +1579,7 @@ class StudentController extends AbstractActionController
     	$cursor = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	foreach ($cursor as $noteLink) {
     		if ($noteLink->account_id == $account_id) {
-    			$notes[$noteLink->id] = $noteLink;
+    			$notes[$noteLink->note_id] = $noteLink;
     			$noteLink->sum = 0;
     			$noteLink->number = 0;
     			$noteLink->min = 100;
