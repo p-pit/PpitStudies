@@ -1735,6 +1735,17 @@ return array_merge(
 			'default' => 'Unused',
 		),
 	),
+
+	'commitment/p-pit-studies/property/property_24' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'modalities' => [
+			'LM' => ['default' => '(LM) Lun-Mar'],
+			'JV' => ['default' => '(JV) Jeu-Ven'],
+			'VS' => ['default' => '(VS) Ven-Sam'],
+		],
+		'labels' => ['default' => 'Rythme scolaire'],
+	],
 	
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
