@@ -1601,7 +1601,7 @@ class StudentController extends AbstractActionController
     		$notesGroup = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	}
     	else $notesGroup = [];
-		foreach ($notesGroup as $noteGroup) $notes[$noteGroup->id] = $noteGroup;
+		foreach ($notesGroup as $noteGroup) $notes[$noteGroup->note_id] = $noteGroup;
     	
     	if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
 
