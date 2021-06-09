@@ -1595,13 +1595,13 @@ class StudentController extends AbstractActionController
     		}
     	}
     	
-/*    	if ($category == 'report' && $account->groups) {
+    	if ($category == 'report' && $account->groups) {
     		$params = array('school_year' => $school_year, 'school_period' => $school_period, 'place_id' => $account->place_id, 'group_id' => $account->groups);
     		if ($level) $params['level'] = $level;
     		$notesGroup = NoteLink::GetList('note', $params, 'subject', 'ASC', 'search');
     	}
     	else $notesGroup = [];
-		foreach ($notesGroup as $noteGroup) $notes[$noteGroup->note_id] = $noteGroup; */
+		foreach ($notesGroup as $noteGroup) $notes['G' . $noteGroup->id] = $noteGroup;
     	
     	if (!$date) foreach ($notes as $note) if ($note->subject == 'global') $date = $note->date;
 
