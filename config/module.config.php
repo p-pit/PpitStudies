@@ -1746,6 +1746,18 @@ return array_merge(
 		],
 		'labels' => ['default' => 'Rythme scolaire'],
 	],
+
+	'commitment/p-pit-studies/property/property_25' => [
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => ['default' => 'OPCO - Téléphone'],
+	],
+
+	'commitment/p-pit-studies/property/property_26' => [
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => ['default' => 'OPCO - E-mail'],
+	],
 	
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
