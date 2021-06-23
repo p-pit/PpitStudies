@@ -3173,7 +3173,7 @@ return array_merge(
 			'json_property_1', 'json_property_2', 'json_property_3',
 			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1'
 		),
-		'order' => 'name',
+		'order' => 'opening_date',
 		'options' => ['internal_identifier' => true, 'unique_key' => true /*['n_fn', 'n_last', 'email', 'tel_cell']*/],
 	),
 
