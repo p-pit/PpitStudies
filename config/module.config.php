@@ -4983,6 +4983,7 @@ table.note-report tr.period {
 	'event/group/calendar' => [
 		'title' => ['default' => 'Selected events', 'fr_FR' => 'Evénements sélectionnés'],
 		'checklist' => ['format' => '%s %s %s %s %s', 'params' => ['place_id', 'groups', 'property_3', 'begin_date', 'begin_time']],
+		'tabs' => [],
 	],
 
 	'event/export/calendar' => array(
