@@ -1799,7 +1799,7 @@ return array_merge(
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
 			'account_owner_id', 'invoice_account_id',
-			'caption', 'product_caption','account_id', 'account_status', 'description',
+			'caption', 'product_caption','account_id', 'account_status', 'description', 'description_2',
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10',
 			'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19',
