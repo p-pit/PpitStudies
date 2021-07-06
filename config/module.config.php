@@ -4261,6 +4261,7 @@ table.note-report td {
 			),
 	),
 	'student/property/school_year/default' => '2020-2021',
+	'student/property/school_year/next' => '2021-2022',
 	'student/property/school_year/start' => '2019-09-01',
 	'student/property/school_year/end' => '2021-07-31',
 	
