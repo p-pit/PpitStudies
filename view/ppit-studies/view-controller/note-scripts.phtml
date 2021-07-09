@@ -38,7 +38,7 @@ function getNoteList(params) {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			$('#note-list-panel').html(xhttp.responseText);
 
-            $('#export-button').click(function () { exportAbsenceList(); });
+            $('#export-button').click(function () { /*exportAbsenceList();*/ });
       
             // Connect the sort anchors
             $('.sort_anchor').click(function () {
