@@ -321,10 +321,24 @@ class NoteController extends AbstractActionController
     	// Retrieve the list
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
     	
+		// Compute the averages
+		if ($type == 'note') {
+			$averages = [];
+			foreach ($noteLinks as $link) {
+				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
+				if (!array_key_exists($key, $averages)) $averages['key'] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+				else {
+					$averages['key']['sum'] += $link->value * $link->weight;
+					$averages['key']['reference_value'] += $link->reference_value;
+				}
+			}
+		}
+
     	// Return the link list
     	$view = new ViewModel(array(
-    			'category' => $category,
-    			'noteLinks' => $noteLinks,
+			'category' => $category,
+			'noteLinks' => $noteLinks,
+			'averages' => $averages,
     	));
     	
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';

@@ -5529,6 +5529,13 @@ table.note-report tr.period {
 					'fr_FR' => 'Note supérieure',
 			),
 	),
+	'note/property/average' => array(
+			'type' => 'number',
+			'labels' => array(
+					'en_US' => 'Student average',
+					'fr_FR' => 'Moyenne de l’élève',
+			),
+	),
 	'note/property/average_note' => array(
 			'type' => 'number',
 			'labels' => array(
@@ -5754,12 +5761,13 @@ table.note-report tr.period {
 			'reference_value' => 'J',
 			'weight' => 'K',
 			'value' => 'L',
-			'lower_note' => 'M',
-			'average_note' => 'N',
-			'higher_note' => 'O',
-			'assessment' => 'P',
-			'evaluation' => 'Q',
-			'group_id' => 'R',
+			'average' => 'M',
+			'lower_note' => 'N',
+			'average_note' => 'O',
+			'higher_note' => 'P',
+			'assessment' => 'Q',
+			'evaluation' => 'R',
+			'group_id' => 'S',
 		),
 	),
 

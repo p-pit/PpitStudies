@@ -58,6 +58,12 @@ class SsmlNoteViewHelper
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
 					elseif ($property['type'] == 'select')  $sheet->setCellValue($column.$j, (array_key_exists('modalities', $property) && array_key_exists($noteLink->getProperties()[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$noteLink->getProperties()[$propertyId]]) : $noteLink->getProperties()[$propertyId]);
+					elseif ($propertyId == 'average') {
+						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period . '-' . $noteLink->subject;
+						$average = $averages[$key];
+						$sheet->setCellValue($column.$j, $average);
+						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
+					}
 					else $sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
 				}
 			}
