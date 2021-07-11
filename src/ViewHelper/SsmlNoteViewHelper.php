@@ -52,18 +52,18 @@ class SsmlNoteViewHelper
 					if ($propertyId == 'group_id') {
 						if ($noteLink->getProperties()[$propertyId]) $sheet->setCellValue($column.$j, $groups[$noteLink->getProperties()[$propertyId]]->name);
 					}
+					elseif ($propertyId == 'average') {
+						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period . '-' . $noteLink->subject;
+						$average = $view->averages[$key]['sum'] / $view->averages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
+						$sheet->setCellValue($column.$j, $average);
+						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
+					}
 					elseif ($property['type'] == 'date') $sheet->setCellValue($column.$j, $context->decodeDate($noteLink->getProperties()[$propertyId]));
 					elseif ($property['type'] == 'number') {
 						$sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
 					elseif ($property['type'] == 'select')  $sheet->setCellValue($column.$j, (array_key_exists('modalities', $property) && array_key_exists($noteLink->getProperties()[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$noteLink->getProperties()[$propertyId]]) : $noteLink->getProperties()[$propertyId]);
-					elseif ($propertyId == 'average') {
-						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period . '-' . $noteLink->subject;
-						$average = $averages[$key];
-						$sheet->setCellValue($column.$j, $average);
-						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
-					}
 					else $sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
 				}
 			}

@@ -5648,6 +5648,7 @@ table.note-report tr.period {
 					'value' => array('definition' => 'note/property/value'),
 					'reference_value' => array('definition' => 'note/property/reference_value'),
 					'weight' => array('definition' => 'note/property/weight'),
+					'average' => array('definition' => 'note/property/average'),
 					'lower_note' => array('definition' => 'note/property/lower_note'),
 					'higher_note' => array('definition' => 'note/property/higher_note'),
 					'average_note' => array('definition' => 'note/property/average_note'),
@@ -5888,6 +5889,7 @@ table.note-report tr.period {
 	'note_link/generic/property/value' => array('definition' => 'note/property/value'),
 	'note_link/generic/property/reference_value' => array('definition' => 'note/property/reference_value'),
 	'note_link/generic/property/weight' => array('definition' => 'note/property/weight'),
+	'note_link/generic/property/average' => array('definition' => 'note/property/average'),
 	'note_link/generic/property/observations' => array('definition' => 'note/property/observations'),
 	'note_link/generic/property/lower_note' => array('definition' => 'note/property/lower_note'),
 	'note_link/generic/property/higher_note' => array('definition' => 'note/property/higher_note'),
@@ -5897,7 +5899,7 @@ table.note-report tr.period {
 		'properties' => [
 			'status', 'account_id', 'value', 'evaluation', 'assessment', 'update_time',
 			'place_id', 'n_fn', 'name', 'account_property_15',
-			'school_year', 'level', 'group_id', 'teacher_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'lower_note', 'higher_note', 'average_note',
+			'school_year', 'level', 'group_id', 'teacher_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'average', 'observations', 'lower_note', 'higher_note', 'average_note',
 		],
 	],
 
