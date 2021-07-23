@@ -321,8 +321,6 @@ class NoteController extends AbstractActionController
     	// Retrieve the list
 		if (array_key_exists('subject', $params) && $params['subject'] == 'global') $noteLinks = NoteLink::getList('report', $params, $major, $dir, $mode);
 		else $noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
-
-		print_r($noteLinks); exit;
     	
 		// Compute the averages
 		if ($type == 'note') {
