@@ -354,24 +354,25 @@ class NoteController extends AbstractActionController
 
 			$computed = [];
 			foreach ($notes as $link) {
-				
-				if (!array_key_exists($link->subject, $computed)) $computed[$link->subject] = [0, 0];
+				if (!array_key_exists($link->subject, $computed)) $computed[$link->account_id][$link->subject] = [0, 0];
 				if ($link->value !== null) {
-					$computed[$link->subject][0] += $link->value * $link->weight;
-					$computed[$link->subject][1] += $link->reference_value * $link->weight;
+					$computed[$link->account_id][$link->subject][0] += $link->value * $link->weight;
+					$computed[$link->account_id][$link->subject][1] += $link->reference_value * $link->weight;
 				}
 			}
 
 			
-			print_r($computed);
+			print_r($computed); 
 
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
-			foreach ($computed as $subject => $average) {
-				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
-				if ($subject != 'global' && $average[1]) {
-					$averages[$key]['sum'] += $average[0] / $average[1] * $averageReference;
-					$averages[$key]['reference_value'] += $averageReference;
+			foreach ($computed as $student) {
+				foreach ($student as $subject => $average) {
+					$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
+					if ($subject != 'global' && $average[1]) {
+						$averages[$key]['sum'] += $average[0] / $average[1] * $averageReference;
+						$averages[$key]['reference_value'] += $averageReference;
+					}
 				}
 			}
 
@@ -407,7 +408,7 @@ class NoteController extends AbstractActionController
     	));
     	
 		// print_r($averages); exit;
-		print_r($noteLinks); exit;
+		// print_r($noteLinks); exit;
 
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
