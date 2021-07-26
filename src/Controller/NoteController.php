@@ -389,7 +389,7 @@ class NoteController extends AbstractActionController
 			// }
 
 			// print_r($globalComputed); exit;
-			// print_r($averages); exit;
+			print_r($averages); exit;
 
 			// foreach ($noteLinks as $average) {
 			// 	if ($average->subject == 'global') $average->value = $globalComputed[0] / $globalComputed[1] * $averageReference;
