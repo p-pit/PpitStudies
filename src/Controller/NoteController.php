@@ -305,7 +305,7 @@ class NoteController extends AbstractActionController
     
     public function exportAction()
     {
-        	// Retrieve the context
+        // Retrieve the context
     	$context = Context::getCurrent();
     
 		$category = $this->params()->fromRoute('category');
@@ -317,11 +317,17 @@ class NoteController extends AbstractActionController
     	$dir = ($this->params()->fromQuery('dir', 'DESC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-    
+
     	// Retrieve the list
-		if (array_key_exists('subject', $params) && $params['subject'] == 'global') $noteLinks = NoteLink::getList('report', $params, $major, $dir, $mode);
-		else $noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
-    	
+		if (array_key_exists('subject', $params) && $params['subject'] == 'global') {
+			$type = 'report';
+			$noteLinks = NoteLink::GetList($type, $params, $major, $dir, $mode);
+
+			unset($params['subject']);
+			$notes = NoteLink::GetList('note', $params, $major, $dir, $mode);
+
+		} else $noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
+	
 		// Compute the averages
 		if ($type == 'note') {
 			$averages = [];
@@ -332,9 +338,67 @@ class NoteController extends AbstractActionController
 					$averages[$key]['sum'] += $link->value * $link->weight;
 					$averages[$key]['reference_value'] += $link->reference_value;
 				}
+			} 
+		} else {
+			// Compute the averages
+			// $averages = [];
+			// foreach ($notes as $link) {
+			// 	if (!array_key_exists($link->subject, $averages)) $averages[$link->subject] = [0, 0];
+			// 	if ($link->value !== null) {
+			// 		$averages[$link->subject][0] += $link->value * $link->weight;
+			// 		$averages[$link->subject][1] += $link->reference_value * $link->weight;
+			// 	}
+			// }
+
+			// print_r($averages);
+
+			$computed = [];
+			foreach ($notes as $link) {
+				
+				if (!array_key_exists($link->subject, $computed)) $computed[$link->subject] = [0, 0];
+				if ($link->value !== null) {
+					$computed[$link->subject][0] += $link->value * $link->weight;
+					$computed[$link->subject][1] += $link->reference_value * $link->weight;
+				}
+			}
+
+			
+			print_r($computed);
+
+			$averages = [];
+			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			foreach ($computed as $subject => $average) {
+				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
+				if ($subject != 'global' && $average[1]) {
+					$averages[$key]['sum'] += $average[0] / $average[1] * $averageReference;
+					$averages[$key]['reference_value'] += $averageReference;
+				}
+			}
+
+
+			// $globalComputed = [0, 0];
+			// $averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			// foreach ($computed as $subject => $average) {
+			// 	if ($subject != 'global' && $average[1]) {
+			// 		$globalComputed[0] += $average[0] / $average[1] * $averageReference;
+			// 		$globalComputed[1] += $averageReference;
+			// 	}
+			// }
+
+			// print_r($globalComputed); exit;
+			print_r($averages); exit;
+
+			// foreach ($noteLinks as $average) {
+			// 	if ($average->subject == 'global') $average->value = $globalComputed[0] / $globalComputed[1] * $averageReference;
+			// 	if (array_key_exists($average->subject, $computed)) $average->value = ($computed[$average->subject][1] * $averageReference) ? $computed[$average->subject][0] / $computed[$average->subject][1] * $averageReference : 0;
+			// }
+			foreach ($averages as $average) {
+				if ($average->subject == 'global') $average->value = $globalComputed[0] / $globalComputed[1] * $averageReference;
+				if (array_key_exists($average->subject, $computed)) $average->value = ($computed[$average->subject][1] * $averageReference) ? $computed[$average->subject][0] / $computed[$average->subject][1] * $averageReference : 0;
 			}
 		}
 
+		
     	// Return the link list
     	$view = new ViewModel(array(
 			'category' => $category,
@@ -342,6 +406,9 @@ class NoteController extends AbstractActionController
 			'averages' => $averages,
     	));
     	
+		// print_r($averages); exit;
+		print_r($noteLinks); exit;
+
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
 
