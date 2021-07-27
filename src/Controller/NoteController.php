@@ -343,11 +343,9 @@ class NoteController extends AbstractActionController
 			// Compute the averages
 			$computed = [];
 			foreach ($notes as $link) {
-				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-global';
-
-				if (!array_key_exists($key, $computed)) $computed[$key][$link->subject] = [0, 0, 'key' => $key];
-				else if (!array_key_exists($link->subject, $computed[$key])) $computed[$key][$link->subject] = [0, 0, 'key' => $key];
-
+				$key = $link->account_id . '-' . $link->school_year . '-Q1-global';
+				if (!array_key_exists($key, $computed)) $computed[$key] = [$link->subject => [0, 0]];
+				else if (!array_key_exists($link->subject, $computed[$key])) $computed[$key][$link->subject] = [0, 0]; 
 				if ($link->value !== null) {
 					$computed[$key][$link->subject][0] += $link->value * $link->weight;
 					$computed[$key][$link->subject][1] += $link->reference_value * $link->weight;
@@ -358,9 +356,9 @@ class NoteController extends AbstractActionController
 
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
-			foreach ($computed as $student) {
+			foreach ($computed as $keyId => $student) {
+				$key = $keyId;
 				foreach ($student as $subject => $average) {
-					$key = $average['key'];
 					if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => 0, 'reference_value' => 0];
 					if ($subject != 'global' && $average[1]) {
 						$averages[$key]['sum'] += $average[0] / $average[1] * $averageReference;
