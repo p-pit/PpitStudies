@@ -318,11 +318,8 @@ class NoteController extends AbstractActionController
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
 
-		print_r($params); 
-
     	// Retrieve the list
 		if (array_key_exists('subject', $params) && $params['subject'] == 'global') {
-			echo "subject global";
 			$type = 'report';
 			$noteLinks = NoteLink::GetList($type, $params, $major, $dir, $mode);
 			unset($params['subject']);
@@ -344,7 +341,6 @@ class NoteController extends AbstractActionController
 				}
 			} 
 		} else {
-			echo "Global scope";
 			// Compute the averages
 			$computed = [];
 			foreach ($notes as $link) {
@@ -356,7 +352,6 @@ class NoteController extends AbstractActionController
 					$computed[$key][$link->subject][1] += $link->reference_value * $link->weight;
 				}
 			}
-			print_r($computed);
 
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
@@ -372,16 +367,12 @@ class NoteController extends AbstractActionController
 			}
 		}
 
-		print_r($averages); exit;
-
     	// Return the link list
     	$view = new ViewModel(array(
 			'category' => $category,
 			'noteLinks' => $noteLinks,
 			'averages' => $averages,
     	));
-
-		// print_r($averages);exit;
 
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
