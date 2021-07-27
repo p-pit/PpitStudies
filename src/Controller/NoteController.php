@@ -341,35 +341,24 @@ class NoteController extends AbstractActionController
 			} 
 		} else {
 			// Compute the averages
-			// $averages = [];
-			// foreach ($notes as $link) {
-			// 	if (!array_key_exists($link->subject, $averages)) $averages[$link->subject] = [0, 0];
-			// 	if ($link->value !== null) {
-			// 		$averages[$link->subject][0] += $link->value * $link->weight;
-			// 		$averages[$link->subject][1] += $link->reference_value * $link->weight;
-			// 	}
-			// }
-
-			// print_r($averages);
-
 			$computed = [];
 			foreach ($notes as $link) {
 				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-global';
-				if (!array_key_exists($link->subject, $computed)) $computed[$key][$link->subject] = [0, 0];
+
+				if (!array_key_exists($key, $computed)) $computed[$key][$link->subject] = [0, 0, 'key' => $key];
+				else if (!array_key_exists($link->subject, $computed[$key])) $computed[$key][$link->subject] = [0, 0, 'key' => $key];
+
 				if ($link->value !== null) {
 					$computed[$key][$link->subject][0] += $link->value * $link->weight;
 					$computed[$key][$link->subject][1] += $link->reference_value * $link->weight;
 				}
 			}
 
-			
-			// print_r($computed); 
-
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			foreach ($computed as $student) {
 				foreach ($student as $subject => $average) {
-					$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-test';
+					$key = $average['key'];
 					if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => 0, 'reference_value' => 0];
 					if ($subject != 'global' && $average[1]) {
 						$averages[$key]['sum'] += $average[0] / $average[1] * $averageReference;
@@ -377,28 +366,6 @@ class NoteController extends AbstractActionController
 					}
 				}
 			}
-
-
-			// $globalComputed = [0, 0];
-			// $averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
-			// foreach ($computed as $subject => $average) {
-			// 	if ($subject != 'global' && $average[1]) {
-			// 		$globalComputed[0] += $average[0] / $average[1] * $averageReference;
-			// 		$globalComputed[1] += $averageReference;
-			// 	}
-			// }
-
-			// print_r($globalComputed); exit;
-			print_r($averages); exit;
-
-			// foreach ($noteLinks as $average) {
-			// 	if ($average->subject == 'global') $average->value = $globalComputed[0] / $globalComputed[1] * $averageReference;
-			// 	if (array_key_exists($average->subject, $computed)) $average->value = ($computed[$average->subject][1] * $averageReference) ? $computed[$average->subject][0] / $computed[$average->subject][1] * $averageReference : 0;
-			// }
-			// foreach ($averages as $average) {
-			// 	if ($average->subject == 'global') $average->value = $globalComputed[0] / $globalComputed[1] * $averageReference;
-			// 	if (array_key_exists($average->subject, $computed)) $average->value = ($computed[$average->subject][1] * $averageReference) ? $computed[$average->subject][0] / $computed[$average->subject][1] * $averageReference : 0;
-			// }
 		}
 
 		
