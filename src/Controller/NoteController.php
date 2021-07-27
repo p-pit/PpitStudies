@@ -323,9 +323,9 @@ class NoteController extends AbstractActionController
 			$type = 'report';
 			$noteLinks = NoteLink::GetList($type, $params, $major, $dir, $mode);
 
-			foreach ($noteLinks as $noteLink) {
-				$noteLink->school_period = 'Q1';
-			}
+			// foreach ($noteLinks as $noteLink) {
+			// 	$noteLink->school_period = 'Q1';
+			// }
 
 			unset($params['subject']);
 			$notes = NoteLink::GetList('note', $params, $major, $dir, $mode);
