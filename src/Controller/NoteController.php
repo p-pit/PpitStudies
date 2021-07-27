@@ -343,7 +343,8 @@ class NoteController extends AbstractActionController
 			// Compute the averages
 			$computed = [];
 			foreach ($notes as $link) {
-				$key = $link->account_id . '-' . $link->school_year . '-Q1-global';
+				// $key = $link->account_id . '-' . $link->school_year . '-Q1-global';
+				$key = $link->account_id . '-' . $link->school_year . '-Q1-Moyenne Générale';
 				if (!array_key_exists($key, $computed)) $computed[$key] = [$link->subject => [0, 0]];
 				else if (!array_key_exists($link->subject, $computed[$key])) $computed[$key][$link->subject] = [0, 0]; 
 				if ($link->value !== null) {
