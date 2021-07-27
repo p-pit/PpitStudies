@@ -376,7 +376,7 @@ class NoteController extends AbstractActionController
 			'averages' => $averages,
     	));
     	
-		// print_r($averages); exit;
+		print_r($averages); exit;
 		// print_r($noteLinks); exit;
 
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
