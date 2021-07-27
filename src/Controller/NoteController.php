@@ -352,7 +352,7 @@ class NoteController extends AbstractActionController
 				}
 			}
 
-			print_r($computed);
+			// print_r($computed);
 
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
@@ -376,7 +376,7 @@ class NoteController extends AbstractActionController
 			'averages' => $averages,
     	));
     	
-		print_r($averages); exit;
+		// print_r($averages); exit;
 		// print_r($noteLinks); exit;
 
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
