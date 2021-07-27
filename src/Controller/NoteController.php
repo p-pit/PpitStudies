@@ -354,6 +354,8 @@ class NoteController extends AbstractActionController
 				}
 			}
 
+			print_r($computed);
+
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			foreach ($computed as $student) {
