@@ -343,8 +343,7 @@ class NoteController extends AbstractActionController
 			// Compute the averages
 			$computed = [];
 			foreach ($notes as $link) {
-				// $key = $link->account_id . '-' . $link->school_year . '-Q1-global';
-				$key = $link->account_id . '-' . $link->school_year . '-Q1-Moyenne Générale';
+				$key = $link->account_id . '-' . $link->school_year . '-Q1-global';
 				if (!array_key_exists($key, $computed)) $computed[$key] = [$link->subject => [0, 0]];
 				else if (!array_key_exists($link->subject, $computed[$key])) $computed[$key][$link->subject] = [0, 0]; 
 				if ($link->value !== null) {
@@ -352,8 +351,6 @@ class NoteController extends AbstractActionController
 					$computed[$key][$link->subject][1] += $link->reference_value * $link->weight;
 				}
 			}
-
-			// print_r($computed);
 
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
@@ -369,16 +366,12 @@ class NoteController extends AbstractActionController
 			}
 		}
 
-		
     	// Return the link list
     	$view = new ViewModel(array(
 			'category' => $category,
 			'noteLinks' => $noteLinks,
 			'averages' => $averages,
     	));
-    	
-		// print_r($averages); exit;
-		// print_r($noteLinks); exit;
 
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
    		include 'public/PHPExcel_1/Classes/PHPExcel/Writer/Excel2007.php';
