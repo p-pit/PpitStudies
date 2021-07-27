@@ -322,6 +322,11 @@ class NoteController extends AbstractActionController
 		if (array_key_exists('subject', $params) && $params['subject'] == 'global') {
 			$type = 'report';
 			$noteLinks = NoteLink::GetList($type, $params, $major, $dir, $mode);
+
+			foreach ($noteLinks as $noteLink) {
+				$noteLink->school_period = 'Q1';
+			}
+
 			unset($params['subject']);
 			$notes = NoteLink::GetList('note', $params, $major, $dir, $mode);
 
