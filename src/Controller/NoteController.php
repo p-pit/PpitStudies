@@ -354,15 +354,15 @@ class NoteController extends AbstractActionController
 					$computed[$key][$link->subject][0] += $link->value * $link->weight;
 					$computed[$key][$link->subject][1] += $link->reference_value * $link->weight;
 					//debbuging
-					$computed[$key][$link->subject]['Notes'][$link->level] = [
-						'Ref. Value' => $link->reference_value,
-						'Weight Value' => $link->weight,
-						'Note Value' => $link->value,
-						'Operation' => [
-							'Sum' => $link->value . ' X ' . $link->weight . ' = ' . $link->value * $link->weight,
-							'Accu. Ref. Value' => $link->reference_value . ' X ' . $link->weight . ' = ' . $link->reference_value * $link->weight,
-						]
-					];	
+					// $computed[$key][$link->subject]['Notes'][$link->level] = [
+					// 	'Ref. Value' => $link->reference_value,
+					// 	'Weight Value' => $link->weight,
+					// 	'Note Value' => $link->value,
+					// 	'Operation' => [
+					// 		'Sum' => $link->value . ' X ' . $link->weight . ' = ' . $link->value * $link->weight,
+					// 		'Accu. Ref. Value' => $link->reference_value . ' X ' . $link->weight . ' = ' . $link->reference_value * $link->weight,
+					// 	]
+					// ];	
 				} else {
 					$computed[$key][$link->subject] = [
 						'Ref. Value' => $link->reference_value,
@@ -372,9 +372,7 @@ class NoteController extends AbstractActionController
 				}
 			}
 
-			
-
-			print_r($computed);
+			// print_r($computed);
 
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
@@ -386,15 +384,16 @@ class NoteController extends AbstractActionController
 						$averages[$key]['sum'] += $average[0] / $average[1] * $averageReference;
 						$averages[$key]['reference_value'] += $averageReference;
 
-						$averages[$key]['Subjects'][$subject] = [
-							'Av. Ref. Value' => $averageReference,
-							'Comp. Ref. Value' => $average[1],
-							'Comp. Note Value' => $average[0],
-							'Operation' => [
-								'Global Accu. Av.' => '(' .$average[0] . ' / ' . $average[1] . ') X ' . $averageReference . ' = ' . $average[0] / $average[1] * $averageReference,
-								'Global Accu. Ref. Value' => $averages[$key]['reference_value'] . ' + ' . $averageReference . ' = ' . $averages[$key]['reference_value'],
-							]
-						];
+						//debbuging
+						// $averages[$key]['Subjects'][$subject] = [
+						// 	'Av. Ref. Value' => $averageReference,
+						// 	'Comp. Ref. Value' => $average[1],
+						// 	'Comp. Note Value' => $average[0],
+						// 	'Operation' => [
+						// 		'Global Accu. Av.' => '(' .$average[0] . ' / ' . $average[1] . ') X ' . $averageReference . ' = ' . $average[0] / $average[1] * $averageReference,
+						// 		'Global Accu. Ref. Value' => $averages[$key]['reference_value'] . ' + ' . $averageReference . ' = ' . $averages[$key]['reference_value'],
+						// 	]
+						// ];
 					}
 				}
 			}
@@ -408,7 +407,6 @@ class NoteController extends AbstractActionController
 			}
 
 			print_r($gpas); exit;
-			// print_r($averages); exit;
 		}
 
 		
