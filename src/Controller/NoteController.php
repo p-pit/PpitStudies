@@ -353,26 +353,65 @@ class NoteController extends AbstractActionController
 				if ($link->value !== null) {
 					$computed[$key][$link->subject][0] += $link->value * $link->weight;
 					$computed[$key][$link->subject][1] += $link->reference_value * $link->weight;
+					//debbuging
+					$computed[$key][$link->subject]['Notes'][$link->level] = [
+						'Ref. Value' => $link->reference_value,
+						'Weight Value' => $link->weight,
+						'Note Value' => $link->value,
+						'Operation' => [
+							'Sum' => $link->value . ' X ' . $link->weight . ' = ' . $link->value * $link->weight,
+							'Accu. Ref. Value' => $link->reference_value . ' X ' . $link->weight . ' = ' . $link->reference_value * $link->weight,
+						]
+					];	
+				} else {
+					$computed[$key][$link->subject] = [
+						'Ref. Value' => $link->reference_value,
+						'Weight Value' => $link->weight,
+						'Note Value' => 'NO VALUE'
+					];
 				}
 			}
+
+			
 
 			print_r($computed);
 
 			$averages = [];
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
-			foreach ($computed as $keyId => $student) {
+			foreach ($computed as $keyId => $subjects) {
 				$key = $keyId;
-				foreach ($student as $subject => $average) {
-					if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => 0, 'reference_value' => 0];
+				foreach ($subjects as $subject => $average) {
+					if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => 0, 'reference_value' => 0]; 
 					if ($subject != 'global' && $average[1]) {
 						$averages[$key]['sum'] += $average[0] / $average[1] * $averageReference;
 						$averages[$key]['reference_value'] += $averageReference;
+
+						$averages[$key]['Subjects'][$subject] = [
+							'Av. Ref. Value' => $averageReference,
+							'Comp. Ref. Value' => $average[1],
+							'Comp. Note Value' => $average[0],
+							'Operation' => [
+								'Global Accu. Av.' => '(' .$average[0] . ' / ' . $average[1] . ') X ' . $averageReference . ' = ' . $average[0] / $average[1] * $averageReference,
+								'Global Accu. Ref. Value' => $averages[$key]['reference_value'] . ' + ' . $averageReference . ' = ' . $averages[$key]['reference_value'],
+							]
+						];
 					}
 				}
 			}
 
-			print_r($averages); exit;
+			print_r($averages); 
+
+			$gpas = [];
+			foreach ($averages as $keyId => $average) {
+				$key = $keyId;
+				$gpas[$key] = round($average['sum'] / $average['reference_value'] * 4, 2);
+			}
+
+			print_r($gpas); exit;
+			// print_r($averages); exit;
 		}
+
+		
 
     	// Return the link list
     	$view = new ViewModel(array(
