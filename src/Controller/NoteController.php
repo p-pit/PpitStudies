@@ -363,13 +363,13 @@ class NoteController extends AbstractActionController
 					// 		'Accu. Ref. Value' => $link->reference_value . ' X ' . $link->weight . ' = ' . $link->reference_value * $link->weight,
 					// 	]
 					// ];	
-				} else {
+				} /*else {
 					$computed[$key][$link->subject] = [
 						'Ref. Value' => $link->reference_value,
 						'Weight Value' => $link->weight,
 						'Note Value' => 'NO VALUE'
 					];
-				}
+				}*/
 			}
 
 			// print_r($computed);
@@ -398,15 +398,15 @@ class NoteController extends AbstractActionController
 				}
 			}
 
-			print_r($averages); 
+			// print_r($averages); 
 
-			$gpas = [];
-			foreach ($averages as $keyId => $average) {
-				$key = $keyId;
-				$gpas[$key] = round($average['sum'] / $average['reference_value'] * 4, 2);
-			}
+			// $gpas = [];
+			// foreach ($averages as $keyId => $average) {
+			// 	$key = $keyId;
+			// 	$gpas[$key] = round($average['sum'] / $average['reference_value'] * 4, 2);
+			// }
 
-			print_r($gpas); exit;
+			// print_r($gpas); exit;
 		}
 
 		
