@@ -336,7 +336,7 @@ class NoteController extends AbstractActionController
 			}
 		}
 		$globalAverages = [];
-		foreach ($averages as $key => $average) { print_r($key . "\n");
+		foreach ($averages as $key => $average) {
 			$key = substr($key, 0, strrpos($key, '|'));
 			if (!array_key_exists($key, $globalAverages)) $globalAverages[$key] = ['sum' => $average['sum'] / $average['reference_value'], 'reference_value' => 1];
 			else {
