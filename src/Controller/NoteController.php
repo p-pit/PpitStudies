@@ -328,22 +328,16 @@ class NoteController extends AbstractActionController
 		// Compute the averages
 		$averages = [];
 		foreach ($notes as $link) {
-			$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
-			$globalKey = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-global';
+			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
 			if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
 			else {
 				$averages[$key]['sum'] += $link->value * $link->weight;
 				$averages[$key]['reference_value'] += $link->reference_value;
 			}
-			if (!array_key_exists($globalKey, $averages)) $averages[$globalKey] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
-			else {
-				$averages[$globalKey]['sum'] += $link->value * $link->weight;
-				$averages[$globalKey]['reference_value'] += $link->reference_value;
-			}
 		}
 		$globalAverages = [];
-		foreach ($averages as $key => $average) {
-			$key = substr($key, 0, strrpos($key, '_') - 1);
+		foreach ($averages as $key => $average) { print_r($key . "\n");
+			$key = substr($key, 0, strrpos($key, '|'));
 			if (!array_key_exists($key, $globalAverages)) $globalAverages[$key] = ['sum' => $average['sum'] / $average['reference_value'], 'reference_value' => 1];
 			else {
 				$globalAverages[$key]['sum'] += round($average['sum'] / $average['reference_value'] * 100) / 100;

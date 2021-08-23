@@ -54,14 +54,14 @@ class SsmlNoteViewHelper
 						if ($noteLink->getProperties()[$propertyId]) $sheet->setCellValue($column.$j, $groups[$noteLink->getProperties()[$propertyId]]->name);
 					}
 					elseif ($propertyId == 'average') {
-						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period . '-' . $noteLink->subject;
+						$key = $noteLink->account_id . '|' . $noteLink->school_year . '|' . $noteLink->school_period . '|' . $noteLink->subject;
 						if (array_key_exists($key, $view->averages)) $average = $view->averages[$key]['sum'] / $view->averages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
 						else $average = 'Non noté';
 						$sheet->setCellValue($column.$j, $average);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
 					elseif ($propertyId == 'global_average') {
-						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period;
+						$key = $noteLink->account_id . '|' . $noteLink->school_year . '|' . $noteLink->school_period;
 						if (array_key_exists($key, $view->globalAverages)) $globalAverage = $view->globalAverages[$key]['sum'] / $view->globalAverages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
 						else $globalAverage = 'Non noté';
 						$sheet->setCellValue($column.$j, $globalAverage);
