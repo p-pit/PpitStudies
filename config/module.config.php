@@ -3291,6 +3291,12 @@ return array_merge(
 							'params' => array('type' => 'p-pit-studies'),
 							'labels' => array('en_US' => 'User account', 'fr_FR' => 'Compte utilisateur'),
 					),
+					'notifications' => array(
+						'definition' => 'inline',
+						'route' => 'account/showNotifications',
+						'params' => array('entity' => 'commitment_term'),
+						'labels' => array('default' => 'Notifications', 'fr_FR' => 'Notifications'),
+					),
 			),
 	),
 
