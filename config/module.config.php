@@ -5769,6 +5769,7 @@ table.note-report tr.period {
 			'weight' => 'K',
 			'value' => 'L',
 			'average' => 'M',
+			'global_average' => 'M',
 			'lower_note' => 'N',
 			'average_note' => 'O',
 			'higher_note' => 'P',

@@ -18,6 +18,7 @@ class SsmlNoteViewHelper
 		$context = Context::getCurrent();
 		$translator = $context->getServiceManager()->get(\Zend\I18n\Translator\TranslatorInterface::class);
 		$category = $view->category;
+		$type = $view->type;
 		
 		$title = $context->localize($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['title']);
 		
@@ -54,6 +55,12 @@ class SsmlNoteViewHelper
 					}
 					elseif ($propertyId == 'average') {
 						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period . '-' . $noteLink->subject;
+						$average = $view->averages[$key]['sum'] / $view->averages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
+						$sheet->setCellValue($column.$j, $average);
+						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
+					}
+					elseif ($propertyId == 'global_average') {
+						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period . '-global';
 						$average = $view->averages[$key]['sum'] / $view->averages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
 						$sheet->setCellValue($column.$j, $average);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');

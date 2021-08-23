@@ -322,14 +322,20 @@ class NoteController extends AbstractActionController
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
     	
 		// Compute the averages
+		$averages = [];
 		if ($type == 'note') {
-			$averages = [];
 			foreach ($noteLinks as $link) {
 				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
+				$globalKey = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-global';
 				if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
 				else {
 					$averages[$key]['sum'] += $link->value * $link->weight;
 					$averages[$key]['reference_value'] += $link->reference_value;
+				}
+				if (!array_key_exists($globalkey, $averages)) $averages[$globalkey] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+				else {
+					$averages[$globalkey]['sum'] += $link->value * $link->weight;
+					$averages[$globalkey]['reference_value'] += $link->reference_value;
 				}
 			}
 		}
@@ -337,6 +343,7 @@ class NoteController extends AbstractActionController
     	// Return the link list
     	$view = new ViewModel(array(
 			'category' => $category,
+			'type' => $type,
 			'noteLinks' => $noteLinks,
 			'averages' => $averages,
     	));
