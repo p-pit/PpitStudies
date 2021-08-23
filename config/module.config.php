@@ -5903,6 +5903,10 @@ table.note-report tr.period {
 		],
 	],
 
+	'note_link/routes' => [
+		'export' => 'note/export',
+	],
+
 	'note_link/student_list/generic' => [
 		'subject' => [],
 		'date' => [],

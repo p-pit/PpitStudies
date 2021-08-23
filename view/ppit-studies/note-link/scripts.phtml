@@ -114,8 +114,9 @@ function getSearch()
 
 // Export the list
 function exportNoteLinkList() {
+  <?php $route = $context->getConfig('note_link/routes')['export'] ?>
 	var params = getSearchParams('');
-	document.location.href = '<?php echo $this->url('note/export', array('category' => 'evaluation', 'type' => 'note')) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	document.location.href = '<?php echo $this->url($route, array('category' => 'evaluation', 'type' => $type)) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 }
 
 function updateGroup(ids) {    
