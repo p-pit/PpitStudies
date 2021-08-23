@@ -341,6 +341,16 @@ class NoteController extends AbstractActionController
 				$averages[$globalKey]['reference_value'] += $link->reference_value;
 			}
 		}
+		$globalAverages = [];
+		foreach ($averages as $key => $average) {
+			$pos = substr($key, 0, strrpos($key, '_'));
+			$key = substr($key, 0, $pos - 1);
+			if (!array_key_exists($key, $globalAverages)) $globalAverages[$key] = ['sum' => $average['sum'] / $average['reference_value'], 'reference_value' => 1];
+			else {
+				$globalAverages[$key]['sum'] += round($average['sum'] / $average['reference_value'] * 100) / 100;
+				$globalAverages[$key]['reference_value'] += 1;
+			}
+		}
 
     	// Return the link list
     	$view = new ViewModel(array(
@@ -348,6 +358,7 @@ class NoteController extends AbstractActionController
 			'type' => $type,
 			'noteLinks' => $noteLinks,
 			'averages' => $averages,
+			'globalAverages' => $globalAverages,
     	));
     	
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';

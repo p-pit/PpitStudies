@@ -61,10 +61,10 @@ class SsmlNoteViewHelper
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
 					elseif ($propertyId == 'global_average') {
-						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period . '-global';
-						if (array_key_exists($key, $view->averages)) $average = $view->averages[$key]['sum'] / $view->averages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
-						else $average = 'Non noté';
-						$sheet->setCellValue($column.$j, $average);
+						$key = $noteLink->account_id . '-' . $noteLink->school_year . '-' . $noteLink->school_period;
+						if (array_key_exists($key, $view->globalAverages)) $globalAverage = $view->globalAverages[$key]['sum'] / $view->globalAverages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
+						else $globalAverage = 'Non noté';
+						$sheet->setCellValue($column.$j, $globalAverage);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
 					elseif ($property['type'] == 'date') $sheet->setCellValue($column.$j, $context->decodeDate($noteLink->getProperties()[$propertyId]));
