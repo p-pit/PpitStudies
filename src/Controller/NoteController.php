@@ -332,10 +332,10 @@ class NoteController extends AbstractActionController
 					$averages[$key]['sum'] += $link->value * $link->weight;
 					$averages[$key]['reference_value'] += $link->reference_value;
 				}
-				if (!array_key_exists($globalkey, $averages)) $averages[$globalkey] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+				if (!array_key_exists($globalKey, $averages)) $averages[$globalKey] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
 				else {
-					$averages[$globalkey]['sum'] += $link->value * $link->weight;
-					$averages[$globalkey]['reference_value'] += $link->reference_value;
+					$averages[$globalKey]['sum'] += $link->value * $link->weight;
+					$averages[$globalKey]['reference_value'] += $link->reference_value;
 				}
 			}
 		}
