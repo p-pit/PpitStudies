@@ -323,23 +323,22 @@ class NoteController extends AbstractActionController
     	
 		// Report case : Retrieve the notes to cumpute the averages
 		if ($type == 'report') $notes = NoteLink::getList('note', $params, $major, $dir, $mode);
+		else $notes = $noteLinks;
     	
 		// Compute the averages
 		$averages = [];
-		if ($type == 'note') {
-			foreach ($notes as $link) {
-				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
-				$globalKey = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-global';
-				if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
-				else {
-					$averages[$key]['sum'] += $link->value * $link->weight;
-					$averages[$key]['reference_value'] += $link->reference_value;
-				}
-				if (!array_key_exists($globalKey, $averages)) $averages[$globalKey] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
-				else {
-					$averages[$globalKey]['sum'] += $link->value * $link->weight;
-					$averages[$globalKey]['reference_value'] += $link->reference_value;
-				}
+		foreach ($notes as $link) {
+			$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
+			$globalKey = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-global';
+			if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+			else {
+				$averages[$key]['sum'] += $link->value * $link->weight;
+				$averages[$key]['reference_value'] += $link->reference_value;
+			}
+			if (!array_key_exists($globalKey, $averages)) $averages[$globalKey] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+			else {
+				$averages[$globalKey]['sum'] += $link->value * $link->weight;
+				$averages[$globalKey]['reference_value'] += $link->reference_value;
 			}
 		}
 
