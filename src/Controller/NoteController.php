@@ -321,10 +321,13 @@ class NoteController extends AbstractActionController
     	// Retrieve the list
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
     	
+		// Report case : Retrieve the notes to cumpute the averages
+		if ($type == 'report') $notes = NoteLink::getList('note', $params, $major, $dir, $mode);
+    	
 		// Compute the averages
 		$averages = [];
 		if ($type == 'note') {
-			foreach ($noteLinks as $link) {
+			foreach ($notes as $link) {
 				$key = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-' . $link->subject;
 				$globalKey = $link->account_id . '-' . $link->school_year . '-' . $link->school_period . '-global';
 				if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
