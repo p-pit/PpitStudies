@@ -5542,7 +5542,7 @@ table.note-report tr.period {
 					'fr_FR' => 'Moyenne de l’élève',
 			),
 	),
-	'note/property/glohal_average' => array(
+	'note/property/global_average' => array(
 		'type' => 'number',
 		'labels' => array(
 				'en_US' => 'Student global average',
