@@ -5662,6 +5662,7 @@ table.note-report tr.period {
 					'reference_value' => array('definition' => 'note/property/reference_value'),
 					'weight' => array('definition' => 'note/property/weight'),
 					'average' => array('definition' => 'note/property/average'),
+					'global_average' => array('definition' => 'note/property/global_average'),
 					'lower_note' => array('definition' => 'note/property/lower_note'),
 					'higher_note' => array('definition' => 'note/property/higher_note'),
 					'average_note' => array('definition' => 'note/property/average_note'),
