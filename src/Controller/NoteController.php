@@ -305,7 +305,7 @@ class NoteController extends AbstractActionController
     
     public function exportAction()
     {
-        	// Retrieve the context
+        // Retrieve the context
     	$context = Context::getCurrent();
     
 		$category = $this->params()->fromRoute('category');
@@ -320,16 +320,30 @@ class NoteController extends AbstractActionController
     
     	// Retrieve the list
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
-    	
+
 		// Report case : Retrieve the notes to cumpute the averages
-		if ($type == 'report') $notes = NoteLink::getList('note', $params, $major, $dir, $mode);
+		if ($type == 'report') {
+			// Report case : Retrieve the notes to cumpute the averages
+			$notes = NoteLink::getList('note', $params, $major, $dir, $mode);
+
+	    	// Report case: Catalog the report weight for this subject
+			$reportWeights = [];
+			foreach ($noteLinks as $link) $reportWeights[$link->account_id . '_' . $link->subject] = ($link->specific_weight) ? $link->specific_weight : $link->weight;
+		}
 		else $notes = $noteLinks;
     	
 		// Compute the averages
 		$averages = [];
 		foreach ($notes as $link) {
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
-			if (!array_key_exists($key, $averages)) $averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+			if (!array_key_exists($key, $averages)) {
+				$averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+
+				// Report case: Retrieve the report weight for this subject
+				if ($type == 'report') {
+					$averages[$key]['weight'] = $reportWeights[$link->account_id . '_' . $link->subject];
+				}
+			}
 			else {
 				$averages[$key]['sum'] += $link->value * $link->weight;
 				$averages[$key]['reference_value'] += $link->reference_value;
