@@ -337,7 +337,7 @@ class NoteController extends AbstractActionController
 		foreach ($notes as $link) {
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
 			if (!array_key_exists($key, $averages)) {
-				$averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value];
+				$averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value * $link->weight];
 
 				// Report case: Retrieve the report weight for this subject
 				if ($type == 'report') {
@@ -349,7 +349,7 @@ class NoteController extends AbstractActionController
 			}
 			else {
 				$averages[$key]['sum'] += $link->value * $link->weight;
-				$averages[$key]['reference_value'] += $link->reference_value;
+				$averages[$key]['reference_value'] += $link->reference_value * $link->weight;
 			}
 		}
 		$globalAverages = [];
