@@ -341,7 +341,10 @@ class NoteController extends AbstractActionController
 
 				// Report case: Retrieve the report weight for this subject
 				if ($type == 'report') {
-					$averages[$key]['weight'] = $reportWeights[$link->account_id . '_' . $link->subject];
+					if (array_key_exists($link->account_id . '_' . $link->subject, $reportWeights)) {
+						$averages[$key]['weight'] = $reportWeights[$link->account_id . '_' . $link->subject];
+					}
+					else $averages[$key]['weight'] = 1;
 				}
 			}
 			else {
