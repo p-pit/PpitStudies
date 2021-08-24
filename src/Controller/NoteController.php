@@ -341,6 +341,7 @@ class NoteController extends AbstractActionController
 					'account_id' => $link->account_id,
 					'school_year' => $link->school_year,
 					'school_period' => $link->school_period,
+					'subject' => $link->subject,
 					'sum' => $link->value * $link->weight,
 					'reference_value' => $link->reference_value * $link->weight
 				];
@@ -361,22 +362,27 @@ class NoteController extends AbstractActionController
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
 			$key = $average['account_id'] . '|' . $average['school_year'] . '|' . $average['school_period'];
+			if ($type == 'report' && array_key_exists($average['account_id'] . '_' . $average['subject'], $reportWeights)) $reportWeight = $reportWeights[$average['account_id'] . '_' . $average['subject']];
+			else $reportWeight = 1;
 			if (!array_key_exists($key, $globalAverages)) $globalAverages[$key] = ['sum' => $average['sum'] / $average['reference_value'], 'reference_value' => 1];
 			else {
-				$globalAverages[$key]['sum'] += round($average['sum'] / $average['reference_value'] * 100) / 100;
-				$globalAverages[$key]['reference_value'] += 1;
+				$globalAverages[$key]['sum'] += round($average['sum'] * $reportWeight / $average['reference_value'] * 100) / 100;
+				$globalAverages[$key]['reference_value'] += $reportWeight;
 			}
 		}
 		$yearlyAverages = [];
 		foreach ($averages as $key => $average) {
 			$key = $average['account_id'] . '|' . $average['school_year'];
+			if ($type == 'report' && array_key_exists($average['account_id'] . '_' . $average['subject'], $reportWeights)) $reportWeight = $reportWeights[$average['account_id'] . '_' . $average['subject']];
+			else $reportWeight = 1;
 			if (!array_key_exists($key, $yearlyAverages)) $yearlyAverages[$key] = ['sum' => $average['sum'] / $average['reference_value'], 'reference_value' => 1];
 			else {
-				$yearlyAverages[$key]['sum'] += round($average['sum'] / $average['reference_value'] * 100) / 100;
-				$yearlyAverages[$key]['reference_value'] += 1;
+				$yearlyAverages[$key]['sum'] += round($average['sum'] * $reportWeight / $average['reference_value'] * 100) / 100;
+				$yearlyAverages[$key]['reference_value'] += $reportWeight;
 			}
 		}
-
+print_r($averages);
+print_r($globalAverages); exit;
     	// Return the link list
     	$view = new ViewModel(array(
 			'category' => $category,
