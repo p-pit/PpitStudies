@@ -381,8 +381,7 @@ class NoteController extends AbstractActionController
 				$yearlyAverages[$key]['reference_value'] += $reportWeight;
 			}
 		}
-print_r($averages);
-print_r($globalAverages); exit;
+
     	// Return the link list
     	$view = new ViewModel(array(
 			'category' => $category,
