@@ -67,6 +67,13 @@ class SsmlNoteViewHelper
 						$sheet->setCellValue($column.$j, $globalAverage);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
+					elseif ($propertyId == 'yearly_average') {
+						$key = $noteLink->account_id . '|' . $noteLink->school_year;
+						if (array_key_exists($key, $view->yearlyAverages)) $yearlyAverage = $view->yearlyAverages[$key]['sum'] / $view->yearlyAverages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
+						else $yearlyAverage = 'Non noté';
+						$sheet->setCellValue($column.$j, $yearlyAverage);
+						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
+					}
 					elseif ($property['type'] == 'date') $sheet->setCellValue($column.$j, $context->decodeDate($noteLink->getProperties()[$propertyId]));
 					elseif ($property['type'] == 'number') {
 						$sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);

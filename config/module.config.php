@@ -5549,6 +5549,13 @@ table.note-report tr.period {
 				'fr_FR' => 'Moyenne générale de l’élève',
 		),
 	),
+	'note/property/yearly_average' => array(
+		'type' => 'number',
+		'labels' => array(
+				'en_US' => 'Student yeraly average',
+				'fr_FR' => 'Moyenne annuelle de l’élève',
+		),
+	),
 	'note/property/average_note' => array(
 			'type' => 'number',
 			'labels' => array(
@@ -5663,6 +5670,7 @@ table.note-report tr.period {
 					'weight' => array('definition' => 'note/property/weight'),
 					'average' => array('definition' => 'note/property/average'),
 					'global_average' => array('definition' => 'note/property/global_average'),
+					'yearly_average' => array('definition' => 'note/property/yearly_average'),
 					'lower_note' => array('definition' => 'note/property/lower_note'),
 					'higher_note' => array('definition' => 'note/property/higher_note'),
 					'average_note' => array('definition' => 'note/property/average_note'),
@@ -5778,12 +5786,13 @@ table.note-report tr.period {
 			'value' => 'L',
 			'average' => 'M',
 			'global_average' => 'N',
-			'lower_note' => 'O',
-			'average_note' => 'P',
-			'higher_note' => 'Q',
-			'assessment' => 'R',
-			'evaluation' => 'S',
-			'group_id' => 'T',
+			'yearly_average' => 'O',
+			'lower_note' => 'P',
+			'average_note' => 'Q',
+			'higher_note' => 'R',
+			'assessment' => 'S',
+			'evaluation' => 'T',
+			'group_id' => 'U',
 		),
 	),
 

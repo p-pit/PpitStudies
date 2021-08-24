@@ -337,7 +337,13 @@ class NoteController extends AbstractActionController
 		foreach ($notes as $link) {
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
 			if (!array_key_exists($key, $averages)) {
-				$averages[$key] = ['sum' => $link->value * $link->weight, 'reference_value' => $link->reference_value * $link->weight];
+				$averages[$key] = [
+					'account_id' => $link->account_id,
+					'school_year' => $link->school_year,
+					'school_period' => $link->school_period,
+					'sum' => $link->value * $link->weight,
+					'reference_value' => $link->reference_value * $link->weight
+				];
 
 				// Report case: Retrieve the report weight for this subject
 				if ($type == 'report') {
@@ -354,11 +360,20 @@ class NoteController extends AbstractActionController
 		}
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
-			$key = substr($key, 0, strrpos($key, '|'));
+			$key = $average['account_id'] . '|' . $average['school_year'] . '|' . $average['school_period'];
 			if (!array_key_exists($key, $globalAverages)) $globalAverages[$key] = ['sum' => $average['sum'] / $average['reference_value'], 'reference_value' => 1];
 			else {
 				$globalAverages[$key]['sum'] += round($average['sum'] / $average['reference_value'] * 100) / 100;
 				$globalAverages[$key]['reference_value'] += 1;
+			}
+		}
+		$yearlyAverages = [];
+		foreach ($averages as $key => $average) {
+			$key = $average['account_id'] . '|' . $average['school_year'];
+			if (!array_key_exists($key, $yearlyAverages)) $yearlyAverages[$key] = ['sum' => $average['sum'] / $average['reference_value'], 'reference_value' => 1];
+			else {
+				$yearlyAverages[$key]['sum'] += round($average['sum'] / $average['reference_value'] * 100) / 100;
+				$yearlyAverages[$key]['reference_value'] += 1;
 			}
 		}
 
@@ -369,6 +384,7 @@ class NoteController extends AbstractActionController
 			'noteLinks' => $noteLinks,
 			'averages' => $averages,
 			'globalAverages' => $globalAverages,
+			'yearlyAverages' => $yearlyAverages,
     	));
     	
    		include 'public/PHPExcel_1/Classes/PHPExcel.php';
