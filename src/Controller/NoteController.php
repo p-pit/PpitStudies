@@ -323,15 +323,24 @@ class NoteController extends AbstractActionController
 
 		// Report case : Retrieve the notes to cumpute the averages
 		if ($type == 'report') {
-			// Report case : Retrieve the notes to cumpute the averages
-			$notes = NoteLink::getList('note', $params, $major, $dir, $mode);
 
 	    	// Report case: Catalog the report weight for this subject
 			$reportWeights = [];
-			foreach ($noteLinks as $link) $reportWeights[$link->account_id . '_' . $link->subject] = ($link->specific_weight) ? $link->specific_weight : $link->weight;
+			foreach ($noteLinks as $link) {
+				$reportWeights[$link->account_id . '_' . $link->subject . '_' . $link->school_year . '_' . $link->school_period] = ($link->specific_weight) ? $link->specific_weight : $link->weight;
+			}
+
+			// Report case : Retrieve the notes to cumpute the averages and restrict on the selected report scope
+			$cursor = NoteLink::getList('note', $params, $major, $dir, $mode);
+			$notes = [];
+			foreach ($cursor as $link) {
+				if (array_key_exists($link->account_id . '_' . $link->subject . '_' . $link->school_year . '_' . $link->school_period, $reportWeights)) {
+					$notes[] = $link;
+				}
+			}
 		}
 		else $notes = $noteLinks;
-    	
+    	print_r($notes);
 		// Compute the averages
 		$averages = [];
 		foreach ($notes as $link) {
