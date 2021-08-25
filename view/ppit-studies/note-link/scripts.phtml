@@ -192,6 +192,7 @@ function getGroup(ids) {
       $('#group-delete-button').click(function () {
         $(this).removeClass('btn-warning').addClass('btn-danger');
         $('#group-delete-button').click(function () {
+          $(this).addClass('disabled');
           deleteGroup(ids);
         });
       });
