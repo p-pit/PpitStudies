@@ -4972,10 +4972,10 @@ table.note-report tr.period {
 	'event/list/calendar' => array(
 		'place_id' => ['mandatory' => true],
 		'property_1' => ['mandatory' => true],
-		'groups' => ['mandatory' => true, 'multiple' => true],
+		'groups' => ['multiple' => true],
 		'subcategory' => ['multiple' => true],
 		'property_3' => [],
-		'account_id' => [],
+		'account_id' => ['multiple' => true],
 		'status' => [],
 		'account_status' => ['readonly' => true],
 		'begin_date' => ['mandatory' => true],
