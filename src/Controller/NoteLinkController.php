@@ -526,6 +526,10 @@ class NoteLinkController extends AbstractActionController
 					$noteLink->note->teacher_id = $this->getRequest()->getPost('teacher_id');
 					$updateNote = true;
 				}
+				if ($this->getRequest()->getPost('value')) $noteLink->value = $this->getRequest()->getPost('value');
+				else $noteLink->value = null;
+				$noteLink->properties['value'] = $noteLink->value;
+				$noteLink->update(null);
 				if ($updateNote) $noteLink->note->update(null);
 				
 				// Atomically save

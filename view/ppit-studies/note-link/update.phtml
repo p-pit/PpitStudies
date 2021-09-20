@@ -230,7 +230,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
           </select>
   <?php endif?>
 
-  <?php if ($context->getConfig('note/property/value')['type'] == 'number') : ?>
+  <?php if ($noteLink->type == 'report' || $context->getConfig('note/property/value')['type'] == 'number') : ?>
     <?php
     if (!array_key_exists($noteLink->subject, $averages)) $average = 'Non noté';
     else {
@@ -238,7 +238,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
     	$average = round($averages[$noteLink->subject][0] / $averages[$noteLink->subject][1] * $averageReference, 2);
     }
     ?>
-        <input class="form-control form-control-sm" value="<?php echo $average ?>" disabled="disabled" />
+        <input class="form-control form-control-sm" id="value" value="<?php echo $noteLink->value ?>" placeholder="Calculé : <?php echo $average ?>" />
 
   <?php else : ?>
                 <select class="form-control form-control-sm update_input update_input_select" id="value" placeholder="<?php echo $this->translate((in_array($noteLink->type, ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink->value !== null) echo 'value="'.$context->formatFloat($noteLink->value, 2).'"' ?> disabled="disabled">

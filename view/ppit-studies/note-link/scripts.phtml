@@ -211,6 +211,7 @@ function postNoteLinkUpdate(id, panel) {
     formData.append('mention', $('#mention').val());
     formData.append('assessment', $('#assessment').val());
     formData.append('teacher_id', $('#teacher_id').val());
+    formData.append('value', $('#value').val());
   
     xhttp.open('POST', route, true);
     xhttp.onreadystatechange = function() {
