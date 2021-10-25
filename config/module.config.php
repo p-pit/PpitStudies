@@ -1505,6 +1505,15 @@ return array_merge(
 			'fr_FR' => 'Adresse',
 		),
 	),
+
+	'commitment/p-pit-studies/property/photo_link_id' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Photo link',
+			'fr_FR' => 'Lien photo',
+		),
+	),
 	
 	'commitment/p-pit-studies/property/default_means_of_payment' => ['definition' => 'core_account/generic/property/default_means_of_payment'],
 	'commitment/p-pit-studies/property/transfer_order_id' => ['definition' => 'core_account/generic/property/transfer_order_id'],
@@ -1794,7 +1803,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address',
+			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -2050,6 +2059,7 @@ return array_merge(
 		'property_11' => 'Y',
 		'property_12' => 'Z',
 		'tel_cell' => 'AA',
+		'identifier' => 'AB',
 	),
 
 	'commitment/subscriptionExport/p-pit-studies' => array(
@@ -2097,6 +2107,7 @@ return array_merge(
 		'email_3' => 'AN',
 
 		'including_options_amount' => 'AB',
+		'account_id' => 'AO',
 	),
 	
 	'commitment/invoice/p-pit-studies' => array(
