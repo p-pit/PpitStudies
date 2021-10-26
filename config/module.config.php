@@ -1767,7 +1767,13 @@ return array_merge(
 		'type' => 'input',
 		'labels' => ['default' => 'OPCO - E-mail'],
 	],
-	
+
+	'commitment/p-pit-studies/property/property_27' => [
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => ['default' => 'Tuteur - Email école'],
+	],
+		
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
 	'commitment/p-pit-studies/property/account_date_1' => ['definition' => 'core_account/generic/property/date_1'],
@@ -1803,7 +1809,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
+			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'photo_link_id', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -1812,7 +1818,7 @@ return array_merge(
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10',
 			'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19',
-			'property_20', 'property_21', 'property_22', 'property_23','property_24','property_25','property_26',
+			'property_20', 'property_21', 'property_22', 'property_23','property_24','property_25','property_26','property_27',
 			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
@@ -3176,7 +3182,7 @@ return array_merge(
 			'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3', 'email_3', 'tel_work_3', 'tel_cell_3', 'address_3',
 			'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4', 'email_4', 'tel_work_4', 'tel_cell_4', 'address_4',
 			'n_title_5', 'n_first_5', 'n_last_5', 'n_fn_5', 'email_5', 'tel_work_5', 'tel_cell_5', 'address_5',
-			'invoice_account_id', 'groups', 'opening_date', 'closing_date', 'callback_date', 'first_activation_date', 'date_1', 'date_2', 'date_3', 'date_4', 'date_5', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'has_replied', 'contact_history', 'opt_out_time',
+			'invoice_account_id', 'groups', 'opening_date', 'closing_date', 'callback_date', 'first_activation_date', 'date_1', 'date_2', 'date_3', 'date_4', 'date_5', 'next_meeting_date', 'next_meeting_confirmed', 'priority', 'origine', 'has_replied', 'contact_history', 'opt_out_time', 'notification_time',
 			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19', 'property_20',
