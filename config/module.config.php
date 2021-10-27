@@ -4923,6 +4923,15 @@ table.note-report tr.period {
 		),
 	),
 	
+	'event/calendar/property/email_work' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'default' => 'School email',
+			'fr_FR' => 'Email école',
+		),
+	),
+	
 	'event/calendar/property/property_1' => array('definition' => 'student/property/school_year'),
 	'event/calendar/property/property_2' => array('definition' => 'student/property/class'),
 	'event/calendar/property/property_3' => array('definition' => 'student/property/school_subject'),
@@ -4950,7 +4959,7 @@ table.note-report tr.period {
 		'dimensions' => array(),
 		'indicators' => array(),
 		'properties' => array(
-			'status', 'type', 'place_id', 'place_caption', 'vcard_id', 'n_fn', 'account_status', 'category', 'subcategory', 'identifier', 'caption', 'description',
+			'status', 'type', 'place_id', 'place_caption', 'vcard_id', 'n_fn', 'account_status', 'email_work', 'category', 'subcategory', 'identifier', 'caption', 'description',
 			'begin_date', 'end_date', 'day_of_week', 'day_of_month', 'exception_1', 'exception_2', 'exception_3', 'exception_4', 'begin_time', 'end_time', 'time_zone', 'location', 'latitude', 'longitude',
 			'value', 'comments',
 			'property_1', 'property_2', 'property_3', 'property_4', 
@@ -4978,6 +4987,7 @@ table.note-report tr.period {
 			'account_id' => ['multiple' => true],
 			'status' => ['multiple' => true],
 			'account_status' => ['multiple' => true],
+			'email_work' => [],
 			'begin_date' => [],
 			'end_date' => [],
 			'day_of_week' => ['multiple' => true],
@@ -4995,6 +5005,7 @@ table.note-report tr.period {
 		'account_id' => ['multiple' => true],
 		'status' => [],
 		'account_status' => ['readonly' => true],
+		'email_work' => ['readonly' => true],
 		'begin_date' => ['mandatory' => true],
 		'end_date' => [],
 		'day_of_week' => ['multiple' => true],
@@ -5025,6 +5036,7 @@ table.note-report tr.period {
 		'value' => 'L',
 		'location' => 'M',
 		'caption' => 'N',
+		'email_work' => 'O',
 	),
 	
 	'event/detail/calendar' => array(
