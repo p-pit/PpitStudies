@@ -5933,7 +5933,16 @@ table.note-report tr.period {
 		'modalities' => [], // Dynamically loaded
 		'labels' => ['default' => 'Intervenant'],
 	],
-	
+
+	'note_link/generic/property/specific_weight' => array(
+		'definition' => 'inline',
+		'type' => 'number',
+		'labels' => array(
+				'en_US' => 'Coef. / Credits',
+				'fr_FR' => 'Coef./ Crédits',
+		),
+	),
+
 	'note_link/generic/property/class' => ['definition' => 'student/property/class'],
 	'note_link/generic/property/school_period' => ['definition' => 'student/property/school_period'],
 	'note_link/generic/property/subject' => ['definition' => 'student/property/school_subject'],
@@ -5952,7 +5961,7 @@ table.note-report tr.period {
 		'properties' => [
 			'status', 'account_id', 'value', 'evaluation', 'assessment', 'update_time',
 			'place_id', 'n_fn', 'name', 'account_property_15',
-			'school_year', 'level', 'group_id', 'teacher_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'average', 'observations', 'lower_note', 'higher_note', 'average_note',
+			'school_year', 'level', 'group_id', 'teacher_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'specific_weight', 'average', 'observations', 'lower_note', 'higher_note', 'average_note',
 		],
 	],
 

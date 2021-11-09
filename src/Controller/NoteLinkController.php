@@ -510,6 +510,7 @@ class NoteLinkController extends AbstractActionController
 			$data = [];
 			$data['assessment'] = $this->getRequest()->getPost('assessment');
 			$data['evaluation'] = $this->getRequest()->getPost('mention');
+			$data['specific_weight'] = $this->getRequest()->getPost('specific_weight');
 			$rc = $noteLink->loadData($data);
 			if ($rc != 'OK') {
 				$this->response->setStatusCode('409');
