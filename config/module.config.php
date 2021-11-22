@@ -16,6 +16,7 @@ return array_merge(
         	'PpitStudies\Controller\NoteLink' => 'PpitStudies\Controller\NoteLinkController',
         	'PpitStudies\Controller\Report' => 'PpitStudies\Controller\ReportController',
         	'PpitStudies\Controller\Student' => 'PpitStudies\Controller\StudentController',
+        	'PpitStudies\Controller\Subject' => 'PpitStudies\Controller\SubjectController',
         ),
     ),
 		
@@ -1066,7 +1067,30 @@ return array_merge(
 		        				),
 	       				),
 	    	   	),
-	    ),
+
+				'subject' => [
+					'type'    => 'literal',
+					'options' => [
+						'route'    => '/subject',
+						'defaults' => [
+							'controller' => 'PpitStudies\Controller\Subject',
+							'action'     => 'v1',
+						],
+					],
+					'may_terminate' => true,
+					'child_routes' => [
+						'v1' => [
+							'type' => 'segment',
+							'options' => [
+								'route' => '/v1[/:id]',
+								'defaults' => [
+									'action' => 'v1',
+								],
+							],
+						],
+					],
+				],
+			),
     ),
 	'bjyauthorize' => array(
 		// Guard listeners to be attached to the application event manager
@@ -1146,6 +1170,8 @@ return array_merge(
 				array('route' => 'student/nomad', 'roles' => array('guest')),
 				array('route' => 'student/keystone', 'roles' => array('guest')),
 				array('route' => 'student/init', 'roles' => array('admin')),
+
+				array('route' => 'subject/v1', 'roles' => array('guest')),
 			)
 		)
 	),
