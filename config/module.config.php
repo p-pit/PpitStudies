@@ -270,7 +270,16 @@ return array_merge(
                 ),
            		'may_terminate' => true,
 	       		'child_routes' => array(
-        						'index' => array(
+								'v1' => array(
+										'type' => 'segment',
+										'options' => array(
+												'route' => '/v1[/:id]',
+												'defaults' => array(
+														'action' => 'v1',
+												),
+										),
+								),
+								'index' => array(
         								'type' => 'segment',
         								'options' => array(
         										'route' => '/index[/:category][/:type][/:entryId]',
@@ -1109,6 +1118,7 @@ return array_merge(
 				array('route' => 'studentEvent/planning', 'roles' => array('user')),
 
 				array('route' => 'note', 'roles' => array('manager', 'coach', 'teacher')),
+				array('route' => 'note/v1', 'roles' => array('guest')),
 				array('route' => 'note/index', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'note/indexV2', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'note/searchV2', 'roles' => array('manager', 'coach', 'teacher')),

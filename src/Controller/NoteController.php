@@ -19,6 +19,126 @@ use Zend\View\Model\ViewModel;
 
 class NoteController extends AbstractActionController
 {
+	public function getList() {
+	}
+	
+	public function get($id) {
+	}
+	
+	/**
+	 * Add a note
+	 */
+	public function post() {
+		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection->beginTransaction();
+		try {
+			$body = json_decode($this->request->getContent(), true);
+			$note = Note::instanciate('note');
+			$note->category = 'evaluation';
+			$note->status = 'current';
+	
+			$note->place_id = $body['place_id'];
+			$note->teacher_id = $body['teacher_id'];
+			$note->group_id = $body['group_id'];
+			$note->school_year = $body['school_year'];
+			$note->school_period = $body['school_period'];
+			if (array_key_exists('level', $body)) $note->level = $body['level'];
+			$note->subject = $body['subject'];
+			$note->date = $body['date'];
+			$note->reference_value = $body['reference_value'];
+			$note->weight = $body['weight'];
+			if (array_key_exists('observations', $body)) $note->observations = $body['observations'];
+
+			$rc = $note->add();
+			if ($rc != 'OK') {
+				$connection->rollback();
+                $this->response->setStatusCode('400');
+                $this->response->setReasonPhrase($rc);
+				return [];
+			}
+
+			foreach ($body['links'] as $account_id => $link) {
+				$noteLink = NoteLink::instanciate($account_id, $note->id);
+				if (array_key_exists('weight', $link)) $noteLink->specific_weight = $link['weight'];
+				$noteLink->value = $link['value'];
+				if (array_key_exists('evaluation', $link)) $noteLink->evaluation = $link['evaluation'];
+				if (array_key_exists('assessment', $link)) $noteLink->assessment = $link['assessment'];
+				$rc = $noteLink->add();
+				if ($rc != 'OK') {
+					$connection->rollback();
+					$this->response->setStatusCode('400');
+					$this->response->setReasonPhrase($rc);
+					return [];
+				}
+			}
+
+			$connection->commit();
+			return [];
+		}
+		catch (\Exception $e) {
+			$connection->rollback();
+			$this->response->setStatusCode('500');
+			return [];
+		}
+	}
+	
+	/**
+	 * Update 1 note
+	 */
+	public function patch($id) {
+	}
+	
+	/**
+	 * Upsert notes
+	 */
+	public function put() {
+	}
+	
+	/**
+	 * Delete notes
+	 */
+	public function delete() {
+	}
+
+	public function v1Action() 
+	{
+		$context = Context::getCurrent();
+		
+		// Authentication
+		if (!$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+		
+		// Authorization
+		if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
+			$this->response->setStatusCode('403');
+			return $this->response;
+		}
+		
+		// Retrieve the context
+		$context = Context::getCurrent();
+
+		if ($this->request->isGet()) {
+			$id = $this->params()->fromRoute('id');
+			if ($id) $content = $this->get($id);
+			else $content = $this->getList();
+		}
+
+		elseif ($this->request->isPost()) {
+			$content = $this->post();
+		}
+
+		elseif ($this->request->isDelete()) {
+			$id = $this->params()->fromRoute('id');
+			$content = $this->delete($id);
+		}
+		
+		header('Content-Type: application/json');
+		echo json_encode($content, JSON_PRETTY_PRINT);
+		return $this->response;
+	}
+
     public function indexAction()
     {
     	$context = Context::getCurrent();
