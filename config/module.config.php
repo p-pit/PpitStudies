@@ -580,6 +580,15 @@ return array_merge(
 				],
 				'may_terminate' => true,
 				'child_routes' => [
+					'v1' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/v1[/:id]',
+							'defaults' => [
+								'action' => 'v1',
+							],
+						],
+					],
 					'post' => [
 						'type' => 'segment',
 						'options' => [
@@ -1148,6 +1157,7 @@ return array_merge(
 				array('route' => 'noteLink/repair', 'roles' => array('admin')),
 
 				array('route' => 'report/post', 'roles' => array('guest')),
+				array('route' => 'report/v1', 'roles' => array('guest')),
 				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),

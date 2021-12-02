@@ -12,10 +12,69 @@ use Zend\View\Model\ViewModel;
 
 class ReportController extends AbstractActionController
 {	
-	/**
-	 * REST section
-	 */
-	     
+	public function getList() {
+		$context = Context::getCurrent();
+		$where = [];
+		$teacher_id = $this->params()->fromQuery('teacher_id');
+		if ($teacher_id) $where['teacher_id'] = $teacher_id;
+		$cursor = Note::getList('evaluation', 'report', $where, 'subject', 'ASC', 'search', null);
+		$reports = [];
+		foreach ($cursor as $report) {
+			$reports[] = [
+				'id' => $report->id,
+				'status' => $report->status,
+				'place_id' => $report->place_id,
+				'teacher_id' => $report->teacher_id,
+				'school_year' => $report->school_year,
+				'school_period' => $report->school_period,
+				'group_id' => $report->group_id,
+				'subject' => $report->subject,
+				'date' => $report->date,
+				'reference_value' => $report->reference_value,
+				'weight' => $report->weight,
+				'observations' => $report->observations,	
+			];
+		}
+		return $reports;
+	}
+	
+	public function get($id) {
+		$context = Context::getCurrent();
+		$report = Note::get($id, 'id', 'report', 'type');
+		if (!$report) {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase("Report with id $id does not exists");
+		}
+		$cursor = NoteLink::getList('report', ['note_id' => $id], 'name', 'ASC', 'search');
+		$links = [];
+		foreach ($cursor as $link) {
+			$links[$link->id] = [
+				'status' => $link->status,
+				'account_id' => $link->account_id,
+				'specific_weight' => $link->specific_weight,
+				'value' => $link->value,
+				'evaluation' => $link->evaluation,
+				'assessment' => $link->assessment,
+			];
+		}
+		$content = [[
+			'id' => $report->id,
+			'status' => $report->status,
+			'place_id' => $report->place_id,
+			'teacher_id' => $report->teacher_id,
+			'school_year' => $report->school_year,
+			'school_period' => $report->school_period,
+			'group_id' => $report->group_id,
+			'subject' => $report->subject,
+			'date' => $report->date,
+			'reference_value' => $report->reference_value,
+			'weight' => $report->weight,
+			'observations' => $report->observations,
+			'links' => $links,
+		]];
+		return $content;
+	}
+	
     public function postAction()
     {
     	// Retrieve the context
@@ -164,12 +223,15 @@ class ReportController extends AbstractActionController
 
 		// Get
 		if ($requestType == 'GET') {
+			$id = $this->params()->fromRoute('id');
+			if ($id) $content = $this->get($id);
+			else $content = $this->getList();
 		}
 
 		elseif ($requestType == 'POST') {
 			$result = $this->postAction();
 			$this->getResponse()->setStatusCode($result->statusCode);
-			$this->getResponse()->setReasonPhrase($result->reasonCode);
+			$this->getResponse()->setReasonPhrase($result->reasonPhrase);
 			$content = $result->responseBody;
 		}
 		
