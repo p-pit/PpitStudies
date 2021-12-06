@@ -79,8 +79,11 @@ $subjects = $context->getConfig('student/property/school_subjects');
 	<div class="col-sm-6">
 		<select class="form-control form-control-sm selectTeacher-<?php echo $group->id ?>" id="selectTeacher_<?php echo $group->id ?>_<?php echo $subjectId?>">
 			<option value="">Appréciation à saisir par...</option>
-		<?php foreach ($teachers as $teacherId => $teacher) : ?>
-			<option value="<?php echo $teacher->contact_1_id ?>"><?php echo $teacher->n_fn ?> (<?php echo $places[$teacher->place_id]->caption ?>)</option>
+		<?php foreach ($teachers as $teacherId => $teacher) : 
+			$groups = explode(',', $teacher->groups);
+			$subjects = explode(',', $teacher->property_5);
+		?>
+			<option value="<?php echo $teacher->contact_1_id ?>" <?php if (in_array($group->id, $groups) && in_array($subjectId, $subjects)) : ?>selected<?php endif ?> ><?php echo $teacher->n_fn ?> (<?php echo ($teacher->place_id) ? $places[$teacher->place_id]->caption : null ?>)</option>
 		<?php endforeach ?>
 		</select>
 	</div>
