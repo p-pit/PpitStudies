@@ -20,9 +20,66 @@ use Zend\View\Model\ViewModel;
 class NoteController extends AbstractActionController
 {
 	public function getList() {
+		$context = Context::getCurrent();
+		$where = [];
+		$teacher_id = $this->params()->fromQuery('teacher_id');
+		if ($teacher_id) $where['teacher_id'] = $teacher_id;
+		$cursor = Note::getList('evaluation', 'note', $where, 'subject', 'ASC', 'search', null);
+		$evaluations = [];
+		foreach ($cursor as $evaluation) {
+			$evaluations[] = [
+				'id' => $evaluation->id,
+				'status' => $evaluation->status,
+				'place_id' => $evaluation->place_id,
+				'teacher_id' => $evaluation->teacher_id,
+				'school_year' => $evaluation->school_year,
+				'school_period' => $evaluation->school_period,
+				'group_id' => $evaluation->group_id,
+				'subject' => $evaluation->subject,
+				'date' => $evaluation->date,
+				'reference_value' => $evaluation->reference_value,
+				'weight' => $evaluation->weight,
+				'observations' => $evaluation->observations,	
+			];
+		}
+		return $evaluations;
 	}
 	
 	public function get($id) {
+		$context = Context::getCurrent();
+		$evaluation = Note::get($id, 'id', 'note', 'type');
+		if (!$evaluation) {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase("Evaluation with id $id does not exists");
+		}
+		$cursor = NoteLink::getList('note', ['note_id' => $id], 'name', 'ASC', 'search');
+		$links = [];
+		foreach ($cursor as $link) {
+			$links[$link->id] = [
+				'status' => $link->status,
+				'account_id' => $link->account_id,
+				'specific_weight' => $link->specific_weight,
+				'value' => $link->value,
+				'evaluation' => $link->evaluation,
+				'assessment' => $link->assessment,
+			];
+		}
+		$content = [[
+			'id' => $evaluation->id,
+			'status' => $evaluation->status,
+			'place_id' => $evaluation->place_id,
+			'teacher_id' => $evaluation->teacher_id,
+			'school_year' => $evaluation->school_year,
+			'school_period' => $evaluation->school_period,
+			'group_id' => $evaluation->group_id,
+			'subject' => $evaluation->subject,
+			'date' => $evaluation->date,
+			'reference_value' => $evaluation->reference_value,
+			'weight' => $evaluation->weight,
+			'observations' => $evaluation->observations,
+			'links' => $links,
+		]];
+		return $content;
 	}
 	
 	/**
