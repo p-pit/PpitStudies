@@ -163,17 +163,17 @@ class NoteController extends AbstractActionController
 	{
 		$context = Context::getCurrent();
 		
-		// Authentication
-		if (!$context->wsAuthenticate($this->getEvent())) {
-			$this->getResponse()->setStatusCode('401');
-			return $this->getResponse();
-		}
+		// // Authentication
+		// if (!$context->wsAuthenticate($this->getEvent())) {
+		// 	$this->getResponse()->setStatusCode('401');
+		// 	return $this->getResponse();
+		// }
 		
-		// Authorization
-		if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
-			$this->response->setStatusCode('403');
-			return $this->response;
-		}
+		// // Authorization
+		// if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
+		// 	$this->response->setStatusCode('403');
+		// 	return $this->response;
+		// }
 		
 		// Retrieve the context
 		$context = Context::getCurrent();
