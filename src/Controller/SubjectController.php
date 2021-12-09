@@ -54,12 +54,15 @@ class SubjectController extends AbstractActionController
 		// Authentication
 		if (!$context->wsAuthenticate($this->getEvent())) {
 			$this->response->setStatusCode('401');
-			return $this->getResponse();
+			$this->response->setContent(json_encode(['message' => 'No autenticado']));
+			return $this->response;
+			// return $this->getResponse();
 		}
 		
 		// Authorization
 		if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
 			$this->response->setStatusCode('403');
+			$this->response->setContent(json_encode(['message' => 'No autorizado']));
 			return $this->response;
 		}
 		
