@@ -216,10 +216,10 @@ class ReportController extends AbstractActionController
 		elseif ($this->request->isDelete()) $requestType = 'DELETE';
 		
 		// Authentication
-		if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
-			$this->getResponse()->setStatusCode('401');
-			return $this->getResponse();
-		}
+		// if (!$context->isAuthenticated() && !$context->wsAuthenticate($this->getEvent())) {
+		// 	$this->getResponse()->setStatusCode('401');
+		// 	return $this->getResponse();
+		// }
 
 		// Get
 		if ($requestType == 'GET') {

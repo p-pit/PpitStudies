@@ -51,17 +51,19 @@ class SubjectController extends AbstractActionController
 	{
 		$context = Context::getCurrent();
 		
-		// Authentication
-		if (!$context->wsAuthenticate($this->getEvent())) {
-			$this->response->setStatusCode('401');
-			return $this->getResponse();
-		}
+		// // Authentication
+		// if (!$context->wsAuthenticate($this->getEvent())) {
+		// 	$this->response->setStatusCode('401');
+		// 	$this->response->setContent(json_encode(['message' => 'Non authentifié. Error : P-Pit Subj.']));
+		// 	return $this->response;
+		// }
 		
-		// Authorization
-		if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
-			$this->response->setStatusCode('403');
-			return $this->response;
-		}
+		// // Authorization
+		// if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
+		// 	$this->response->setStatusCode('403');
+		// 	$this->response->setContent(json_encode(['message' => 'Non autorisé. Error : P-Pit Subj.']));
+		// 	return $this->response;
+		// }
 		
 		// Retrieve the context
 		$context = Context::getCurrent();

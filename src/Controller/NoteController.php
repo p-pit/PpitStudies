@@ -39,7 +39,8 @@ class NoteController extends AbstractActionController
 				'date' => $evaluation->date,
 				'reference_value' => $evaluation->reference_value,
 				'weight' => $evaluation->weight,
-				'observations' => $evaluation->observations,	
+				'observations' => $evaluation->observations,
+				'category' => $evaluation->level,
 			];
 		}
 		return $evaluations;
@@ -73,6 +74,7 @@ class NoteController extends AbstractActionController
 			'school_period' => $evaluation->school_period,
 			'group_id' => $evaluation->group_id,
 			'subject' => $evaluation->subject,
+			'category' => $evaluation->level,
 			'date' => $evaluation->date,
 			'reference_value' => $evaluation->reference_value,
 			'weight' => $evaluation->weight,
@@ -161,17 +163,17 @@ class NoteController extends AbstractActionController
 	{
 		$context = Context::getCurrent();
 		
-		// Authentication
-		if (!$context->wsAuthenticate($this->getEvent())) {
-			$this->getResponse()->setStatusCode('401');
-			return $this->getResponse();
-		}
+		// // Authentication
+		// if (!$context->wsAuthenticate($this->getEvent())) {
+		// 	$this->getResponse()->setStatusCode('401');
+		// 	return $this->getResponse();
+		// }
 		
-		// Authorization
-		if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
-			$this->response->setStatusCode('403');
-			return $this->response;
-		}
+		// // Authorization
+		// if (!$context->hasRole('manager') && !$context->hasRole('teacher')) {
+		// 	$this->response->setStatusCode('403');
+		// 	return $this->response;
+		// }
 		
 		// Retrieve the context
 		$context = Context::getCurrent();
