@@ -44,6 +44,7 @@ class ReportController extends AbstractActionController
 		if (!$report) {
 			$this->response->setStatusCode('400');
 			$this->response->setReasonPhrase("Report with id $id does not exists");
+			return;
 		}
 		$cursor = NoteLink::getList('report', ['note_id' => $id], 'name', 'ASC', 'search');
 		$links = [];

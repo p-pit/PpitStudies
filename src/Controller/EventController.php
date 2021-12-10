@@ -308,4 +308,5 @@ class EventController extends AbstractActionController
     	$view->setTerminal(true);
     	return $view;
 	}
+	*/
 }
