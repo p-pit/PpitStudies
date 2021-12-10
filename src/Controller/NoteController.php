@@ -52,6 +52,7 @@ class NoteController extends AbstractActionController
 		if (!$evaluation) {
 			$this->response->setStatusCode('400');
 			$this->response->setReasonPhrase("Evaluation with id $id does not exists");
+			return;
 		}
 		$cursor = NoteLink::getList('note', ['note_id' => $id], 'name', 'ASC', 'search');
 		$links = [];
