@@ -136,7 +136,10 @@ class NoteLink
 	
 		// Construct the resulting dictionary for each defined property
 		$searchProperties = [];
-		foreach($configSearch as $propertyId => $options) $searchProperties[$propertyId] = $properties[$propertyId];
+		foreach($configSearch as $propertyId => $options) {
+			$searchProperties[$propertyId] = $properties[$propertyId];
+			$searchProperties[$propertyId]['options'] = $options;
+		}
 	
 		// Return the dictionary
 		return $searchProperties;
@@ -400,13 +403,19 @@ class NoteLink
     			 
     			if ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
     			elseif ($propertyId == 'note_id') $where->in('student_note.id', explode(',', $params[$propertyId]));
-    			elseif ($propertyId == 'group_id') $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+    			elseif ($propertyId == 'group_id') {
+					if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+					else $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+				}
     			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
     			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
     			elseif ($propertyId == 'n_fn') $where->like('n_fn', '%' . $params[$propertyId] . '%');
     			elseif ($propertyId == 'account_property_15') $where->equalTo('core_account.property_15', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
-    			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
+    			elseif ($propertyId == 'subject') {
+					if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.subject', explode(',', $params[$propertyId]));
+					else $where->equalTo('student_note.subject', $params[$propertyId]);
+				}
     			elseif ($propertyId == 'level') $where->equalTo('student_note.level', $params[$propertyId]);
 				elseif (strpos($params[$propertyId], ',')) $where->in($entity . '.' . $column, array_map('trim', explode(',', $params[$propertyId])));
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
@@ -428,9 +437,9 @@ class NoteLink
 		return $noteLinks;
     }
 
-    public static function get($id, $column = 'id')
+    public static function get($id, $column = 'id', $column2 = false, $id3 = false, $column3 = false, $id4 = false, $column4 = false)
     {
-    	$noteLink = NoteLink::getTable()->get($id, $column);
+    	$noteLink = NoteLink::getTable()->get($id, $column, $id2, $column2, $id3, $column3, $id4, $column4);
     	$note = Note::get($noteLink->note_id);
     	$noteLink->note = $note;
     	$account = Account::get($noteLink->account_id);
@@ -665,6 +674,16 @@ class NoteLink
     	NoteLink::getTable()->save($this);
     
     	return 'OK';
+    }
+
+    public static function groupDelete($linkIds)
+    { var_dump($linkIds);
+    	$context = Context::getCurrent();
+
+    	$where = new Where();
+    	$where->in('id', $linkIds);
+		NoteLink::getTable()->updateWith($where, ['status' => 'deleted']);
+		return ('OK');
     }
 
     public function drop()

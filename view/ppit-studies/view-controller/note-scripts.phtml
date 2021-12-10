@@ -342,7 +342,7 @@ function getEvaluationUpdate(id, action) {
 	}
 	xhttp.send();
 }
-
+/*
 function getSearch() {
 
 	// Load the search panel and highlight the menu entry
@@ -420,7 +420,7 @@ function getSearch() {
       }
     };
     xhttp.send();
-}
+}*/
 
 //Session maintening
 setInterval(function () {
@@ -429,6 +429,6 @@ xhttp.open('GET', '<?php echo $this->url('user/maintainSession') ?>', true);
 xhttp.send();
 }, 60000);
 
-getSearch();
+//getSearch();
 
 </script>

@@ -87,7 +87,7 @@ function getSearch()
       });
 
       // Trigger the click event on per-property checks (allowing to search on empty values) and refresh the list
-      $('.search_check').click(function() {
+      $('.search_check_value').click(function() {
         $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
         $('#refresh-button').attr('disabled', false);
         $('#erase-button').removeClass('btn-default').addClass('btn-success');
@@ -99,6 +99,7 @@ function getSearch()
           $('#search-' + propertyId).val('');
           $('#search_min-' + propertyId).val('');
           $('#search_max-' + propertyId).val('');
+          $('#search-' + propertyId).selectpicker('refresh');
         }
         else {
           $(this).removeClass('btn-default').addClass('btn-secondary').addClass('active');
