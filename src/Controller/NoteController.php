@@ -133,7 +133,7 @@ class NoteController extends AbstractActionController
 			}
 
 			$connection->commit();
-			return [];
+			return ['id' => $note->id];
 		}
 		catch (\Exception $e) {
 			$connection->rollback();
