@@ -146,6 +146,63 @@ class NoteController extends AbstractActionController
 	 * Update 1 note
 	 */
 	public function patch($id) {
+		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection->beginTransaction();
+		$note = Note::get($id, 'id', 'note', 'type');
+		if (!$note) {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase("Evaluation with id $id does not exists");
+			return;
+		}
+
+		try {
+			$body = json_decode($this->request->getContent(), true);
+			if (array_key_exists('place_id', $body)) $note->place_id = $body['place_id'];
+			if (array_key_exists('teacher_id', $body)) $note->teacher_id = $body['teacher_id'];
+			if (array_key_exists('group_id', $body)) $note->group_id = $body['group_id'];
+			if (array_key_exists('school_year', $body)) $note->school_year = $body['school_year'];
+			if (array_key_exists('school_period', $body)) $note->school_period = $body['school_period'];
+			if (array_key_exists('level', $body)) $note->level = $body['level'];
+			if (array_key_exists('subject', $body)) $note->subject = $body['subject'];
+			if (array_key_exists('date', $body)) $note->date = $body['date'];
+			if (array_key_exists('reference_value', $body)) $note->reference_value = $body['reference_value'];
+			if (array_key_exists('weight', $body)) $note->weight = $body['weight'];
+			if (array_key_exists('observations', $body)) $note->observations = $body['observations'];
+
+			$rc = $note->update(null);
+			if ($rc != 'OK') {
+				$connection->rollback();
+                $this->response->setStatusCode('400');
+                $this->response->setReasonPhrase($rc);
+				return [];
+			}
+
+			$links = NoteLink::getList('note', ['note_id' => $id], 'name', 'ASC', 'search');
+			foreach ($links as $noteLink) $noteLink->delete(null);
+
+			foreach ($body['links'] as $account_id => $link) {
+				$noteLink = NoteLink::instanciate($account_id, $note->id);
+				if (array_key_exists('weight', $link)) $noteLink->specific_weight = $link['weight'];
+				$noteLink->value = $link['value'];
+				if (array_key_exists('evaluation', $link)) $noteLink->evaluation = $link['evaluation'];
+				if (array_key_exists('assessment', $link)) $noteLink->assessment = $link['assessment'];
+				$rc = $noteLink->add();
+				if ($rc != 'OK') {
+					$connection->rollback();
+					$this->response->setStatusCode('400');
+					$this->response->setReasonPhrase($rc);
+					return [];
+				}
+			}
+
+			$connection->commit();
+			return [];
+		}
+		catch (\Exception $e) {
+			$connection->rollback();
+			$this->response->setStatusCode('500');
+			return [];
+		}
 	}
 	
 	/**
@@ -157,7 +214,37 @@ class NoteController extends AbstractActionController
 	/**
 	 * Delete notes
 	 */
-	public function delete() {
+	public function delete($id) {
+		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection->beginTransaction();
+		$note = Note::get($id, 'id', 'note', 'type');
+		if (!$note) {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase("Evaluation with id $id does not exists");
+			return;
+		}
+
+		try {
+
+			$rc = $note->delete(null);
+			if ($rc != 'OK') {
+				$connection->rollback();
+                $this->response->setStatusCode('400');
+                $this->response->setReasonPhrase($rc);
+				return [];
+			}
+
+			$links = NoteLink::getList('note', ['note_id' => $id], 'name', 'ASC', 'search');
+			foreach ($links as $noteLink) $noteLink->delete(null);
+
+			$connection->commit();
+			return [];
+		}
+		catch (\Exception $e) {
+			$connection->rollback();
+			$this->response->setStatusCode('500');
+			return [];
+		}
 	}
 
 	public function v1Action() 
@@ -187,6 +274,11 @@ class NoteController extends AbstractActionController
 
 		elseif ($this->request->isPost()) {
 			$content = $this->post();
+		}
+
+		elseif ($this->request->isPatch()) {
+			$id = $this->params()->fromRoute('id');
+			$content = $this->patch($id);
 		}
 
 		elseif ($this->request->isDelete()) {

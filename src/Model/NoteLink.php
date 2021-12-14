@@ -437,7 +437,7 @@ class NoteLink
 		return $noteLinks;
     }
 
-    public static function get($id, $column = 'id', $column2 = false, $id3 = false, $column3 = false, $id4 = false, $column4 = false)
+    public static function get($id, $column = 'id', $id2 = false, $column2 = false, $id3 = false, $column3 = false, $id4 = false, $column4 = false)
     {
     	$noteLink = NoteLink::getTable()->get($id, $column, $id2, $column2, $id3, $column3, $id4, $column4);
     	$note = Note::get($noteLink->note_id);
