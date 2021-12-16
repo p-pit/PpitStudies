@@ -2803,7 +2803,7 @@ return array_merge(
 	'core_account/generic/property/date_5' => array(
 		'definition' => 'inline',
 		'type' => 'date',
-		'dependency' => ['property' => 'status', 'values' => ['canceled', 'gone']],
+		'dependency' => ['property' => 'status', 'values' => ['canceled', 'gone', 'ne_plus_contacter']],
 		'labels' => array(
 			'en_US' => 'Cancellation date',
 			'fr_FR' => 'Date Annulation',

@@ -99,7 +99,7 @@ class NoteController extends AbstractActionController
 	
 			$note->place_id = $body['place_id'];
 			$note->teacher_id = $body['teacher_id'];
-			$note->group_id = $body['group_id'];
+			if (array_key_exists('group_id', $body)) $note->group_id = $body['group_id'];
 			$note->school_year = $body['school_year'];
 			$note->school_period = $body['school_period'];
 			if (array_key_exists('level', $body)) $note->level = $body['level'];
