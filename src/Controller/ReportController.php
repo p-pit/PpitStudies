@@ -3,6 +3,7 @@ namespace PpitStudies\Controller;
 
 use PpitCore\Model\Account;
 use PpitCore\Model\Context;
+use PpitCore\Model\Place;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
 use Zend\Http\Client;
@@ -15,6 +16,7 @@ class ReportController extends AbstractActionController
 	public function getList() {
 		$context = Context::getCurrent();
 		$where = [];
+		$places = Place::getList([]);
 		$teacher_id = $this->params()->fromQuery('teacher_id');
 		if ($teacher_id) $where['teacher_id'] = $teacher_id;
 		$cursor = Note::getList('evaluation', 'report', $where, 'subject', 'ASC', 'search', null);
@@ -24,6 +26,7 @@ class ReportController extends AbstractActionController
 				'id' => $report->id,
 				'status' => $report->status,
 				'place_id' => $report->place_id,
+				'place_caption'=> $places[$report->place_id]->caption,
 				'teacher_id' => $report->teacher_id,
 				'school_year' => $report->school_year,
 				'school_period' => $report->school_period,
