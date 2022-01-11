@@ -283,7 +283,7 @@ class NoteLinkController extends AbstractActionController
 		$type = $this->params()->fromRoute('type');
 		
 		// Retrieve the type
-		$config = NoteLink::getconfig(false);
+		$config = NoteLink::getconfig();
 	
 		// Return the link list
 		$view = new ViewModel(array(
