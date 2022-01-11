@@ -19,11 +19,11 @@ class NoteLinkController extends AbstractActionController
 	/**
 	 * REST version for 2pit2 - GET list
 	 */
-	public function getList() {
+	public function getList($full = true) {
 	
 		// Retrieve the context and config
 		$context = Context::getCurrent();
-		$config = NoteLink::getConfig();
+		$config = NoteLink::getConfig($full);
 		
 		// Retrieve the note type and category
 		$category = $this->params()->fromRoute('category');
@@ -229,7 +229,7 @@ class NoteLinkController extends AbstractActionController
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
 		$place = Place::get($context->getPlaceId());
-		$config = NoteLink::getConfig();
+		$config = NoteLink::getConfig(false);
 		
 		$currentEntry = $this->params()->fromQuery('entry', 'term');
 	
@@ -283,7 +283,7 @@ class NoteLinkController extends AbstractActionController
 		$type = $this->params()->fromRoute('type');
 		
 		// Retrieve the type
-		$config = NoteLink::getconfig();
+		$config = NoteLink::getconfig(false);
 	
 		// Return the link list
 		$view = new ViewModel(array(
@@ -303,7 +303,7 @@ class NoteLinkController extends AbstractActionController
 		$context = Context::getCurrent();
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
-		$content = $this->getList();
+		$content = $this->getList(false);
 		$order = $this->params()->fromQuery('order', '-date');
 		
 		// Retrieve the teachers
@@ -319,7 +319,7 @@ class NoteLinkController extends AbstractActionController
 		
 		// Compute the average
 		$filters = [];
-		foreach (NoteLink::getConfig() as $propertyId => $property) {
+		foreach (NoteLink::getConfig(false) as $propertyId => $property) {
 			$value = $this->params()->fromQuery($propertyId, null);
 			if ($value !== null) $filters[$propertyId] = $value;
 		}

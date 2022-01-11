@@ -64,7 +64,7 @@ class NoteLink
 	/**
 	 * Returns a dictionary of each property associated with its description contextual to the current instance config.
 	 */
-	public static function getConfig() {
+	public static function getConfig($full = true) {
 	
 		// Retrieve the context
 		$context = Context::getCurrent();
@@ -95,19 +95,19 @@ class NoteLink
 			// Cache the accounts retrieved from the database for the current instance in the account_id property description
 			elseif ($propertyId == 'account_id') {
 				$property['modalities'] = [];
-				foreach (Account::getList('p-pit-studies', ['status' => 'active,retention'], '+name', null) as $account) $property['modalities'][$account->id] = ['default' => $account->n_fn];
+				if ($full) foreach (Account::getList('p-pit-studies', ['status' => 'active,retention'], '+name', null) as $account) $property['modalities'][$account->id] = ['default' => $account->n_fn];
 			}
 				
 			// Cache the groups retrieved from the database for the current instance in the group_id property description
 			elseif ($propertyId == 'group_id') {
 				$property['modalities'] = [];
-				foreach (Account::getList('group', ['status' => 'active'], '+identifier', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name . (($group->place_caption) ? ' (' . $group->place_caption . ')' : '')];
+				if ($full) foreach (Account::getList('group', ['status' => 'active'], '+identifier', null) as $group) $property['modalities'][$group->id] = ['default' => $group->name . (($group->place_caption) ? ' (' . $group->place_caption . ')' : '')];
 			}
 
 			// Cache the teachers retrieved from the database for the current instance in the group_id property description
 			elseif ($propertyId == 'teacher_id') {
 				$property['modalities'] = [];
-				foreach (Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+name', null) as $teacher) $property['modalities'][$teacher->contact_1_id] = ['default' => $teacher->n_fn];
+				if ($full) foreach (Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+name', null) as $teacher) $property['modalities'][$teacher->contact_1_id] = ['default' => $teacher->n_fn];
 			}
 				
 			// Cache the referred modalities definition for modalities not defined inline
