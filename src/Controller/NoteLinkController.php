@@ -303,7 +303,7 @@ class NoteLinkController extends AbstractActionController
 		$context = Context::getCurrent();
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
-		$content = $this->getList(false);
+		$content = $this->getList(true);
 		$order = $this->params()->fromQuery('order', '-date');
 		
 		// Retrieve the teachers
