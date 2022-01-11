@@ -316,7 +316,10 @@ class NoteLinkController extends AbstractActionController
 		$contact = null;
 		$teachers = array();
 		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;
-		
+
+		// Retrieve the groups
+		$groups = Account::getList('group', ['status' => 'active'], null, null, ['id', 'status', 'name'], false, false, false, true);
+
 		// Compute the average
 		$filters = [];
 		foreach (NoteLink::getConfig(false) as $propertyId => $property) {
@@ -370,6 +373,7 @@ class NoteLinkController extends AbstractActionController
 			'category' => $category,
 			'type' => $type,
 			'teachers' => $teachers,
+			'groups' => $groups,
 			'content' => $content,
 			'averages' => $averages,
 			'statusCode' => $this->response->getStatusCode(),
