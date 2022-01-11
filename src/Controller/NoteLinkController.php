@@ -318,7 +318,7 @@ class NoteLinkController extends AbstractActionController
 		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;
 
 		// Retrieve the groups
-		$groups = Account::getList('group', ['status' => 'active'], null, null, ['id', 'status', 'name'], false, false, false, true);
+		$groups = Account::getList('group', [], null, null, ['id', 'status', 'name'], false, false, false, true);
 
 		// Compute the average
 		$filters = [];
