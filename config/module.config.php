@@ -3540,6 +3540,7 @@ table.note-report td {
 			'general_information' => array('en_US' => 'General information', 'fr_FR' => 'Information générale'),
 	),
 	'core_account/export/p-pit-studies' => array(
+		'properties' => [
 			'status' => [],
 			'property_16' => [],
 			'basket' => [],
@@ -3601,6 +3602,7 @@ table.note-report td {
 			'contact_history' => [],
 
 			'property_17' => [],
+		],
 	),
 
 	'core_account/subscription/events/modalities/p-pit-studies' => [
