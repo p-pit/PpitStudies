@@ -3673,7 +3673,7 @@ table.note-report td {
 		'type' => 'email',
 		'labels' => array(
 			'en_US' => 'Pro e-mail',
-			'fr_FR' => 'Email pro',
+			'fr_FR' => 'Email école',
 		),
 	),
 	
