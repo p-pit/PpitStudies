@@ -3667,6 +3667,15 @@ table.note-report td {
 			'fr_FR' => 'Statut',
 		),
 	),
+
+	'commitmentTerm/p-pit-studies/property/email_work' => array(
+		'definition' => 'inline',
+		'type' => 'email',
+		'labels' => array(
+			'en_US' => 'Pro e-mail',
+			'fr_FR' => 'Email pro',
+		),
+	),
 	
 	'commitmentTerm/p-pit-studies/property/quantity' => array(
 		'definition' => 'inline',
