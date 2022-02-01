@@ -2025,6 +2025,33 @@ return array_merge(
 			'update_time' => [],
 		),
 	),
+	
+	'commitment/detail/p-pit-studies' => array(
+		'title' => array('en_US' => 'SUBSCRIPTIONS', 'fr_FR' => 'INSCRIPTIONS'),
+		'displayAudit' => false,
+		'tabs' => array(
+			'commitment' => array(
+				'definition' => 'inline',
+				'labels' => array('default' => 'Subscription year', 'fr_FR' => 'Année d’inscription'),
+			),
+			'contact_1' => array(
+				'definition' => 'inline',
+				'route' => ['account/update', ['account_id']],
+				'params' => array('type' => 'p-pit-studies'),
+				'labels' => array('en_US' => 'Student', 'fr_FR' => 'Elève'),
+			),
+			'user' => array(
+				'definition' => 'inline',
+				'route' => ['account/updateUser', ['account_id']],
+				'params' => array('type' => 'p-pit-studies'),
+				'labels' => array('en_US' => 'User account', 'fr_FR' => 'Compte utilisateur'),
+			),
+			'accountDocument' => array(
+				'definition' => 'inline',
+				'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
+			),
+		),
+	),
 
 	'commitment/update/p-pit-studies' => array(
 		'status' => array('mandatory' => true, 'accountant' => true),
