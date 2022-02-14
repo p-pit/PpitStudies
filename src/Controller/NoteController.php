@@ -1120,7 +1120,7 @@ class NoteController extends AbstractActionController
 
 			$noteLinks = $note->links;
 			$content['note']['status'] = $note->status;
-			$content['note']['place_id'] = $place->id;
+			$content['note']['place_id'] = $note->place_id;
 			$content['note']['teacher_id'] = $note->teacher_id;
 			$content['note']['subject'] = $note->subject;
 			$content['note']['level'] = $note->level;
