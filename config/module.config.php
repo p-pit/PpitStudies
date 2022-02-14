@@ -1819,6 +1819,12 @@ return array_merge(
 		'type' => 'email',
 		'labels' => ['default' => 'Tuteur - Email école'],
 	],
+
+	'commitment/p-pit-studies/property/property_28' => [
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => ['default' => 'Libre'],
+	],
 		
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
