@@ -2119,6 +2119,44 @@ return array_merge(
 		'caption' => [],
 		'description' => [],
 	),
+	
+	'commitment/duplicate/p-pit-studies' => array(
+		'init' => [
+			'status' => 'new',
+			'property_1' => null, // if null duplicate the value from the original
+			'property_2' => null,
+			'property_3' => null,
+			'property_4' => null,
+			'property_5' => null,
+			'property_6' => null,
+			'property_7' => null,
+			'property_8' => null,
+			'property_9' => null,
+			'property_10' => null,
+			'property_11' => null,
+			'property_12' => null,
+			'property_13' => null,
+			'property_14' => null,
+			'property_15' => null,
+			'property_16' => null,
+			'property_17' => null,
+			'property_18' => null,
+			'property_19' => null,
+			'property_20' => null,
+			'property_21' => null,
+			'property_22' => null,
+			'property_23' => null,
+			'property_24' => null,
+			'property_25' => null,
+		],
+		'properties' => [
+			'caption' => ['defaultValue' => '2022-2023'],
+		],
+	),
+	
+	'commitment/subscriptionGroup/p-pit-studies' => [
+		'caption' => ['defaultValue' => '2022-2023'],
+	],
 
 	'commitment/export/p-pit-studies' => array(
 		'year' => 'A',
