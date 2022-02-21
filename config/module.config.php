@@ -1825,7 +1825,22 @@ return array_merge(
 		'type' => 'input',
 		'labels' => ['default' => 'Libre'],
 	],
-		
+
+	'commitment/p-pit-studies/property/property_29' => array(
+		'definition' => 'inline',
+		'type' => 'multiselect',
+		'source' => array(
+			'entity' => 'core_account',
+			'type' => 'group',
+			'status' => 'active',
+			'property' => 'name',
+		),
+		'labels' => array(
+			'en_US' => 'Subscription groups',
+			'fr_FR' => 'Groupes de l’inscription',
+		),
+	),
+
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
 	'commitment/p-pit-studies/property/account_date_1' => ['definition' => 'core_account/generic/property/date_1'],
@@ -1875,7 +1890,7 @@ return array_merge(
 			'quantity', 'unit_price', 'amount', 'product_brand',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10',
 			'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19',
-			'property_20', 'property_21', 'property_22', 'property_23','property_24','property_25','property_26', 'property_27', 'property_28',
+			'property_20', 'property_21', 'property_22', 'property_23','property_24','property_25','property_26', 'property_27', 'property_28', 'property_29',
 			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
@@ -5274,7 +5289,7 @@ table.note-report tr.period {
 			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn', 'account_groups',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
 			'property_1', 'property_2', 'property_3', 'property_11', 'property_12', 'account_property_15',
-			'update_time',
+			'update_time', 'count',
 		),
 	),
 	
@@ -5297,6 +5312,7 @@ table.note-report tr.period {
 	),
 	
 	'event/list/absence' => array(
+		'count' => [],
 		'place_id' => [],
 		'property_1' => [],
 		'account_id' => [],
