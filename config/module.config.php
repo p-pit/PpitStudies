@@ -3598,6 +3598,7 @@ return array_merge(
 					'property_18' => array('mandatory' => false),
 					'property_9' => array('mandatory' => false),
 					'property_6' => array('mandatory' => false),
+					'contact_history' => [],
 				),
 			),
 			'pdfDetailStyle' => '
@@ -5327,7 +5328,7 @@ table.note-report tr.period {
 	
 	'event/update/absence' => array(
 		'place_id' => ['readonly' => true],
-		'account_id' => ['readonly' => true],
+		'account_id' => ['readonly' => true, 'mandatory' => true],
 		'property_1' => ['readonly' => true],
 		'property_2' => ['readonly' => true],
 		'property_3' => ['readonly' => true],
