@@ -1870,6 +1870,10 @@ return array_merge(
 	'commitment/p-pit-studies/property/account_property_19' => ['definition' => 'core_account/p-pit-studies/property/property_19'],
 	'commitment/p-pit-studies/property/account_property_20' => ['definition' => 'core_account/p-pit-studies/property/property_20'],
 	'commitment/p-pit-studies/property/account_int_1' => ['definition' => 'core_account/p-pit-studies/property/int_1'],
+	// 'commitment/p-pit-studies/property/contact_4_n_fn' => ['definition' => 'core_account/p-pit-studies/property/contact_4_n_fn'],
+	// 'commitment/p-pit-studies/property/contact_4_email' => ['definition' => 'core_account/p-pit-studies/property/contact_4_email'],
+	// 'commitment/p-pit-studies/property/contact_4_tel_work' => ['definition' => 'core_account/p-pit-studies/property/contact_4_tel_work'],
+
 		
 	'commitment/p-pit-studies/property/comment' => [
 		'definition' => 'inline',
@@ -2070,6 +2074,11 @@ return array_merge(
 			'accountDocument' => array(
 				'definition' => 'inline',
 				'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
+			),
+			'businessData' => array(
+				'definition' => 'inline',
+				'route' => ['account/update', ['id' => 'property_8', 'type' => 'company']],
+				'labels' => array('en_US' => 'Business Data', 'fr_FR' => 'Données de l\'entreprise'),
 			),
 		),
 	),
@@ -3326,7 +3335,7 @@ return array_merge(
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19', 'property_20',
 			'profile_tiny_1',
 			'json_property_1', 'json_property_2', 'json_property_3',
-			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2'
+			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2',
 		),
 		'order' => 'opening_date',
 		'options' => ['internal_identifier' => true, 'unique_key' => true /*['n_fn', 'n_last', 'email', 'tel_cell']*/],
