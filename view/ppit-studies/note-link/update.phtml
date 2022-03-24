@@ -113,7 +113,7 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 				<select class="form-control form-control-sm update_input update_input_select" id="teacher_id">
 					<option />
 	<?php foreach ($teachers as $teacher_id => $teacher) : ?>
-					<option value="<?php echo $teacher_id ?>" <?php if ($teacher_id == $noteLink->teacher_id) echo 'selected="selected"' ?>><?php echo $teacher->n_fn ?></option>
+					<option value="<?php echo $teacher_id ?>" <?php if ($teacher_id == $noteLink->teacher_id) echo 'selected="selected"' ?>><?php echo $teacher['n_fn'] ?></option>
 	<?php endforeach;?>
 				</select>
 			</div>

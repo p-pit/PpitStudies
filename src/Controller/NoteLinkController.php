@@ -480,7 +480,7 @@ class NoteLinkController extends AbstractActionController
 		$averages['global'] = $globalAverage;
 		
 		// Retrieve the teachers
-		$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
+		/*$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
 		$where = new Where;
 		$where->notEqualTo('status', 'deleted');
 		$where->like('roles', '%teacher%');
@@ -488,7 +488,10 @@ class NoteLinkController extends AbstractActionController
 		$cursor = Vcard::getTable()->selectWith($select);
 		$contact = null;
 		$teachers = array();
-		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;
+		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;*/
+		$cursor = Account::getListV3('teacher', ['n_fn', 'contact_1_id'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
+		$teachers = [];
+		foreach ($cursor as $teacher_id => $teacher) $teachers[$teacher['contact_1_id']] = $teacher;
 
 		// Retrieve the subject list. As a teacher my subject list is restricted according to my competences
 		$subjects = [];
