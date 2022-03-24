@@ -2075,7 +2075,7 @@ return array_merge(
 				'definition' => 'inline',
 				'labels' => array('en_US' => 'Documents', 'fr_FR' => 'Documents'),
 			),
-			'businessData' => array(
+			'accountUpdate_business' => array(
 				'definition' => 'inline',
 				'route' => ['account/update', ['id' => 'property_8', 'type' => 'company']],
 				'labels' => array('en_US' => 'Business Data', 'fr_FR' => 'Données de l\'entreprise'),
