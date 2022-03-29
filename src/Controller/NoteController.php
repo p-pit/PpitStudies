@@ -122,7 +122,11 @@ class NoteController extends AbstractActionController
 				if (array_key_exists('weight', $link)) $noteLink->specific_weight = $link['weight'];
 				$noteLink->value = $link['value'];
 				if (array_key_exists('evaluation', $link)) $noteLink->evaluation = $link['evaluation'];
-				if (array_key_exists('assessment', $link)) $noteLink->assessment = $link['assessment'];
+				if (array_key_exists('assessment', $link)) {
+					if (isset($body['criteria'])) {
+						$noteLink->assessment = $link['assessment'];
+					} else $noteLink->assessment = null;
+				}
 				$rc = $noteLink->add();
 				if ($rc != 'OK') {
 					$connection->rollback();
