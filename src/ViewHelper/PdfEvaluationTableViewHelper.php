@@ -32,7 +32,6 @@ class PdfEvaluationTableViewHelper
 	    $subject = null;
 	    $globalAverage = null;
 	    foreach ($evaluations as $evaluation) {
-			
 	    	if ($evaluation->subject == 'global') $globalAverage = $evaluation;
 	    	else {
 		    	if ($evaluation->subject != $subject) {
@@ -43,7 +42,7 @@ class PdfEvaluationTableViewHelper
 		    	}
 		    	$subject = $evaluation->subject;
 		    	$caption = (array_key_exists($evaluation->level, $context->getConfig('student/property/evaluationCategory')['modalities'])) ? $context->localize($context->getConfig('student/property/evaluationCategory')['modalities'][$evaluation->level]) : '';
-		    	if ($evaluation->assessment) $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
+		    	if ($evaluation->assessment && $evaluation->criteria === 'true') $caption .= '<br><span style="font-weight: bold">'.$evaluation->assessment.'</span>';
 		    	if ($evaluation->value === null) $value = $translator->translate('Not eval.', 'ppit-studies', $context->getLocale());
 		    	else {
 		    		if ($context->getConfig('note/property/value')['type'] == 'number') {
