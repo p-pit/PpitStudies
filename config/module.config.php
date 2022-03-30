@@ -1703,6 +1703,11 @@ return array_merge(
 		'type' => 'select',
 		'modalities' => array(
 			'financing_personal' => array('default' => 'Personal financing', 'fr_FR' => 'Financement personnel'),
+			'financing_initial_in_progress_e' => array('default' => 'Financement initial en cours E'),
+			'financing_initial_in_progress' => array('default' => 'Financement initial en cours R'),
+			'financing_initial_completed' => array('default' => 'Financement initial en cours RR'),
+			'financing_initial_built' => array('default' => 'Financement initial monté'),
+			'financing_initial_signed' => array('default' => 'Financement initial signé'),
 			'financing_company_in_progress' => array('default' => 'Company financing in progress', 'fr_FR' => 'Financement entreprise en cours'),
 			'financing_company_built' => array('default' => 'Company financing built', 'fr_FR' => 'Financement entreprise monté'),
 			'financing_company_validated' => array('default' => 'Company financing validated', 'fr_FR' => 'Financement entreprise validé'),
