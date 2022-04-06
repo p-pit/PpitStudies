@@ -47,6 +47,7 @@ class NoteLink
 //			'class' => 				['entity' => 'student_note', 'column' => 'class'], // Deprecated
 			'class' => 				['entity' => 'student_note_link', 'column' => 'class'], // Deprecated
 			'group_id' => 			['entity' => 'student_note', 'column' => 'group_id'],
+			'criteria' => 			['entity' => 'student_note', 'column' => 'criteria'],
 			'school_period' => 		['entity' => 'student_note', 'column' => 'school_period'],
 			'subject' => 			['entity' => 'student_note', 'column' => 'subject'],
 			'teacher_id' => 		['entity' => 'student_note', 'column' => 'teacher_id'],
@@ -232,7 +233,7 @@ class NoteLink
     public $weight;
     public $observations;
     public $document;
-    public $criteria; // Deprecated
+    public $criteria;
     public $lower_note;
     public $higher_note;
     public $average_note;

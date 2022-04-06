@@ -37,6 +37,7 @@ class NoteController extends AbstractActionController
 				'group_id' => $evaluation->group_id,
 				'subject' => $evaluation->subject,
 				'date' => $evaluation->date,
+				'criteria' => $evaluation->criteria,
 				'reference_value' => $evaluation->reference_value,
 				'weight' => $evaluation->weight,
 				'observations' => $evaluation->observations,
@@ -74,6 +75,7 @@ class NoteController extends AbstractActionController
 			'school_year' => $evaluation->school_year,
 			'school_period' => $evaluation->school_period,
 			'group_id' => $evaluation->group_id,
+			'criteria' => $evaluation->criteria,
 			'subject' => $evaluation->subject,
 			'category' => $evaluation->level,
 			'date' => $evaluation->date,
@@ -107,6 +109,7 @@ class NoteController extends AbstractActionController
 			$note->date = $body['date'];
 			$note->reference_value = $body['reference_value'];
 			$note->weight = $body['weight'];
+			$note->criteria = $body['criteria'];
 			if (array_key_exists('observations', $body)) $note->observations = $body['observations'];
 
 			$rc = $note->add();
@@ -168,6 +171,7 @@ class NoteController extends AbstractActionController
 			if (array_key_exists('reference_value', $body)) $note->reference_value = $body['reference_value'];
 			if (array_key_exists('weight', $body)) $note->weight = $body['weight'];
 			if (array_key_exists('observations', $body)) $note->observations = $body['observations'];
+			if (array_key_exists('criteria', $body)) $note->criteria = $body['criteria'];
 
 			$rc = $note->update(null);
 			if ($rc != 'OK') {
