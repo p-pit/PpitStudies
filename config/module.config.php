@@ -2293,6 +2293,7 @@ return array_merge(
 					),
 			),
 			'terms' => true,
+			'update' => ['status' => 'invoiced'],
 	),
 
 	'commitment/invoiceControl/service' => [
