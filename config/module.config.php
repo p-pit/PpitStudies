@@ -2151,9 +2151,8 @@ return array_merge(
 	
 	'commitment/duplicate/p-pit-studies' => array(
 		'init' => [
-			'status' => 'new',
-			'property_1' => null, // if null duplicate the value from the original
-			'property_2' => null,
+			'status' => null,
+			'property_2' => null, // if null duplicate the value from the original
 			'property_3' => null,
 			'property_4' => null,
 			'property_5' => null,
@@ -2180,11 +2179,13 @@ return array_merge(
 		],
 		'properties' => [
 			'caption' => ['defaultValue' => '2022-2023'],
+			'property_1' => [],
 		],
 	),
 	
 	'commitment/subscriptionGroup/p-pit-studies' => [
 		'caption' => ['defaultValue' => '2022-2023'],
+		'property_1' => [],
 	],
 
 	'commitment/export/p-pit-studies' => array(
