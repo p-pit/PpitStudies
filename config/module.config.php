@@ -2151,7 +2151,11 @@ return array_merge(
 	
 	'commitment/duplicate/p-pit-studies' => array(
 		'init' => [
-			'property_2' => null, // if null duplicate the value from the original
+			'year' => null, // if null duplicate the value from the original
+			'invoice_date' => null,
+			'description' => null,
+			'description_2' => null,
+			'property_2' => null,  
 			'property_3' => null,
 			'property_4' => null,
 			'property_5' => null,
@@ -2174,6 +2178,10 @@ return array_merge(
 			'property_24' => null,
 			'property_25' => null,
 			'property_26' => null,
+			'property_27' => null,
+			'property_28' => null,
+			'order_identifier' => null,
+			'amount' => null,
 		],
 		'properties' => [
 			'status' => ['defaultValue' => ''],
