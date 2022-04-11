@@ -2181,7 +2181,6 @@ return array_merge(
 			'property_27' => null,
 			'property_28' => null,
 			'order_identifier' => null,
-			'amount' => null,
 		],
 		'properties' => [
 			'status' => ['defaultValue' => ''],
