@@ -2151,7 +2151,6 @@ return array_merge(
 	
 	'commitment/duplicate/p-pit-studies' => array(
 		'init' => [
-			'status' => null,
 			'property_2' => null, // if null duplicate the value from the original
 			'property_3' => null,
 			'property_4' => null,
@@ -2160,8 +2159,6 @@ return array_merge(
 			'property_7' => null,
 			'property_8' => null,
 			'property_9' => null,
-			'property_10' => null,
-			'property_11' => null,
 			'property_12' => null,
 			'property_13' => null,
 			'property_14' => null,
@@ -2176,10 +2173,14 @@ return array_merge(
 			'property_23' => null,
 			'property_24' => null,
 			'property_25' => null,
+			'property_26' => null,
 		],
 		'properties' => [
-			'caption' => ['defaultValue' => '2022-2023'],
+			'status' => ['defaultValue' => ''],
+			'caption' => ['defaultValue' => 'student/property/school_year/next'],
 			'property_1' => [],
+			'property_10' => ['defaultValue' => 'searching'],
+			'property_11' => ['defaultValue' => 'full_time'],
 		],
 	),
 	
@@ -3563,7 +3564,6 @@ return array_merge(
 			'tiny_1' => array('mandatory' => false),
 			'locale' => array('mandatory' => true),
 	),
-
 	'core_account/groupUpdate/p-pit-studies' => array(
 			'status' => array('mandatory' => false),
 			'callback_date' => array('mandatory' => false),
