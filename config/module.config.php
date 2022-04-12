@@ -2170,7 +2170,7 @@ return array_merge(
 			'property_16' => null,
 			'property_17' => null,
 			'property_18' => null,
-			'property_19' => null,
+			//'property_19' => null,
 			//'property_20' => null,
 			'property_21' => null,
 			'property_22' => null,
@@ -2190,6 +2190,7 @@ return array_merge(
 			'property_10' => ['defaultValue' => 'searching'],
 			'property_11' => ['defaultValue' => 'full_time'],
 			'property_12' => [],
+			'property_19' => [],
 		],
 	),
 	
