@@ -2183,6 +2183,7 @@ return array_merge(
 			'order_identifier' => null,
 		],
 		'properties' => [
+			'account_status' => ['defaultValue' => 'retention'],
 			'status' => ['defaultValue' => ''],
 			'caption' => ['defaultValue' => 'student/property/school_year/next'],
 			'property_1' => [],
