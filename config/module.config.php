@@ -2171,7 +2171,7 @@ return array_merge(
 			'property_17' => null,
 			'property_18' => null,
 			'property_19' => null,
-			'property_20' => null,
+			//'property_20' => null,
 			'property_21' => null,
 			'property_22' => null,
 			'property_23' => null,
