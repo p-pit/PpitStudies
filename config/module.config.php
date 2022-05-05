@@ -5080,7 +5080,6 @@ table.note-report tr.period {
 			'completed' => array('en_US' => 'Completed', 'fr_FR' => 'Complété'),
 			'scheduled' => array('en_US' => 'Scheduled', 'fr_FR' => 'Planifié'),
 			'realized' => array('en_US' => 'Realized', 'fr_FR' => 'Réalisé'),
-			'invoiced' => array('en_US' => 'Invoiced', 'fr_FR' => 'Facturé'),
 			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
 		),
 		'labels' => array(
@@ -5122,6 +5121,18 @@ table.note-report tr.period {
 		),
 	),
 	
+	'event/calendar/property/property_5' => array(
+		'definition' => 'inline',
+		'type' => 'select',
+		'labels' => array(
+			'default' => 'Facturé',
+		),
+		'modalities' => array(
+			'oui' => array('default' => 'Oui'),
+			'non' => array('default' => 'Non'),
+		),
+	),
+
 	'event/calendar/property/vcard_id' => array( // Deprecated
 		'definition' => 'inline',
 		'type' => 'input',
@@ -5130,6 +5141,7 @@ table.note-report tr.period {
 			'fr_FR' => 'Vcard',
 		),
 	),
+
 	
 	'event/calendar' => array(
 		'statuses' => array(),
@@ -5161,6 +5173,7 @@ table.note-report tr.period {
 			'groups' => ['multiple' => true],
 			'subcategory' => ['multiple' => true],
 			'property_3' => ['multiple' => true],
+			'property_5' => ['multiple' => true],
 			'account_id' => ['multiple' => true],
 			'status' => ['multiple' => true],
 			'account_status' => ['multiple' => true],
@@ -5214,6 +5227,7 @@ table.note-report tr.period {
 		'location' => 'M',
 		'caption' => 'N',
 		'email_work' => 'O',
+		'property_5' => 'P',
 	),
 	
 	'event/detail/calendar' => array(
@@ -5240,6 +5254,7 @@ table.note-report tr.period {
 //		'property_2' => [],
 		'property_3' => [],
 		'caption' => array('mandatory' => false),
+		'property_5' => array('readonly' => true),
 		'day_of_week' => array('mandatory' => false),
 		'begin_date' => array('mandatory' => true),
 		'end_date' => array('mandatory' => false),
@@ -5791,6 +5806,13 @@ table.note-report tr.period {
 			'fr_FR' => 'Observations',
 		),
 	),
+	'note/property/catchUp' => array(
+		'type' => 'textarea',
+		'labels' => array(
+			'en_US' => 'Catch-up',
+			'fr_FR' => 'Rattrapages / Défaillant',
+		),
+	),
 	
 	'note' => array(
 			'types' => array(
@@ -5886,6 +5908,7 @@ table.note-report tr.period {
 					'evaluation' => array('definition' => 'student/property/reportMention'),
 					'observations' => array('definition' => 'note/property/observations'),
 					'group_id' => array('definition' => 'note/property/group_id'),
+					'catchUp' => array('definition' => 'note/property/catchUp'),
 			),
 	),
 
@@ -6000,6 +6023,7 @@ table.note-report tr.period {
 			'assessment' => 'S',
 			'evaluation' => 'T',
 			'group_id' => 'U',
+			'catchUp' => 'V',
 		),
 	),
 
