@@ -462,22 +462,24 @@ class NoteLinkController extends AbstractActionController
 		$place = Place::get($noteLink->place_id);
 		
 		// Compute the average
-	    $averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
-		$notes = NoteLink::GetList('note', ['school_year' => $noteLink->school_year, 'school_period' => $noteLink->school_period, 'account_id' => $noteLink->account_id], 'subject', 'ASC', 'search');
 		$averages = [];
-		foreach ($notes as $link) {
-			if (!array_key_exists($link->subject, $averages)) $averages[$link->subject] = [0, 0];
-			if ($link->value !== null) {
-				$averages[$link->subject][0] += $link->value * $link->weight;
-				$averages[$link->subject][1] += $link->reference_value * $link->weight;
+		if ($noteLink->type == 'report') {
+			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			$notes = NoteLink::GetList('note', ['school_year' => $noteLink->school_year, 'school_period' => $noteLink->school_period, 'account_id' => $noteLink->account_id], 'subject', 'ASC', 'search');
+			foreach ($notes as $link) {
+				if (!array_key_exists($link->subject, $averages)) $averages[$link->subject] = [0, 0];
+				if ($link->value !== null) {
+					$averages[$link->subject][0] += $link->value * $link->weight;
+					$averages[$link->subject][1] += $link->reference_value * $link->weight;
+				}
 			}
+			$globalAverage = [0, 0];
+			foreach ($averages as $averageKey => $average) {
+				$globalAverage[0] += $average[0] / $average[1] * $averageReference;
+				$globalAverage[1] += $averageReference;
+			}
+			$averages['global'] = $globalAverage;	
 		}
-		$globalAverage = [0, 0];
-		foreach ($averages as $averageKey => $average) {
-			$globalAverage[0] += $average[0] / $average[1] * $averageReference;
-			$globalAverage[1] += $averageReference;
-		}
-		$averages['global'] = $globalAverage;
 		
 		// Retrieve the teachers
 		/*$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
