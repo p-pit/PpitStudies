@@ -438,9 +438,10 @@ class NoteLink
 		return $noteLinks;
     }
 
-    public static function get($id, $column = 'id', $id2 = false, $column2 = false, $id3 = false, $column3 = false, $id4 = false, $column4 = false)
+    public static function get($id, $column = 'id'/*, $id2 = false, $column2 = false, $id3 = false, $column3 = false, $id4 = false, $column4 = false*/)
     {
-    	$noteLink = NoteLink::getTable()->get($id, $column, $id2, $column2, $id3, $column3, $id4, $column4);
+		$noteLink = current(NoteLink::getList(null, ['id' => $id], 'id', 'DESC', null));
+    	/*$noteLink = NoteLink::getTable()->get($id, $column, $id2, $column2, $id3, $column3, $id4, $column4);
     	$note = Note::get($noteLink->note_id);
     	$noteLink->note = $note;
     	$account = Account::get($noteLink->account_id);
@@ -463,7 +464,7 @@ class NoteLink
     	$noteLink->criteria = $note->criteria;
     	$noteLink->average_note = $note->average_note;
     	$noteLink->lower_note = $note->lower_note;
-    	$noteLink->higher_note = $note->higher_note;
+    	$noteLink->higher_note = $note->higher_note;*/
     	return $noteLink;
     }
 
