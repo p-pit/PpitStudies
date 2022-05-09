@@ -5420,16 +5420,17 @@ table.note-report tr.period {
 	],
 	
 	'event/export/absence' => array(
-		'place_id' => 'A',
-		'account_id' => 'B',
-		'property_1' => 'C',
-		'property_2' => 'D',
-		'property_3' => 'E',
-		'begin_date' => 'F',
-		'end_date' => 'G',
-		'begin_time' => 'H',
-		'end_time' => 'I',
-		'property_12' => 'J',
+		'count' => 'A',
+		'place_id' => 'B',
+		'account_id' => 'C',
+		'property_1' => 'D',
+		'property_2' => 'E',
+		'property_3' => 'F',
+		'begin_date' => 'G',
+		'end_date' => 'H',
+		'begin_time' => 'I',
+		'end_time' => 'J',
+		'property_12' => 'K',
 	),
 	
 	// To be progressively replaced by event/absence
