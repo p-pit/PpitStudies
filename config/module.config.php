@@ -5080,6 +5080,7 @@ table.note-report tr.period {
 			'completed' => array('en_US' => 'Completed', 'fr_FR' => 'Complété'),
 			'scheduled' => array('en_US' => 'Scheduled', 'fr_FR' => 'Planifié'),
 			'realized' => array('en_US' => 'Realized', 'fr_FR' => 'Réalisé'),
+			'to_invoice' => array('en_US' => 'To Invoice', 'fr_FR' => 'A facturer'),
 			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
 		),
 		'labels' => array(
