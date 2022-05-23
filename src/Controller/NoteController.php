@@ -669,14 +669,16 @@ class NoteController extends AbstractActionController
 				$absenceCount['global']++;
 			}
 	
-			print_r($absenceCount); exit;
+
 			if (isset($absenceCount[$link->subject])) {
 				if ($absenceCount[$link->subject] >= 3) $catchUp = "A rattraper";
 				elseif ($absenceCount['global'] >= 40) $catchUp = "Défaillant";
 			}
 			if ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
 			$averages[$key]['catchUp'] = $catchUp;
-		}
+
+			print_r($averages[$key]['catchUp']); 
+		} exit;
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
 			$key = $average['account_id'] . '|' . $average['school_year'] . '|' . $average['school_period'];
