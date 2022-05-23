@@ -8,6 +8,7 @@ use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
 use PpitCore\Model\Document;
 use PpitCore\Model\Place;
+use PpitCore\Model\Event;
 use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
 use PpitStudies\Model\Note;
@@ -597,6 +598,7 @@ class NoteController extends AbstractActionController
     	// Retrieve the list
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
 
+		$accountIds = [];
 		// Report case : Retrieve the notes to cumpute the averages
 		if ($type == 'report') {
 
@@ -604,7 +606,10 @@ class NoteController extends AbstractActionController
 			$reportWeights = [];
 			foreach ($noteLinks as $link) {
 				$reportWeights[$link->account_id . '_' . $link->subject . '_' . $link->school_year . '_' . $link->school_period] = ($link->specific_weight) ? $link->specific_weight : $link->weight;
+				$accountIds[] = $link->account_id;
 			}
+
+			$allAbsences = Event::GetList('absence', array('account_id' => implode(",", $accountIds), 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
 
 			// Report case : Retrieve the notes to cumpute the averages and restrict on the selected report scope
 			$cursor = NoteLink::getList('note', $params, $major, $dir, $mode);
@@ -618,6 +623,7 @@ class NoteController extends AbstractActionController
 		else $notes = $noteLinks;
 
 		// Compute the averages
+		$catchUp = false;
 		$averages = [];
 		foreach ($notes as $link) {
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
@@ -628,7 +634,7 @@ class NoteController extends AbstractActionController
 					'school_period' => $link->school_period,
 					'subject' => $link->subject,
 					'sum' => $link->value * $link->weight,
-					'reference_value' => $link->reference_value * $link->weight
+					'reference_value' => $link->reference_value * $link->weight,
 				];
 
 				// Report case: Retrieve the report weight for this subject
@@ -638,11 +644,37 @@ class NoteController extends AbstractActionController
 					}
 					else $averages[$key]['weight'] = 1;
 				}
+				
 			}
 			else {
 				$averages[$key]['sum'] += $link->value * $link->weight;
 				$averages[$key]['reference_value'] += $link->reference_value * $link->weight;
 			}
+
+			// Applying same logic from absenceCount in PdfReportTableViewHelper to compute absences but with semester now
+
+			// Column "Défaillant/Rattrapages" on Excel Report Export
+			
+			$absenceCount = [];
+			$absenceCount['global'] = 0;
+
+			foreach ($allAbsences as $absence) {
+				if ($absence->account_id == $link->account_id) $absenceById[] = $absence;
+			}
+
+			foreach ($absenceById as $cursor) {
+				if (!array_key_exists($cursor->property_3, $absenceCount)) $absenceCount[$cursor->property_3] = 0;
+
+				$absenceCount[$cursor->property_3]++;
+				$absenceCount['global']++;
+			}
+	
+			if (isset($absenceCount[$link->subject])) {
+				if ($absenceCount[$link->subject] >= 3) $catchUp = "A rattraper";
+				elseif ($absenceCount['global'] >= 40) $catchUp = "Défaillant";
+			}
+			if ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
+			$averages[$key]['catchUp'] = $catchUp;
 		}
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
@@ -668,6 +700,7 @@ class NoteController extends AbstractActionController
 				$yearlyAverages[$key]['reference_value'] += $reportWeight;
 			}
 		}
+
 
     	// Return the link list
     	$view = new ViewModel(array(

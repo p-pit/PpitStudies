@@ -48,6 +48,7 @@ class SsmlNoteViewHelper
 			$j++;
 			foreach($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['properties'] as $propertyId => $column) {
 				$property = $context->getConfig('note')['properties'][$propertyId];
+				// print_r($column); exit;
 				if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 				if ($property) {
 					if ($propertyId == 'group_id') {
@@ -74,6 +75,13 @@ class SsmlNoteViewHelper
 						$sheet->setCellValue($column.$j, $yearlyAverage);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
 					}
+					elseif ($propertyId == 'catchUp') {
+						$key = $noteLink->account_id . '|' . $noteLink->school_year . '|' . $noteLink->school_period . '|' . $noteLink->subject;
+						// print_r($view->averages); exit;
+						if (array_key_exists($key, $view->averages)) {
+							if ($view->averages[$key]['catchUp']) $sheet->setCellValue($column.$j, $view->averages[$key]['catchUp']);
+						}
+					}
 					elseif ($property['type'] == 'date') $sheet->setCellValue($column.$j, $context->decodeDate($noteLink->getProperties()[$propertyId]));
 					elseif ($property['type'] == 'number') {
 						$sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
@@ -81,7 +89,7 @@ class SsmlNoteViewHelper
 					}
 					elseif ($property['type'] == 'select')  $sheet->setCellValue($column.$j, (array_key_exists('modalities', $property) && array_key_exists($noteLink->getProperties()[$propertyId], $property['modalities'])) ? $context->localize($property['modalities'][$noteLink->getProperties()[$propertyId]]) : $noteLink->getProperties()[$propertyId]);
 					else $sheet->setCellValue($column.$j, $noteLink->getProperties()[$propertyId]);
-				}
+					}
 			}
 		}
 		foreach($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['properties'] as $propertyId => $column) {
