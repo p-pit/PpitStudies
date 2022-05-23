@@ -87,6 +87,24 @@
                   </select>
                 </div>
               </div>
+
+    <?php $property = $context->getConfig('student/property/reportMention') ?>
+              <div class="form-group row">
+                <label class="col-sm-5 control-label"><?php echo $context->localize($property['labels']) ?></label>
+                <div class="col-sm-1">
+                  <input type="checkbox" class="form-control" id="noteLinkCheck-evaluation" />
+                </div>
+
+                <div class="col-sm-6">
+
+                  <select class="form-control noteLink-group" id="noteLinkGroup-evaluation" name="teacher_id">
+                    <option />
+    <?php foreach ($property['modalities'] as $modalityId => $modality) : ?>
+                    <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>
+    <?php endforeach ?>
+                  </select>
+                </div>
+              </div>
   
               <div class="form-group row">
                 <div class="col-sm-5">&nbsp;</div>

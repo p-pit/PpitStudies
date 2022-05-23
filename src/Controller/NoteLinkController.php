@@ -5,6 +5,7 @@ namespace PpitStudies\Controller;
 use PpitCore\Model\Account;
 use PpitCore\Model\Csrf;
 use PpitCore\Model\Context;
+use PpitCore\Model\GenericTable;
 use PpitCore\Model\Place;
 use PpitCore\Model\Vcard;
 use PpitCore\Form\CsrfForm;
@@ -427,14 +428,28 @@ class NoteLinkController extends AbstractActionController
 		if ($requestType == 'DELETE') $this->delete($id);
 		elseif ($requestType == 'POST') {
 			$noteIds = [];
+			$noteLinkIds = [];
 			foreach ($noteLinks as $noteLink) {
 				$noteIds[$noteLink->note_id] = null;
+				if ($this->request->getPost('evaluation_checked')) {
+					$noteLinkIds[] = $noteLink->id;
+				}
+			}
+			if ($this->request->getPost('evaluation_checked')) {
+				NoteLink::getTable()->groupUpdate($noteLinkIds, ['evaluation' => $this->request->getPost('evaluation')]);
 			}
 			foreach ($noteIds as $note_id => $unused) {
 				$note = Note::get($note_id);
-				if ($this->request->getPost('group_id_checked')) $note->group_id = $this->request->getPost('group_id');
-				if ($this->request->getPost('teacher_id_checked')) $note->teacher_id = $this->request->getPost('teacher_id');
-				$note->update(null);
+				$update = false;
+				if ($this->request->getPost('group_id_checked')) {
+					$note->group_id = $this->request->getPost('group_id');
+					$update = true;
+				}
+				if ($this->request->getPost('teacher_id_checked')) {
+					$note->teacher_id = $this->request->getPost('teacher_id');
+					$update = ture;
+				}
+				if ($update) $note->update(null);
 			}
 		}
 		

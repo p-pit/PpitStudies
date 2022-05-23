@@ -131,6 +131,10 @@ function updateGroup(ids) {
     formData.append('teacher_id_checked', 1);
     formData.append('teacher_id', $('#noteLinkGroup-teacher_id').val());
   }
+  if ($('#noteLinkCheck-evaluation').prop('checked')) {
+    formData.append('evaluation_checked', 1);
+    formData.append('evaluation', $('#noteLinkGroup-evaluation').val());
+  }
   xhttp.open("POST", route, true);
   xhttp.onreadystatechange = function() {
     if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
