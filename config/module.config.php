@@ -3368,6 +3368,7 @@ return array_merge(
 			'properties' => array(
 					'status' => ['multiple' => true],
 					'place_id' => ['multiple' => true],
+					'property_1' => ['multiple' => true],
 					'owner_id' => ['multiple' => true],
 					'property_16' => ['multiple' => true],
 					'origine' => ['multiple' => true],
