@@ -676,8 +676,7 @@ class NoteController extends AbstractActionController
 			if ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
 			$averages[$key]['catchUp'] = $catchUp;
 
-			print_r($averages[$key]['sum'] ." "); 
-		} exit;
+		}
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
 			$key = $average['account_id'] . '|' . $average['school_year'] . '|' . $average['school_period'];
