@@ -671,7 +671,9 @@ class NoteController extends AbstractActionController
 			
 			if ($absenceCount['global'] >= 40) $catchUp = "Défaillant";
 
-			if ((isset($absenceCount[$link->subject]) && $absenceCount[$link->subject] >= 3 && $catchUp != "Défaillant") || $averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
+			if (isset($absenceCount[$link->subject]) && $absenceCount[$link->subject] >= 3) $catchUp = "Défaillant";
+			
+			elseif ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
 
 			$averages[$key]['catchUp'] = $catchUp;
 
