@@ -1399,7 +1399,7 @@ return array_merge(
 		
 	'ppitProduct/list/p-pit-studies' => array(),
 		
-	'ppitProduct/update/p-pit-studies' => array(),
+	'ppitProduct/update/p-pit-studies' => array('status' => []),
 
 	// Product option
 	
@@ -1845,6 +1845,12 @@ return array_merge(
 			'fr_FR' => 'Groupes de l’inscription',
 		),
 	),
+
+	'commitment/p-pit-studies/property/property_30' => [
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => ['default' => 'Nom de l\'entreprise App/Pro'],
+	],
 
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],

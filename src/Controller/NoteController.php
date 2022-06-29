@@ -594,7 +594,18 @@ class NoteController extends AbstractActionController
     	$dir = ($this->params()->fromQuery('dir', 'DESC'));
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
-    
+ 
+    	$absenceCount = [];
+    	 
+    	// Retrieve the absences from attendance sheet
+    	$cursor = Event::GetListV3('absence', ['account_id', 'property_3'], []);
+    	foreach ($cursor as $absence) {
+    		if (!isset($absenceCount[$absence->account_id])) $absenceCount[$absence->account_id] = ['global' => 0];
+    		if (!isset($absenceCount[$absence->account_id][$absence->property_3])) $absenceCount[$absence->account_id][$absence->property_3] = 0;
+    		$absenceCount[$absence->account_id][$absence->property_3]++;
+    		$absenceCount[$absence->account_id]['global']++;
+    	}
+   
     	// Retrieve the list
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
 
