@@ -1399,7 +1399,7 @@ return array_merge(
 		
 	'ppitProduct/list/p-pit-studies' => array(),
 		
-	'ppitProduct/update/p-pit-studies' => array('status' => []),
+	'ppitProduct/update/p-pit-studies' => array(),
 
 	// Product option
 	
