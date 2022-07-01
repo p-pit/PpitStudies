@@ -376,13 +376,8 @@ class StudentController extends AbstractActionController
     
     	$accounts = [];
     	$accountIds = $this->params()->fromQuery('accounts');
-    	if ($accountIds) $accountIds = explode(',', $accountIds);
-    	else $accountIds = [];
-    	foreach ($accountIds as $account_id) {
-    		$account = Account::get($account_id);
-    		$accounts[$account_id] = $account;
-    	}
-    	$place = Place::get($account->place_id);
+		$accounts = Account::getList($type, ['id' => $accountIds], '+name', null);
+    	$place = Place::get(current($accounts)->place_id);
     
     	$school_periods = $place->getConfig('school_periods');
     	$current_school_period = $context->getCurrentPeriod($school_periods);
