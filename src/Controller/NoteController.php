@@ -634,7 +634,7 @@ class NoteController extends AbstractActionController
 		else $notes = $noteLinks;
 
 		// Compute the averages
-		$catchUp;
+		$catchUp =false;
 		$averages = [];
 		foreach ($notes as $link) {
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
@@ -675,7 +675,8 @@ class NoteController extends AbstractActionController
 
 			foreach ($absenceById as $cursor) {
 				if (!array_key_exists($cursor->property_3, $absenceCount)) $absenceCount[$cursor->property_3] = 0;
-				print_r($cursor);
+				print_r($cursor->property_3. " ");
+				print_r($cursor->n_fn. " ");
 				$absenceCount[$cursor->property_3]++;
 				$absenceCount['global']++;
 			}
@@ -687,13 +688,13 @@ class NoteController extends AbstractActionController
 			}
 
 			if (isset($absenceCount[$link->subject]) && $absenceCount[$link->subject] >= 3){
-				print_r("matière > 3")
+				print_r("matière > 3");
 				$catchUp = "Défaillant";
 			}
 
-			print_r($catchUp);
 			
 			elseif ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
+			var_dump("catchup = " .$catchUp);
 
 			$averages[$key]['catchUp'] = $catchUp;
 
