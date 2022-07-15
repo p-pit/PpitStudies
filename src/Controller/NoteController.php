@@ -595,16 +595,16 @@ class NoteController extends AbstractActionController
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
  
-    	$absenceCount = [];
+    	// $absenceCount = [];
     	 
-    	// Retrieve the absences from attendance sheet
-    	$cursor = Event::GetListV3('absence', ['account_id', 'property_3'], []);
-    	foreach ($cursor as $absence) {
-    		if (!isset($absenceCount[$absence->account_id])) $absenceCount[$absence->account_id] = ['global' => 0];
-    		if (!isset($absenceCount[$absence->account_id][$absence->property_3])) $absenceCount[$absence->account_id][$absence->property_3] = 0;
-    		$absenceCount[$absence->account_id][$absence->property_3]++;
-    		$absenceCount[$absence->account_id]['global']++;
-    	}
+    	// // Retrieve the absences from attendance sheet
+    	// $cursor = Event::GetListV3('absence', ['account_id', 'property_3'], []);
+    	// foreach ($cursor as $absence) {
+    	// 	if (!isset($absenceCount[$absence->account_id])) $absenceCount[$absence->account_id] = ['global' => 0];
+    	// 	if (!isset($absenceCount[$absence->account_id][$absence->property_3])) $absenceCount[$absence->account_id][$absence->property_3] = 0;
+    	// 	$absenceCount[$absence->account_id][$absence->property_3]++;
+    	// 	$absenceCount[$absence->account_id]['global']++;
+    	// }
    
     	// Retrieve the list
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
@@ -634,9 +634,9 @@ class NoteController extends AbstractActionController
 		else $notes = $noteLinks;
 
 		// Compute the averages
+		$catchUp = false;
 		$averages = [];
 		foreach ($notes as $link) {
-			$catchUp = "";
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
 			if (!array_key_exists($key, $averages)) {
 				$averages[$key] = [
@@ -672,36 +672,24 @@ class NoteController extends AbstractActionController
 			foreach ($allAbsences as $absence) {
 				if ($absence->account_id == $link->account_id) $absenceById[] = $absence;
 			}
-			// print_r($absenceById); exit;
+
 
 			foreach ($absenceById as $cursor) {
 				if (!array_key_exists($cursor->property_3, $absenceCount)) $absenceCount[$cursor->property_3] = 0;
-				// print_r($cursor->property_3. " ");
-				// print_r($cursor);
 				$absenceCount[$cursor->property_3]++;
 				$absenceCount['global']++;
 			}
 
-			print_r($absenceCount);
 			
-			if ($absenceCount['global'] >= 40) {
-				// print_r("global > 40");
-				$catchUp = "Défaillant";
-			}
+			if ($absenceCount['global'] >= 40) $catchUp = "Défaillant";
 
-			if (isset($absenceCount[$link->subject]) && $absenceCount[$link->subject] >= 3){
-				// print_r("matière > 3");
-				$catchUp = "Défaillant";
-			}
-
+			if (isset($absenceCount[$link->subject]) && $absenceCount[$link->subject] >= 3) $catchUp = "Défaillant";
 			
 			elseif ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
-			
+
 			$averages[$key]['catchUp'] = $catchUp;
-			//  var_dump("catchup = " .$averages[$key]['catchUp']);
 
 		}
-		// exit;
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
 			$key = $average['account_id'] . '|' . $average['school_year'] . '|' . $average['school_period'];
