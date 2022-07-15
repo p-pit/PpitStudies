@@ -622,7 +622,6 @@ class NoteController extends AbstractActionController
 
 			$allAbsences = Event::GetList('absence', array('account_id' => implode(",", $accountIds), 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
 
-			print_r($allAbsences); exit;
 			// Report case : Retrieve the notes to cumpute the averages and restrict on the selected report scope
 			$cursor = NoteLink::getList('note', $params, $major, $dir, $mode);
 			$notes = [];
