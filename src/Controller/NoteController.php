@@ -672,23 +672,25 @@ class NoteController extends AbstractActionController
 			foreach ($allAbsences as $absence) {
 				if ($absence->account_id == $link->account_id) $absenceById[] = $absence;
 			}
+			// print_r($absenceById); exit;
 
 			foreach ($absenceById as $cursor) {
 				if (!array_key_exists($cursor->property_3, $absenceCount)) $absenceCount[$cursor->property_3] = 0;
-				print_r($cursor->property_3. " ");
-				print_r($cursor->n_fn. " ");
+				// print_r($cursor->property_3. " ");
+				// print_r($cursor);
 				$absenceCount[$cursor->property_3]++;
 				$absenceCount['global']++;
 			}
 
+			print_r($absenceCount);
 			
 			if ($absenceCount['global'] >= 40) {
-				print_r("global > 40");
+				// print_r("global > 40");
 				$catchUp = "Défaillant";
 			}
 
 			if (isset($absenceCount[$link->subject]) && $absenceCount[$link->subject] >= 3){
-				print_r("matière > 3");
+				// print_r("matière > 3");
 				$catchUp = "Défaillant";
 			}
 
@@ -696,10 +698,10 @@ class NoteController extends AbstractActionController
 			elseif ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
 			
 			$averages[$key]['catchUp'] = $catchUp;
-			 var_dump("catchup = " .$averages[$key]['catchUp']);
+			//  var_dump("catchup = " .$averages[$key]['catchUp']);
 
 		}
-		exit;
+		// exit;
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
 			$key = $average['account_id'] . '|' . $average['school_year'] . '|' . $average['school_period'];
