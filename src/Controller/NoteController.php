@@ -699,7 +699,6 @@ class NoteController extends AbstractActionController
 			var_dump("catchup = " .$averages[$key]['catchUp']);
 
 		}
-		exit;
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
 			$key = $average['account_id'] . '|' . $average['school_year'] . '|' . $average['school_period'];
