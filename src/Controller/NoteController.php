@@ -634,9 +634,9 @@ class NoteController extends AbstractActionController
 		else $notes = $noteLinks;
 
 		// Compute the averages
-		$catchUp = false;
 		$averages = [];
 		foreach ($notes as $link) {
+			$catchUp = "";
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
 			if (!array_key_exists($key, $averages)) {
 				$averages[$key] = [
