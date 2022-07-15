@@ -634,7 +634,7 @@ class NoteController extends AbstractActionController
 		else $notes = $noteLinks;
 
 		// Compute the averages
-		$catchUp =false;
+		$catchUp = false;
 		$averages = [];
 		foreach ($notes as $link) {
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
@@ -694,9 +694,9 @@ class NoteController extends AbstractActionController
 
 			
 			elseif ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
-			var_dump("catchup = " .$catchUp);
-
+			
 			$averages[$key]['catchUp'] = $catchUp;
+			var_dump("catchup = " .$averages[$key]['catchUp']);
 
 		}
 		exit;
