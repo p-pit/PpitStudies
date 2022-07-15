@@ -667,31 +667,26 @@ class NoteController extends AbstractActionController
 			// Column "Défaillant/Rattrapages" on Excel Report Export
 			
 			$absenceCount = [];
+			$absenceCount[$link->account_id]['global'] = 0;
+			$absenceById = [];
 
 			foreach ($allAbsences as $absence) {
 				if ($absence->account_id == $link->account_id) $absenceById[] = $absence;
 			}
 
-
-			// print_r($absenceById); exit;
 			foreach ($absenceById as $absById) {
 				if (!array_key_exists($absById->property_3, $absenceCount)) $absenceCount[$link->account_id][$absById->property_3] = 0;
 				$absenceCount[$link->account_id][$absById->property_3]++;
 				$absenceCount[$link->account_id]['global']++;
 			}
 			
-			if ($absenceCount[$link->account_id]['global'] >= 40) {
-				// print_r("global > 40 ");
-				$catchUp = "Défaillant";
-			}
-			if (isset($absenceCount[$link->account_id][$link->subject]) && $absenceCount[$link->account_id][$link->subject] >= 3) {
-				// print_r("absence matiere > 3");
-				 $catchUp = "Défaillant";
-			}
+			if ($absenceCount[$link->account_id]['global'] >= 40) $catchUp = "Défaillant";
+
+			if (isset($absenceCount[$link->account_id][$link->subject]) && $absenceCount[$link->account_id][$link->subject] >= 3) $catchUp = "Défaillant";
+
 			elseif ($averages[$key]['sum'] <= 1 && $catchUp != "Défaillant") $catchUp = "A rattraper";
 
 			$averages[$key]['catchUp'] = $catchUp;
-
 		}
 		$globalAverages = [];
 		foreach ($averages as $key => $average) {
