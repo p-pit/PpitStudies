@@ -595,16 +595,16 @@ class NoteController extends AbstractActionController
     
     	if (count($params) == 0) $mode = 'todo'; else $mode = 'search';
  
-    	$absenceCount = [];
+    	// $absenceCount = [];
     	 
-    	// Retrieve the absences from attendance sheet
-    	$cursor = Event::GetListV3('absence', ['account_id', 'property_3'], []);
-    	foreach ($cursor as $absence) {
-    		if (!isset($absenceCount[$absence->account_id])) $absenceCount[$absence->account_id] = ['global' => 0];
-    		if (!isset($absenceCount[$absence->account_id][$absence->property_3])) $absenceCount[$absence->account_id][$absence->property_3] = 0;
-    		$absenceCount[$absence->account_id][$absence->property_3]++;
-    		$absenceCount[$absence->account_id]['global']++;
-    	}
+    	// // Retrieve the absences from attendance sheet
+    	// $cursor = Event::GetListV3('absence', ['account_id', 'property_3'], []);
+    	// foreach ($cursor as $absence) {
+    	// 	if (!isset($absenceCount[$absence->account_id])) $absenceCount[$absence->account_id] = ['global' => 0];
+    	// 	if (!isset($absenceCount[$absence->account_id][$absence->property_3])) $absenceCount[$absence->account_id][$absence->property_3] = 0;
+    	// 	$absenceCount[$absence->account_id][$absence->property_3]++;
+    	// 	$absenceCount[$absence->account_id]['global']++;
+    	// }
    
     	// Retrieve the list
     	$noteLinks = NoteLink::getList($type, $params, $major, $dir, $mode);
@@ -634,9 +634,9 @@ class NoteController extends AbstractActionController
 		else $notes = $noteLinks;
 
 		// Compute the averages
-		$catchUp = false;
 		$averages = [];
 		foreach ($notes as $link) {
+			$catchUp = "";
 			$key = $link->account_id . '|' . $link->school_year . '|' . $link->school_period . '|' . $link->subject;
 			if (!array_key_exists($key, $averages)) {
 				$averages[$key] = [
@@ -668,6 +668,7 @@ class NoteController extends AbstractActionController
 			
 			$absenceCount = [];
 			$absenceCount['global'] = 0;
+			$absenceById = [];
 
 			$absenceById = [];
 			foreach ($allAbsences as $absence) {

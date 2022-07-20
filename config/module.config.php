@@ -3955,6 +3955,10 @@ table.note-report td {
 		'document' => [],
 	),
 
+	'commitmentTerm/group/p-pit-studies' => array(
+		'tabs' => [],
+	),
+
 	'commitmentTerm/generate/p-pit-studies' => array(
 		'commitment_caption' => [],
 		'invoice_account_id' => [],
