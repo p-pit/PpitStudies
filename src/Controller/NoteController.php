@@ -669,6 +669,7 @@ class NoteController extends AbstractActionController
 			$absenceCount = [];
 			$absenceCount['global'] = 0;
 
+			$absenceById = [];
 			foreach ($allAbsences as $absence) {
 				if ($absence->account_id == $link->account_id) $absenceById[] = $absence;
 			}
