@@ -4449,22 +4449,6 @@ table.note-report td {
 					'fr_FR' => 'Internat',
 			),
 	),
-
-	'core_account/p-pit-studies/property/property_6' => array(
-		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => array(
-			'Externe' => array('fr_FR' => 'Externe', 'fr_FR' => 'Externe'),
-			'Interne' => array('fr_FR' => 'Internat', 'fr_FR' => 'Internat'),
-			'Weekend' => array('fr_FR' => 'Internat + WE', 'fr_FR' => 'Internat + WE'),
-			'Dimanche' => array('fr_FR' => 'Internat + dimanche', 'fr_FR' => 'Internat + dimanche'),
-			'annual' => array('fr_FR' => 'Internat annuel', 'fr_FR' => 'Internat annuel'),
-		),
-		'labels' => array(
-			'en_US' => 'Boarding-school',
-			'fr_FR' => 'Internat',
-		),
-	),
 	
 	'student/property/school_year' => array(
 			'type' => 'select',
