@@ -3103,6 +3103,7 @@ return array_merge(
 			'1ère pro' => array('fr_FR' => '1ère pro'),
 			'Term.' => array('fr_FR' => 'Term.'),
 			'Term.' => array('fr_FR' => 'Term. pro'),
+			'Niveau BAC' => array('fr_FR' => 'Niveau BAC'),
 			'Niveau BAC+1' => array('fr_FR' => 'Niveau BAC+1'),
 		),
 		'labels' => array(
