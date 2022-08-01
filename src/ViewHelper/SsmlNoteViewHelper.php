@@ -48,7 +48,6 @@ class SsmlNoteViewHelper
 			$j++;
 			foreach($context->getConfig('note/export'.(($category) ? '/'.$category : ''))['properties'] as $propertyId => $column) {
 				$property = $context->getConfig('note')['properties'][$propertyId];
-				// print_r($column); exit;
 				if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
 				if ($property) {
 					if ($propertyId == 'group_id') {
