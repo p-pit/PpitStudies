@@ -708,14 +708,16 @@ class NoteController extends AbstractActionController
 		}
 		$yearlyAverages = [];
 		foreach ($averages as $key => $average) {
-			$key = $average['account_id'] . '|' . $average['school_year'];
-			if ($type == 'report' && array_key_exists($average['account_id'] . '_' . $average['subject'] . '_' . $average['school_year'] . '_' . $average['school_period'], $reportWeights)) $reportWeight = $reportWeights[$average['account_id'] . '_' . $average['subject'] . '_' . $average['school_year'] . '_' . $average['school_period']];
-			else $reportWeight = 1;
-			$value = round($average['sum'] * $reportWeight / $average['reference_value'] * 100) / 100;
-			if (!array_key_exists($key, $yearlyAverages)) $yearlyAverages[$key] = ['sum' => $value, 'reference_value' => $reportWeight];
-			else {
-				$yearlyAverages[$key]['sum'] += $value;
-				$yearlyAverages[$key]['reference_value'] += $reportWeight;
+			if ($average['reference_value']) {
+				$key = $average['account_id'] . '|' . $average['school_year'];
+				if ($type == 'report' && array_key_exists($average['account_id'] . '_' . $average['subject'] . '_' . $average['school_year'] . '_' . $average['school_period'], $reportWeights)) $reportWeight = $reportWeights[$average['account_id'] . '_' . $average['subject'] . '_' . $average['school_year'] . '_' . $average['school_period']];
+				else $reportWeight = 1;
+				$value = round($average['sum'] * $reportWeight / $average['reference_value'] * 100) / 100;
+				if (!array_key_exists($key, $yearlyAverages)) $yearlyAverages[$key] = ['sum' => $value, 'reference_value' => $reportWeight];
+				else {
+					$yearlyAverages[$key]['sum'] += $value;
+					$yearlyAverages[$key]['reference_value'] += $reportWeight;
+				}
 			}
 		}
 

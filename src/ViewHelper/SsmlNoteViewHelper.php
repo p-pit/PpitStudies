@@ -55,7 +55,7 @@ class SsmlNoteViewHelper
 					}
 					elseif ($propertyId == 'average') {
 						$key = $noteLink->account_id . '|' . $noteLink->school_year . '|' . $noteLink->school_period . '|' . $noteLink->subject;
-						if (array_key_exists($key, $view->averages)) $average = $view->averages[$key]['sum'] / $view->averages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
+						if ($view->averages[$key]['reference_value'] && array_key_exists($key, $view->averages)) $average = $view->averages[$key]['sum'] / $view->averages[$key]['reference_value'] * $context->getConfig('student/parameter/average_computation')['reference_value'];
 						else $average = 'Non noté';
 						$sheet->setCellValue($column.$j, $average);
 						$sheet->getStyle($column.$j)->getNumberFormat()->setFormatCode('### ##0.00');
