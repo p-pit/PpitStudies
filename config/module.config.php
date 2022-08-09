@@ -5921,6 +5921,8 @@ table.note-report tr.period {
 					'catchUp' => array('definition' => 'note/property/catchUp'),
 			),
 	),
+	'report/generic/property/groups' => ['definition' => 'core_account/generic/property/groups'],
+
 
 	'note/colour' => array(
 			'done-work' => 'LightGreen',	
@@ -6064,6 +6066,7 @@ table.note-report tr.period {
 			'reference_value' => [],
 			'weight' => [],
 			'assessment' => [],
+			'groups' => [],
 		],
 	],
 	

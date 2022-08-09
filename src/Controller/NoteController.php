@@ -1294,7 +1294,7 @@ class NoteController extends AbstractActionController
 		$content['config']['categories'] = $place->getConfig('student/property/evaluationCategory')['modalities'];
 
 		// Retrieve the group list.
-		// $content['config']['groups'] = Account::getListV3('group', ['name'], [], null, null);		
+		$content['config']['groups'] = Account::getListV3('group', ['name'], [], null, null);		
 
 		// DELETE request
 		if ($this->request->isDelete()) {
@@ -1354,7 +1354,7 @@ class NoteController extends AbstractActionController
 			$content['note']['reference_value'] = $this->request->getPost('reference_value');
 			$content['note']['weight'] = $this->request->getPost('weight');
 			$content['note']['observations'] = $this->request->getPost('observations');
-			// $content['note']['group_id'] = $this->request->getPost('group_id');
+			$content['note']['group_id'] = $this->request->getPost('group_id');
 	
 			$newLinks = [];
 			foreach ($content['noteLinks'] as $noteLinkData) {
