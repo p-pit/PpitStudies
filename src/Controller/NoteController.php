@@ -1278,7 +1278,7 @@ class NoteController extends AbstractActionController
 
 		// Retrieve the subject list. As a teacher my subject list is restricted according to my competences
 		$subjects = [];
-		foreach ($place->getConfig('student/property/school_subject')['modalities'] as $subjectId => $subject) {
+		foreach ($context->getConfig('student/property/school_subject')['modalities'] as $subjectId => $subject) {
 			if (!array_key_exists('archive', $subject) || !$subject['archive']) {
 				if ($context->hasRole('manager')) $subjects[$subjectId] = $subject;
 				else {
@@ -1291,7 +1291,7 @@ class NoteController extends AbstractActionController
 		}
 		$content['config'] = [];
 		$content['config']['subjects'] = $subjects;
-		$content['config']['categories'] = $place->getConfig('student/property/evaluationCategory')['modalities'];
+		$content['config']['categories'] = $context->getConfig('student/property/evaluationCategory')['modalities'];
 
 		// Retrieve the group list.
 		$content['config']['groups'] = Account::getListV3('group', ['name'], [], null, null);		
