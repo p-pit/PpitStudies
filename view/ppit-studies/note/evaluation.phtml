@@ -65,7 +65,7 @@ $updateProperties = $context->getConfig($content['type'] . '/update/evaluation')
         <select class="form-control form-control-sm update_input update_input_select" id="place_id" <?php if ($isDisabled || count($content['places']) == 1 || ($content['type'] == 'report' && $content['id'])) echo 'disabled="disabled"'?> required>
           <option />
   <?php foreach ($content['places'] as $place) : ?>
-          <option value="<?php echo $place->id ?>" <?php if ($place->id == $content['place']['id']) echo 'selected="selected"' ?>><?php echo $place->caption ?></option>
+          <option value="<?php echo $place->id ?>" <?php if ($content['place'] && $place->id == $content['place']['id']) echo 'selected="selected"' ?>><?php echo $place->caption ?></option>
   <?php endforeach;?>
         </select>
       </div>
