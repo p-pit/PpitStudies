@@ -251,7 +251,7 @@ $updateProperties = $context->getConfig($content['type'] . '/update/evaluation')
             <select class="form-control form-control-sm update_input update_input_select" id="account_id" <?php if ($isDisabled) echo 'disabled="disabled"'?>>
               <option value=""></option>
     <?php foreach ($content['accountsData'] as $account_id => $account) : ?>
-              <option value="<?php echo $account_id ?>"><?php echo $account->name ?></option>
+              <option value="<?php echo $account_id ?>"><?php echo $account['name'] ?></option>
     <?php endforeach;?>
             </select>
           </div>
