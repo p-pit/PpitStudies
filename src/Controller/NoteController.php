@@ -1121,13 +1121,13 @@ class NoteController extends AbstractActionController
 		// user_story - student_evaluation_teachers: Les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif"
 		$teachers = [];
 		if ($context->hasRole('manager')) {
-			$cursor = Account::getList('teacher', ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name', null);
+			$cursor = Account::getListV3('teacher', ['contact_1_id', 'name', 'n_fn', 'property_3'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
 			foreach ($cursor as $teacher_id => $teacher) {
-				$teachers[$teacher->contact_1_id] = $teacher->properties;
-				$competences = $teachers[$teacher->contact_1_id]['property_3'];
+				$teachers[$teacher['contact_1_id']] = $teacher;
+				$competences = $teachers[$teacher['contact_1_id']]['property_3'];
 				if ($competences) $competences = explode(',', $competences);
 				else $competences = [];
-				$teachers[$teacher->contact_1_id]['competences'] = $competences;
+				$teachers[$teacher['contact_1_id']]['competences'] = $competences;
 			}
 		}
 		else {
