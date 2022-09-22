@@ -3868,6 +3868,14 @@ table.note-report td {
 		),
 	),
 
+	'commitmentTerm/p-pit-studies/property/tiny_9' => array(
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => array(
+			'default' => 'Date de mise en demeure',
+		),
+	),
+
 	'commitmentTerm/p-pit-studies/property/commitment_status' => ['definition' => 'commitment/p-pit-studies/property/status'],
 	'commitmentTerm/p-pit-studies/property/commitment_caption' => ['definition' => 'student/property/school_year'],
 	'commitmentTerm/p-pit-studies/property/commitment_order_identifier' => ['definition' => 'commitment/generic/property/order_identifier'],
