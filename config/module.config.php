@@ -5702,9 +5702,9 @@ table.note-report tr.period {
 			// Student Details
 			'n_fn' => ['position' => 'A'],
 			'place_caption' => ['position' => 'B'],
-			'email_work' => ['position' => 'C'],
+			//'email_work' => ['position' => 'C'],
 			'account_groups' => ['position' => 'D'],
-			'account_property_18' => ['position' => 'E'],
+			//'account_property_18' => ['position' => 'E'],
 			
 			// Student Financials
 			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
@@ -5723,8 +5723,7 @@ table.note-report tr.period {
 			],
 		],
 		'sums' => [
-			[
-				// Totals Students
+			// Totals Students
 
 				'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
 				'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
