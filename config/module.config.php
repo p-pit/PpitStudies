@@ -5725,14 +5725,22 @@ table.note-report tr.period {
 		'sums' => [
 			// Totals Students
 
-				'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-				'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-				'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-				'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
-				'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-				'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#f44336', 'filter' => ['property_12' => 'to_justify']],
+			'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#f44336','filter' => ['property_12' => 'processing']],
+			'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#f44336','filter' => ['property_12' => 'medical']],
+			'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#f44336','filter' => ['property_12' => 'enterprise']],
+			'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#f44336','filter' => ['property_12' => 'unjustified']],
+			'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+
+			'total_student' => [
+				'position' => 'L',
+				'type' => 'count',
+				'labels' => ['default' => 'Total Etudiant Par Motif'],
+				'background' => '#f44336',
+				//'indicator' => ['to_justify','processing','medical','unjustified','other'],
 			],
 		],
+		
 	],
 
 	// Note
