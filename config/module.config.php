@@ -5702,9 +5702,9 @@ table.note-report tr.period {
 			// Student Details
 			'n_fn' => ['position' => 'A'],
 			'place_caption' => ['position' => 'B'],
-			'email_work' => ['position' => 'C'],
+			//'email_work' => ['position' => 'C'],
 			'account_groups' => ['position' => 'D'],
-			'account_property_18' => ['position' => 'E'],
+			//'account_property_18' => ['position' => 'E'],
 			
 			// Student Financials
 			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
@@ -5723,16 +5723,14 @@ table.note-report tr.period {
 			],
 		],
 		'sums' => [
-			[
-				// Totals Students
+			// Totals Students
 
-				'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-				'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cour de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-				'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrer maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-				'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
-				'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifier'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-				'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
-			],
+			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
+			'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cour de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
+			'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrer maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
+			'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
+			'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifier'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
+			'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
 		],
 	],
 
