@@ -593,7 +593,7 @@ class NoteLinkController extends AbstractActionController
 		else $requestType = 'GET';
 		$groupIds = $this->params()->fromQuery('groups');
 		$groups = Account::getList('group', ['id' => $groupIds], null, null);
-		$teachers = Account::getList('teacher', ['status' => 'active,committed,contrat_envoye,reconnect_with', 'property_8' => '2021-2022'], '+name', null);
+		$teachers = Account::getList('teacher', ['status' => 'active,committed,contrat_envoye,reconnect_with', 'property_8' => $context->getConfig('student/property/school_year/default')], '+name', null);
 
 		$place_identifier = $this->params()->fromQuery('place_identifier');
 		if ($place_identifier) $place = Place::get($place_identifier, 'identifier');
