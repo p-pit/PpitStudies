@@ -1493,8 +1493,7 @@ return array_merge(
 		'definition' => 'inline',
 		'type' => 'email',
 		'labels' => array(
-			'en_US' => 'Pro e-mail',
-			'fr_FR' => 'Email pro',
+			'default' => 'Email école',
 		),
 	),
 	
