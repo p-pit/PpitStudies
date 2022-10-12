@@ -5696,42 +5696,50 @@ table.note-report tr.period {
 	
 	// Position Tableau Croisé Excel des absences 
 	'event/report/absence' => [
-		'columns' => [
+        'columns' => [
+            // Student Details
+            'n_fn' => ['position' => 'A'],
+            'place_caption' => ['position' => 'B'],
+            //'email_work' => ['position' => 'C'],
+            'account_groups' => ['position' => 'D'],
+            //'account_property_18' => ['position' => 'E'],
+            
+            // Student Financials
+            'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
+            'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
+            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
+            'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence entreprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
+            'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
+            'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
 
-			// Student Details
-			'n_fn' => ['position' => 'A'],
-			'place_caption' => ['position' => 'B'],
-			//'email_work' => ['position' => 'C'],
-			'account_groups' => ['position' => 'D'],
-			//'account_property_18' => ['position' => 'E'],
-			// Student Financials
-			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-			'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cour de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-			'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrer maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-			'entrepreise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'entrepreise']],
-			'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifier'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-			'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+            'total_student' => [
+                'position' => 'L',
+                'type' => 'count',
+                'labels' => ['default' => 'Total Etudiant'],
+                'background' => '#EBF1DE',
+                //'indicator' => ['to_justify','processing','medical','unjustified','other'],
+            ],
+        ],
+        'sums' => [
+            // Totals Students
 
-			'total_student' => [
-				'position' => 'L',
-				'type' => 'computed',
-				'labels' => ['default' => 'Total Etudiant'],
-				'background' => '#EBF1DE',
-				//'indicator' => ['to_justify','processing','medical','unjustified','other'],
-			],
-		],
-		'sums' => [
-			[
-				// Totals Students
-				'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-				'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cour de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-				'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrer maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-				'entrepreise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'entrepreise']],
-				'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifier'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-				'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
-			],
-		],
-	],
+            'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#f44336', 'filter' => ['property_12' => 'to_justify']],
+            'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#f44336','filter' => ['property_12' => 'processing']],
+            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#f44336','filter' => ['property_12' => 'medical']],
+            'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence entreprise'], 'background' => '#f44336','filter' => ['property_12' => 'enterprise']],
+            'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#f44336','filter' => ['property_12' => 'unjustified']],
+            'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+
+            'total_student' => [
+                'position' => 'L',
+                'type' => 'count',
+                'labels' => ['default' => 'Total Etudiant Par Motif'],
+                'background' => '#f44336',
+                //'indicator' => ['to_justify','processing','medical','unjustified','other'],
+            ],
+        ],
+        
+    ],
 
 	// Note
 
