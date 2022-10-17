@@ -243,4 +243,20 @@ class ReportController extends AbstractActionController
 		$this->response->setContent(json_encode($content));
 		return $this->response;
 	}
+
+	public function getStudentsFromGroupsAction()
+	{
+		$context = Context::getCurrent();
+		$group_id = $this->params()->fromRoute('id');
+		
+		$account_ids = Account::getListV3('p-pit-studies', ['id', 'groups'], ['groups' => $group_id]);
+
+		$ids = []; 
+		foreach ($account_ids as $account) $ids[] = $account['id'];
+
+		$this->response->setStatusCode('200');
+		$this->response->setContent(json_encode([$ids]));
+		return $this->response;
+
+	}
 }
