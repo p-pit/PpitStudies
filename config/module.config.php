@@ -1504,7 +1504,7 @@ return array_merge(
 		'type' => 'email',
 		'labels' => array(
 			'en_US' => 'Pro e-mail',
-			'fr_FR' => 'Email pro',
+			'fr_FR' => 'Email école',
 		),
 	),
 	
