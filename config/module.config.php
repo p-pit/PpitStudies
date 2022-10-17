@@ -5411,6 +5411,7 @@ table.note-report tr.period {
 			'text' => ['default' => '%s - Absence', 'fr_FR' => '%s - Absence'],
 			'params' => ['place_caption'],
 		],
+		
 		'body' => [
 			'text' => [
 				'default' => '<p>Hello,</p>
@@ -5430,9 +5431,9 @@ table.note-report tr.period {
 			'event_params' => ['property_3', 'begin_date', 'begin_time', 'end_time', 'duration', 'property_12'],
 			'sum_text' => [
 				'default' => '<p>Which amounts to a sum of <strong>%s</strong> during the period and <strong>%s</strong> absence(s) out of the total number of absences.</p>',
-				'fr_FR' => '<p>Soit un total de <strong>%s</strong> sur la période et <strong>%s</strong> absence(s) sur le nombre total d\'absence.</p>',
+				'fr_FR' => '<p>Soit un total de <strong>%s</strong> sur la période.</p>',
 			],
-			'sum_params' => ['duration', 'nbAbsences'],
+			'sum_params' => ['duration'],
 		],
 	],
 	
