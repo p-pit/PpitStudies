@@ -248,11 +248,28 @@ class ReportController extends AbstractActionController
 	{
 		$context = Context::getCurrent();
 		$group_id = $this->params()->fromRoute('id');
-		
-		$account_ids = Account::getListV3('p-pit-studies', ['id', 'groups'], ['groups' => $group_id]);
+		$subject = $this->params()->fromQuery('subject');
 
-		$ids = []; 
-		foreach ($account_ids as $account) $ids[] = $account['id'];
+		$coursesConfig = $context->getConfig('student/property/school_subject')['modalities'];
+
+		$courseConfig = $coursesConfig[$subject];
+
+		// Course data
+		if (array_key_exists('full_time', $courseConfig) && $courseConfig['full_time'] == true) $full_time = true;
+		else $full_time = false;
+
+		
+		$account_ids = Account::getListV3('p-pit-studies', ['id', 'groups', 'property_15'], ['groups' => $group_id]);
+
+		$ids = [];
+
+		// Filter or not when subject is fulltime or parttime
+		foreach ($account_ids as $account) {
+			if ($full_time) {
+				if ($account['property_15'] !== "full_time") continue;
+				else $ids[] = $account['id'];
+			} else $ids[] = $account['id'];
+		}
 
 		$this->response->setStatusCode('200');
 		$this->response->setContent(json_encode([$ids]));
