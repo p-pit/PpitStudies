@@ -598,6 +598,15 @@ return array_merge(
 							],
 						],
 					],
+					'getStudentsFromGroups' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/get-students-from-groups[/:id]',
+							'defaults' => [
+								'action' => 'getStudentsFromGroups',
+							],
+						],
+					],
 				],
 			],
 	       			
@@ -1158,6 +1167,7 @@ return array_merge(
 
 				array('route' => 'report/post', 'roles' => array('guest')),
 				array('route' => 'report/v1', 'roles' => array('guest')),
+				array('route' => 'report/getStudentsFromGroups', 'roles' => array('guest')),
 				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
@@ -1494,7 +1504,7 @@ return array_merge(
 		'type' => 'email',
 		'labels' => array(
 			'en_US' => 'Pro e-mail',
-			'fr_FR' => 'Email pro',
+			'fr_FR' => 'Email école',
 		),
 	),
 	
