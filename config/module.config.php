@@ -5732,7 +5732,7 @@ table.note-report tr.period {
                 //'indicator' => ['to_justify','processing','medical','unjustified','other'],
             ],
         ],
-        'sums' => [
+        'sums' => [/*
             // Totals Students
 
             'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#f44336', 'filter' => ['property_12' => 'to_justify']],
@@ -5749,7 +5749,7 @@ table.note-report tr.period {
                 'background' => '#f44336',
                 //'indicator' => ['to_justify','processing','medical','unjustified','other'],
             ],
-        ],
+        */],
         
     ],
 
