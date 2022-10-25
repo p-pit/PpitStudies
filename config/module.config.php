@@ -598,6 +598,15 @@ return array_merge(
 							],
 						],
 					],
+					'getStudentsFromGroups' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/get-students-from-groups[/:id]',
+							'defaults' => [
+								'action' => 'getStudentsFromGroups',
+							],
+						],
+					],
 				],
 			],
 	       			
@@ -1158,6 +1167,7 @@ return array_merge(
 
 				array('route' => 'report/post', 'roles' => array('guest')),
 				array('route' => 'report/v1', 'roles' => array('guest')),
+				array('route' => 'report/getStudentsFromGroups', 'roles' => array('guest')),
 				
 				array('route' => 'student', 'roles' => array('manager', 'coach', 'teacher')),
 				array('route' => 'student/registrationIndex', 'roles' => array('manager')),
@@ -1494,7 +1504,7 @@ return array_merge(
 		'type' => 'email',
 		'labels' => array(
 			'en_US' => 'Pro e-mail',
-			'fr_FR' => 'Email pro',
+			'fr_FR' => 'Email école',
 		),
 	),
 	
@@ -5339,6 +5349,7 @@ table.note-report tr.period {
 	),
 
 	'event/absence/property/account_property_15' => array('definition' => 'core_account/p-pit-studies/property/property_15'),
+	'event/absence/property/account_property_18' => array('definition' => 'core_account/p-pit-studies/property/property_18'),
 	'event/absence/property/account_property_19' => array('definition' => 'core_account/p-pit-studies/property/property_19'),
 	
 	'event/absence' => array(
@@ -5348,7 +5359,7 @@ table.note-report tr.period {
 		'properties' => array(
 			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn', 'account_groups',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
-			'property_1', 'property_2', 'property_3', 'property_4', 'property_6', 'property_11', 'property_12', 'account_property_15',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_6', 'property_11', 'property_12', 'account_property_15', 'account_property_18',
 			'update_time', 'count',
 		),
 	),
@@ -5411,6 +5422,7 @@ table.note-report tr.period {
 			'text' => ['default' => '%s - Absence', 'fr_FR' => '%s - Absence'],
 			'params' => ['place_caption'],
 		],
+		
 		'body' => [
 			'text' => [
 				'default' => '<p>Hello,</p>
@@ -5429,7 +5441,7 @@ table.note-report tr.period {
 			],
 			'event_params' => ['property_3', 'begin_date', 'begin_time', 'end_time', 'duration', 'property_12'],
 			'sum_text' => [
-				'default' => '<p>Which amounts to a sum of <strong>%s</strong> during the period.</p>',
+				'default' => '<p>Which amounts to a sum of <strong>%s</strong> during the period and <strong>%s</strong> absence(s) out of the total number of absences.</p>',
 				'fr_FR' => '<p>Soit un total de <strong>%s</strong> sur la période.</p>',
 			],
 			'sum_params' => ['duration'],
@@ -5694,45 +5706,52 @@ table.note-report tr.period {
 		),
 	),
 	
-
-
 	// Position Tableau Croisé Excel des absences 
 	'event/report/absence' => [
-		'columns' => [
-			// Student Details
-			'n_fn' => ['position' => 'A'],
-			'place_caption' => ['position' => 'B'],
-			//'email_work' => ['position' => 'C'],
-			'account_groups' => ['position' => 'D'],
-			//'account_property_18' => ['position' => 'E'],
-			
-			// Student Financials
-			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-			'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cours de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-			'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arret maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-			'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
-			'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifiée'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-			'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+        'columns' => [
+            // Student Details
+            'n_fn' => ['position' => 'A'],
+            'place_caption' => ['position' => 'B'],
+            //'email_work' => ['position' => 'C'],
+            'account_groups' => ['position' => 'D'],
+            //'account_property_18' => ['position' => 'E'],
+            
+            // Student Financials
+            'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
+            'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
+            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
+            'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence entreprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
+            'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
+            'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
 
-			'total_student' => [
-				'position' => 'L',
-				'type' => 'count',
-				'labels' => ['default' => 'Total Etudiant'],
-				'background' => '#EBF1DE',
-				//'indicator' => ['to_justify','processing','medical','unjustified','other'],
-			],
-		],
-		'sums' => [
-			// Totals Students
+            'total_student' => [
+                'position' => 'L',
+                'type' => 'count',
+                'labels' => ['default' => 'Total Etudiant'],
+                'background' => '#EBF1DE',
+                //'indicator' => ['to_justify','processing','medical','unjustified','other'],
+            ],
+        ],
+        'sums' => [/*
+            // Totals Students
 
-			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-			'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cours de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-			'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arret maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-			'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
-			'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifiée'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-			'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
-		],
-	],
+            'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#f44336', 'filter' => ['property_12' => 'to_justify']],
+            'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#f44336','filter' => ['property_12' => 'processing']],
+            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#f44336','filter' => ['property_12' => 'medical']],
+            'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence entreprise'], 'background' => '#f44336','filter' => ['property_12' => 'enterprise']],
+            'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#f44336','filter' => ['property_12' => 'unjustified']],
+            'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+
+            'total_student' => [
+                'position' => 'L',
+                'type' => 'count',
+                'labels' => ['default' => 'Total Etudiant Par Motif'],
+                'background' => '#f44336',
+                //'indicator' => ['to_justify','processing','medical','unjustified','other'],
+            ],
+        */],
+        
+    ],
 
 	// Note
 
