@@ -5707,7 +5707,6 @@ table.note-report tr.period {
 	
 	// Position Tableau Croisé Excel des absences 
 	'event/report/absence' => [
-<<<<<<<<< Temporary merge branch 1
 		'columns' => [
 
 			// Student Details
@@ -5744,7 +5743,7 @@ table.note-report tr.period {
 			],
 		],
 	],
-=========
+
         'columns' => [
             // Student Details
             'n_fn' => ['position' => 'A'],
@@ -5788,8 +5787,7 @@ table.note-report tr.period {
             ],
         ],
         
-    ],
->>>>>>>>> Temporary merge branch 2
+
 
 	// Note
 
