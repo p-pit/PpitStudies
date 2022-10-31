@@ -102,7 +102,7 @@ class ReportController extends AbstractActionController
 		try {
 			// ajout la condition pas la peine de recuperer les accounts des etudiants on aura pas besoin
 			// Cache the students
-			if($requestBody['studentsParam'] == false){
+			if($requestBody['studentsParam'] == true){
 
 				$studentsById = Account::getList('p-pit-studies', ['status' => 'active,retention, suspendu'], '+id', null, ['id', 'place_id', 'groups', 'property_15']);
 				$students = [];
@@ -115,9 +115,7 @@ class ReportController extends AbstractActionController
 					} 
 				}
 
-				echo "students []" ;
-				var_dump($students);
-				echo "==================================" ;
+	
 
 
 			}
@@ -151,7 +149,7 @@ class ReportController extends AbstractActionController
 			
 	
 			// Cache the existing per account report links
-			if($requestBody['studentsParam'] == false){
+			if($requestBody['studentsParam'] == true){
 
 				$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
 				foreach ($existingLinks as $link) {
@@ -198,7 +196,7 @@ class ReportController extends AbstractActionController
 
 								// Generate the student links for this report
 								//if le param est false (ne genere pas des note link pour les eleves)
-								if($requestBody['studentsParam'] == false)
+								if($requestBody['studentsParam'] == true)
 								{
 									foreach ($students[((int) $placeId) . '/' . ((int) $groupId)] as $student) {
 
@@ -224,9 +222,7 @@ class ReportController extends AbstractActionController
 										$studentLink->add();
 										$responseBody['studentLinkCreated'][] = $studentLink->id;
 
-										
 									}
-
 
 										echo "studentLink []" ;
 										var_dump($studentLink);
