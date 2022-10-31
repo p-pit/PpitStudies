@@ -25,6 +25,8 @@ class NoteController extends AbstractActionController
 		$where = [];
 		$teacher_id = $this->params()->fromQuery('teacher_id');
 		if ($teacher_id) $where['teacher_id'] = $teacher_id;
+		$school_year = $this->params()->fromQuery('school_year', $context->getConfig('student/property/school_year/default'));
+		$where['school_year'] = $school_year;
 		$cursor = Note::getList('evaluation', 'note', $where, 'subject', 'ASC', 'search', null);
 		$evaluations = [];
 		foreach ($cursor as $evaluation) {
