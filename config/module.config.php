@@ -1503,7 +1503,8 @@ return array_merge(
 		'definition' => 'inline',
 		'type' => 'email',
 		'labels' => array(
-			'default' => 'Email école',
+			'default' => 'School e-mail',
+			'fr_FR' => 'Email école',
 		),
 	),
 	
@@ -3814,7 +3815,7 @@ table.note-report td {
 		'definition' => 'inline',
 		'type' => 'email',
 		'labels' => array(
-			'en_US' => 'Pro e-mail',
+			'default' => 'School e-mail',
 			'fr_FR' => 'Email école',
 		),
 	),
