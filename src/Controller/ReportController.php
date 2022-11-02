@@ -101,7 +101,7 @@ class ReportController extends AbstractActionController
 		try {
 
 			// Cache the students
-			$studentsById = Account::getList('p-pit-studies', ['status' => 'active,retention, suspendu'], '+id', null, ['id', 'place_id', 'groups', 'property_15']);
+			$studentsById = Account::getList('p-pit-studies', ['status' => 'active,retention,suspendu'], '+id', null, ['id', 'place_id', 'groups', 'property_15']);
 			$students = [];
 			foreach ($studentsById as $studentId => $student) {
 				if ($student->groups) {
