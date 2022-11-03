@@ -50,6 +50,7 @@
 		'Emergency' => 'Urgence',
 		'Emergency email' => 'Email d\'urgence',
 		'Emergency phone' => 'Téléphone d\'urgence',
+		'Enable evaluations' => 'Ouvrir les évaluations',
 		'End date' => 'Date fin',
 		'In entire days if given' => 'En journées entières si saisi',
 		'Evaluation' => 'Évaluation',
