@@ -5990,8 +5990,7 @@ table.note-report tr.period {
 									'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
 							),
 							'labels' => array(
-									'en_US' => 'Center',
-									'fr_FR' => 'Centre',
+									'default' => 'Campus',
 							),
 					),
 					'place_caption' => array('definition' => 'note/property/place_caption'),
