@@ -48,7 +48,10 @@ class NoteLinkController extends AbstractActionController
 		$filters = ['category' => $category, 'type' => $type];
 		foreach ($config as $propertyId => $property) {
 			$value = $this->params()->fromQuery($propertyId, null);
-			if ($value !== null) $filters[$propertyId] = $value;
+			if ($value !== null) {
+				if ($propertyId == 'name') $filters[$propertyId] = ['like', $value];
+				else $filters[$propertyId] = $value;
+			}
 		}
 
 		// Retrieve the limit
