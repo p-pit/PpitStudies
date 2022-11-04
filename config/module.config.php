@@ -5759,6 +5759,15 @@ table.note-report tr.period {
 			),
 	),
 
+	'note/property/teacher_id' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Teacher',
+			'fr_FR' => 'Intervenant',
+		),
+	),
+
 	'note/property/date' => array(
 			'type' => 'date',
 			'labels' => array(
@@ -5937,6 +5946,7 @@ table.note-report tr.period {
 							),
 					),
 					'place_caption' => array('definition' => 'note/property/place_caption'),
+					'teacher_id' => ['definition' => 'note/property/teacher_id'],
 					'group_id' => ['definition' => 'note/property/group_id'],
 					'school_year' => array(
 							'type' => 'repository', //Deprecated
