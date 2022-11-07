@@ -5,6 +5,7 @@ include('commitment_message_p_pit_studies.php');
 include('core_account_message_p_pit_studies.php');
 include('core_account_message_teacher.php');
 include('event_message_p_pit_studies.php');
+include('note_link_generic.php');
 
 return array_merge(
 [
@@ -5807,6 +5808,15 @@ table.note-report tr.period {
 			),
 	),
 
+	'note/property/teacher_id' => array(
+		'definition' => 'inline',
+		'type' => 'input',
+		'labels' => array(
+			'en_US' => 'Teacher',
+			'fr_FR' => 'Intervenant',
+		),
+	),
+
 	'note/property/date' => array(
 			'type' => 'date',
 			'labels' => array(
@@ -5980,11 +5990,11 @@ table.note-report tr.period {
 									'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
 							),
 							'labels' => array(
-									'en_US' => 'Center',
-									'fr_FR' => 'Centre',
+									'default' => 'Campus',
 							),
 					),
 					'place_caption' => array('definition' => 'note/property/place_caption'),
+					'teacher_id' => ['definition' => 'note/property/teacher_id'],
 					'group_id' => ['definition' => 'note/property/group_id'],
 					'school_year' => array(
 							'type' => 'repository', //Deprecated
@@ -6172,167 +6182,6 @@ table.note-report tr.period {
 			'assessment' => [],
 			'groups' => [],
 		],
-	],
-	
-	// Note link
-
-	'note_link/generic/property/status' => [
-		'definition' => 'inline',
-		'type' => 'select',
-		'labels' => ['default' => 'Observations'],
-		'modalities' => [
-			'new' => ['default' => 'Nouveau'],
-		],
-	],
-
-	'note_link/generic/property/account_id' => [
-		'definition' => 'inline',
-		'type' => 'dynamic',
-		'modalities' => [],
-		'labels' => [
-			'en_US' => 'Account',
-			'fr_FR' => 'Compte',
-		],
-	],
-	
-	'note_link/generic/property/value' => [
-		'definition' => 'inline',
-		'type' => 'select',
-		'labels' => ['default' => 'Value'],
-		'modalities' => [
-			'4' => ['default' => 'A'],
-			'3.5' => ['default' => 'B'],
-			'3' => ['default' => 'C'],
-			'2.5' => ['default' => 'D'],
-			'2' => ['default' => 'E'],
-			'1' => ['default' => 'F'],
-			'0.5' => ['default' => 'FX'],
-		],
-	],
-	
-	'note_link/generic/property/evaluation' => [
-		'definition' => 'inline',
-		'type' => 'input',
-		'labels' => ['default' => 'Evaluation'],
-	],
-
-	'note_link/generic/property/assessment' => [
-		'definition' => 'inline',
-		'type' => 'textarea',
-		'labels' => ['default' => 'Commentaire'],
-	],
-
-	'note_link/generic/property/update_time' => [
-		'definition' => 'inline',
-		'type' => 'time',
-		'labels' => [
-			'en_US' => 'Last update',
-			'fr_FR' => 'Dernière mise à jour',
-		],
-	],
-
-	'note_link/generic/property/place_id' => ['definition' => 'core_account/generic/property/place_id'],
-	'note_link/generic/property/n_fn' => ['definition' => 'note/property/n_fn'],
-	'note_link/generic/property/name' => ['definition' => 'note/property/name'],
-	'note_link/generic/property/account_property_15' => ['definition' => 'core_account/p-pit-studies/property/property_15'],
-	
-	'note_link/generic/property/school_year' => ['definition' => 'student/property/school_year'],
-	'note_link/generic/property/level' => array('definition' => 'student/property/evaluationCategory'),
-
-	'note_link/generic/property/group_id' => [
-		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => [], // Dynamically loaded
-		'labels' => ['default' => 'Groupe'],
-	],
-
-	'note_link/generic/property/teacher_id' => [
-		'definition' => 'inline',
-		'type' => 'select',
-		'modalities' => [], // Dynamically loaded
-		'labels' => ['default' => 'Intervenant'],
-	],
-
-	'note_link/generic/property/specific_weight' => array(
-		'definition' => 'inline',
-		'type' => 'number',
-		'labels' => array(
-				'en_US' => 'Coef. / Credits',
-				'fr_FR' => 'Coef./ Crédits',
-		),
-	),
-
-	'note_link/generic/property/class' => ['definition' => 'student/property/class'],
-	'note_link/generic/property/school_period' => ['definition' => 'student/property/school_period'],
-	'note_link/generic/property/subject' => ['definition' => 'student/property/school_subject'],
-	'note_link/generic/property/date' => array('definition' => 'note/property/date'),
-	'note_link/generic/property/target_date' => array('definition' => 'note/property/target_date'),
-	'note_link/generic/property/value' => array('definition' => 'note/property/value'),
-	'note_link/generic/property/reference_value' => array('definition' => 'note/property/reference_value'),
-	'note_link/generic/property/weight' => array('definition' => 'note/property/weight'),
-	'note_link/generic/property/average' => array('definition' => 'note/property/average'),
-	'note_link/generic/property/observations' => array('definition' => 'note/property/observations'),
-	'note_link/generic/property/lower_note' => array('definition' => 'note/property/lower_note'),
-	'note_link/generic/property/higher_note' => array('definition' => 'note/property/higher_note'),
-	'note_link/generic/property/average_note' => array('definition' => 'note/property/average_note'),
-
-	'note_link/generic' => [
-		'properties' => [
-			'status', 'account_id', 'value', 'evaluation', 'assessment', 'update_time',
-			'place_id', 'n_fn', 'name', 'account_property_15',
-			'school_year', 'level', 'group_id', 'teacher_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'specific_weight', 'average', 'observations', 'lower_note', 'higher_note', 'average_note',
-		],
-	],
-
-	'note_link/routes' => [
-		'export' => 'note/export',
-	],
-
-	'note_link/student_list/generic' => [
-		'subject' => [],
-		'date' => [],
-		'reference_value' => [],
-		'weight' => [],
-		'value' => [], 
-//		'evaluation' => [], 
-		'assessment' => [],
-	],
-
-	'note_link/search/generic' => [
-		'place_id' => [],
-		'school_year' => [],
-		'school_period' => [],
-		'teacher_id' => [],
-		'class' => [],
-		'group_id' => [],
-		'name' => [],
-		'subject' => [],
-		'level' => [],
-		'date' => [],
-	],
-	
-	'note_link/list/generic' => [
-		'place_id' => [],
-		'school_year' => [],
-		'school_period' => [],
-		'teacher_id' => [],
-		'class' => [],
-		'group_id' => [],
-		'name' => [],
-		'subject' => [],
-		'level' => [],
-		'date' => [],
-		'reference_value' => [],
-		'weight' => [],
-		'value' => [],
-//		'evaluation' => [],
-		'assessment' => [],
-	],
-
-	'note_link/group/generic' => [
-		'value' => [],
-		'evaluation' => [],
-		'assessment' => [],
 	],
 	
 	// Progress
@@ -7031,5 +6880,6 @@ table.note-report tr.period {
 	COMMITMENT_MESSAGE_P_PIT_STUDIES,
 	CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES,
 	CORE_ACCOUNT_MESSAGE_TEACHER,
-	EVENT_MESSAGE_P_PIT_STUDIES
+	EVENT_MESSAGE_P_PIT_STUDIES,
+	NOTE_LINK_GENERIC
 );

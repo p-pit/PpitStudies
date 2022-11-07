@@ -20,6 +20,7 @@ class NoteLink
 			'core_account' => 		['table' => 'core_account', 'foreign_key' => 'student_note_link.account_id'],
 			'core_place' => 		['table' => 'core_place', 'foreign_key' => 'core_account.place_id'],
 			'core_vcard' => 		['table' => 'core_vcard', 'foreign_key' => 'core_account.contact_1_id'],
+			'teacher_vcard' => 		['table' => 'core_vcard', 'foreign_key' => 'student_note.teacher_id'],
 		],
 		'properties' => [
 			'id' => 				['entity' => 'student_note_link', 'column' => 'id'],
@@ -51,6 +52,7 @@ class NoteLink
 			'school_period' => 		['entity' => 'student_note', 'column' => 'school_period'],
 			'subject' => 			['entity' => 'student_note', 'column' => 'subject'],
 			'teacher_id' => 		['entity' => 'student_note', 'column' => 'teacher_id'],
+			'teacher_n_fn' => 		['entity' => 'teacher_vcard', 'column' => 'n_fn'],
 			'date' => 				['entity' => 'student_note', 'column' => 'date'],
 			'target_date' => 		['entity' => 'student_note', 'column' => 'target_date'],
 			'reference_value' => 	['entity' => 'student_note', 'column' => 'reference_value'],
@@ -238,6 +240,9 @@ class NoteLink
     public $higher_note;
     public $average_note;
     
+    // Joined properties
+    public $teacher_n_fn;
+    
     // Transient
     public $creation_user;
     
@@ -293,6 +298,9 @@ class NoteLink
         $this->average_note = (isset($data['average_note'])) ? $data['average_note'] : null;
         $this->lower_note = (isset($data['lower_note'])) ? $data['lower_note'] : null;
         $this->higher_note = (isset($data['higher_note'])) ? $data['higher_note'] : null;
+ 
+    	// Joined properties
+        $this->teacher_n_fn = (isset($data['teacher_n_fn'])) ? $data['teacher_n_fn'] : null;
 
         $this->creation_user = (isset($data['creation_user'])) ? $data['creation_user'] : null;
     }
@@ -386,7 +394,7 @@ class NoteLink
     		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id'/*, 'class'*/, 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
     		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7'), 'left')
-    		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('n_fn'), 'left');
+    		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('teacher_n_fn' => 'n_fn'), 'left');
     	$where = new Where;
     	$where->notEqualTo('student_note_link.status', 'deleted');
     	if ($type) $where->equalTo('student_note.type', $type);

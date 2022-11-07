@@ -434,12 +434,16 @@ class NoteController extends AbstractActionController
     	$category = $this->params()->fromRoute('category');
     	$type = $this->params()->fromRoute('type');
     	$accountConfig = Account::getConfig('p-pit-studies');
-    	 
+		$cursor = Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+name', null);
+		$teachers = [];
+		foreach ($cursor as $teacher) $teachers[$teacher->contact_1_id] = $teacher;
+
     	// Return the link list
     	$view = new ViewModel(array(
     			'context' => $context,
     			'config' => $context->getconfig(),
     			'accountConfig' => $accountConfig,
+    			'teachers' => $teachers,
     			'places' => Place::getList(array()),
     			'category' => $category,
     			'type' => $type,
@@ -1488,7 +1492,7 @@ class NoteController extends AbstractActionController
 	{
 		$context = Context::getCurrent();
 		
-		$content = $this->evaluation();
+		$content = $this->evaluation(); 
 		$view = new ViewModel(array(
 			'context' => $context,
 			'request' => ($this->getRequest()->isPost()) ? 'POST' : (($this->getRequest()->isDelete()) ? 'DELETE' : 'GET'),

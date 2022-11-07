@@ -114,10 +114,6 @@ class ReportController extends AbstractActionController
 						}
 					} 
 				}
-
-	
-
-
 			}
 
 			// Retrieve the existing reports
