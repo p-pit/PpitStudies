@@ -5353,6 +5353,7 @@ table.note-report tr.period {
 	'event/absence/property/account_property_18' => array('definition' => 'core_account/p-pit-studies/property/property_18'),
 	'event/absence/property/account_property_19' => array('definition' => 'core_account/p-pit-studies/property/property_19'),
 	
+	// add email_work in properties
 	'event/absence' => array(
 		'statuses' => array(),
 		'dimensions' => array(),
@@ -5361,7 +5362,7 @@ table.note-report tr.period {
 			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn', 'account_groups',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_6', 'property_11', 'property_12', 'account_property_15', 'account_property_18',
-			'update_time', 'count',
+			'update_time', 'count', 'email_work'
 		),
 	),
 	
@@ -5714,7 +5715,7 @@ table.note-report tr.period {
 			// Student Details
 			'n_fn' => ['position' => 'A'],
 			'place_caption' => ['position' => 'B'],
-			//'email_work' => ['position' => 'C'],
+			'email_work' => ['position' => 'C'],
 			'account_groups' => ['position' => 'D'],
 			//'account_property_18' => ['position' => 'E'],
 			// Student Financials
@@ -5750,7 +5751,7 @@ table.note-report tr.period {
             // Student Details
             'n_fn' => ['position' => 'A'],
             'place_caption' => ['position' => 'B'],
-            //'email_work' => ['position' => 'C'],
+            'email_work' => ['position' => 'C'],
             'account_groups' => ['position' => 'D'],
             //'account_property_18' => ['position' => 'E'],
             
