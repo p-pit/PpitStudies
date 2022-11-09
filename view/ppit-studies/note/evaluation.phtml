@@ -157,7 +157,7 @@ $updateProperties = $context->getConfig($content['type'] . '/update/evaluation')
 	    		<select class="form-control form-control-sm update_input update_input_select" id="group_id" required>
 	    			<option />
 	<?php foreach ($content['config']['groups'] as $groupId) : ?>
-	    			<option value="<?php echo $groupId['id'] ?>"><?php echo $groupId['name'] ?></option>
+	    			<option value="<?php echo $groupId['id'] ?>" <?php if ($groupId['id'] == $content['note']['group_id']) : ?>selected<?php endif ?>><?php echo $groupId['name'] ?></option>
 	<?php endforeach;?>
 	    		</select>
 			</div>

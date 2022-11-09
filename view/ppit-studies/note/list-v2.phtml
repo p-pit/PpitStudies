@@ -27,6 +27,7 @@ table td {
 	elseif ($propertyId == 'place_id') $label = $context->localize($context->getConfig('note')['properties']['place_id']['labels']);
 	elseif ($propertyId == 'school_period') $label = $context->localize($context->getConfig('student/property/school_period')['labels']);
 	elseif ($propertyId == 'group_id') $label = $context->localize($context->getConfig('note/property/group_id')['labels']);
+	elseif ($propertyId == 'teacher_n_fn') $label = $context->localize($context->getConfig('note/property/teacher_id')['labels']);
 	elseif ($propertyId == 'class') $label = $context->localize($context->getConfig('student/property/class')['labels']);
 	elseif ($type != 'report' && $propertyId == 'level') $label = $this->translate('Category', 'ppit-core', $context->getLocale());
 	elseif ($propertyId == 'subject') $label = $context->localize($context->getConfig('student/property/school_subject')['labels']);
@@ -88,6 +89,9 @@ table td {
           else $label = '';
           ?>
         <td><?php echo $label ?></td>
+
+		<?php elseif ($propertyId == 'teacher_n_fn') : ?>
+		<td><?php echo $note->teacher_n_fn ?></td>
 
 		<?php elseif ($propertyId == 'class') : ?>
 		<td><?php if ($note->class) echo $context->localize($context->getConfig('student/property/class')['modalities'][$note->class]) ?></td>

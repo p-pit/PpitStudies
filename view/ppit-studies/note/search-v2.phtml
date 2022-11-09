@@ -1,9 +1,3 @@
-<div class="card">
-  <h5 class="card-header text-center" style="background: <?php echo $context->getConfig('styleSheet')['panelHeadingBackground'] ?>; color: <?php echo $context->getConfig('styleSheet')['panelHeadingColor'] ?>">
-    <?php echo ($category == 'evaluation') ? $context->localize($context->getConfig('note/search'.'/'.$category.'/'.$type)['title']) : $context->localize($context->getConfig('note/search'.'/'.$category)['title']) ?>
-  </h5>
-  <div class="card-body">
-
 <!-- Filters -->
     <form class="form-inline">
       <div class="row">
@@ -36,12 +30,26 @@
         <div class="input-group input-group-sm mb-2 mr-sm-2">
             <input type="hidden" value="0" class="search_check_value" id="search_check_value-group_id" />
             <div class="input-group-prepend">
-              <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-group_id"><?php echo $context->localize($accountConfig['groups']['labels']) ?></button>
+              <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-group_id"><?php echo $context->localize($context->getConfig('note/property/group_id')['labels']) ?></button>
             </div>
             <select class="form-control search_input search_input_select" id="search-group_id">
               <option value=""></option>
       <?php foreach ($accountConfig['groups']['modalities'] as $modalityId => $modality) : ?>
               <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>
+      <?php endforeach;?>
+            </select>
+          </div>
+
+    <?php elseif ($propertyId == 'teacher_id') : ?>
+        <div class="input-group input-group-sm mb-2 mr-sm-2">
+            <input type="hidden" value="0" class="search_check_value" id="search_check_value-teacher_id" />
+            <div class="input-group-prepend">
+              <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-teacher_id"><?php echo $label ?></button>
+            </div>
+            <select class="form-control search_input search_input_select" id="search-teacher_id">
+              <option value=""></option>
+      <?php foreach ($teachers as $teacher_id => $teacher) : ?>
+              <option value="<?php echo $teacher_id ?>"><?php echo $teacher->n_fn ?></option>
       <?php endforeach;?>
             </select>
           </div>
@@ -151,5 +159,3 @@
       <input type="hidden" id="limit" value="50" />
       <div class="table-responsive" id="note-list-panel"></div>
     </div>
-  </div>
-</div>

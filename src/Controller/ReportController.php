@@ -91,23 +91,28 @@ class ReportController extends AbstractActionController
 			$view->reasonPhrase = 'A POST request is expected';
 			return $view;
 		}
-
+ 
 		$requestBody = json_decode($this->getRequest()->getContent(), true);
 		$responseBody = ['reportCreated' => [], 'studentLinkCreated' => []];
+		
 
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
 		try {
-
+			// ajout la condition pas la peine de recuperer les accounts des etudiants on aura pas besoin
 			// Cache the students
-			$studentsById = Account::getList('p-pit-studies', ['status' => 'active,retention, suspendu'], '+id', null, ['id', 'place_id', 'groups', 'property_15']);
-			$students = [];
-			foreach ($studentsById as $studentId => $student) {
-				if ($student->groups) {
-					foreach (explode(',', $student->groups) as $groupId) {
-						$students[((int) $student->place_id) . '/' . ((int) $groupId)][] = $student;
-					}
+			if($requestBody['studentsParam'] == true){
+
+				$studentsById = Account::getList('p-pit-studies', ['status' => 'active,retention, suspendu'], '+id', null, ['id', 'place_id', 'groups', 'property_15']);
+				$students = [];
+			
+				foreach ($studentsById as $studentId => $student) {
+					if ($student->groups) {
+						foreach (explode(',', $student->groups) as $groupId) {
+							$students[((int) $student->place_id) . '/' . ((int) $groupId)][] = $student;
+						}
+					} 
 				}
 			}
 
@@ -127,17 +132,33 @@ class ReportController extends AbstractActionController
 
 			$existingReportsById = Note::GetList('evaluation', 'report', $filters, 'id', 'ASC', 'search', null);
 			$existingReports = [];
+
+		
 			$reportIds = [];
 			foreach ($existingReportsById as $report) {
 				$reportIds[] = $report->id;
 				$existingReports[((int) $report->place_id) . '/' . ((int) $report->group_id) . '/' . $report->subject] = $report;
 			}
 
+			// echo "affichage de existing reports " ;
+			// var_dump($existingReports);
+			
+	
 			// Cache the existing per account report links
-			$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
-			foreach ($existingLinks as $link) {
-				$existingReportsById[$link->note_id]->links[$link->account_id] = $link;
+			if($requestBody['studentsParam'] == true){
+
+				$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
+				foreach ($existingLinks as $link) {
+					$existingReportsById[$link->note_id]->links[$link->account_id] = $link;
+				}
+
+				echo "existing Links []" ;
+				var_dump($existingLinks);
+				echo "==================================" ;
+
 			}
+			// echo "affichage des link qui existe deja" ;
+         	// var_dump($link);
 
 			$subjectConfig = $context->getConfig('student/property/school_subject');
 			$referenceValue = $context->getConfig('student/parameter/average_computation')['reference_value'];
@@ -148,7 +169,7 @@ class ReportController extends AbstractActionController
 
 							// Retrieve the student list by group and place
 
-							if (array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students)) {
+							//if (array_key_exists(((int) $placeId) . '/' . ((int) $groupId), $students)) {
 								if (array_key_exists(((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId, $existingReports)) {
 									$report = $existingReports[((int) $placeId) . '/' . ((int) $groupId) . '/' . $subjectId];
 								}
@@ -170,36 +191,48 @@ class ReportController extends AbstractActionController
 								}
 
 								// Generate the student links for this report
-								foreach ($students[((int) $placeId) . '/' . ((int) $groupId)] as $student) {
+								//if le param est false (ne genere pas des note link pour les eleves)
+								if($requestBody['studentsParam'] == true)
+								{
+									foreach ($students[((int) $placeId) . '/' . ((int) $groupId)] as $student) {
 
-									if (	$subjectId != 'global'
-										&&	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
-										&&  $subjectConfig['modalities'][$subjectId]['full_time']
-										&& 	$student->property_15 != 'full_time' ) {
+										if (	$subjectId != 'global'
+											&&	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
+											&&  $subjectConfig['modalities'][$subjectId]['full_time']
+											&& 	$student->property_15 != 'full_time' ) {
 
-										continue;
+											continue;
+										}
+
+										// Ignore the student already having a link for the current report
+										if (array_key_exists($student->id, $report->links)) continue;
+
+										$studentLink = NoteLink::instanciate($student->id, $report->id);
+										if (	$subjectId != 'global'
+											&&	array_key_exists('credits_pt', $subjectConfig['modalities'][$subjectId]) 
+											&& 	$student->property_15 != 'full_time' ) {
+
+											$studentLink->specific_weight = $subjectConfig['modalities'][$subjectId]['credits_pt'];
+										}
+
+										$studentLink->add();
+										$responseBody['studentLinkCreated'][] = $studentLink->id;
+
 									}
 
-									// Ignore the student already having a link for the current report
-									if (array_key_exists($student->id, $report->links)) continue;
+										echo "studentLink []" ;
+										var_dump($studentLink);
+										echo "==================================" ;
 
-									$studentLink = NoteLink::instanciate($student->id, $report->id);
-									if (	$subjectId != 'global'
-										&&	array_key_exists('credits_pt', $subjectConfig['modalities'][$subjectId]) 
-										&& 	$student->property_15 != 'full_time' ) {
-
-										$studentLink->specific_weight = $subjectConfig['modalities'][$subjectId]['credits_pt'];
-									}
-
-									$studentLink->add();
-									$responseBody['studentLinkCreated'][] = $studentLink->id;
 								}
-							}
+							//}
 						}
 					}
 				}
 			}
 		}
+
+		
 		catch (\Exception $e) {
 			$connection->rollback();
 			$this->response->setStatusCode('500');
@@ -210,6 +243,8 @@ class ReportController extends AbstractActionController
 		$this->response->setStatusCode('200');
 		echo json_encode($responseBody);
 		return $this->response;
+
+			
     }
 
 	public function v1Action()

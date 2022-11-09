@@ -20,21 +20,38 @@ class NoteLinkController extends AbstractActionController
 	/**
 	 * REST version for 2pit2 - GET list
 	 */
-	public function getList($full = true) {
-	
-		// Retrieve the context and config
-		$context = Context::getCurrent();
-		$config = NoteLink::getConfig($full);
-		
+	public function getList() {
+
 		// Retrieve the note type and category
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
+	
+		// Retrieve the context and config
+		$context = Context::getCurrent();
+		//$config = NoteLink::getConfig(false);
+		$model = $context->getConfig('v3/note_link/' . $type);
+    	if (!$model) $model = $context->getConfig('v3/note_link/generic');
+		$columns = array_keys($model['properties']);
+		$config = array();
+		foreach($columns as $propertyId) {
+			$property = $context->getConfig('note_link/generic/property/'.$propertyId);
+			if ($property) {
+				$propertyType = (array_key_exists('type', $property)) ? $property['type'] : null;
+				if ($property['definition'] != 'inline') $property = $context->getConfig($property['definition']);
+				if ($propertyType) $property['type'] = $propertyType;
+				if (!array_key_exists('private', $property)) $property['private'] = false;
+				$config[$propertyId] = $property;	
+			}
+		}
 		
 		// retrieve the filters
-		$filters = ['category' => $category];
+		$filters = ['category' => $category, 'type' => $type];
 		foreach ($config as $propertyId => $property) {
 			$value = $this->params()->fromQuery($propertyId, null);
-			if ($value !== null) $filters[$propertyId] = $value;
+			if ($value !== null) {
+				if ($propertyId == 'name') $filters[$propertyId] = ['like', $value];
+				else $filters[$propertyId] = $value;
+			}
 		}
 
 		// Retrieve the limit
@@ -46,24 +63,36 @@ class NoteLinkController extends AbstractActionController
 			$dir = 'DESC';
 			$major = substr($order, 1);
 		}
+		elseif (substr($order, 0, 1) == '+') {
+			$dir = 'ASC';
+			$major = substr($order, 1);
+		}
 		else {
 			$dir = 'ASC';
 			$major = $order;
+			$order = '+' . $order;
 		}
 	
 		// Retrieve the filtered and ordered links
 		$content = ['major' => $major, 'dir' => $dir];
-		$links = NoteLink::getList($type, $filters, $major, $dir, 'search', $limit);
+
+		$result = GenericTable::select('student_note_link', $model, $filters, $columns, $order, $limit);
+		$links = [];
+		foreach($result as $row) {
+			$links[$row['id']] = $row;
+		}
+	
+		//$links = NoteLink::getList($type, $filters, $major, $dir, 'search', $limit);
 		$content['links'] = [];
 
 		// Compute the averages
 		$averages = [];
 		foreach ($links as $link) {
-			$content['links'][$link->id] = $link->getProperties();
-			if (!array_key_exists($link->subject, $averages)) $averages[$link->subject] = [0, 0];
-			if ($link->value !== null) {
-				$averages[$link->subject][0] += $link->value * $link->weight;
-				$averages[$link->subject][1] += $link->reference_value * $link->weight;
+			$content['links'][$link['id']] = $link;
+			if (!array_key_exists($link['subject'], $averages)) $averages[$link['subject']] = [0, 0];
+			if ($link['value'] !== null) {
+				$averages[$link['subject']][0] += $link['value'] * $link['weight'];
+				$averages[$link['subject']][1] += $link['reference_value'] * $link['weight'];
 			}
 		}
 		$globalAverage = [0, 0];
@@ -230,7 +259,7 @@ class NoteLinkController extends AbstractActionController
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
 		$place = Place::get($context->getPlaceId());
-		$config = NoteLink::getConfig(false);
+		//$config = NoteLink::getConfig(false);
 		
 		$currentEntry = $this->params()->fromQuery('entry', 'term');
 	
@@ -260,15 +289,15 @@ class NoteLinkController extends AbstractActionController
 			'tab' => $tab,
 			'applicationName' => $applicationName,
 			'pageScripts' => 'ppit-studies/note-link/scripts',
-			'config' => $config,
+			/*'config' => $config,
 			'configSearch' => NoteLink::getConfigSearch($config),
 			'configList' => NoteLink::getConfigList($config),
-			'configGroup' => NoteLink::getConfigGroup($config),
+			'configGroup' => NoteLink::getConfigGroup($config),*/
 		));
 	
 		return new ViewModel(array(
 			'context' => $context,
-			'config' => $config,
+			//'config' => $config,
 			'app' => $app,
 			'tab' => $tab,
 			'applicationName' => $applicationName,
@@ -304,22 +333,13 @@ class NoteLinkController extends AbstractActionController
 		$context = Context::getCurrent();
 		$category = $this->params()->fromRoute('category');
 		$type = $this->params()->fromRoute('type');
-		$content = $this->getList(false);
+
+		$content = $this->getList();
 		$order = $this->params()->fromQuery('order', '-date');
 		
-		// Retrieve the teachers
-		/*$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
-		$where = new Where;
-		$where->notEqualTo('status', 'deleted');
-		$where->like('roles', '%teacher%');
-		$select->where($where);
-		$cursor = Vcard::getTable()->selectWith($select);
-		$contact = null;
-		$teachers = array();
-		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;*/
-		$cursor = Account::getListV3('teacher', ['n_fn', 'contact_1_id'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
+		/*$cursor = Account::getListV3('teacher', ['n_fn', 'contact_1_id'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
 		$teachers = [];
-		foreach ($cursor as $teacher_id => $teacher) $teachers[$teacher['contact_1_id']] = $teacher;
+		foreach ($cursor as $teacher_id => $teacher) $teachers[$teacher['contact_1_id']] = $teacher;*/
 		// Retrieve the groups
 		$groups = Account::getList('group', [], null, null, ['id', 'status', 'name'], false, false, false, true);
 
@@ -375,7 +395,7 @@ class NoteLinkController extends AbstractActionController
 			'context' => $context,
 			'category' => $category,
 			'type' => $type,
-			'teachers' => $teachers,
+			//'teachers' => $teachers,
 			'groups' => $groups,
 			'content' => $content,
 			'averages' => $averages,
