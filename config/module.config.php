@@ -5303,7 +5303,7 @@ table.note-report tr.period {
 		'definition' => 'inline',
 		'type' => 'select',
 		'account_type' => 'p-pit-studies',
-		'account_status' => 'active,retention,inscrit_passerelle,alumni,suspendu,exclu',
+		'account_status' => 'active,retention,inscrit_passerelle,alumni,suspendu,exclu,sortant',
 		'labels' => array(
 			'en_US' => 'Student',
 			'fr_FR' => 'Étudiant',
