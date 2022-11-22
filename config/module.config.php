@@ -599,6 +599,15 @@ return array_merge(
 							],
 						],
 					],
+					'link' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/link',
+							'defaults' => [
+								'action' => 'link',
+							],
+						],
+					],
 					'getStudentsFromGroups' => [
 						'type' => 'segment',
 						'options' => [
@@ -1166,7 +1175,8 @@ return array_merge(
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
 				array('route' => 'noteLink/repair', 'roles' => array('admin')),
 
-				array('route' => 'report/post', 'roles' => array('guest')),
+				array('route' => 'report/post', 'roles' => array('manager')),
+				array('route' => 'report/link', 'roles' => array('manager')),
 				array('route' => 'report/v1', 'roles' => array('guest')),
 				array('route' => 'report/getStudentsFromGroups', 'roles' => array('guest')),
 				
@@ -1420,8 +1430,10 @@ return array_merge(
 		'modalities' => array(
 			'deplacement' => ['default' => 'Deplacement', 'fr_FR' => 'Déplacement'],
 			'hosting' => ['default' => 'Hosting', 'fr_FR' => 'Hébergement'],
+			'half_board' => ['default' => 'Half board', 'fr_FR' => 'Demi-pension'],
 			'sunday_hosting' => ['default' => 'Sunday hosting', 'fr_FR' => 'Accueil dimanche'],
 			'weekend_hosting' => ['default' => 'Weekend hosting', 'fr_FR' => 'Accueil week-end'],
+			'transport' => ['default' => 'Transport', 'fr_FR' => 'Transport'],
 			'distance-learning' => ['default' => 'Distance learning', 'fr_FR' => 'CNED'],
 			'insurance' => ['default' => 'Insurance', 'fr_FR' => 'Assurance'],
 			'licence' => ['default' => 'Licence', 'fr_FR' => 'Licence'],
@@ -1430,6 +1442,7 @@ return array_merge(
 			'registration_fees' => ['default' => 'Registration fees', 'fr_FR' => 'Droits d’inscription'],
 			'scholarship' => ['default' => 'Scholarship', 'fr_FR' => 'Bourse'],
 			'discount' => ['default' => 'Discount', 'fr_FR' => 'Remise'],
+			'late_arrival' => ['default' => 'Late arrival', 'fr_FR' => 'Arrivée tardive'],
 			'other' => ['default' => 'Other option', 'fr_FR' => 'Option autre'],
 			'' => ['default' => 'Undefined option', 'fr_FR' => 'Option indéfinie'],
 		),

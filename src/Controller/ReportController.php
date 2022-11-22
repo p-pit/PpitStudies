@@ -246,6 +246,94 @@ class ReportController extends AbstractActionController
 
 			
     }
+	
+    public function linkAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+
+		if (!$this->getRequest()->isPost()) {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase('A POST request is expected');
+			return $this->response;
+		}
+ 
+		$requestBody = json_decode($this->getRequest()->getContent(), true);
+		$reportIds = $requestBody['ids'];
+		$responseBody = ['studentLinkCreated' => []];
+		
+		// Atomically save
+		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection->beginTransaction();
+		try {
+
+			$studentsById = Account::getList('p-pit-studies', ['status' => 'active,retention, suspendu'], '+id', null, ['id', 'place_id', 'groups', 'property_15']);
+			$students = [];
+		
+			foreach ($studentsById as $studentId => $student) {
+				if ($student->groups) {
+					foreach (explode(',', $student->groups) as $groupId) {
+						$students[((int) $student->place_id) . '/' . ((int) $groupId)][] = $student;
+					}
+				} 
+			}
+
+			// Retrieve the existing reports
+			$filters = ['id' => $reportIds];
+			$existingReportsById = Note::GetList('evaluation', 'report', $filters, 'id', 'ASC', 'search', null);
+	
+			// Cache the existing per account report links
+			if($requestBody['studentsParam'] == true){
+
+				$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
+				foreach ($existingLinks as $link) {
+					$existingReportsById[$link->note_id]->links[$link->account_id] = $link;
+				}
+			}
+
+			$subjectConfig = $context->getConfig('student/property/school_subject');
+			$referenceValue = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			foreach ($existingReportsById as $report) {
+
+				// Generate the student links for this report
+				foreach ($students[((int) $report->placeId) . '/' . ((int) $report->groupId)] as $student) {
+
+					if (	$subjectId != 'global'
+						&&	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
+						&&  $subjectConfig['modalities'][$subjectId]['full_time']
+						&& 	$student->property_15 != 'full_time' ) {
+
+						continue;
+					}
+
+					// Ignore the student already having a link for the current report
+					if (array_key_exists($student->id, $report->links)) continue;
+
+					$studentLink = NoteLink::instanciate($student->id, $report->id);
+					if (	$subjectId != 'global'
+						&&	array_key_exists('credits_pt', $subjectConfig['modalities'][$subjectId]) 
+						&& 	$student->property_15 != 'full_time' ) {
+
+						$studentLink->specific_weight = $subjectConfig['modalities'][$subjectId]['credits_pt'];
+					}
+
+					$studentLink->add();
+					$responseBody['studentLinkCreated'][] = $studentLink->id;
+				}
+			}
+		}
+		
+		catch (\Exception $e) {
+			$connection->rollback();
+			$this->response->setStatusCode('500');
+			return $this-response;
+		}
+
+		$connection->commit();
+		$this->response->setStatusCode('200');
+		echo json_encode($responseBody);
+		return $this->response;
+    }
 
 	public function v1Action()
 	{
