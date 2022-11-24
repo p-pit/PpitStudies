@@ -1,0 +1,16 @@
+<div class="card mt-3">
+    <div class="card-body">
+        <div id="message">
+          <h5 class="alert alert-danger my-3 text-center groupMessage" id="groupMessageProgress"><?php echo $this->translate('Your request is being processed', 'ppit-core', $context->getLocale()) ?></h5>
+          <h5 class="alert alert-success my-3 text-center groupMessage" id="groupMessageOk"><?php echo $this->translate('Your request has been registered', 'ppit-core', $context->getLocale()) ?></h5>
+        </div>
+ 
+        <div class="form-group row">
+            <div class="col-sm-5">&nbsp;</div>
+            <div class="col-sm-7">
+              <button name="groupButton" id="groupUpdateButton" class="btn btn-warning"><?php echo $this->translate('Generate reports', 'ppit-studies', $context->getLocale()) ?></button>
+            </div>
+        </div>
+        
+    </div>
+</div>

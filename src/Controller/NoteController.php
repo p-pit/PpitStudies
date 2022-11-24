@@ -406,7 +406,10 @@ class NoteController extends AbstractActionController
     	foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
-    		if ($property) $filters[$propertyId] = $property;
+    		if ($property) {
+				if (strpos($property, ',') !== 0) $filters[$propertyId] = explode(',', $property);
+				else $filters[$propertyId] = $property;
+			}
     		$min_property = ($params()->fromQuery('min_'.$propertyId, null));
     		if ($min_property) $filters['min_'.$propertyId] = $min_property;
     		$max_property = ($params()->fromQuery('max_'.$propertyId, null));

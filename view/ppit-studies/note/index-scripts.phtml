@@ -22,6 +22,54 @@ function exportNoteList() {
 	document.location.href = '<?php echo $this->url('note/export', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 }
 
+function postNoteGroup(route) {
+  const noteIds = [];
+  $('.noteCheckbox').each(function () {
+    const id = $(this).attr('id').split('-')[1];
+    if ($(this).prop('checked')) noteIds.push(id);
+  });
+
+  const body = JSON.stringify({ "ids": noteIds });
+  const xhttp = new XMLHttpRequest();
+  xhttp.open("POST", route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        $('.groupMessage').hide();
+        $('#groupMessageOk').show();
+      }
+      else {
+        toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>\nTechnical information: " + xhttp.status + ' - ' + xhttp.statusText);
+      }
+    }
+  }
+	xhttp.send(body);
+}
+
+function getNoteGroup(route) {
+  let xhttp = new XMLHttpRequest();
+  xhttp.open("GET", route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        $('#modal-note-group').html(xhttp.responseText);
+        $('.groupMessage').hide();
+        $('#groupUpdateButton').click(function () { 
+          $(this).removeClass('btn-warning').addClass('btn-danger');
+          $(this).click(function () { 
+            $(this).hide();
+            $('#groupMessageProgress').show();
+            postNoteGroup(route); 
+          });
+        });
+      }
+    }
+  }
+	xhttp.send();
+}
+
 // Load the list
 function getNoteList(params) {
 	// Execute the ajax request
@@ -31,29 +79,60 @@ function getNoteList(params) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			$('#note-list-panel').html(xhttp.responseText);
+			  $('#note-list-panel').html(xhttp.responseText);
 
-            $('#export-button').click(function () { exportAbsenceList(); });
-      
-            // Connect the sort anchors
-            $('.sort_anchor').click(function () {
-              criterion = $(this).attr('id').split('-')[0];
-              ascCriterion = $('.sort_anchor_up').attr('id');
-              descCriterion = $('.sort_anchor_down').attr('id');
-              if (criterion + '-anchor' == ascCriterion) dir = 'DESC';
-              else if (criterion + '-anchor' == descCriterion) dir = 'ASC';
-              else dir = 'ASC';
-              getNoteList(getSearchParams(''));
+        $('#export-button').click(function () { exportAbsenceList(); });
+  
+        // Connect the sort anchors
+        $('.sort_anchor').click(function () {
+          criterion = $(this).attr('id').split('-')[0];
+          ascCriterion = $('.sort_anchor_up').attr('id');
+          descCriterion = $('.sort_anchor_down').attr('id');
+          if (criterion + '-anchor' == ascCriterion) dir = 'DESC';
+          else if (criterion + '-anchor' == descCriterion) dir = 'ASC';
+          else dir = 'ASC';
+          getNoteList(getSearchParams(''));
+        });
+  
+        // Connect the detail anchors
+        $('.note-detail-anchor').click(function () {
+          var id = $(this).attr('id').split('_')[1];
+          if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
+          else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(), id, 'note-update-panel');
+          $(this).removeClass("btn-outline-primary").addClass("btn-primary");
+          $('#modalForm').modal('toggle');
+        });
+
+        // Able the group action button
+        $('.noteListGroup').prop('disabled', true);
+        $('.noteCheckbox').click(function (e) {
+          $('.noteListGroup').prop('disabled', false);
+          if (e.shiftKey) {
+            const max = $(this).attr('id').split('-')[2], state = $(this).prop('checked');
+            $('.noteCheckbox').each(function () {
+              const i = parseInt($(this).attr('id').split('-')[2]);
+              if (i <= max) $(this).prop('checked', state);
             });
-      
-            // Connect the detail anchors
-            $('.note-detail-anchor').click(function () {
-              var id = $(this).attr('id').split('_')[1];
-              if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
-              else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(), id, 'note-update-panel');
-              $(this).removeClass("btn-outline-primary").addClass("btn-primary");
-              $('#modalForm').modal('toggle');
-            });
+          } 
+          else {
+            const note_id = parseInt($(this).attr('id').split('-')[1]);
+          }
+        });
+
+        // Connect the check all checkbox
+        $('.noteCheckAll').click(function () {
+          var state = $(this).prop('checked');
+          $('.noteCheckbox').prop('checked', state);
+          $('.noteCheckAll').prop('checked', state);
+          $('.noteListGroup').prop('disabled', false);
+        });
+			
+        // Connect the grouped actions anchors
+        $('.noteListGroup').click(function () {
+          $('#modal-note-group').html('');
+          $('#groupModalForm').modal('toggle');
+          getNoteGroup('<?php echo $this->url('report/link') ?>');
+        });
 		}
 	}
 	xhttp.send();

@@ -192,9 +192,13 @@ class Note
     			elseif ($propertyId == 'teacher_id') $where->equalTo('teacher_id', $params[$propertyId]);
     			elseif ($propertyId == 'group_id') $where->in('student_note.group_id', explode(',', $params[$propertyId]));
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
-    			elseif ($propertyId == 'subject') $where->equalTo('student_note.subject', $params[$propertyId]);
+    			elseif ($propertyId == 'subject') {
+					if (is_array($params[$propertyId])) $where->in('student_note.subject', $params[$propertyId]);
+					else $where->equalTo('student_note.subject', $params[$propertyId]);
+				}
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo('student_note.'.substr($propertyId, 4), $params[$propertyId]);
+    			elseif (is_array($params[$propertyId])) $where->in('student_note.'.$propertyId, $params[$propertyId]);
     			else $where->equalTo('student_note.'.$propertyId, $params[$propertyId]);
 //    			else $where->like('student_note.'.$propertyId, '%'.$params[$propertyId].'%');
     		}

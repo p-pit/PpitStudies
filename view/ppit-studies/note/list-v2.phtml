@@ -18,7 +18,8 @@ table td {
  
   <table class="table table-sm table-hover">
     <tr class="table-info">
-      <th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
 
 <?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
 	<?php 
@@ -51,8 +52,20 @@ table td {
 <?php endforeach;?>
 
 	</tr>
+	<tr>
+		<td>
+			<input type="checkbox" class="noteCheckAll" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+		</td>
+		<td style="text-align: center">
+			<div class="input-group input-group-sm">
+				<button type="button" class="btn btn-sm btn-outline-primary index-btn noteListGroup" title="<?php echo $this->translate('Grouped actions', 'ppit-core', $context->getLocale())?>">
+				<span class="fas fa-list" id="group-glyphicon"></span>
+				</button>
+			</div>
+		</td>
+	</tr>
 
-<?php foreach ($notes as $note) : ?>
+<?php $i = 0; foreach ($notes as $note) : ?>
 	<?php 
 	if ($note->type == 'done-work') $backgroundColor = 'LightGreen';
 	elseif ($note->type == 'todo-work') $backgroundColor = 'LightSalmon';
@@ -61,11 +74,16 @@ table td {
 	?>
 	
 	<tr>
+		<td>
+			<input type="checkbox" class="noteCheckbox" id="noteCheckbox-<?php echo $note->id ?>-<?php echo $i++ ?>"></input>
+		</td>
 
       <td style="text-align: center">
-        <button type="button" class="btn btn-sm btn-outline-primary index-btn note-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $note->id ?>">
-          <i class="fas fa-search" id="group-glyphicon"></i>
-        </button>
+      	<div class="input-group input-group-sm">
+			<button type="button" class="btn btn-sm btn-outline-primary index-btn note-detail-anchor" data-toggle="tooltip" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="note-detail-anchor_<?php echo $note->id ?>">
+			<i class="fas fa-search" id="group-glyphicon"></i>
+			</button>
+		</div>
       </td>
 
 	<?php foreach ($context->getConfig('note/list/'.$category) as $propertyId => $rendering) : ?>
@@ -136,6 +154,9 @@ table td {
 <?php endforeach; ?>
 
 	<tr>
+		<td>
+			<input type="checkbox" class="noteCheckAll" title="<?php echo $this->translate('Check all', 'ppit-core', $context->getLocale()) ?>"></input>
+		</td>
 
 <?php if (count($notes) == '50') : ?>
 		<td style="text-align: center">

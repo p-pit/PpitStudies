@@ -72,7 +72,7 @@
             <div class="input-group-prepend">
               <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-<?php echo $propertyId ?>"><?php echo $label ?></button>
             </div>
-            <select class="form-control search_input search_input_select" id="search-<?php echo $propertyId ?>">
+            <select class="form-control search_input search_input_select selectpicker search_selectpicker" data-none-selected-text multiple id="search-<?php echo $propertyId ?>">
               <option value=""></option>
 		<?php foreach ($property['modalities'] as $modalityId => $modality) : ?>
               <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>
