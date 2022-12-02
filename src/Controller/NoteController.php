@@ -407,7 +407,7 @@ class NoteController extends AbstractActionController
     
     		$property = ($params()->fromQuery($propertyId, null));
     		if ($property) {
-				if (strpos($property, ',') !== 0) $filters[$propertyId] = explode(',', $property);
+				if (strpos($property, ',') !== false) $filters[$propertyId] = explode(',', $property);
 				else $filters[$propertyId] = $property;
 			}
     		$min_property = ($params()->fromQuery('min_'.$propertyId, null));
@@ -1204,12 +1204,13 @@ class NoteController extends AbstractActionController
 			$class = $this->params()->fromQuery('class');
 			$group_id = $this->params()->fromQuery('group_id');
 			$content['note']['group_id'] = $group_id;
-			$group = Account::get($group_id);
-			if (!$group) {
+			if (!$group_id) {
+				$group = null;
 				$content['group'] = null;
 				$place = null;
 			}
 			else {
+				$group = Account::get($group_id);
 				if (!$group || $group->type != 'group') {
 					$this->response->setStatusCode('400');
 					$this->response->setReasonPhrase('Not existing group');
