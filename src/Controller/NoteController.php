@@ -1304,7 +1304,7 @@ class NoteController extends AbstractActionController
 		$content['config']['categories'] = $context->getConfig('student/property/evaluationCategory')['modalities'];
 
 		// Retrieve the group list.
-		$content['config']['groups'] = Account::getListV3('group', ['name'], [], null, null);		
+		if ($type == 'report') $content['config']['groups'] = Account::getListV3('group', ['name'], [], null, null);		
 
 		// DELETE request
 		if ($this->request->isDelete()) {
