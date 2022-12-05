@@ -188,10 +188,22 @@ class Note
     		foreach ($params as $propertyId => $property) {
     			if ($propertyId == 'type') $where->equalTo('student_note.type', $params[$propertyId]);
     			elseif ($propertyId == 'place_id') $where->equalTo('place_id', $params[$propertyId]);
-    			elseif ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
-    			elseif ($propertyId == 'teacher_id') $where->equalTo('teacher_id', $params[$propertyId]);
-    			elseif ($propertyId == 'group_id') $where->in('student_note.group_id', explode(',', $params[$propertyId]));
-    			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
+    			elseif ($propertyId == 'school_year') {
+					if (is_array($params[$propertyId])) $where->in('student_note.group_id', $params[$propertyId]);
+					else $where->equalTo('student_note.school_year', $params[$propertyId]);
+				}
+    			elseif ($propertyId == 'teacher_id') {
+					if (is_array($params[$propertyId])) $where->in('student_note.group_id', $params[$propertyId]);
+					else $where->equalTo('teacher_id', $params[$propertyId]);
+				}
+    			elseif ($propertyId == 'group_id') {
+					if (is_array($params[$propertyId])) $where->in('student_note.group_id', $params[$propertyId]);
+					else $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+				}
+    			elseif ($propertyId == 'school_period') {
+					if (is_array($params[$propertyId])) $where->in('student_note.group_id', $params[$propertyId]);
+					else $where->equalTo('student_note.school_period', $params[$propertyId]);
+				}
     			elseif ($propertyId == 'subject') {
 					if (is_array($params[$propertyId])) $where->in('student_note.subject', $params[$propertyId]);
 					else $where->equalTo('student_note.subject', $params[$propertyId]);
