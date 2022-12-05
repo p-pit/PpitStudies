@@ -133,6 +133,12 @@ function getNoteList(params) {
           $('#groupModalForm').modal('toggle');
           getNoteGroup('<?php echo $this->url('report/link') ?>');
         });
+
+                  // Connect the more anchor
+            $('#more-anchor').click(function () {
+              $('#limit').val('');
+               getNoteList(getSearchParams(''));
+            });
 		}
 	}
 	xhttp.send();
