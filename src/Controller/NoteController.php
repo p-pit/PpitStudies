@@ -1120,7 +1120,7 @@ class NoteController extends AbstractActionController
 		}
 		else {
 			$accounts = null;
-			$accountsData = Account::getListV3('p-pit-studies', ['id', 'name'], ['status' => 'active,interested,converted,committed,undefined,retention,alumni,canceled,exclu,suspendu'], '+name');
+			$accountsData = Account::getListV3('p-pit-studies', ['id', 'name'], ['status' => 'active,interested,converted,committed,undefined,retention,alumni,canceled,exclu,suspendu,sortant'], '+name');
 		}
 		
 		$subject = $this->params()->fromQuery('subject');
