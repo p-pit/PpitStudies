@@ -608,6 +608,15 @@ return array_merge(
 							],
 						],
 					],
+					'fix' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/fix',
+							'defaults' => [
+								'action' => 'fix',
+							],
+						],
+					],
 					'getStudentsFromGroups' => [
 						'type' => 'segment',
 						'options' => [
@@ -1177,6 +1186,7 @@ return array_merge(
 
 				array('route' => 'report/post', 'roles' => array('manager')),
 				array('route' => 'report/link', 'roles' => array('manager')),
+				array('route' => 'report/fix', 'roles' => array('manager')),
 				array('route' => 'report/v1', 'roles' => array('guest')),
 				array('route' => 'report/getStudentsFromGroups', 'roles' => array('guest')),
 				
