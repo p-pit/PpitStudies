@@ -620,7 +620,7 @@ return array_merge(
 					'getStudentsFromGroups' => [
 						'type' => 'segment',
 						'options' => [
-							'route' => '/get-students-from-groups[/:id]',
+							'route' => '/get-students-from-groups[/:id][/:report_id]',
 							'defaults' => [
 								'action' => 'getStudentsFromGroups',
 							],

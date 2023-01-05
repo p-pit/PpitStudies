@@ -483,31 +483,48 @@ print_r($reportComputed); exit;
 	{
 		$context = Context::getCurrent();
 		$group_id = $this->params()->fromRoute('id');
+		$report_id = $this->params()->fromRoute('report_id');
 		$subject = $this->params()->fromQuery('subject');
 
 		$coursesConfig = $context->getConfig('student/property/school_subject')['modalities'];
-
 		$courseConfig = $coursesConfig[$subject];
 
 		// Course data
 		if (array_key_exists('full_time', $courseConfig) && $courseConfig['full_time'] == true) $full_time = true;
 		else $full_time = false;
 
-		
-		$account_ids = Account::getListV3('p-pit-studies', ['id', 'groups', 'property_15'], ['groups' => $group_id]);
+		// Report searching to check if the report is generate or not.
+		$report = Note::get($report_id);
 
-		$ids = [];
+		if ($report->links) {
+			foreach ($report->links as $link) {
+				$studentIdsFromLink[] = $link->account_id;
+			}
+			// if report is generated.
+			$account_ids = Account::getListV3('p-pit-studies', ['id', 'name', 'status', 'groups', 'property_15'], ['id' => implode(',', $studentIdsFromLink)]);
+		} else {
+
+			// if report isn't generated yet.
+			$account_ids =  Account::getListV3('p-pit-studies', ['id', 'name', 'status', 'groups', 'property_15'], ['groups' => $group_id]);
+		}
+
+		$accounts = [];
 
 		// Filter or not when subject is fulltime or parttime
 		foreach ($account_ids as $account) {
 			if ($full_time) {
 				if ($account['property_15'] !== "full_time") continue;
-				else $ids[] = $account['id'];
-			} else $ids[] = $account['id'];
+				else {
+					$accounts[] = ['id' => $account['id'], 'status' => $account['status'], 'name' => $account['name']];
+				}
+			} else {
+				$accounts[] = ['id' => $account['id'], 'status' => $account['status'], 'name' => $account['name']];
+			}
 		}
 
+
 		$this->response->setStatusCode('200');
-		$this->response->setContent(json_encode([$ids]));
+		$this->response->setContent(json_encode([$accounts]));
 		return $this->response;
 
 	}
