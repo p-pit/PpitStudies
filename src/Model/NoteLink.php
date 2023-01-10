@@ -454,7 +454,7 @@ class NoteLink
     	$context = Context::getCurrent();
     	$select = NoteLink::getTable()->getSelect()
     		->order(array($major.' '.$dir))
-    		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id'/*, 'class'*/, 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left');
+	->join('student_note', 'student_note_link.note_id = student_note.id', array(/*'place_id', 'note_status' => 'status', 'type', 'category',*/ 'school_year', /*'level', 'group_id',*/ 'school_period', 'subject', /*'teacher_id', 'date', 'target_date',*/ 'reference_value', 'weight'/*, 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'*/), 'left');
     	$where = new Where;
     	$where->notEqualTo('student_note_link.status', 'deleted');
     	if ($type) $where->equalTo('student_note.type', $type);
@@ -490,11 +490,22 @@ class NoteLink
 		}
 		
     	$select->where($where);
+		$select->columns(['id', 'account_id', 'evaluation']);
 
     	$cursor = NoteLink::getTable()->selectWith($select);
 		$noteLinks = array();
 		foreach ($cursor as $noteLink) {
-			if ($noteLink->note_status != 'deleted') $noteLinks[$noteLink->id] = $noteLink;
+			if ($noteLink->note_status != 'deleted') $noteLinks[$noteLink->id] = [
+				'id' => $noteLink->id,
+				'account_id' => $noteLink->account_id,
+				'subject' => $noteLink->subject,
+				'school_year' => $noteLink->school_year,
+				'school_period' => $noteLink->school_period,
+				'value' => $noteLink->value,
+				'weight' => $noteLink->weight,
+				'reference_value' => $noteLink->reference_value,
+				'evaluation' => $noteLink->evaluation,
+			];
 		}
 		return $noteLinks;
     }

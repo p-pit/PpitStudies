@@ -376,17 +376,17 @@ class ReportController extends AbstractActionController
 			}
 
 			// Report case : Retrieve the notes to compute the averages and restrict on the selected report scope
-			$existingNotes = NoteLink::select('note', ['school_year' => '2022-2023'], 'id', 'ASC');
+			$existingNotes = NoteLink::select('note', [], 'id', 'ASC');
 			$notes = [];
 			foreach ($existingNotes as $note) {
-				if ($note->evaluation === 'Non évalué') continue;
-				$key = $note->account_id . '_' . $note->subject . '_' . $note->school_year . '_' . $note->school_period;
+				if ($note['evaluation'] === 'Non évalué') continue;
+				$key = $note['account_id'] . '_' . $note['subject'] . '_' . $note['school_year'] . '_' . $note['school_period'];
 
 				if (isset($reportComputed[$key])) {
 					$report = &$reportComputed[$key];
 					$report['notes'][] = $note;
-					$report['average']['sum'] += $note->value * $note->weight;
-					$report['average']['referenceValue'] += $note->reference_value * $note->weight;
+					$report['average']['sum'] += $note['value'] * $note['weight'];
+					$report['average']['referenceValue'] += $note['reference_value'] * $note['weight'];
 				}
 			}
 
@@ -443,8 +443,8 @@ class ReportController extends AbstractActionController
 					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) $acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
 				}
 			}
-			NoteLink::updateCase('value', $values);
-			NoteLink::updateCase('evaluation', $acquisitions);
+			if ($values) NoteLink::updateCase('value', $values);
+			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
 				'evaluation' => $acquisitions,
@@ -453,7 +453,6 @@ class ReportController extends AbstractActionController
 		
 		catch (\Exception $e) {
 			$connection->rollback();
-			print_r($e);
 			$this->response->setStatusCode('500');
 			return $this->response;
 		}
