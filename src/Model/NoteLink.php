@@ -410,7 +410,10 @@ class NoteLink
     			$entity = NoteLink::$model['properties'][$propertyKey]['entity'];
     			$column = NoteLink::$model['properties'][$propertyKey]['column'];
     			 
-    			if ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
+    			if ($propertyId == 'school_year') {
+					if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.school_year', explode(',', $params[$propertyId]));
+					else $where->equalTo('student_note.school_year', $params[$propertyId]);
+				}
     			elseif ($propertyId == 'note_id') $where->in('student_note.id', explode(',', $params[$propertyId]));
     			elseif ($propertyId == 'group_id') {
 					if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.group_id', explode(',', $params[$propertyId]));
