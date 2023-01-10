@@ -376,7 +376,7 @@ class ReportController extends AbstractActionController
 			}
 
 			// Report case : Retrieve the notes to compute the averages and restrict on the selected report scope
-			$existingNotes = NoteLink::getList('note', ['school_year' => '2022-2023'], 'name', 'ASC', 'search');
+			$existingNotes = NoteLink::select('note', ['school_year' => '2022-2023'], 'id', 'ASC');
 			$notes = [];
 			foreach ($existingNotes as $note) {
 				if ($note->evaluation === 'Non évalué') continue;
@@ -453,8 +453,8 @@ class ReportController extends AbstractActionController
 		
 		catch (\Exception $e) {
 			$connection->rollback();
-			$this->response->setStatusCode('500');
 			print_r($e);
+			$this->response->setStatusCode('500');
 			return $this->response;
 		}
 

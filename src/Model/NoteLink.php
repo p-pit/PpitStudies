@@ -448,6 +448,56 @@ class NoteLink
 		}
 		return $noteLinks;
     }
+    
+    public static function select($type, $params, $major, $dir)
+    {
+    	$context = Context::getCurrent();
+    	$select = NoteLink::getTable()->getSelect()
+    		->order(array($major.' '.$dir))
+    		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id'/*, 'class'*/, 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left');
+    	$where = new Where;
+    	$where->notEqualTo('student_note_link.status', 'deleted');
+    	if ($type) $where->equalTo('student_note.type', $type);
+
+		// Set the filters
+		foreach ($params as $propertyId => $property) {
+			if (in_array(substr($propertyId, 0, 4), array('min_', 'max_'))) $propertyKey = substr($propertyId, 4);
+			else $propertyKey = $propertyId;
+			$entity = NoteLink::$model['properties'][$propertyKey]['entity'];
+			$column = NoteLink::$model['properties'][$propertyKey]['column'];
+				
+			if ($propertyId == 'school_year') {
+				if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.school_year', explode(',', $params[$propertyId]));
+				else $where->equalTo('student_note.school_year', $params[$propertyId]);
+			}
+			elseif ($propertyId == 'note_id') $where->in('student_note.id', explode(',', $params[$propertyId]));
+			elseif ($propertyId == 'group_id') {
+				if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+				else $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+			}
+			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
+			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
+			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
+			elseif ($propertyId == 'subject') {
+				if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.subject', explode(',', $params[$propertyId]));
+				else $where->equalTo('student_note.subject', $params[$propertyId]);
+			}
+			elseif ($propertyId == 'level') $where->equalTo('student_note.level', $params[$propertyId]);
+			elseif (strpos($params[$propertyId], ',')) $where->in($entity . '.' . $column, array_map('trim', explode(',', $params[$propertyId])));
+			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
+			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
+			else $where->like($entity . '.' . $column, '%'.$params[$propertyId].'%');
+		}
+		
+    	$select->where($where);
+
+    	$cursor = NoteLink::getTable()->selectWith($select, false, true); exit;
+		$noteLinks = array();
+		foreach ($cursor as $noteLink) {
+			if ($noteLink->note_status != 'deleted') $noteLinks[$noteLink->id] = $noteLink;
+		}
+		return $noteLinks;
+    }
 
     public static function get($id, $column = 'id', $id2 = false, $column2 = false, $id3 = false, $column3 = false, $id4 = false, $column4 = false)
     {
