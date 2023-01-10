@@ -491,7 +491,7 @@ class NoteLink
 		
     	$select->where($where);
 
-    	$cursor = NoteLink::getTable()->selectWith($select, false, true); exit;
+    	$cursor = NoteLink::getTable()->selectWith($select);
 		$noteLinks = array();
 		foreach ($cursor as $noteLink) {
 			if ($noteLink->note_status != 'deleted') $noteLinks[$noteLink->id] = $noteLink;
