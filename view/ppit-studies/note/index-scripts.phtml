@@ -64,6 +64,14 @@ function getNoteGroup(route) {
             postNoteGroup(route); 
           });
         });
+        $('#groupFixButton').click(function () { 
+          $(this).removeClass('btn-warning').addClass('btn-danger');
+          $(this).click(function () { 
+            $(this).hide();
+            $('#groupMessageProgress').show();
+            postNoteGroup('<?php echo $this->url('report/fix') ?>'); 
+          });
+        });
       }
     }
   }
