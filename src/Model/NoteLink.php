@@ -665,6 +665,24 @@ class NoteLink
     	return 'OK';
     }
 
+    public static function updateCase($column, $pairs)
+    {
+		$context = Context::getCurrent();
+		$request = "UPDATE student_note_link\n";
+		$request .= "SET `$column` = CASE\n";
+		$ids = [];
+		foreach ($pairs as $id => $value) {
+			$ids[] = $id;
+			$request .= 'WHEN id = ' . $id . " THEN '" . $value . "'\n";
+		}
+		$request .= "END\n";	
+		$request .= "WHERE ID IN (" . implode(', ', $ids) . ");\n";
+		NoteLink::getTable()->query($request);
+		$where = new Where();
+		$where->in('id', $ids);
+		NoteLink::getTable()->updateWith($where, ['update_time' => date("Y-m-d H:i:s"), 'update_user' => $context->getUserId()]);
+	}
+
     public function isDeletable()
     {
     	$context = Context::getCurrent();

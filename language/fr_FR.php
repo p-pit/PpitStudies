@@ -29,6 +29,7 @@
 		'Club' => 'Club',
 		'Coach' => 'Coach',
 		'Coach: phone' => 'Coach : tél.',
+		'Compute averages' => 'Calculer les moyennes',
 		'Credits' => 'Crédits',
 		'Cumulative duration' => 'Durée cumulée',
 		'Done' => 'Réalisé',
