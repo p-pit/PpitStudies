@@ -416,7 +416,7 @@ class ReportController extends AbstractActionController
 							$report['average']['referenceValue'] += $reportLink['report']->reference_value * $reportLink['report']->weight;
 						}
 					}
-					if (!in_array($reportLink['acquisition'], [12, 13, 16])) {
+					if (!in_array($reportLink['acquisition'], [10, 12, 16])) {
 						if (count($reportLink['absences']) >=3) $reportLink['acquisition'] = 15;
 						elseif ($reportLink['link']->value <= 1) $reportLink['acquisition'] = 13;
 					}
@@ -440,7 +440,7 @@ class ReportController extends AbstractActionController
 				}
 				if ($reportLink['average']['referenceValue']) {
 					if ($reportLink['link']->value !== null) $values[$reportLink['link']->id] = $reportLink['link']->value;
-					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) $acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [10, 12, 16])) $acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
 				}
 			}
 			if ($values) NoteLink::updateCase('value', $values);
