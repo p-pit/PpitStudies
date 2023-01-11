@@ -383,7 +383,7 @@ class ReportController extends AbstractActionController
 				$key = $note['account_id'] . '_' . $note['subject'] . '_' . $note['school_year'] . '_' . $note['school_period'];
 
 				if (isset($reportComputed[$key])) {
-					$report = &$reportComputed[$key];
+					$report = &$reportComputed[$key]; print_r($note);
 					$report['notes'][] = $note;
 					$report['average']['sum'] += $note['value'] * $note['weight'];
 					$report['average']['referenceValue'] += $note['reference_value'] * $note['weight'];
