@@ -383,7 +383,7 @@ class ReportController extends AbstractActionController
 				$key = $note['account_id'] . '_' . $note['subject'] . '_' . $note['school_year'] . '_' . $note['school_period'];
 
 				if (isset($reportComputed[$key])) {
-					$report = &$reportComputed[$key]; print_r($note);
+					$report = &$reportComputed[$key];
 					$report['notes'][] = $note;
 					$report['average']['sum'] += $note['value'] * $note['weight'];
 					$report['average']['referenceValue'] += $note['reference_value'] * $note['weight'];
@@ -417,8 +417,8 @@ class ReportController extends AbstractActionController
 						}
 					}
 					if (!in_array($reportLink['acquisition'], [12, 13, 16])) {
-						if (count($reportLink['absences']) >=3) $reportLink['acquisition'] = 'Défaillant';
-						elseif ($reportLink['link']->value <= 1) $reportLink['acquisition'] = "A rattraper";
+						if (count($reportLink['absences']) >=3) $reportLink['acquisition'] = 15;
+						elseif ($reportLink['link']->value <= 1) $reportLink['acquisition'] = 13;
 					}
 
 					$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
