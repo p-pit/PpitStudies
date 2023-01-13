@@ -50,6 +50,8 @@ class NoteLinkController extends AbstractActionController
 			$value = $this->params()->fromQuery($propertyId, null);
 			if ($value !== null) {
 				if ($propertyId == 'name') $filters[$propertyId] = ['like', $value];
+				elseif (strpos($value, ',') > 0) $filters[$propertyId] = array_merge(['in'], explode(',', $value));
+				elseif ($propertyId == 'value') $filters[$propertyId] = (float) $value;
 				else $filters[$propertyId] = $value;
 			}
 		}
@@ -347,9 +349,9 @@ class NoteLinkController extends AbstractActionController
 		$filters = [];
 		foreach (NoteLink::getConfig(false) as $propertyId => $property) {
 			$value = $this->params()->fromQuery($propertyId, null);
-			if ($value !== null) $filters[$propertyId] = $value;
+			if ($value !== null/* && $propertyId != 'value'*/) $filters[$propertyId] = $value;
 		}
-		if ($type == 'report' && $filters) {
+		if ($type == 'report'/* && $filters*/) {
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			$notes = NoteLink::GetList('note', $filters, 'subject', 'ASC', 'search');
 			$averages = [];
