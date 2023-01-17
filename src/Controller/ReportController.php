@@ -396,7 +396,7 @@ class ReportController extends AbstractActionController
 			foreach ($allAbsences as $absence) {
 				$key = $absence->account_id . '_' . $absence->property_3 . '_' . $absence->property_1 . '_' . 'Q1';
 				if (isset($reportComputed[$key])) { print_r($absence->id . "\n");
-					$reportComputed[$key][$absences][] = $absence;
+					$reportComputed[$key]['absences'][] = $absence;
 				}
 				$globalKey = $absence->account_id . '_global_' . $absence->property_1 . '_' . 'Q1';
 				if (isset($reportComputed[$globalKey])) {
