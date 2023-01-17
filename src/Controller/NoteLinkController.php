@@ -50,8 +50,9 @@ class NoteLinkController extends AbstractActionController
 			$value = $this->params()->fromQuery($propertyId, null);
 			if ($value !== null) {
 				if ($propertyId == 'name') $filters[$propertyId] = ['like', $value];
-				elseif (strpos($value, ',') > 0) $filters[$propertyId] = array_merge(['in'], explode(',', $value));
-				elseif ($propertyId == 'value') $filters[$propertyId] = (float) $value;
+				if (in_array($propertyId, ['value', 'evaluation'])) {
+					$filters[$propertyId] = array_merge(['in'], explode(',', $value));
+				}
 				else $filters[$propertyId] = $value;
 			}
 		}
