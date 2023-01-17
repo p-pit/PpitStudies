@@ -403,7 +403,6 @@ class ReportController extends AbstractActionController
 					$reportComputed[$globalKey][$absences][] = $absence;
 				}
 			}
-			print_r($allAbsences); exit;
 
 			// Compute the averages
 			foreach ($reportComputed as $key => &$reportLink) {
