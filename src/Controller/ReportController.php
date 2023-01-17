@@ -362,6 +362,7 @@ class ReportController extends AbstractActionController
 			// Create the dictionary of reports by key = account + subject + year + period
 			$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
 			foreach ($existingLinks as $link) {
+				if (!in_array($link->account_id, $accountIds)) $accountIds[] = $link->account_id;
 				$weight = ($link->specific_weight) ? $link->specific_weight : $link->weight; 
 				$key = $link->account_id . '_' . $link->subject . '_' . $link->school_year . '_' . $link->school_period;
 				$reportComputed[$key] = [
@@ -395,7 +396,7 @@ class ReportController extends AbstractActionController
 			foreach ($allAbsences as $absence) {
 				$key = $absence->account_id . '_' . $absence->property_3 . '_' . $absence->property_1 . '_' . 'Q1';
 				if (isset($reportComputed[$key])) { print_r($absence->id . "\n");
-					$reportComputed[$key][$absences][] = $absence;
+					$reportComputed[$key]['absences'][] = $absence;
 				}
 				$globalKey = $absence->account_id . '_global_' . $absence->property_1 . '_' . 'Q1';
 				if (isset($reportComputed[$globalKey])) {
