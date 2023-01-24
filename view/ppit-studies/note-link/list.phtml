@@ -125,14 +125,14 @@ table td {
           
           <?php else : ?>
             <?php 
-	    	$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+	    	/*$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
             if (array_key_exists($link['school_year'] . '_' . $link['school_period'] . '_' . $link['account_id'] . '_' . $link['subject'], $averages)) {
 				$average = $averages[$link['school_year'] . '_' . $link['school_period'] . '_' . $link['account_id'] . '_' . $link['subject']];
 				$average = $context->formatFloat($average['num'] / $average['den'] * $averageReference, 2);
             }
-            else $average = 'Non calculé';
+            else $average = 'Non calculé';*/
 			?>
-            <?php echo $average ?>
+            <?php echo /*$average*/ $context->formatFloat($link['value'], 2) ?>
           <?php endif;?>
         </td>
     

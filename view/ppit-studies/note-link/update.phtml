@@ -39,6 +39,9 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 
 <form class="was-validated" id="note-evaluation-form">
 
+<input type="hidden" id="update-school_year" value="<?php echo $noteLink->school_year ?>" />
+<input type="hidden" id="update-school_period" value="<?php echo $noteLink->school_period ?>" />
+<input type="hidden" id="update-account_id" value="<?php echo $noteLink->account_id ?>" />
 <input type="hidden" id="update_time" value="<?php echo $noteLink->update_time ?>" />
 
 <?php if (in_array($request, ['POST', 'DELETE']) && $statusCode == '200') $isDisabled = true; else $isDisabled = false; ?>
@@ -240,13 +243,13 @@ $updateProperties = $context->getConfig('note/update/evaluation')['properties'];
 
   <?php if ($noteLink->type == 'report' || $context->getConfig('note/property/value')['type'] == 'number') : ?>
     <?php
-    if (!array_key_exists($noteLink->subject, $averages)) $average = 'Non noté';
+    /*if (!array_key_exists($noteLink->subject, $averages)) $average = 'Non noté';
     else {
 	    $averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
     	$average = round($averages[$noteLink->subject][0] / $averages[$noteLink->subject][1] * $averageReference, 2);
-    }
+    }*/
     ?>
-        <input class="form-control form-control-sm" id="value" value="<?php echo $noteLink->value ?>" placeholder="Calculé : <?php echo $average ?>" />
+        <input class="form-control form-control-sm" id="value" value="<?php echo $noteLink->value ?>" placeholder="À saisir uniquement pour forcer la moyenne<?php //'Calculé : ' . echo $average ?>" />
 
   <?php else : ?>
                 <select class="form-control form-control-sm update_input update_input_select" id="value" placeholder="<?php echo $this->translate((in_array($noteLink->type, ['report', 'exam'])) ? 'Average (computed if not input)' : 'Does not count in average if empty', 'ppit-studies', $context->getLocale()) ?>" <?php if ($noteLink->value !== null) echo 'value="'.$context->formatFloat($noteLink->value, 2).'"' ?> disabled="disabled">

@@ -500,7 +500,7 @@ class NoteLinkController extends AbstractActionController
 		$place = Place::get($noteLink->place_id);
 		
 		// Compute the average
-		$averages = [];
+		/*$averages = [];
 		if ($noteLink->type == 'report') {
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			$notes = NoteLink::GetList('note', ['school_year' => $noteLink->school_year, 'school_period' => $noteLink->school_period, 'account_id' => $noteLink->account_id], 'subject', 'ASC', 'search');
@@ -517,21 +517,11 @@ class NoteLinkController extends AbstractActionController
 				$globalAverage[1] += $averageReference;
 			}
 			$averages['global'] = $globalAverage;	
-		}
+		}*/
 		
-		// Retrieve the teachers
-		/*$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
-		$where = new Where;
-		$where->notEqualTo('status', 'deleted');
-		$where->like('roles', '%teacher%');
-		$select->where($where);
-		$cursor = Vcard::getTable()->selectWith($select);
-		$contact = null;
-		$teachers = array();
-		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;*/
-		$cursor = Account::getListV3('teacher', ['n_fn', 'contact_1_id'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
+		//$cursor = Account::getListV3('teacher', ['n_fn', 'contact_1_id'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
 		$teachers = [];
-		foreach ($cursor as $teacher_id => $teacher) $teachers[$teacher['contact_1_id']] = $teacher;
+		//foreach ($cursor as $teacher_id => $teacher) $teachers[$teacher['contact_1_id']] = $teacher;
 
 		// Retrieve the subject list. As a teacher my subject list is restricted according to my competences
 		$subjects = [];
@@ -601,7 +591,7 @@ class NoteLinkController extends AbstractActionController
     		'places' => Place::getList([]),
     		'teachers' => $teachers,
 			'subjects' => $subjects,
-			'averages' => $averages,
+			//'averages' => $averages,
 			'indicators' => NULL,
 			'statusCode' => $this->response->getStatusCode(),
 			'reasonPhrase' => $this->response->getReasonPhrase(),

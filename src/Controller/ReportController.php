@@ -463,6 +463,108 @@ class ReportController extends AbstractActionController
 		echo json_encode($responseBody);
 		return $this->response;
     }
+	
+    public function globalFixAction()
+    {
+    	// Retrieve the context
+    	$context = Context::getCurrent();
+		if ($this->getRequest()->isGet()) {
+			$view = new ViewModel(['context' => $context]);
+    		$view->setTerminal(true);
+			return $view;
+		}
+ 
+		$requestBody = json_decode($this->getRequest()->getContent(), true);
+		$accountIds = $requestBody['accountIds'];
+		$school_year = $requestBody['school_year'];
+		$school_period = $requestBody['school_period'];
+		if (!$accountIds || !$school_year || !$school_period) {
+			$this->response->setStatusCode('400');
+			$this->response->setReasonPhrase('Missing parameter');
+			return $this->response;
+		}
+		
+		// Atomically save
+		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
+		$connection->beginTransaction();
+		try {
+
+			$reportComputed = [];
+	
+			// Create the dictionary of reports by key = account + subject + year + period
+			$filters = ['school_year' => $school_year, 'school_period' => $school_period, 'account_id' => implode(',', $accountIds)];
+			$existingLinks = NoteLink::getList('report', $filters, 'id', 'ASC', 'search');
+			foreach ($existingLinks as $link) {
+				if (!isset($reportComputed[$link->account_id])) {
+					$reportComputed[$link->account_id] = [
+						'link' => null,
+						'averages' => [],
+						'absences' => 0,
+					];
+				}
+				if ($link->subject == 'global') {
+					$reportComputed[$link->account_id]['link'] = $link;
+				}
+				else {
+					$reportComputed[$link->account_id]['averages'][] = $link;	
+				}
+			}
+
+			$absenceById = [];
+			$allAbsences = Event::GetList('absence', ['account_id' => implode(",", $accountIds), 'property_1' => $school_year], '-begin_date', null);
+			foreach ($allAbsences as $absence) {
+				if (isset($reportComputed[$absence->account_id])) {
+					$reportComputed[$absence->account_id]['absences']++;
+				}
+			}
+
+			// Compute the averages
+			$values = [];
+			$acquisitions = [];
+			foreach ($reportComputed as $account_id => $globalReport) {
+				if ($globalReport['link']) {
+					$globalSum = 0; 
+					$globalReferenceValue = 0;
+					foreach ($globalReport['averages'] as $reportLink) {
+						if ($reportLink->value !== null && $reportLink->reference_value) {
+							$weight = ($reportLink->specific_weight) ? $reportLink->specific_weight : $reportLink->weight;
+							$globalSum += $reportLink->value * $weight;
+							$globalReferenceValue += $reportLink->reference_value * $weight;
+						}
+					}
+
+					if (!in_array($globalReport['link']->evaluation, [10, 12, 16])) {
+						if ($globalReport['absences'] >= 20 && $globalReport['link']->evaluation != 15) {
+							$acquisitions[$globalReport['link']->id] = 15;
+						}
+					}
+	
+					$globalAverage = round($globalSum / $globalReferenceValue * $globalReport['link']->reference_value * 100) / 100;
+					if ($globalReport['link']->value != $globalAverage) {
+						$values[$globalReport['link']->id] = $globalAverage;
+					}
+				}
+			}
+
+			if ($values) NoteLink::updateCase('value', $values);
+			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
+			$responseBody = ['studentLinkPatched' => [
+				'value' => $values,
+				'evaluation' => $acquisitions,
+			]];
+		}
+		
+		catch (\Exception $e) {
+			$connection->rollback();
+			$this->response->setStatusCode('500');
+			return $this->response;
+		}
+
+		$connection->commit();
+		$this->response->setStatusCode('200');
+		echo json_encode($responseBody);
+		return $this->response;
+    }
 
 	public function v1Action()
 	{

@@ -420,7 +420,10 @@ class NoteLink
 					else $where->in('student_note.group_id', explode(',', $params[$propertyId]));
 				}
     			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
-    			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
+    			elseif ($propertyId == 'account_id') {
+					if (strpos($params[$propertyId], ',') >= 0) $where->in('account_id', explode(',', $params[$propertyId]));
+					else $where->equalTo('account_id', $params[$propertyId]);
+				}
     			elseif ($propertyId == 'n_fn') $where->like('n_fn', '%' . $params[$propertyId] . '%');
     			elseif ($propertyId == 'account_property_15') $where->equalTo('core_account.property_15', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
