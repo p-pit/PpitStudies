@@ -265,67 +265,59 @@ class ReportController extends AbstractActionController
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
-		try {
 
-			$studentsById = Account::getListV3('p-pit-studies', ['id', 'place_id', 'groups', 'property_15'], ['status' => 'active,retention,suspendu,alumni']);
-			$students = [];
-		
-			foreach ($studentsById as $studentId => $student) {
-				if ($student['groups']) {
-					foreach (explode(',', $student['groups']) as $groupId) {
-						$students[((int) $student['place_id']) . '/' . ((int) $groupId)][] = $student;
-					}
-				} 
-			}
-
-			// Retrieve the existing reports
-			$filters = ['id' => $reportIds];
-			$existingReportsById = Note::GetList('evaluation', 'report', $filters, 'id', 'ASC', 'search', null);
+		$studentsById = Account::getListV3('p-pit-studies', ['id', 'place_id', 'groups', 'property_15'], ['status' => 'active,retention,suspendu,alumni']);
+		$students = [];
 	
-			$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
-			foreach ($existingLinks as $link) {
-				$existingReportsById[$link->note_id]->links[$link->account_id] = $link;
-			}
+		foreach ($studentsById as $studentId => $student) {
+			if ($student['groups']) {
+				foreach (explode(',', $student['groups']) as $groupId) {
+					$students[((int) $student['place_id']) . '/' . ((int) $groupId)][] = $student;
+				}
+			} 
+		}
 
-			$subjectConfig = $context->getConfig('student/property/school_subject');
-			$referenceValue = $context->getConfig('student/parameter/average_computation')['reference_value'];
-			foreach ($existingReportsById as $report) {
+		// Retrieve the existing reports
+		$filters = ['id' => $reportIds];
+		$existingReportsById = Note::GetList('evaluation', 'report', $filters, 'id', 'ASC', 'search', null);
 
-				// Generate the student links for this report
-				$subjectId = $report->subject;
-				$key = ((int) $report->place_id) . '/' . ((int) $report->group_id);
-				if (isset($students[$key])) {
-					foreach ($students[$key] as $student) {
+		$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
+		foreach ($existingLinks as $link) {
+			$existingReportsById[$link->note_id]->links[$link->account_id] = $link;
+		}
 
-						if (	$subjectId != 'global'
-							&&	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
-							&&  $subjectConfig['modalities'][$subjectId]['full_time']
-							&& 	$student['property_15'] != 'full_time' ) {
+		$subjectConfig = $context->getConfig('student/property/school_subject');
+		$referenceValue = $context->getConfig('student/parameter/average_computation')['reference_value'];
+		foreach ($existingReportsById as $report) {
 
-							continue;
-						}
+			// Generate the student links for this report
+			$subjectId = $report->subject;
+			$key = ((int) $report->place_id) . '/' . ((int) $report->group_id);
+			if (isset($students[$key])) {
+				foreach ($students[$key] as $student) {
 
-						// Ignore the student already having a link for the current report
-						if (isset($report->links) && array_key_exists($student['id'], $report->links)) continue;
+					if (	$subjectId != 'global'
+						&&	array_key_exists('full_time', $subjectConfig['modalities'][$subjectId]) 
+						&&  $subjectConfig['modalities'][$subjectId]['full_time']
+						&& 	$student['property_15'] != 'full_time' ) {
 
-						$studentLink = NoteLink::instanciate($student['id'], $report->id);
-						if (	$subjectId != 'global'
-							&&	array_key_exists('credits_pt', $subjectConfig['modalities'][$subjectId]) 
-							&& 	$student['property_15'] != 'full_time' ) {
-
-							$studentLink->specific_weight = $subjectConfig['modalities'][$subjectId]['credits_pt'];
-						}
-						$studentLink->add();
-						$responseBody['studentLinkCreated'][] = $studentLink->id;
+						continue;
 					}
+
+					// Ignore the student already having a link for the current report
+					if (isset($report->links) && array_key_exists($student['id'], $report->links)) continue;
+
+					$studentLink = NoteLink::instanciate($student['id'], $report->id);
+					if (	$subjectId != 'global'
+						&&	array_key_exists('credits_pt', $subjectConfig['modalities'][$subjectId]) 
+						&& 	$student['property_15'] != 'full_time' ) {
+
+						$studentLink->specific_weight = $subjectConfig['modalities'][$subjectId]['credits_pt'];
+					}
+					$studentLink->add();
+					$responseBody['studentLinkCreated'][] = $studentLink->id;
 				}
 			}
-		}
-		
-		catch (\Exception $e) {
-			$connection->rollback();
-			$this->response->setStatusCode('500');
-			return $this-response;
 		}
 
 		$connection->commit();

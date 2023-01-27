@@ -188,8 +188,8 @@ class Note
     		foreach ($params as $propertyId => $property) {
     			if ($propertyId == 'type') $where->equalTo('student_note.type', $params[$propertyId]);
     			elseif ($propertyId == 'id') {
-					if (is_array($params[$propertyId])) $where->in('id', $params[$propertyId]);
-					else $where->equalTo('id', $params[$propertyId]);
+					if (is_array($params[$propertyId])) $where->in('student_note.id', $params[$propertyId]);
+					else $where->equalTo('student_note.id', $params[$propertyId]);
 				}
     			elseif ($propertyId == 'place_id') {
 					if (is_array($params[$propertyId])) $where->in('student_note.place_id', $params[$propertyId]);
