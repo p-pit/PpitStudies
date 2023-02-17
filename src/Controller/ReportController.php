@@ -467,10 +467,11 @@ class ReportController extends AbstractActionController
 		}
  
 		$requestBody = json_decode($this->getRequest()->getContent(), true);
-		$accountIds = $requestBody['accountIds'];
+		if (isset($requestBody['accountIds'])) $accountIds = $requestBody['accountIds'];
+		else $accountIds = null;
 		$school_year = $requestBody['school_year'];
 		$school_period = $requestBody['school_period'];
-		if (!$accountIds || !$school_year || !$school_period) {
+		if (!$school_year || !$school_period) {
 			$this->response->setStatusCode('400');
 			$this->response->setReasonPhrase('Missing parameter');
 			return $this->response;
@@ -484,8 +485,10 @@ class ReportController extends AbstractActionController
 			$reportComputed = [];
 	
 			// Create the dictionary of reports by key = account + subject + year + period
-			$filters = ['school_year' => $school_year, 'school_period' => $school_period, 'account_id' => implode(',', $accountIds)];
+			$filters = ['school_year' => $school_year, 'school_period' => $school_period];
+			if ($accountIds) $filters['account_id'] = implode(',', $accountIds);
 			$existingLinks = NoteLink::getList('report', $filters, 'id', 'ASC', 'search');
+			print_r($existingLinks); exit;
 			foreach ($existingLinks as $link) {
 				if (!isset($reportComputed[$link->account_id])) {
 					$reportComputed[$link->account_id] = [
@@ -495,7 +498,11 @@ class ReportController extends AbstractActionController
 					];
 				}
 				if ($link->subject == 'global') {
-					$reportComputed[$link->account_id]['link'] = $link;
+
+					// Don't do anything if the global average has been manually forced 
+					if (!in_array($link->evaluation, [10, 12, 16])) {
+						$reportComputed[$link->account_id]['link'] = $link;
+					}
 				}
 				else {
 					$reportComputed[$link->account_id]['averages'][] = $link;	
@@ -503,7 +510,9 @@ class ReportController extends AbstractActionController
 			}
 
 			$absenceById = [];
-			$allAbsences = Event::GetList('absence', ['account_id' => implode(",", $accountIds), 'property_1' => $school_year], '-begin_date', null);
+			$filters = ['property_1' => $school_year];
+			if ($accountIds) $filters['account_id'] = implode(",", $accountIds);
+			$allAbsences = Event::GetList('absence', $filters, '-begin_date', null);
 			foreach ($allAbsences as $absence) {
 				if (isset($reportComputed[$absence->account_id])) {
 					$reportComputed[$absence->account_id]['absences']++;
@@ -525,10 +534,8 @@ class ReportController extends AbstractActionController
 						}
 					}
 
-					if (!in_array($globalReport['link']->evaluation, [10, 12, 16])) {
-						if ($globalReport['absences'] >= 20 && $globalReport['link']->evaluation != 15) {
-							$acquisitions[$globalReport['link']->id] = 15;
-						}
+					if ($globalReport['absences'] >= 20 && $globalReport['link']->evaluation != 15) {
+						$acquisitions[$globalReport['link']->id] = 15;
 					}
 	
 					$globalAverage = round($globalSum / $globalReferenceValue * $globalReport['link']->reference_value * 100) / 100;
