@@ -690,30 +690,30 @@ class Note
 
         if (array_key_exists('status', $data)) {
 		    $this->status = trim(strip_tags($data['status']));
-		    if (strlen($this->status) > 255) return 'Integrity';
+		    if (strlen($this->status) > 255) return 'Integrity 1';
 		}
         if (array_key_exists('place_id', $data)) {
 		    $this->place_id = (int) $data['place_id'];
-		    if (!$this->place_id) return 'Integrity';
+		    if (!$this->place_id) return 'Integrity 2';
 		}
         if (array_key_exists('teacher_id', $data)) {
 		    $this->teacher_id = (int) $data['teacher_id'];
 		}
 		if (array_key_exists('category', $data)) {
 		    $this->category = trim(strip_tags($data['category']));
-		    if (!$this->category || strlen($this->category) > 255) return 'Integrity';
+		    if (!$this->category || strlen($this->category) > 255) return 'Integrity 3';
 		}
 		if (array_key_exists('type', $data)) {
 		    $this->type = trim(strip_tags($data['type']));
-		    if (!$this->type || strlen($this->type) > 255) return 'Integrity';
+		    if (!$this->type || strlen($this->type) > 255) return 'Integrity 4';
 		}
     	if (array_key_exists('school_year', $data)) {
 	    	$this->school_year = trim(strip_tags($data['school_year']));
-		    if (!$this->school_year || strlen($this->school_year) > 255) return 'Integrity';
+		    if (!$this->school_year || strlen($this->school_year) > 255) return 'Integrity 5';
 		}
         if (array_key_exists('level', $data)) {
 	    	$this->level = trim(strip_tags($data['level']));
-		    if (strlen($this->level) > 255) return 'Integrity';
+		    if (strlen($this->level) > 255) return 'Integrity 6';
 		}
 
         if (array_key_exists('group_id', $data)) {
@@ -722,72 +722,72 @@ class Note
 		
        	if (array_key_exists('class', $data)) {
 	    	$this->class = trim(strip_tags($data['class']));
-		    if (strlen($this->class) > 255) return 'Integrity';
+		    if (strlen($this->class) > 255) return 'Integrity 7';
 		}
         if (array_key_exists('groups', $data)) {
 	    	$this->groups = trim(strip_tags($data['groups']));
-		    if (strlen($this->groups) > 255) return 'Integrity';
+		    if (strlen($this->groups) > 255) return 'Integrity 8';
 		}
 
 		if (array_key_exists('school_period', $data)) {
 	    	$this->school_period = trim(strip_tags($data['school_period']));
-		    if (strlen($this->school_period) > 255) return 'Integrity';
+		    if (strlen($this->school_period) > 255) return 'Integrity 9';
 		}
     	if (array_key_exists('subject', $data)) {
 		    $this->subject = trim(strip_tags($data['subject']));
-		    if (!$this->subject || strlen($this->subject) > 255) return 'Integrity';
+		    if (!$this->subject || strlen($this->subject) > 255) return 'Integrity 10';
 		}
 		if (array_key_exists('date', $data)) {
 	    	$this->date = trim(strip_tags($data['date']));
-	    	if (!$this->date || !checkdate(substr($this->date, 5, 2), substr($this->date, 8, 2), substr($this->date, 0, 4))) return 'Integrity';
+	    	if (!$this->date || !checkdate(substr($this->date, 5, 2), substr($this->date, 8, 2), substr($this->date, 0, 4))) return 'Integrity 11';
 		}
     	if (array_key_exists('target_date', $data)) {
 	    	$this->target_date = trim(strip_tags($data['target_date']));
-	    	if (!$this->target_date || !checkdate(substr($this->target_date, 5, 2), substr($this->target_date, 8, 2), substr($this->target_date, 0, 4))) return 'Integrity';
+	    	if (!$this->target_date || !checkdate(substr($this->target_date, 5, 2), substr($this->target_date, 8, 2), substr($this->target_date, 0, 4))) return 'Integrity 12';
 		}
 		if (array_key_exists('value', $data)) {
 		    $this->value = (float) $data['value'];
-		    if ($this->value > 100) return 'Integrity';
+		    if ($this->value > 100) return 'Integrity 13';
 		}
         if (array_key_exists('reference_value', $data)) {
 		    $this->reference_value = (float) $data['reference_value'];
-		    if ($this->reference_value > 100) return 'Integrity';
+		    if ($this->reference_value > 100) return 'Integrity 14';
 		}
         if (array_key_exists('weight', $data)) {
 		    $this->weight = (float) $data['weight'];
-		    if ($this->weight > 100) return 'Integrity';
+		    if ($this->weight > 100) return 'Integrity 15';
 		}
         if (array_key_exists('criteria', $data)) {
 			$this->criteria = array();
 			foreach ($data['criteria'] as $criterionId => $criterion) {
 				$criterion = trim(strip_tags($criterion));
-				if (!$criterion || strlen($criterion) > 255) return 'Integrity';
+				if (!$criterion || strlen($criterion) > 255) return 'Integrity 16';
 				$this->criteria[$criterionId] = $criterion;
 			}
 		}
     	if (array_key_exists('observations', $data)) {
 		    $this->observations = $data['observations'];
-		    if (strlen($this->observations) > 65535) return 'Integrity';
+		    if (strlen($this->observations) > 65535) return 'Integrity 17';
 		}
         if (array_key_exists('document', $data)) {
     		$this->document = trim(strip_tags($data['document']));
-			if (strlen($this->document) > 255) return 'Integrity';
+			if (strlen($this->document) > 255) return 'Integrity 18';
     	}
 		if (array_key_exists('average_note', $data)) {
 		    $this->average_note = (float) $data['average_note'];
-		    if ($this->average_note > 100) return 'Integrity';
+		    if ($this->average_note > 100) return 'Integrity 19';
 		}
         if (array_key_exists('lower_note', $data)) {
 		    $this->lower_note = (float) $data['lower_note'];
-		    if ($this->lower_note > 100) return 'Integrity';
+		    if ($this->lower_note > 100) return 'Integrity 20';
 		}
         if (array_key_exists('higher_note', $data)) {
 		    $this->higher_note = (float) $data['higher_note'];
-		    if ($this->higher_note > 100) return 'Integrity';
+		    if ($this->higher_note > 100) return 'Integrity 21';
 		}
 		if (array_key_exists('comment', $data)) {
 		    $this->comment = trim(strip_tags($data['comment']));
-		    if (strlen($this->comment) > 2047) return 'Integrity';
+		    if (strlen($this->comment) > 2047) return 'Integrity 22';
 		}
 		if (array_key_exists('update_time', $data)) $this->update_time = $data['update_time'];
 
