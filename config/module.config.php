@@ -3118,7 +3118,7 @@ return array_merge(
 		'type' => 'input',
 		'labels' => array(
 			'en_US' => 'Sport level',
-			'fr_FR' => 'Niveau sportif',
+			'fr_FR' => 'Complément niveau sportif',
 		),
 	),
 	
