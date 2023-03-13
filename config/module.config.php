@@ -1196,7 +1196,7 @@ return array_merge(
 				array('route' => 'report/post', 'roles' => array('manager')),
 				array('route' => 'report/link', 'roles' => array('manager')),
 				array('route' => 'report/fix', 'roles' => array('manager')),
-				array('route' => 'report/globalFix', 'roles' => array('guest')),
+				array('route' => 'report/globalFix', 'roles' => array('manager')),
 				array('route' => 'report/v1', 'roles' => array('guest')),
 				array('route' => 'report/getStudentsFromGroups', 'roles' => array('guest')),
 				

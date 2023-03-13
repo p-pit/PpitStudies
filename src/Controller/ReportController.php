@@ -337,7 +337,9 @@ class ReportController extends AbstractActionController
 		}
  
 		$requestBody = json_decode($this->getRequest()->getContent(), true);
-		$reportIds = $requestBody['ids'];
+		$reportIds = (isset($requestBody['ids'])) ? $requestBody['ids'] : [];
+		$school_year = (isset($requestBody['school_year'])) ? $requestBody['school_year'] : null;
+		$school_period = (isset($requestBody['school_period'])) ? $requestBody['school_period'] : null;
 		
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
@@ -345,14 +347,18 @@ class ReportController extends AbstractActionController
 		try {
 
 			// Retrieve the existing reports
-			$filters = ['id' => $reportIds];
+			$filters = [];
+			if ($reportIds) $filters['id'] = $reportIds;
+			if ($school_year) $filters['school_year'] = $school_year;
+			if ($school_period) $filters['school_period'] = $school_period;
 			$existingReportsById = Note::GetList('evaluation', 'report', $filters, 'id', 'ASC', 'search', null);
+			if (!$reportIds) foreach ($existingReportsById as $report) $reportIds[] = $report->id;
 
 			$accountIds = [];
 			$reportComputed = [];
-	
+
 			// Create the dictionary of reports by key = account + subject + year + period
-			$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
+			$existingLinks = NoteLink::getList('evaluation', ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
 			foreach ($existingLinks as $link) {
 				if (!in_array($link->account_id, $accountIds)) $accountIds[] = $link->account_id;
 				$weight = ($link->specific_weight) ? $link->specific_weight : $link->weight; 
@@ -450,7 +456,7 @@ class ReportController extends AbstractActionController
 			return $this->response;
 		}
 
-		$connection->commit();
+		//$connection->commit();
 		$this->response->setStatusCode('200');
 		echo json_encode($responseBody);
 		return $this->response;
@@ -480,7 +486,7 @@ class ReportController extends AbstractActionController
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
-		try {
+		//try {
 
 			$reportComputed = [];
 	
@@ -488,7 +494,6 @@ class ReportController extends AbstractActionController
 			$filters = ['school_year' => $school_year, 'school_period' => $school_period];
 			if ($accountIds) $filters['account_id'] = implode(',', $accountIds);
 			$existingLinks = NoteLink::getList('report', $filters, 'id', 'ASC', 'search');
-			print_r($existingLinks); exit;
 			foreach ($existingLinks as $link) {
 				if (!isset($reportComputed[$link->account_id])) {
 					$reportComputed[$link->account_id] = [
@@ -537,10 +542,12 @@ class ReportController extends AbstractActionController
 					if ($globalReport['absences'] >= 20 && $globalReport['link']->evaluation != 15) {
 						$acquisitions[$globalReport['link']->id] = 15;
 					}
-	
-					$globalAverage = round($globalSum / $globalReferenceValue * $globalReport['link']->reference_value * 100) / 100;
-					if ($globalReport['link']->value != $globalAverage) {
-						$values[$globalReport['link']->id] = $globalAverage;
+
+					if ($globalReferenceValue) {
+						$globalAverage = round($globalSum / $globalReferenceValue * $globalReport['link']->reference_value * 100) / 100;
+						if ($globalReport['link']->value != $globalAverage) {
+							$values[$globalReport['link']->id] = $globalAverage;
+						}	
 					}
 				}
 			}
@@ -551,13 +558,13 @@ class ReportController extends AbstractActionController
 				'value' => $values,
 				'evaluation' => $acquisitions,
 			]];
-		}
+		/*}
 		
 		catch (\Exception $e) {
 			$connection->rollback();
 			$this->response->setStatusCode('500');
 			return $this->response;
-		}
+		}*/
 
 		$connection->commit();
 		$this->response->setStatusCode('200');
