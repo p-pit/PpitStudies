@@ -336,6 +336,12 @@ class ReportController extends AbstractActionController
 			return $view;
 		}
  
+		// Authentication
+		if (!$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+
 		$requestBody = json_decode($this->getRequest()->getContent(), true);
 		$reportIds = (isset($requestBody['ids'])) ? $requestBody['ids'] : [];
 		$school_year = (isset($requestBody['school_year'])) ? $requestBody['school_year'] : null;
@@ -471,7 +477,13 @@ class ReportController extends AbstractActionController
     		$view->setTerminal(true);
 			return $view;
 		}
- 
+  
+		// Authentication
+		if (!$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+
 		$requestBody = json_decode($this->getRequest()->getContent(), true);
 		if (isset($requestBody['accountIds'])) $accountIds = $requestBody['accountIds'];
 		else $accountIds = null;
