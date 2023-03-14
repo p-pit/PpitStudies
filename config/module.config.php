@@ -2196,7 +2196,6 @@ return array_merge(
 	'commitment/group/p-pit-studies' => array(
 		'status' => [],
 		'caption' => [],
-		'property_3' => [],
 		'description' => [],
 	),
 	
