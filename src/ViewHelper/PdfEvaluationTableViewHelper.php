@@ -56,7 +56,7 @@ class PdfEvaluationTableViewHelper
 						}
 						foreach ($values as $modality) {
 							if ($modality['value'] == $evaluation->value) {
-								if ($modality['value'] == $evaluation->evaluation) {
+								if ($modality['value'] === $evaluation->evaluation) {
 									$value = $evaluation->evaluation;
 								} else {
 									$value = $context->localize($modality);
