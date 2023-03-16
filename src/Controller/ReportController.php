@@ -364,7 +364,7 @@ class ReportController extends AbstractActionController
 			$reportComputed = [];
 
 			// Create the dictionary of reports by key = account + subject + year + period
-			$existingLinks = NoteLink::getList('evaluation', ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
+			$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
 			foreach ($existingLinks as $link) {
 				if (!in_array($link->account_id, $accountIds)) $accountIds[] = $link->account_id;
 				$weight = ($link->specific_weight) ? $link->specific_weight : $link->weight; 
@@ -399,7 +399,7 @@ class ReportController extends AbstractActionController
 			$allAbsences = Event::GetList('absence', array('account_id' => implode(",", $accountIds), 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
 			foreach ($allAbsences as $absence) {
 				$key = $absence->account_id . '_' . $absence->property_3 . '_' . $absence->property_1 . '_' . 'Q1';
-				if (isset($reportComputed[$key])) { print_r($absence->id . "\n");
+				if (isset($reportComputed[$key])) {
 					$reportComputed[$key]['absences'][] = $absence;
 				}
 				$globalKey = $absence->account_id . '_global_' . $absence->property_1 . '_' . 'Q1';
@@ -444,9 +444,11 @@ class ReportController extends AbstractActionController
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
 				}
 				if ($reportLink['average']['referenceValue']) {
-					/*if ($reportLink['link']->value !== null)*/ $values[$reportLink['link']->id] = $reportLink['link']->value;
+					if ($reportLink['link']->value === null) $values[$reportLink['link']->id] = $reportLink['link']->value;
 				}
-				if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [10, 12, 16])) $acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+				if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [10, 12, 16])) {
+					if ($reportLink['acquisition'] === null) $acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+				}
 			}
 			if ($values) NoteLink::updateCase('value', $values);
 			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
