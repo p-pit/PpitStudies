@@ -381,7 +381,10 @@ class ReportController extends AbstractActionController
 			}
 
 			// Report case : Retrieve the notes to compute the averages and restrict on the selected report scope
-			$existingNotes = NoteLink::select('note', [], 'id', 'ASC');
+			$filters = [];
+			if ($school_year) $filters['school_year'] = $school_year;
+			if ($school_period) $filters['school_period'] = $school_period;
+			$existingNotes = NoteLink::select('note', $filters, 'id', 'ASC');
 			$notes = [];
 			foreach ($existingNotes as $note) {
 				if ($note['evaluation'] === 'Non évalué') continue;
