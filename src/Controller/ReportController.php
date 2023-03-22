@@ -522,7 +522,7 @@ class ReportController extends AbstractActionController
 				if ($link->subject == 'global') {
 
 					// Don't do anything if the global average has been manually forced 
-					if (!in_array($link->evaluation, [10, 12, 16])) {
+					if (!in_array($link->evaluation, [12, 13, 16])) {
 						$reportComputed[$link->account_id]['link'] = $link;
 					}
 				}
@@ -583,7 +583,7 @@ class ReportController extends AbstractActionController
 			return $this->response;
 		}*/
 
-		//$connection->commit();
+		$connection->commit();
 		$this->response->setStatusCode('200');
 		echo json_encode($responseBody);
 		return $this->response;
