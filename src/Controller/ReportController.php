@@ -570,10 +570,10 @@ class ReportController extends AbstractActionController
 			}
 
 			if ($values) NoteLink::updateCase('value', $values);
-			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
+			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
-				'evaluation' => $acquisitions,
+				//'evaluation' => $acquisitions,
 			]];
 		/*}
 		
@@ -583,7 +583,7 @@ class ReportController extends AbstractActionController
 			return $this->response;
 		}*/
 
-		$connection->commit();
+		//$connection->commit();
 		$this->response->setStatusCode('200');
 		echo json_encode($responseBody);
 		return $this->response;
