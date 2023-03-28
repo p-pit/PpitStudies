@@ -5146,6 +5146,8 @@ table.note-report tr.period {
 			'realized' => array('en_US' => 'Realized', 'fr_FR' => 'Réalisé'),
 			'to_invoice' => array('en_US' => 'To Invoice', 'fr_FR' => 'A facturer'),
 			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
+			'replaced' => array('en_US' => 'replaced', 'fr_FR' => 'Remplacé'),
+
 		),
 		'labels' => array(
 			'en_US' => 'Status',
