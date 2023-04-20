@@ -350,7 +350,7 @@ class ReportController extends AbstractActionController
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
-		try {
+		//try {
 
 			// Retrieve the existing reports
 			$filters = [];
@@ -459,13 +459,13 @@ class ReportController extends AbstractActionController
 				'value' => $values,
 				'evaluation' => $acquisitions,
 			]];
-		}
+		/*}
 		
 		catch (\Exception $e) {
 			$connection->rollback();
 			$this->response->setStatusCode('500');
 			return $this->response;
-		}
+		}*/
 
 		$connection->commit();
 		$this->response->setStatusCode('200');
