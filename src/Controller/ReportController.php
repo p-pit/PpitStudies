@@ -443,9 +443,9 @@ class ReportController extends AbstractActionController
 			$values = [];
 			$acquisitions = [];
 			foreach ($reportComputed as $key => &$reportLink) {
-				if ($reportLink['report']->subject == 'global') {
+				/*if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
-				}
+				}*/
 				if ($reportLink['average']['referenceValue']) {
 					$values[$reportLink['link']->id] = $reportLink['link']->value;
 				}
@@ -457,7 +457,7 @@ class ReportController extends AbstractActionController
 			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
-				//'evaluation' => $acquisitions,
+				'evaluation' => $acquisitions,
 			]];
 		}
 		
@@ -573,7 +573,7 @@ class ReportController extends AbstractActionController
 			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
-				//'evaluation' => $acquisitions,
+				'evaluation' => $acquisitions,
 			]];
 		/*}
 		
