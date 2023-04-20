@@ -350,7 +350,7 @@ class ReportController extends AbstractActionController
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
-		try {
+		//try {
 
 			// Retrieve the existing reports
 			$filters = [];
@@ -407,7 +407,7 @@ class ReportController extends AbstractActionController
 				}
 				$globalKey = $absence->account_id . '_global_' . $absence->property_1 . '_' . 'Q1';
 				if (isset($reportComputed[$globalKey])) {
-					$reportComputed[$globalKey][$absences][] = $absence;
+					$reportComputed[$globalKey]['absences'][] = $absence;
 				}
 			}
 
@@ -446,11 +446,13 @@ class ReportController extends AbstractActionController
 				/*if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
 				}*/
-				if ($reportLink['average']['referenceValue']) {
-					$values[$reportLink['link']->id] = $reportLink['link']->value;
-				}
-				if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
-					$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+				if ($reportLink['report']->subject == 'global') {
+					if ($reportLink['average']['referenceValue']) {
+						$values[$reportLink['link']->id] = $reportLink['link']->value;
+					}
+					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
+						$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+					}
 				}
 			}
 			if ($values) NoteLink::updateCase('value', $values);
@@ -459,13 +461,13 @@ class ReportController extends AbstractActionController
 				'value' => $values,
 				'evaluation' => $acquisitions,
 			]];
-		}
+		/*}
 		
 		catch (\Exception $e) {
 			$connection->rollback();
 			$this->response->setStatusCode('500');
 			return $this->response;
-		}
+		}*/
 
 		$connection->commit();
 		$this->response->setStatusCode('200');
