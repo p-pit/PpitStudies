@@ -407,7 +407,7 @@ class ReportController extends AbstractActionController
 				}
 				$globalKey = $absence->account_id . '_global_' . $absence->property_1 . '_' . 'Q1';
 				if (isset($reportComputed[$globalKey])) {
-					$reportComputed[$globalKey][$absences][] = $absence;
+					$reportComputed[$globalKey]['absences'][] = $absence;
 				}
 			}
 
