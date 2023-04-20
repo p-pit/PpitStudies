@@ -446,11 +446,13 @@ class ReportController extends AbstractActionController
 				/*if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
 				}*/
-				if ($reportLink['average']['referenceValue']) {
-					$values[$reportLink['link']->id] = $reportLink['link']->value;
-				}
-				if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
-					$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+				if ($reportLink['report']->subject != 'global') {
+					if ($reportLink['average']['referenceValue']) {
+						$values[$reportLink['link']->id] = $reportLink['link']->value;
+					}
+					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
+						$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+					}
 				}
 			}
 			if ($values) NoteLink::updateCase('value', $values);
