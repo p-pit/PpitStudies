@@ -454,7 +454,7 @@ class ReportController extends AbstractActionController
 				}
 			}
 			if ($values) NoteLink::updateCase('value', $values);
-			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
+			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
 				'evaluation' => $acquisitions,
@@ -570,7 +570,7 @@ class ReportController extends AbstractActionController
 			}
 
 			if ($values) NoteLink::updateCase('value', $values);
-			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
+			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
 				'evaluation' => $acquisitions,
