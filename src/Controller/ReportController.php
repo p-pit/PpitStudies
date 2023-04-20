@@ -364,7 +364,7 @@ class ReportController extends AbstractActionController
 			$reportComputed = [];
 
 			// Create the dictionary of reports by key = account + subject + year + period
-			$existingLinks = NoteLink::getList('evaluation', ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
+			$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
 			foreach ($existingLinks as $link) {
 				if (!in_array($link->account_id, $accountIds)) $accountIds[] = $link->account_id;
 				$weight = ($link->specific_weight) ? $link->specific_weight : $link->weight; 
@@ -381,7 +381,10 @@ class ReportController extends AbstractActionController
 			}
 
 			// Report case : Retrieve the notes to compute the averages and restrict on the selected report scope
-			$existingNotes = NoteLink::select('note', [], 'id', 'ASC');
+			$filters = [];
+			if ($school_year) $filters['school_year'] = $school_year;
+			if ($school_period) $filters['school_period'] = $school_period;
+			$existingNotes = NoteLink::select('note', $filters, 'id', 'ASC');
 			$notes = [];
 			foreach ($existingNotes as $note) {
 				if ($note['evaluation'] === 'Non évalué') continue;
@@ -399,7 +402,7 @@ class ReportController extends AbstractActionController
 			$allAbsences = Event::GetList('absence', array('account_id' => implode(",", $accountIds), 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
 			foreach ($allAbsences as $absence) {
 				$key = $absence->account_id . '_' . $absence->property_3 . '_' . $absence->property_1 . '_' . 'Q1';
-				if (isset($reportComputed[$key])) { print_r($absence->id . "\n");
+				if (isset($reportComputed[$key])) {
 					$reportComputed[$key]['absences'][] = $absence;
 				}
 				$globalKey = $absence->account_id . '_global_' . $absence->property_1 . '_' . 'Q1';
@@ -421,9 +424,9 @@ class ReportController extends AbstractActionController
 							$report['average']['referenceValue'] += $reportLink['report']->reference_value * $reportLink['report']->weight;
 						}
 					}
-					if (!in_array($reportLink['acquisition'], [10, 12, 16])) {
+					if (!in_array($reportLink['acquisition'], [12, 13, 16])) {
 						if (count($reportLink['absences']) >=3) $reportLink['acquisition'] = 15;
-						elseif ($reportLink['link']->value <= 1) $reportLink['acquisition'] = 13;
+						elseif ($reportLink['link']->value <= 1) $reportLink['acquisition'] = 10;
 					}
 
 					$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
@@ -440,16 +443,18 @@ class ReportController extends AbstractActionController
 			$values = [];
 			$acquisitions = [];
 			foreach ($reportComputed as $key => &$reportLink) {
-				if ($reportLink['report']->subject == 'global') {
+				/*if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
-				}
+				}*/
 				if ($reportLink['average']['referenceValue']) {
-					/*if ($reportLink['link']->value !== null)*/ $values[$reportLink['link']->id] = $reportLink['link']->value;
+					$values[$reportLink['link']->id] = $reportLink['link']->value;
 				}
-				if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [10, 12, 16])) $acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+				if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
+					$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+				}
 			}
 			if ($values) NoteLink::updateCase('value', $values);
-			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
+			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
 				'evaluation' => $acquisitions,
@@ -462,7 +467,7 @@ class ReportController extends AbstractActionController
 			return $this->response;
 		}
 
-		//$connection->commit();
+		$connection->commit();
 		$this->response->setStatusCode('200');
 		echo json_encode($responseBody);
 		return $this->response;
@@ -517,7 +522,7 @@ class ReportController extends AbstractActionController
 				if ($link->subject == 'global') {
 
 					// Don't do anything if the global average has been manually forced 
-					if (!in_array($link->evaluation, [10, 12, 16])) {
+					if (!in_array($link->evaluation, [12, 13, 16])) {
 						$reportComputed[$link->account_id]['link'] = $link;
 					}
 				}
@@ -565,7 +570,7 @@ class ReportController extends AbstractActionController
 			}
 
 			if ($values) NoteLink::updateCase('value', $values);
-			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
+			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
 				'evaluation' => $acquisitions,

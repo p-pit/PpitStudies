@@ -107,6 +107,8 @@ function getSearch()
         }
       });
 
+      $('#export-button').click(function () { exportNoteLinkList(); });
+
       getNoteLinkList(getSearchParams(''));
     }
   }
@@ -320,8 +322,6 @@ function getNoteLinkList(params) {
         $('#limit').val(null); 
         getNoteLinkList(getSearchParams(''));
       });
-
-      $('#export-button').click(function () { exportNoteLinkList(); });
 
       $('.to-mask').hide();
 			
