@@ -434,6 +434,7 @@ class ReportController extends AbstractActionController
 							$reportLink['acquisition'] = 10;
 							$acquisitions[$reportLink['link']->id] = 10;
 						}
+						else $acquisitions[$reportLink['link']->id] = null;
 					}
 
 					/*$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
