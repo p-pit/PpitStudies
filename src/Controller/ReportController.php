@@ -412,6 +412,7 @@ class ReportController extends AbstractActionController
 			}
 
 			// Compute the averages
+			$acquisitions = [];
 			foreach ($reportComputed as $key => &$reportLink) {
 				if ($reportLink['report']->subject != 'global') {
 					if ($reportLink['average']['referenceValue']) {
@@ -425,33 +426,38 @@ class ReportController extends AbstractActionController
 						}
 					}
 					if (!in_array($reportLink['acquisition'], [12, 13, 16])) {
-						if (count($reportLink['absences']) >=3) $reportLink['acquisition'] = 15;
-						elseif ($reportLink['link']->value <= 1) $reportLink['acquisition'] = 10;
+						if (count($reportLink['absences']) >=3) {
+							$reportLink['acquisition'] = 15;
+							$acquisitions[$reportLink['link']->id] = 15;
+						}
+						elseif ($reportLink['link']->value <= 1) {
+							$reportLink['acquisition'] = 10;
+							$acquisitions[$reportLink['link']->id] = 10;
+						}
 					}
 
-					$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
+					/*$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
 					if (isset($reportComputed[$globalKey])) {
 						$globalReport = &$reportComputed[$globalKey];
 						$globalReport['notes'][] = $reportLink['report'];	
 						$weight = ($reportLink['link']->specific_weight) ? $reportLink['link']->specific_weight : $reportLink['weight'];
 						$globalReport['average']['sum'] += $reportLink['link']->value * $weight;
 						$globalReport['average']['referenceValue'] += $reportLink['report']->reference_value * $weight;
-					}
+					}*/
 				}
 			}
 
 			$values = [];
-			$acquisitions = [];
 			foreach ($reportComputed as $key => &$reportLink) {
-				/*if ($reportLink['report']->subject == 'global') {
+				if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
-				}*/
+				}
 				if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) {
 						$values[$reportLink['link']->id] = $reportLink['link']->value;
 					}
 					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
-						$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+						//$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
 					}
 				}
 			}
@@ -469,7 +475,7 @@ class ReportController extends AbstractActionController
 			return $this->response;
 		}*/
 
-		$connection->commit();
+		//$connection->commit();
 		$this->response->setStatusCode('200');
 		echo json_encode($responseBody);
 		return $this->response;
