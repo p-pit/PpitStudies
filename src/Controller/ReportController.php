@@ -412,11 +412,13 @@ class ReportController extends AbstractActionController
 			}
 
 			// Compute the averages
+			$values = [];
 			$acquisitions = [];
 			foreach ($reportComputed as $key => &$reportLink) {
 				if ($reportLink['report']->subject != 'global') {
 					if ($reportLink['average']['referenceValue']) {
-						$reportLink['link']->value = round($reportLink['average']['sum'] / $reportLink['average']['referenceValue'] * $reportLink['link']->reference_value * 100) / 100;
+						$reportLink['link']->value = round($reportLink['average']['sum'] / $reportLink['average']['referenceValue'] * $reportLink['link']->reference_value * 100) / 100; // Deprecated
+						$values[$reportLink['link']->id] = round($reportLink['average']['sum'] / $reportLink['average']['referenceValue'] * $reportLink['link']->reference_value * 100) / 100;
 						$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['link']->school_year . '_' . $reportLink['link']->school_period;
 						if (isset($reportComputed[$globalKey])) {
 							$report = $reportComputed[$globalKey];
@@ -427,11 +429,11 @@ class ReportController extends AbstractActionController
 					}
 					if (!in_array($reportLink['acquisition'], [12, 13, 16])) {
 						if (count($reportLink['absences']) >=3) {
-							$reportLink['acquisition'] = 15;
+							$reportLink['acquisition'] = 15; // Deprecated
 							$acquisitions[$reportLink['link']->id] = 15;
 						}
 						elseif ($reportLink['link']->value <= 1) {
-							$reportLink['acquisition'] = 10;
+							$reportLink['acquisition'] = 10; // Deprecated
 							$acquisitions[$reportLink['link']->id] = 10;
 						}
 						else $acquisitions[$reportLink['link']->id] = null;
@@ -448,14 +450,13 @@ class ReportController extends AbstractActionController
 				}
 			}
 
-			$values = [];
 			foreach ($reportComputed as $key => &$reportLink) {
 				if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
 				}
-				if ($reportLink['report']->subject == 'global') {
+				if ($reportLink['report']->subject != 'global') {
 					if ($reportLink['average']['referenceValue']) {
-						$values[$reportLink['link']->id] = $reportLink['link']->value;
+						//$values[$reportLink['link']->id] = $reportLink['link']->value;
 					}
 					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
 						//$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
