@@ -353,9 +353,9 @@ class NoteLinkController extends AbstractActionController
 			if ($value !== null/* && $propertyId != 'value'*/) $filters[$propertyId] = $value;
 		}
 		if ($type == 'report'/* && $filters*/) {
-			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+			//$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			$notes = NoteLink::GetList('note', $filters, 'subject', 'ASC', 'search');
-			$averages = [];
+			/*$averages = [];
 			foreach ($notes as $link) {
 				if (!array_key_exists($link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject, $averages)) {
 					$averages[$link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject] = [
@@ -390,9 +390,9 @@ class NoteLinkController extends AbstractActionController
 					$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['den'] += $averageReference;
 				}
 			}
-			$averages = array_merge($averages, $globalAverages);
+			$averages = array_merge($averages, $globalAverages);*/
 		}
-		else $averages = [];
+		//else $averages = [];
 		
 		$view = new ViewModel(array(
 			'context' => $context,
@@ -401,7 +401,7 @@ class NoteLinkController extends AbstractActionController
 			//'teachers' => $teachers,
 			'groups' => $groups,
 			'content' => $content,
-			'averages' => $averages,
+			//'averages' => $averages,
 			'statusCode' => $this->response->getStatusCode(),
 			'reasonPhrase' => $this->response->getReasonPhrase(),
 			'order' => $order,
