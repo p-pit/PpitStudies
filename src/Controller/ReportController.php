@@ -336,21 +336,33 @@ class ReportController extends AbstractActionController
 			return $view;
 		}
  
+		// Authentication
+		if (!$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+
 		$requestBody = json_decode($this->getRequest()->getContent(), true);
-		$reportIds = $requestBody['ids'];
+		$reportIds = (isset($requestBody['ids'])) ? $requestBody['ids'] : [];
+		$school_year = (isset($requestBody['school_year'])) ? $requestBody['school_year'] : null;
+		$school_period = (isset($requestBody['school_period'])) ? $requestBody['school_period'] : null;
 		
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
-		try {
+		//try {
 
 			// Retrieve the existing reports
-			$filters = ['id' => $reportIds];
+			$filters = [];
+			if ($reportIds) $filters['id'] = $reportIds;
+			if ($school_year) $filters['school_year'] = $school_year;
+			if ($school_period) $filters['school_period'] = $school_period;
 			$existingReportsById = Note::GetList('evaluation', 'report', $filters, 'id', 'ASC', 'search', null);
+			if (!$reportIds) foreach ($existingReportsById as $report) $reportIds[] = $report->id;
 
 			$accountIds = [];
 			$reportComputed = [];
-	
+
 			// Create the dictionary of reports by key = account + subject + year + period
 			$existingLinks = NoteLink::getList(null, ['note_id' => implode(',', $reportIds)], 'id', 'ASC', 'search');
 			foreach ($existingLinks as $link) {
@@ -369,7 +381,10 @@ class ReportController extends AbstractActionController
 			}
 
 			// Report case : Retrieve the notes to compute the averages and restrict on the selected report scope
-			$existingNotes = NoteLink::select('note', [], 'id', 'ASC');
+			$filters = [];
+			if ($school_year) $filters['school_year'] = $school_year;
+			if ($school_period) $filters['school_period'] = $school_period;
+			$existingNotes = NoteLink::select('note', $filters, 'id', 'ASC');
 			$notes = [];
 			foreach ($existingNotes as $note) {
 				if ($note['evaluation'] === 'Non évalué') continue;
@@ -387,20 +402,23 @@ class ReportController extends AbstractActionController
 			$allAbsences = Event::GetList('absence', array('account_id' => implode(",", $accountIds), 'property_1' => $context->getConfig('student/property/school_year/default')), '-begin_date', null);
 			foreach ($allAbsences as $absence) {
 				$key = $absence->account_id . '_' . $absence->property_3 . '_' . $absence->property_1 . '_' . 'Q1';
-				if (isset($reportComputed[$key])) { print_r($absence->id . "\n");
+				if (isset($reportComputed[$key])) {
 					$reportComputed[$key]['absences'][] = $absence;
 				}
 				$globalKey = $absence->account_id . '_global_' . $absence->property_1 . '_' . 'Q1';
 				if (isset($reportComputed[$globalKey])) {
-					$reportComputed[$globalKey][$absences][] = $absence;
+					$reportComputed[$globalKey]['absences'][] = $absence;
 				}
 			}
 
 			// Compute the averages
+			$values = [];
+			$acquisitions = [];
 			foreach ($reportComputed as $key => &$reportLink) {
 				if ($reportLink['report']->subject != 'global') {
 					if ($reportLink['average']['referenceValue']) {
-						$reportLink['link']->value = round($reportLink['average']['sum'] / $reportLink['average']['referenceValue'] * $reportLink['link']->reference_value * 100) / 100;
+						$reportLink['link']->value = round($reportLink['average']['sum'] / $reportLink['average']['referenceValue'] * $reportLink['link']->reference_value * 100) / 100; // Deprecated
+						$values[$reportLink['link']->id] = round($reportLink['average']['sum'] / $reportLink['average']['referenceValue'] * $reportLink['link']->reference_value * 100) / 100;
 						$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['link']->school_year . '_' . $reportLink['link']->school_period;
 						if (isset($reportComputed[$globalKey])) {
 							$report = $reportComputed[$globalKey];
@@ -409,32 +427,41 @@ class ReportController extends AbstractActionController
 							$report['average']['referenceValue'] += $reportLink['report']->reference_value * $reportLink['report']->weight;
 						}
 					}
-					if (!in_array($reportLink['acquisition'], [10, 12, 16])) {
-						if (count($reportLink['absences']) >=3) $reportLink['acquisition'] = 15;
-						elseif ($reportLink['link']->value <= 1) $reportLink['acquisition'] = 13;
+					if (!in_array($reportLink['acquisition'], [12, 13, 16])) {
+						if (count($reportLink['absences']) >=3) {
+							$reportLink['acquisition'] = 15; // Deprecated
+							$acquisitions[$reportLink['link']->id] = 15;
+						}
+						elseif ($reportLink['link']->value <= 1) {
+							$reportLink['acquisition'] = 10; // Deprecated
+							$acquisitions[$reportLink['link']->id] = 10;
+						}
+						else $acquisitions[$reportLink['link']->id] = null;
 					}
 
-					$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
+					/*$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
 					if (isset($reportComputed[$globalKey])) {
 						$globalReport = &$reportComputed[$globalKey];
 						$globalReport['notes'][] = $reportLink['report'];	
 						$weight = ($reportLink['link']->specific_weight) ? $reportLink['link']->specific_weight : $reportLink['weight'];
 						$globalReport['average']['sum'] += $reportLink['link']->value * $weight;
 						$globalReport['average']['referenceValue'] += $reportLink['report']->reference_value * $weight;
-					}
+					}*/
 				}
 			}
 
-			$values = [];
-			$acquisitions = [];
 			foreach ($reportComputed as $key => &$reportLink) {
 				if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
 				}
-				if ($reportLink['average']['referenceValue']) {
-					/*if ($reportLink['link']->value !== null)*/ $values[$reportLink['link']->id] = $reportLink['link']->value;
+				if ($reportLink['report']->subject != 'global') {
+					if ($reportLink['average']['referenceValue']) {
+						//$values[$reportLink['link']->id] = $reportLink['link']->value;
+					}
+					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
+						//$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
+					}
 				}
-				if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [10, 12, 16])) $acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
 			}
 			if ($values) NoteLink::updateCase('value', $values);
 			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
@@ -442,13 +469,13 @@ class ReportController extends AbstractActionController
 				'value' => $values,
 				'evaluation' => $acquisitions,
 			]];
-		}
+		/*}
 		
 		catch (\Exception $e) {
 			$connection->rollback();
 			$this->response->setStatusCode('500');
 			return $this->response;
-		}
+		}*/
 
 		$connection->commit();
 		$this->response->setStatusCode('200');
@@ -465,7 +492,13 @@ class ReportController extends AbstractActionController
     		$view->setTerminal(true);
 			return $view;
 		}
- 
+  
+		// Authentication
+		if (!$context->wsAuthenticate($this->getEvent())) {
+			$this->getResponse()->setStatusCode('401');
+			return $this->getResponse();
+		}
+
 		$requestBody = json_decode($this->getRequest()->getContent(), true);
 		if (isset($requestBody['accountIds'])) $accountIds = $requestBody['accountIds'];
 		else $accountIds = null;
@@ -480,7 +513,7 @@ class ReportController extends AbstractActionController
 		// Atomically save
 		$connection = Note::getTable()->getAdapter()->getDriver()->getConnection();
 		$connection->beginTransaction();
-		try {
+		//try {
 
 			$reportComputed = [];
 	
@@ -488,7 +521,6 @@ class ReportController extends AbstractActionController
 			$filters = ['school_year' => $school_year, 'school_period' => $school_period];
 			if ($accountIds) $filters['account_id'] = implode(',', $accountIds);
 			$existingLinks = NoteLink::getList('report', $filters, 'id', 'ASC', 'search');
-			print_r($existingLinks); exit;
 			foreach ($existingLinks as $link) {
 				if (!isset($reportComputed[$link->account_id])) {
 					$reportComputed[$link->account_id] = [
@@ -500,7 +532,7 @@ class ReportController extends AbstractActionController
 				if ($link->subject == 'global') {
 
 					// Don't do anything if the global average has been manually forced 
-					if (!in_array($link->evaluation, [10, 12, 16])) {
+					if (!in_array($link->evaluation, [12, 13, 16])) {
 						$reportComputed[$link->account_id]['link'] = $link;
 					}
 				}
@@ -537,10 +569,12 @@ class ReportController extends AbstractActionController
 					if ($globalReport['absences'] >= 20 && $globalReport['link']->evaluation != 15) {
 						$acquisitions[$globalReport['link']->id] = 15;
 					}
-	
-					$globalAverage = round($globalSum / $globalReferenceValue * $globalReport['link']->reference_value * 100) / 100;
-					if ($globalReport['link']->value != $globalAverage) {
-						$values[$globalReport['link']->id] = $globalAverage;
+
+					if ($globalReferenceValue) {
+						$globalAverage = round($globalSum / $globalReferenceValue * $globalReport['link']->reference_value * 100) / 100;
+						if ($globalReport['link']->value != $globalAverage) {
+							$values[$globalReport['link']->id] = $globalAverage;
+						}	
 					}
 				}
 			}
@@ -551,13 +585,13 @@ class ReportController extends AbstractActionController
 				'value' => $values,
 				'evaluation' => $acquisitions,
 			]];
-		}
+		/*}
 		
 		catch (\Exception $e) {
 			$connection->rollback();
 			$this->response->setStatusCode('500');
 			return $this->response;
-		}
+		}*/
 
 		$connection->commit();
 		$this->response->setStatusCode('200');

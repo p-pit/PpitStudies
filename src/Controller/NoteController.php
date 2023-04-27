@@ -437,7 +437,7 @@ class NoteController extends AbstractActionController
     	$category = $this->params()->fromRoute('category');
     	$type = $this->params()->fromRoute('type');
     	$accountConfig = Account::getConfig('p-pit-studies');
-		$cursor = Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+name', null);
+		$cursor = Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+n_fn', null);
 		$teachers = [];
 		foreach ($cursor as $teacher) $teachers[$teacher->contact_1_id] = $teacher;
 

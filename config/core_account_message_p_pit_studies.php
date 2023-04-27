@@ -11,7 +11,7 @@ define('CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES', [
 
 	'commitments/message/p-pit-studies/attendance/data' => [
 		'absenceMotives' => [
-			'health_absence' => ['medical'],
+			'health_absence' => ['medical', 'work'],
 			'vacation_absence' => [],
 			'necessity_absence' => [],
 			'business_absence' => ['enterprise'],
