@@ -5376,6 +5376,7 @@ table.note-report tr.period {
 				'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
 				'repetition' => array('en_US' => 'Repetition', 'fr_FR' => 'Répétition'),
 				'exclusion' => array('en_US' => 'Exclusion', 'fr_FR' => 'Exclusion'),
+
 				'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 		),
 		'labels' => array(
@@ -5763,10 +5764,12 @@ table.note-report tr.period {
 			'exclusion_class' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Exclusion de cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'exclusion_class']],
 
             'unjustified' => ['position' => 'L', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-            'other' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+			'unrecevable' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Non recevable'], 'background' => '#EBF1DE','filter' => ['property_12' =>'unrecevable']],
+			'other' => ['position' => 'N', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+
 
             'total_student' => [
-                'position' => 'N',
+                'position' => 'O',
                 'type' => 'count',
                 'labels' => ['default' => 'Total Etudiant'],
                 'background' => '#EBF1DE',
@@ -5785,14 +5788,16 @@ table.note-report tr.period {
 			'exclusion_class' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Exclusion de cours'], 'background' => '#f44336','filter' => ['property_12' => 'exclusion_class']],
 
             'unjustified' => ['position' => 'L', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#f44336','filter' => ['property_12' => 'unjustified']],
-            'other' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+			'unrecevable' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Non recevable'], 'background' => '#f44336','filter' => ['property_12' =>'unrecevable']],
+			'other' => ['position' => 'N', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+
 
             'total_student' => [
-                'position' => 'N',
+                'position' => 'O',
                 'type' => 'count',
                 'labels' => ['default' => 'Total Etudiant Par Motif'],
                 'background' => '#f44336',
-                //'indicator' => ['to_justify','processing','medical','unjustified','other'],
+                //'indicator' => ['ƒ','processing','medical','unjustified','other'],
             ],
         ],
 	],
