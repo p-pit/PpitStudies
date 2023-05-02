@@ -3410,6 +3410,7 @@ return array_merge(
 			'profile_tiny_1',
 			'json_property_1', 'json_property_2', 'json_property_3',
 			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2', 'int_3',
+			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2', 'int_4',
 		),
 		'order' => 'opening_date',
 		'options' => ['internal_identifier' => true, 'unique_key' => true /*['n_fn', 'n_last', 'email', 'tel_cell']*/],
