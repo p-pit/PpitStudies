@@ -3678,6 +3678,8 @@ return array_merge(
 					'property_8' => array('mandatory' => false),
 					'property_2' => array('mandatory' => false),
 					'property_3' => array('mandatory' => false),
+					'property_20' => array('mandatory' => false),
+					'property_11' => array('mandatory' => false),
 				),
 			),
 			'2nd-column' => array(
