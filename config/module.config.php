@@ -1954,7 +1954,7 @@ return array_merge(
 			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
-			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20', 'account_int_1',
+			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20', 'account_int_1', 'account_int_3',
 			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier', 'account_contact_history', 'update_time',
 			'comment', 'shipment_date', 'shipment_message_id',
 		),
