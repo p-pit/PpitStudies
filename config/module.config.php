@@ -1925,6 +1925,7 @@ return array_merge(
 	'commitment/p-pit-studies/property/account_property_19' => ['definition' => 'core_account/p-pit-studies/property/property_19'],
 	'commitment/p-pit-studies/property/account_property_20' => ['definition' => 'core_account/p-pit-studies/property/property_20'],
 	'commitment/p-pit-studies/property/account_int_1' => ['definition' => 'core_account/p-pit-studies/property/int_1'],
+	'commitment/p-pit-studies/property/account_int_3' => ['definition' => 'core_account/p-pit-studies/property/int_3'],
 	// 'commitment/p-pit-studies/property/contact_4_n_fn' => ['definition' => 'core_account/p-pit-studies/property/contact_4_n_fn'],
 	// 'commitment/p-pit-studies/property/contact_4_email' => ['definition' => 'core_account/p-pit-studies/property/contact_4_email'],
 	// 'commitment/p-pit-studies/property/contact_4_tel_work' => ['definition' => 'core_account/p-pit-studies/property/contact_4_tel_work'],
@@ -1953,9 +1954,9 @@ return array_merge(
 			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
-			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20', 'account_int_1',
+			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20', 'account_int_1', 'account_int_3',
 			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier', 'account_contact_history', 'update_time',
-			'comment',
+			'comment', 'shipment_date', 'shipment_message_id',
 		),
 		'order' => 'school_year DESC',
 		'todo' => array(
@@ -3408,6 +3409,7 @@ return array_merge(
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19', 'property_20',
 			'profile_tiny_1',
 			'json_property_1', 'json_property_2', 'json_property_3',
+			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2', 'int_3',
 			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2', 'int_4',
 		),
 		'order' => 'opening_date',
@@ -5382,6 +5384,7 @@ table.note-report tr.period {
 				'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
 				'repetition' => array('en_US' => 'Repetition', 'fr_FR' => 'Répétition'),
 				'exclusion' => array('en_US' => 'Exclusion', 'fr_FR' => 'Exclusion'),
+
 				'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 		),
 		'labels' => array(
@@ -5769,10 +5772,12 @@ table.note-report tr.period {
 			'exclusion_class' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Exclusion de cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'exclusion_class']],
 
             'unjustified' => ['position' => 'L', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-            'other' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+			'unrecevable' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Non recevable'], 'background' => '#EBF1DE','filter' => ['property_12' =>'unrecevable']],
+			'other' => ['position' => 'N', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+
 
             'total_student' => [
-                'position' => 'N',
+                'position' => 'O',
                 'type' => 'count',
                 'labels' => ['default' => 'Total Etudiant'],
                 'background' => '#EBF1DE',
@@ -5791,14 +5796,16 @@ table.note-report tr.period {
 			'exclusion_class' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Exclusion de cours'], 'background' => '#f44336','filter' => ['property_12' => 'exclusion_class']],
 
             'unjustified' => ['position' => 'L', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#f44336','filter' => ['property_12' => 'unjustified']],
-            'other' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+			'unrecevable' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Non recevable'], 'background' => '#f44336','filter' => ['property_12' =>'unrecevable']],
+			'other' => ['position' => 'N', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+
 
             'total_student' => [
-                'position' => 'N',
+                'position' => 'O',
                 'type' => 'count',
                 'labels' => ['default' => 'Total Etudiant Par Motif'],
                 'background' => '#f44336',
-                //'indicator' => ['to_justify','processing','medical','unjustified','other'],
+                //'indicator' => ['ƒ','processing','medical','unjustified','other'],
             ],
         ],
 	],
