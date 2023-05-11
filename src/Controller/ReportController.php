@@ -434,6 +434,10 @@ class ReportController extends AbstractActionController
 							$reportLink['acquisition'] = 10;
 							$acquisitions[$reportLink['link']->id] = 10;
 						}
+						else {
+							$reportLink['acquisition'] = null;
+							$acquisitions[$reportLink['link']->id] = null;
+						}
 					}
 
 					/*$globalKey = $reportLink['link']->account_id . '_global_' . $reportLink['report']->school_year . '_' . $reportLink['report']->school_period;
@@ -452,7 +456,7 @@ class ReportController extends AbstractActionController
 				if ($reportLink['report']->subject == 'global') {
 					if ($reportLink['average']['referenceValue']) $reportLink['link']->value = round($reportLink['average']['sum'] * $reportLink['report']->reference_value / $reportLink['average']['referenceValue'] * 100) / 100;
 				}
-				if ($reportLink['report']->subject == 'global') {
+				if ($reportLink['report']->subject != 'global') {
 					if ($reportLink['average']['referenceValue']) {
 						$values[$reportLink['link']->id] = $reportLink['link']->value;
 					}
@@ -462,7 +466,7 @@ class ReportController extends AbstractActionController
 				}
 			}
 			if ($values) NoteLink::updateCase('value', $values);
-			//if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
+			if ($acquisitions) NoteLink::updateCase('evaluation', $acquisitions);
 			$responseBody = ['studentLinkPatched' => [
 				'value' => $values,
 				'evaluation' => $acquisitions,
