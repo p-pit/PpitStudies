@@ -1941,7 +1941,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'photo_link_id', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
+			'status', 'state', 'place_id', 'place_caption', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'photo_link_id', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -3940,6 +3940,7 @@ table.note-report td {
 	'commitmentTerm/p-pit-studies/property/commitment_property_10' => ['definition' => 'commitment/p-pit-studies/property/property_10'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_11' => ['definition' => 'commitment/p-pit-studies/property/property_11'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_12' => ['definition' => 'commitment/p-pit-studies/property/property_12'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_13' => ['definition' => 'commitment/p-pit-studies/property/property_13'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_15' => ['definition' => 'commitment/p-pit-studies/property/property_15'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_16' => ['definition' => 'commitment/p-pit-studies/property/property_16'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_17' => ['definition' => 'commitment/p-pit-studies/property/property_17'],
