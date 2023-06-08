@@ -5406,7 +5406,7 @@ table.note-report tr.period {
 		'properties' => array(
 			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn', 'account_groups',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
-			'property_1', 'property_2', 'property_3', 'property_4', 'property_6', 'property_11', 'property_12', 'account_property_15', 'account_property_18',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_6', 'property_11', 'property_12', 'property_13', 'account_property_15', 'account_property_18',
 			'update_time', 'count', 'email_work'
 		),
 	),
