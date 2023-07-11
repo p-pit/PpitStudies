@@ -6097,6 +6097,7 @@ table.note-report tr.period {
 					'group_id' => 'select',
 					'subject' => 'select',
 					'date' => 'date',
+					'account_email_work' => 'input',
 			),
 			'more' => array(
 			),
