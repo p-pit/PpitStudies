@@ -54,6 +54,7 @@ define('NOTE_LINK_GENERIC', [
 			'lower_note' => 		['entity' => 'student_note', 'column' => 'lower_note'],
 			'higher_note' => 		['entity' => 'student_note', 'column' => 'higher_note'],
 			'average_note' => 		['entity' => 'student_note', 'column' => 'average_note'],
+			'account_email_work' => ['entity' => 'core_account', 'column' => 'email_work'],
 		],
 	],
 	
@@ -170,7 +171,7 @@ define('NOTE_LINK_GENERIC', [
 		'properties' => [
 			'status', 'account_id', 'value', 'evaluation', 'assessment', 'update_time',
 			'place_id', 'n_fn', 'name', 'account_property_15',
-			'school_year', 'level', 'group_id', 'teacher_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'specific_weight', 'average', 'observations', 'lower_note', 'higher_note', 'average_note',
+			'school_year', 'level', 'group_id', 'teacher_id', 'class', 'school_period', 'subject', 'date', 'target_date', 'reference_value', 'weight', 'specific_weight', 'average', 'observations', 'lower_note', 'higher_note', 'average_note', 'account_email_work',
 		],
 	],
 

@@ -61,6 +61,7 @@ class NoteLink
 			'lower_note' => 		['entity' => 'student_note', 'column' => 'lower_note'],
 			'higher_note' => 		['entity' => 'student_note', 'column' => 'higher_note'],
 			'average_note' => 		['entity' => 'student_note', 'column' => 'average_note'],
+			'account_email_work' => ['entity' => 'core_account', 'column' => 'email_work'],
 		],
 	];
 
@@ -100,7 +101,7 @@ class NoteLink
 				$property['modalities'] = [];
 				if ($full) foreach (Account::getList('p-pit-studies', ['status' => 'active,retention'], '+name', null) as $account) $property['modalities'][$account->id] = ['default' => $account->n_fn];
 			}
-				
+			
 			// Cache the groups retrieved from the database for the current instance in the group_id property description
 			elseif ($propertyId == 'group_id') {
 				$property['modalities'] = [];
@@ -219,6 +220,7 @@ class NoteLink
     public $user_n_fn; // Deprecated
     public $name;
     public $account_property_15;
+	public $account_email_work;
     public $account_class; 
     public $note_status;
     public $category;
@@ -278,6 +280,7 @@ class NoteLink
         $this->user_n_fn = (isset($data['user_n_fn'])) ? $data['user_n_fn'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null; // Deprecated
         $this->account_property_15 = (isset($data['account_property_15'])) ? $data['account_property_15'] : null; // Deprecated
+		$this->account_email_work = (isset($data['account_email_work'])) ? $data['account_email_work'] : null;
         $this->account_class = (isset($data['account_class'])) ? $data['account_class'] : null;
         $this->note_status = (isset($data['note_status'])) ? $data['note_status'] : null;
         $this->category = (isset($data['category'])) ? $data['category'] : null;
@@ -327,6 +330,7 @@ class NoteLink
     	$data['user_n_fn'] =  $this->user_n_fn;
     	$data['name'] =  $this->name;
     	$data['account_property_15'] =  $this->account_property_15;
+		$data['account_email_work'] = $this->account_email_work;
     	$data['account_class'] =  $this->account_class;
     	$data['note_status'] =  $this->note_status;
     	$data['category'] =  $this->category;
@@ -362,6 +366,7 @@ class NoteLink
     	unset($data['user_n_fn']);
     	unset($data['name']);
     	unset($data['account_property_15']);
+		unset($data['account_email_work']);
     	unset($data['account_class']);
     	unset($data['note_status']);
     	unset($data['category']);
@@ -393,7 +398,7 @@ class NoteLink
     		->order(array($major.' '.$dir, 'name ASC', 'type ASC'))
     		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id'/*, 'class'*/, 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
-    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7'), 'left')
+    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7', 'account_email_work' => 'email_work'), 'left')
     		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('teacher_n_fn' => 'n_fn'), 'left');
     	$where = new Where;
     	$where->notEqualTo('student_note_link.status', 'deleted');
