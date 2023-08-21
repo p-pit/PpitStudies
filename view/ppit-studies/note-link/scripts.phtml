@@ -227,29 +227,6 @@ function postNoteLinkUpdate(id, panel) {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           $('#' + panel).html(xhttp.responseText);
-          
-<?php if ($type == 'report') : ?>
-          const school_year = $('#update-school_year').val(), school_period = $('#update-school_period').val();
-          if (school_year == '<?php echo $context->getConfig('student/property/school_year/default') ?>') { 
-              xhttp = new XMLHttpRequest(); route = '<?php echo $this->url('report/globalFix') ?>';
-              const body = {
-                "school_year": school_year,
-                "school_period": school_period,
-                "accountIds": [$('#update-account_id').val()]
-              }
-              xhttp.open('POST', route, true);
-              xhttp.onreadystatechange = function() {
-                if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
-                if (xhttp.readyState == 4) {
-                  if (!xhttp.status == 200) {
-                    toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
-                  }
-                }
-              }
-              xhttp.send(JSON.stringify(body));
-          }
-<?php endif ?>
-
         }
         else {
           toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>");
