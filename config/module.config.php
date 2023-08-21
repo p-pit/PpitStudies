@@ -1947,7 +1947,7 @@ return array_merge(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'state', 'place_id', 'place_caption', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'photo_link_id', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
+			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'photo_link_id', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -1962,7 +1962,7 @@ return array_merge(
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
 			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20', 'account_int_1', 'account_int_3',
 			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier', 'account_contact_history', 'update_time',
-			'comment', 'shipment_date', 'shipment_message_id', 'notification_time', 'place_caption','account_int_2',
+			'comment', 'shipment_date', 'shipment_message_id', 'notification_time', 'place_caption','int_2',
 		),
 		'order' => 'school_year DESC',
 		'todo' => array(
@@ -3946,7 +3946,6 @@ table.note-report td {
 	'commitmentTerm/p-pit-studies/property/commitment_property_10' => ['definition' => 'commitment/p-pit-studies/property/property_10'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_11' => ['definition' => 'commitment/p-pit-studies/property/property_11'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_12' => ['definition' => 'commitment/p-pit-studies/property/property_12'],
-	'commitmentTerm/p-pit-studies/property/commitment_property_13' => ['definition' => 'commitment/p-pit-studies/property/property_13'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_15' => ['definition' => 'commitment/p-pit-studies/property/property_15'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_16' => ['definition' => 'commitment/p-pit-studies/property/property_16'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_17' => ['definition' => 'commitment/p-pit-studies/property/property_17'],
