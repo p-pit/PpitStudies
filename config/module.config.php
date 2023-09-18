@@ -4535,10 +4535,10 @@ table.note-report td {
 					'fr_FR' => 'Année scolaire',
 			),
 	),
-	'student/property/school_year/default' => '2022-2023',
-	'student/property/school_year/next' => '2023-2024',
-	'student/property/school_year/start' => '2022-09-01',
-	'student/property/school_year/end' => '2023-07-31',
+	'student/property/school_year/default' => '2023-202',
+	'student/property/school_year/next' => '2024-2025',
+	'student/property/school_year/start' => '2023-09-01',
+	'student/property/school_year/end' => '2024-07-31',
 	
 	'student/property/school_period' => array(
 			'type' => 'select',
