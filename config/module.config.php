@@ -4535,7 +4535,7 @@ table.note-report td {
 					'fr_FR' => 'Année scolaire',
 			),
 	),
-	'student/property/school_year/default' => '2023-202',
+	'student/property/school_year/default' => '2023-2024',
 	'student/property/school_year/next' => '2024-2025',
 	'student/property/school_year/start' => '2023-09-01',
 	'student/property/school_year/end' => '2024-07-31',
