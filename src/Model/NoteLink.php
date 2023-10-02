@@ -52,7 +52,7 @@ class NoteLink
 			'school_period' => 		['entity' => 'student_note', 'column' => 'school_period'],
 			'subject' => 			['entity' => 'student_note', 'column' => 'subject'],
 			'teacher_id' => 		['entity' => 'student_note', 'column' => 'teacher_id'],
-			'teacher_n_fn' => 		['entity' => 'student_vcard', 'column' => 'n_fn'],
+			'teacher_n_fn' => 		['entity' => 'teacher_vcard', 'column' => 'n_fn'],
 			'date' => 				['entity' => 'student_note', 'column' => 'date'],
 			'target_date' => 		['entity' => 'student_note', 'column' => 'target_date'],
 			'reference_value' => 	['entity' => 'student_note', 'column' => 'reference_value'],
@@ -61,6 +61,7 @@ class NoteLink
 			'lower_note' => 		['entity' => 'student_note', 'column' => 'lower_note'],
 			'higher_note' => 		['entity' => 'student_note', 'column' => 'higher_note'],
 			'average_note' => 		['entity' => 'student_note', 'column' => 'average_note'],
+			'account_email_work' => ['entity' => 'core_account', 'column' => 'email_work'],
 		],
 	];
 
@@ -100,7 +101,7 @@ class NoteLink
 				$property['modalities'] = [];
 				if ($full) foreach (Account::getList('p-pit-studies', ['status' => 'active,retention'], '+name', null) as $account) $property['modalities'][$account->id] = ['default' => $account->n_fn];
 			}
-				
+			
 			// Cache the groups retrieved from the database for the current instance in the group_id property description
 			elseif ($propertyId == 'group_id') {
 				$property['modalities'] = [];
@@ -110,7 +111,7 @@ class NoteLink
 			// Cache the teachers retrieved from the database for the current instance in the group_id property description
 			elseif ($propertyId == 'teacher_id') {
 				$property['modalities'] = [];
-				if ($full) foreach (Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+name', null) as $teacher) $property['modalities'][$teacher->contact_1_id] = ['default' => $teacher->n_fn];
+				if ($full) foreach (Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+n_fn', null) as $teacher) $property['modalities'][$teacher->contact_1_id] = ['default' => $teacher->n_fn];
 			}
 				
 			// Cache the referred modalities definition for modalities not defined inline
@@ -219,6 +220,7 @@ class NoteLink
     public $user_n_fn; // Deprecated
     public $name;
     public $account_property_15;
+	public $account_email_work;
     public $account_class; 
     public $note_status;
     public $category;
@@ -278,6 +280,7 @@ class NoteLink
         $this->user_n_fn = (isset($data['user_n_fn'])) ? $data['user_n_fn'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null; // Deprecated
         $this->account_property_15 = (isset($data['account_property_15'])) ? $data['account_property_15'] : null; // Deprecated
+		$this->account_email_work = (isset($data['account_email_work'])) ? $data['account_email_work'] : null;
         $this->account_class = (isset($data['account_class'])) ? $data['account_class'] : null;
         $this->note_status = (isset($data['note_status'])) ? $data['note_status'] : null;
         $this->category = (isset($data['category'])) ? $data['category'] : null;
@@ -327,6 +330,7 @@ class NoteLink
     	$data['user_n_fn'] =  $this->user_n_fn;
     	$data['name'] =  $this->name;
     	$data['account_property_15'] =  $this->account_property_15;
+		$data['account_email_work'] = $this->account_email_work;
     	$data['account_class'] =  $this->account_class;
     	$data['note_status'] =  $this->note_status;
     	$data['category'] =  $this->category;
@@ -362,6 +366,7 @@ class NoteLink
     	unset($data['user_n_fn']);
     	unset($data['name']);
     	unset($data['account_property_15']);
+		unset($data['account_email_work']);
     	unset($data['account_class']);
     	unset($data['note_status']);
     	unset($data['category']);
@@ -393,8 +398,8 @@ class NoteLink
     		->order(array($major.' '.$dir, 'name ASC', 'type ASC'))
     		->join('student_note', 'student_note_link.note_id = student_note.id', array('place_id', 'note_status' => 'status', 'type', 'category', 'school_year', 'level', 'group_id'/*, 'class'*/, 'school_period', 'subject', 'teacher_id', 'date', 'target_date', 'reference_value', 'weight', 'observations', 'document', 'criteria', 'average_note', 'lower_note', 'higher_note'), 'left')
     		->join('core_place', 'student_note.place_id = core_place.id', array('place_caption' => 'caption'), 'left')
-    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7'), 'left')
-    		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('teacher_n_fn'), 'left');
+    		->join('core_account', 'student_note_link.account_id = core_account.id', array('name', 'account_property_15' => 'property_15', 'account_class' => 'property_7', 'account_email_work' => 'email_work'), 'left')
+    		->join('core_vcard', 'student_note.teacher_id = core_vcard.id', array('teacher_n_fn' => 'n_fn'), 'left');
     	$where = new Where;
     	$where->notEqualTo('student_note_link.status', 'deleted');
     	if ($type) $where->equalTo('student_note.type', $type);
@@ -410,14 +415,20 @@ class NoteLink
     			$entity = NoteLink::$model['properties'][$propertyKey]['entity'];
     			$column = NoteLink::$model['properties'][$propertyKey]['column'];
     			 
-    			if ($propertyId == 'school_year') $where->equalTo('student_note.school_year', $params[$propertyId]);
+    			if ($propertyId == 'school_year') {
+					if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.school_year', explode(',', $params[$propertyId]));
+					else $where->equalTo('student_note.school_year', $params[$propertyId]);
+				}
     			elseif ($propertyId == 'note_id') $where->in('student_note.id', explode(',', $params[$propertyId]));
     			elseif ($propertyId == 'group_id') {
 					if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.group_id', explode(',', $params[$propertyId]));
 					else $where->in('student_note.group_id', explode(',', $params[$propertyId]));
 				}
     			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
-    			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
+    			elseif ($propertyId == 'account_id') {
+					if (strpos($params[$propertyId], ',') >= 0) $where->in('account_id', explode(',', $params[$propertyId]));
+					else $where->equalTo('account_id', $params[$propertyId]);
+				}
     			elseif ($propertyId == 'n_fn') $where->like('n_fn', '%' . $params[$propertyId] . '%');
     			elseif ($propertyId == 'account_property_15') $where->equalTo('core_account.property_15', $params[$propertyId]);
     			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
@@ -429,6 +440,7 @@ class NoteLink
 				elseif (strpos($params[$propertyId], ',')) $where->in($entity . '.' . $column, array_map('trim', explode(',', $params[$propertyId])));
     			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
     			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
+				elseif ($params[$propertyId] == 0) $where->equalTo($entity . '.' . $column, $params[$propertyId]);
     			else $where->like($entity . '.' . $column, '%'.$params[$propertyId].'%');
     		}
     	}
@@ -445,13 +457,76 @@ class NoteLink
 		}
 		return $noteLinks;
     }
+    
+    public static function select($type, $params, $major, $dir)
+    {
+    	$context = Context::getCurrent();
+    	$select = NoteLink::getTable()->getSelect()
+    		->order(array($major.' '.$dir))
+			->join('student_note', 'student_note_link.note_id = student_note.id', array('note_id' => 'id', 'note_status' => 'status', 'school_year', 'school_period', 'subject', 'reference_value', 'weight'), 'left');
+    	$where = new Where;
+    	$where->notEqualTo('student_note_link.status', 'deleted');
+    	if ($type) $where->equalTo('student_note.type', $type);
+
+		// Set the filters
+		foreach ($params as $propertyId => $property) {
+			if (in_array(substr($propertyId, 0, 4), array('min_', 'max_'))) $propertyKey = substr($propertyId, 4);
+			else $propertyKey = $propertyId;
+			$entity = NoteLink::$model['properties'][$propertyKey]['entity'];
+			$column = NoteLink::$model['properties'][$propertyKey]['column'];
+				
+			if ($propertyId == 'school_year') {
+				if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.school_year', explode(',', $params[$propertyId]));
+				else $where->equalTo('student_note.school_year', $params[$propertyId]);
+			}
+			elseif ($propertyId == 'note_id') $where->in('student_note.id', explode(',', $params[$propertyId]));
+			elseif ($propertyId == 'group_id') {
+				if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+				else $where->in('student_note.group_id', explode(',', $params[$propertyId]));
+			}
+			elseif ($propertyId == 'place_id') $where->equalTo('student_note.place_id', $params[$propertyId]);
+			elseif ($propertyId == 'account_id') $where->equalTo('account_id', $params[$propertyId]);
+			elseif ($propertyId == 'school_period') $where->equalTo('student_note.school_period', $params[$propertyId]);
+			elseif ($propertyId == 'subject') {
+				if (strpos($params[$propertyId], ',') >= 0) $where->in('student_note.subject', explode(',', $params[$propertyId]));
+				else $where->equalTo('student_note.subject', $params[$propertyId]);
+			}
+			elseif ($propertyId == 'level') $where->equalTo('student_note.level', $params[$propertyId]);
+			elseif (strpos($params[$propertyId], ',')) $where->in($entity . '.' . $column, array_map('trim', explode(',', $params[$propertyId])));
+			elseif (substr($propertyId, 0, 4) == 'min_') $where->greaterThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
+			elseif (substr($propertyId, 0, 4) == 'max_') $where->lessThanOrEqualTo($entity . '.' . $column, $params[$propertyId]);
+			else $where->like($entity . '.' . $column, '%'.$params[$propertyId].'%');
+		}
+		
+    	$select->where($where);
+		$select->columns(['id', 'account_id', 'evaluation', 'value']);
+
+    	$cursor = NoteLink::getTable()->selectWith($select);
+		$noteLinks = array();
+		foreach ($cursor as $noteLink) {
+			if ($noteLink->note_status != 'deleted') $noteLinks[$noteLink->id] = [
+				'id' => $noteLink->id,
+				'note_id' => $noteLink->note_id,
+				'note_status' => $noteLink->note_status,
+				'account_id' => $noteLink->account_id,
+				'subject' => $noteLink->subject,
+				'school_year' => $noteLink->school_year,
+				'school_period' => $noteLink->school_period,
+				'value' => $noteLink->value,
+				'weight' => $noteLink->weight,
+				'reference_value' => $noteLink->reference_value,
+				'evaluation' => $noteLink->evaluation,
+			];
+		}
+		return $noteLinks;
+    }
 
     public static function get($id, $column = 'id', $id2 = false, $column2 = false, $id3 = false, $column3 = false, $id4 = false, $column4 = false)
     {
     	$noteLink = NoteLink::getTable()->get($id, $column, $id2, $column2, $id3, $column3, $id4, $column4);
     	$note = Note::get($noteLink->note_id);
     	$noteLink->note = $note;
-    	$account = Account::get($noteLink->account_id);
+    	$account = Account::getV3(['id' => $noteLink->account_id]);
     	$noteLink->status = $note->status;
     	$noteLink->place_id = $note->place_id;
     	$noteLink->category = $note->category;
@@ -664,6 +739,24 @@ class NoteLink
     
     	return 'OK';
     }
+
+    public static function updateCase($column, $pairs)
+    {
+		$context = Context::getCurrent();
+		$request = "UPDATE student_note_link\n";
+		$request .= "SET `$column` = CASE\n";
+		$ids = [];
+		foreach ($pairs as $id => $value) {
+			$ids[] = $id;
+			$request .= 'WHEN id = ' . $id . " THEN '" . $value . "'\n";
+		}
+		$request .= "END\n";	
+		$request .= "WHERE ID IN (" . implode(', ', $ids) . ");\n";
+		NoteLink::getTable()->query($request);
+		$where = new Where();
+		$where->in('id', $ids);
+		NoteLink::getTable()->updateWith($where, ['update_time' => date("Y-m-d H:i:s"), 'update_user' => $context->getUserId()]);
+	}
 
     public function isDeletable()
     {

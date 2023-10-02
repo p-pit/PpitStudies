@@ -406,7 +406,10 @@ class NoteController extends AbstractActionController
     	foreach ($context->getConfig('note/search'.'/'.$category)['main'] as $propertyId => $rendering) {
     
     		$property = ($params()->fromQuery($propertyId, null));
-    		if ($property) $filters[$propertyId] = $property;
+    		if ($property) {
+				if (strpos($property, ',') !== false) $filters[$propertyId] = explode(',', $property);
+				else $filters[$propertyId] = $property;
+			}
     		$min_property = ($params()->fromQuery('min_'.$propertyId, null));
     		if ($min_property) $filters['min_'.$propertyId] = $min_property;
     		$max_property = ($params()->fromQuery('max_'.$propertyId, null));
@@ -434,7 +437,7 @@ class NoteController extends AbstractActionController
     	$category = $this->params()->fromRoute('category');
     	$type = $this->params()->fromRoute('type');
     	$accountConfig = Account::getConfig('p-pit-studies');
-		$cursor = Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+name', null);
+		$cursor = Account::getList('teacher', ['status' => 'active,reconnect_with,contrat_envoye'], '+n_fn', null);
 		$teachers = [];
 		foreach ($cursor as $teacher) $teachers[$teacher->contact_1_id] = $teacher;
 
@@ -1117,7 +1120,7 @@ class NoteController extends AbstractActionController
 		}
 		else {
 			$accounts = null;
-			$accountsData = Account::getListV3('p-pit-studies', ['id', 'name'], ['status' => 'active,interested,converted,committed,undefined,retention,alumni,canceled,exclu,suspendu'], '+name');
+			$accountsData = Account::getListV3('p-pit-studies', ['id', 'name'], ['status' => 'active,interested,converted,committed,undefined,retention,alumni,canceled,exclu,suspendu,sortant'], '+name');
 		}
 		
 		$subject = $this->params()->fromQuery('subject');
@@ -1127,7 +1130,7 @@ class NoteController extends AbstractActionController
 		// user_story - student_evaluation_teachers: Les enseignants pouvant être selectionnés dans le formulaire sont tous les enseignants ayant un statut "actif"
 		$teachers = [];
 		if ($context->hasRole('manager')) {
-			$cursor = Account::getListV3('teacher', ['contact_1_id', 'name', 'n_fn', 'property_3'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
+			$cursor = Account::getListV3('teacher', ['contact_1_id', 'name', 'n_fn', 'property_3'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+n_fn');
 			foreach ($cursor as $teacher_id => $teacher) {
 				$teachers[$teacher['contact_1_id']] = $teacher;
 				$competences = $teachers[$teacher['contact_1_id']]['property_3'];
@@ -1201,12 +1204,13 @@ class NoteController extends AbstractActionController
 			$class = $this->params()->fromQuery('class');
 			$group_id = $this->params()->fromQuery('group_id');
 			$content['note']['group_id'] = $group_id;
-			$group = Account::get($group_id);
-			if (!$group) {
+			if (!$group_id) {
+				$group = null;
 				$content['group'] = null;
 				$place = null;
 			}
 			else {
+				$group = Account::get($group_id);
 				if (!$group || $group->type != 'group') {
 					$this->response->setStatusCode('400');
 					$this->response->setReasonPhrase('Not existing group');
@@ -1300,7 +1304,7 @@ class NoteController extends AbstractActionController
 		$content['config']['categories'] = $context->getConfig('student/property/evaluationCategory')['modalities'];
 
 		// Retrieve the group list.
-		$content['config']['groups'] = Account::getListV3('group', ['name'], [], null, null);		
+		if ($type == 'report') $content['config']['groups'] = Account::getListV3('group', ['name'], [], null, null);		
 
 		// DELETE request
 		if ($this->request->isDelete()) {

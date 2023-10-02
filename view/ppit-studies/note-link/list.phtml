@@ -125,14 +125,14 @@ table td {
           
           <?php else : ?>
             <?php 
-	    	$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+	    	/*$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
             if (array_key_exists($link['school_year'] . '_' . $link['school_period'] . '_' . $link['account_id'] . '_' . $link['subject'], $averages)) {
 				$average = $averages[$link['school_year'] . '_' . $link['school_period'] . '_' . $link['account_id'] . '_' . $link['subject']];
 				$average = $context->formatFloat($average['num'] / $average['den'] * $averageReference, 2);
             }
-            else $average = 'Non calculé';
+            else $average = 'Non calculé';*/
 			?>
-            <?php echo $average ?>
+            <?php echo /*$average*/ $context->formatFloat($link['value'], 2) ?>
           <?php endif;?>
         </td>
     
@@ -199,31 +199,31 @@ table td {
 
       <select class="px-0 py-0 my-0" id="select-distribution">
 
-      <?php foreach ($content['averages'] as $subjectId => $average) : ?>
-        <?php if ($subjectId != 'global') : ?>
-          <?php $subject = $subjectProperty['modalities'][$subjectId] ?>
-        <option value="<?php echo $subjectId ?>"><?php echo $context->localize($subject) ?></option>
-        <?php endif;?>
-      <?php endforeach;?>
+      <?php //foreach ($content['averages'] as $subjectId => $average) : ?>
+        <?php //if ($subjectId != 'global') : ?>
+          <?php //$subject = $subjectProperty['modalities'][$subjectId] ?>
+        <!--<option value="<?php //echo $subjectId ?>"><?php //echo $context->localize($subject) ?></option> -->
+        <?php //endif;?>
+      <?php //endforeach;?>
 
-      <?php if (count($content['links'])) : ?>
-        <option value="<?php echo 'global' ?>"><?php echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></option>
-      <?php endif;?>
+      <?php //if (count($content['links'])) : ?>
+        <!--<option value="<?php //echo 'global' ?>"><?php //echo $this->translate('Global average', 'ppit-studies', $context->getLocale()) ?></option>-->
+      <?php //endif;?>
 
       </select>
 
       <?php 
-      $reference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+      //$reference = $context->getConfig('student/parameter/average_computation')['reference_value'];
       ?>
-      <?php foreach ($content['averages'] as $subjectId => $average) : ?>
-        <?php if ($subjectId != 'global') : ?>
-      <span class="distribution" id="distribution_<?php echo $subjectId ?>"><?php echo round($average[0] / $average[1] * $reference * 100) / 100 ?></span>
-        <?php endif;?>
-      <?php endforeach;?>
+      <?php //foreach ($content['averages'] as $subjectId => $average) : ?>
+        <?php //if ($subjectId != 'global') : ?>
+      <!--<span class="distribution" id="distribution_<?php //echo $subjectId ?>"><?php //echo round($average[0] / $average[1] * $reference * 100) / 100 ?></span>-->
+        <?php //endif;?>
+      <?php //endforeach;?>
   
-      <?php if (count($content['links'])) : ?>
-      <span class="distribution" id="distribution_global"><?php echo round($content['globalAverage'][0] / $content['globalAverage'][1] * $reference * 100) / 100 ?></span>
-      <?php endif;?>
+      <?php //if (count($content['links'])) : ?>
+      <!--<span class="distribution" id="distribution_global"><?php //echo round($content['globalAverage'][0] / $content['globalAverage'][1] * $reference * 100) / 100 ?></span>-->
+      <?php //endif;?>
     
     </th>
   </tr>

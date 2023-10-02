@@ -599,10 +599,37 @@ return array_merge(
 							],
 						],
 					],
+					'link' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/link',
+							'defaults' => [
+								'action' => 'link',
+							],
+						],
+					],
+					'fix' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/fix',
+							'defaults' => [
+								'action' => 'fix',
+							],
+						],
+					],
+					'globalFix' => [
+						'type' => 'segment',
+						'options' => [
+							'route' => '/global-fix',
+							'defaults' => [
+								'action' => 'globalFix',
+							],
+						],
+					],
 					'getStudentsFromGroups' => [
 						'type' => 'segment',
 						'options' => [
-							'route' => '/get-students-from-groups[/:id]',
+							'route' => '/get-students-from-groups[/:id][/:report_id]',
 							'defaults' => [
 								'action' => 'getStudentsFromGroups',
 							],
@@ -1166,7 +1193,10 @@ return array_merge(
 				array('route' => 'noteLink/v1', 'roles' => array('guest')),
 				array('route' => 'noteLink/repair', 'roles' => array('admin')),
 
-				array('route' => 'report/post', 'roles' => array('guest')),
+				array('route' => 'report/post', 'roles' => array('manager')),
+				array('route' => 'report/link', 'roles' => array('manager')),
+				array('route' => 'report/fix', 'roles' => array('guest')),
+				array('route' => 'report/globalFix', 'roles' => array('guest')),
 				array('route' => 'report/v1', 'roles' => array('guest')),
 				array('route' => 'report/getStudentsFromGroups', 'roles' => array('guest')),
 				
@@ -1420,8 +1450,10 @@ return array_merge(
 		'modalities' => array(
 			'deplacement' => ['default' => 'Deplacement', 'fr_FR' => 'Déplacement'],
 			'hosting' => ['default' => 'Hosting', 'fr_FR' => 'Hébergement'],
+			'half_board' => ['default' => 'Half board', 'fr_FR' => 'Demi-pension'],
 			'sunday_hosting' => ['default' => 'Sunday hosting', 'fr_FR' => 'Accueil dimanche'],
 			'weekend_hosting' => ['default' => 'Weekend hosting', 'fr_FR' => 'Accueil week-end'],
+			'transport' => ['default' => 'Transport', 'fr_FR' => 'Transport'],
 			'distance-learning' => ['default' => 'Distance learning', 'fr_FR' => 'CNED'],
 			'insurance' => ['default' => 'Insurance', 'fr_FR' => 'Assurance'],
 			'licence' => ['default' => 'Licence', 'fr_FR' => 'Licence'],
@@ -1430,6 +1462,7 @@ return array_merge(
 			'registration_fees' => ['default' => 'Registration fees', 'fr_FR' => 'Droits d’inscription'],
 			'scholarship' => ['default' => 'Scholarship', 'fr_FR' => 'Bourse'],
 			'discount' => ['default' => 'Discount', 'fr_FR' => 'Remise'],
+			'late_arrival' => ['default' => 'Late arrival', 'fr_FR' => 'Arrivée tardive'],
 			'other' => ['default' => 'Other option', 'fr_FR' => 'Option autre'],
 			'' => ['default' => 'Undefined option', 'fr_FR' => 'Option indéfinie'],
 		),
@@ -1892,6 +1925,7 @@ return array_merge(
 	'commitment/p-pit-studies/property/account_property_19' => ['definition' => 'core_account/p-pit-studies/property/property_19'],
 	'commitment/p-pit-studies/property/account_property_20' => ['definition' => 'core_account/p-pit-studies/property/property_20'],
 	'commitment/p-pit-studies/property/account_int_1' => ['definition' => 'core_account/p-pit-studies/property/int_1'],
+	'commitment/p-pit-studies/property/account_int_3' => ['definition' => 'core_account/p-pit-studies/property/int_3'],
 	// 'commitment/p-pit-studies/property/contact_4_n_fn' => ['definition' => 'core_account/p-pit-studies/property/contact_4_n_fn'],
 	// 'commitment/p-pit-studies/property/contact_4_email' => ['definition' => 'core_account/p-pit-studies/property/contact_4_email'],
 	// 'commitment/p-pit-studies/property/contact_4_tel_work' => ['definition' => 'core_account/p-pit-studies/property/contact_4_tel_work'],
@@ -1902,12 +1936,18 @@ return array_merge(
 		'type' => 'audit',
 		'labels' => ['default' => 'Commentaire'],
 	],
+
+	'commitment/p-pit-studies/property/notification_time' => [
+		'definition' => 'inline',
+		'type' => 'date',
+		'labels' => ['default' => 'Date de notification'],
+	],
 	
 	'commitment/p-pit-studies' => array(
 		'tax' => 'including',
 		'currencySymbol' => '€',
 		'properties' => array(
-			'status', 'state', 'place_id', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'photo_link_id', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
+			'status', 'state', 'place_id', 'place_caption', 'account_name', 'email', 'email_work', 'tel_cell', 'n_title', 'n_first', 'n_last', 'n_fn', 'birth_date', 'gender', 'photo_link_id', 'invoice_n_fn', 'year', 'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'photo_link_id',
 			'email_2', 'tel_cell_2', 'tel_work_2', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2',
 			'email_3', 'tel_cell_3', 'tel_work_3', 'n_title_3', 'n_first_3', 'n_last_3', 'n_fn_3',
 			'email_4', 'tel_cell_4', 'tel_work_4', 'n_title_4', 'n_first_4', 'n_last_4', 'n_fn_4',
@@ -1917,13 +1957,12 @@ return array_merge(
 			'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8', 'property_9', 'property_10',
 			'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19',
 			'property_20', 'property_21', 'property_22', 'property_23','property_24','property_25','property_26', 'property_27', 'property_28', 'property_29', 'property_30',
-			'tinyint_1', 'tinyint_2',
-			'including_options_amount', 'order_identifier', 'invoice_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
+			'including_options_amount', 'order_identifier', 'invoice_identifier', 'credit_identifier', 'invoice_date', 'tax_amount', 'tax_inclusive',
 			'account_groups', 'account_opening_date', 'account_callback_date', 'account_date_1', 'account_date_2', 'account_date_3', 'account_date_4', 'account_date_5', 'account_origine', 'account_has_replied',
 			'account_property_1', 'account_property_2', 'account_property_3', 'account_property_4', 'account_property_5', 'account_property_6', 'account_property_7', 'account_property_8', 'account_property_9', 'account_property_10',
-			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20', 'account_int_1',
+			'account_property_11', 'account_property_12', 'account_property_13', 'account_property_14', 'account_property_15', 'account_property_16', 'account_property_17', 'account_property_18', 'account_property_19', 'account_property_20', 'account_int_1', 'account_int_3',
 			'default_means_of_payment', 'transfer_order_id', 'transfer_order_date', 'bank_identifier', 'account_contact_history', 'update_time',
-			'comment',
+			'comment', 'shipment_date', 'shipment_message_id', 'notification_time', 'place_caption','account_int_2',
 		),
 		'order' => 'school_year DESC',
 		'todo' => array(
@@ -3085,7 +3124,7 @@ return array_merge(
 		'type' => 'input',
 		'labels' => array(
 			'en_US' => 'Sport level',
-			'fr_FR' => 'Niveau sportif',
+			'fr_FR' => 'Complément niveau sportif',
 		),
 	),
 	
@@ -3363,7 +3402,7 @@ return array_merge(
 	
 	'core_account/p-pit-studies' => array(
 		'properties' => array(
-			'title_1', 'title_2', 'title_3', 'status', 'state', 'place_id', 'owner_id', 'identifier', 'name', 'email_work', 'photo_link_id', 'basket',
+			'title_1', 'title_2', 'title_3', 'status', 'state', 'place_id', 'place_caption', 'owner_id', 'identifier', 'name', 'email_work', 'photo_link_id', 'basket',
 			'contact_1_id', 'contact_2_id', 'n_title', 'n_first', 'n_last', 'n_fn', 'email', 'tel_work', 'tel_cell',
 			'adr_street', 'adr_zip', 'adr_city', 'adr_country', 'address', 'birth_date', 'gender', 'nationality',
 			'contact_2_role', 'n_title_2', 'n_first_2', 'n_last_2', 'n_fn_2', 'email_2', 'tel_work_2', 'tel_cell_2', 'address_2',
@@ -3376,7 +3415,8 @@ return array_merge(
 			'property_9', 'property_10', 'property_11', 'property_12', 'property_13', 'property_14', 'property_15', 'property_16', 'property_17', 'property_18', 'property_19', 'property_20',
 			'profile_tiny_1',
 			'json_property_1', 'json_property_2', 'json_property_3',
-			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2',
+			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2', 'int_3',
+			'comment_1', 'comment_2', 'comment_3', 'comment_4', 'update_time', 'int_1', 'int_2', 'int_4',
 		),
 		'order' => 'opening_date',
 		'options' => ['internal_identifier' => true, 'unique_key' => true /*['n_fn', 'n_last', 'email', 'tel_cell']*/],
@@ -3392,6 +3432,7 @@ return array_merge(
 					'status' => ['multiple' => true],
 					'place_id' => ['multiple' => true],
 					'property_1' => ['multiple' => true],
+					'property_11' => [],
 					'owner_id' => ['multiple' => true],
 					'property_16' => ['multiple' => true],
 					'origine' => ['multiple' => true],
@@ -3409,6 +3450,7 @@ return array_merge(
 					'n_fn' => [],
 					'email' => [],
 					'tel_cell' => [],
+					'birth_date' => [],
 			),
 	),
 	
@@ -3428,6 +3470,7 @@ return array_merge(
 					'property_16' => [],
 //					'basket' => [],
 					'property_1' => ['rendering' => 'image'],
+					'property_11' => [],
 					'opening_date' => [],
 					'callback_date' => [],
 //					'first_activation_date' => [],
@@ -3565,6 +3608,7 @@ return array_merge(
 			'property_3' => array('mandatory' => false),
 			'title_2' => null,
 			'property_1' => array('mandatory' => false),
+			'property_11' => array('mandatory' => false),
 			'groups' => array(),
 			'property_14' => array('mandatory' => false),
 			'title_3' => null,
@@ -3642,6 +3686,8 @@ return array_merge(
 					'property_8' => array('mandatory' => false),
 					'property_2' => array('mandatory' => false),
 					'property_3' => array('mandatory' => false),
+					'property_20' => array('mandatory' => false),
+					'property_11' => array('mandatory' => false),
 				),
 			),
 			'2nd-column' => array(
@@ -3900,6 +3946,7 @@ table.note-report td {
 	'commitmentTerm/p-pit-studies/property/commitment_property_10' => ['definition' => 'commitment/p-pit-studies/property/property_10'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_11' => ['definition' => 'commitment/p-pit-studies/property/property_11'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_12' => ['definition' => 'commitment/p-pit-studies/property/property_12'],
+	'commitmentTerm/p-pit-studies/property/commitment_property_13' => ['definition' => 'commitment/p-pit-studies/property/property_13'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_15' => ['definition' => 'commitment/p-pit-studies/property/property_15'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_16' => ['definition' => 'commitment/p-pit-studies/property/property_16'],
 	'commitmentTerm/p-pit-studies/property/commitment_property_17' => ['definition' => 'commitment/p-pit-studies/property/property_17'],
@@ -4488,10 +4535,10 @@ table.note-report td {
 					'fr_FR' => 'Année scolaire',
 			),
 	),
-	'student/property/school_year/default' => '2022-2023',
-	'student/property/school_year/next' => '2023-2024',
-	'student/property/school_year/start' => '2022-09-01',
-	'student/property/school_year/end' => '2023-07-31',
+	'student/property/school_year/default' => '2023-2024',
+	'student/property/school_year/next' => '2024-2025',
+	'student/property/school_year/start' => '2023-09-01',
+	'student/property/school_year/end' => '2024-07-31',
 	
 	'student/property/school_period' => array(
 			'type' => 'select',
@@ -5110,6 +5157,8 @@ table.note-report tr.period {
 			'realized' => array('en_US' => 'Realized', 'fr_FR' => 'Réalisé'),
 			'to_invoice' => array('en_US' => 'To Invoice', 'fr_FR' => 'A facturer'),
 			'canceled' => array('en_US' => 'Canceled', 'fr_FR' => 'Annulé'),
+			'replaced' => array('en_US' => 'replaced', 'fr_FR' => 'Remplacé'),
+
 		),
 		'labels' => array(
 			'en_US' => 'Status',
@@ -5241,23 +5290,26 @@ table.note-report tr.period {
 	],
 
 	'event/export/calendar' => array(
-		'place_id' => 'A',
-		'property_1' => 'B',
-		'n_fn' => 'C',
-		'groups' => 'D',
-		'subcategory' => 'E',
-		'property_3' => 'F',
-		'begin_date' => 'G',
-		'end_date' => 'H',
-		'day_of_week' => 'I',
-		'begin_time' => 'J',
-		'end_time' => 'K',
-		'value' => 'L',
-		'location' => 'M',
-		'caption' => 'N',
-		'email_work' => 'O',
-		'property_5' => 'P',
-	),
+
+        'place_id' => 'A',
+        'property_1' => 'B',
+        'n_fn' => 'C',
+        'groups' => 'D',
+        'subcategory' => 'E',
+        'property_3' => 'F',
+        'status'=> 'G', 
+        'begin_date' => 'H',
+        'end_date' => 'I',
+        'day_of_week' => 'J',
+        'begin_time' => 'K',
+        'end_time' => 'L',
+        'value' => 'M',
+        'location' => 'N',
+        'caption' => 'O',
+        'email_work' => 'P',
+        'property_5' => 'Q',
+        
+    ),
 	
 	'event/detail/calendar' => array(
 		'title' => array('default' => 'Event detail', 'fr_FR' => 'Détail de l\'évènement'),
@@ -5304,7 +5356,7 @@ table.note-report tr.period {
 		'definition' => 'inline',
 		'type' => 'select',
 		'account_type' => 'p-pit-studies',
-		'account_status' => 'active,retention,inscrit_passerelle,alumni,suspendu,exclu',
+		'account_status' => 'active,retention,inscrit_passerelle,alumni,suspendu,exclu,sortant',
 		'labels' => array(
 			'en_US' => 'Student',
 			'fr_FR' => 'Étudiant',
@@ -5342,6 +5394,7 @@ table.note-report tr.period {
 				'unjustified' => array('en_US' => 'Unjustified', 'fr_FR' => 'Non justifié'),
 				'repetition' => array('en_US' => 'Repetition', 'fr_FR' => 'Répétition'),
 				'exclusion' => array('en_US' => 'Exclusion', 'fr_FR' => 'Exclusion'),
+
 				'other' => array('en_US' => 'Other', 'fr_FR' => 'Autre'),
 		),
 		'labels' => array(
@@ -5354,6 +5407,7 @@ table.note-report tr.period {
 	'event/absence/property/account_property_18' => array('definition' => 'core_account/p-pit-studies/property/property_18'),
 	'event/absence/property/account_property_19' => array('definition' => 'core_account/p-pit-studies/property/property_19'),
 	
+	// add email_work in properties
 	'event/absence' => array(
 		'statuses' => array(),
 		'dimensions' => array(),
@@ -5361,8 +5415,8 @@ table.note-report tr.period {
 		'properties' => array(
 			'status', 'type', 'identifier', 'place_id', 'place_caption', 'account_id', 'n_fn', 'account_groups',
 			'begin_date', 'end_date', 'begin_time', 'end_time',
-			'property_1', 'property_2', 'property_3', 'property_4', 'property_6', 'property_11', 'property_12', 'account_property_15', 'account_property_18',
-			'update_time', 'count',
+			'property_1', 'property_2', 'property_3', 'property_4', 'property_6', 'property_11', 'property_12', 'property_13', 'account_property_15', 'account_property_18',
+			'update_time', 'count', 'email_work'
 		),
 	),
 	
@@ -5711,60 +5765,29 @@ table.note-report tr.period {
 	// Position Tableau Croisé Excel des absences 
 	'event/report/absence' => [
 		'columns' => [
-
-			// Student Details
-			'n_fn' => ['position' => 'A'],
-			'place_caption' => ['position' => 'B'],
-			//'email_work' => ['position' => 'C'],
-			'account_groups' => ['position' => 'D'],
-			//'account_property_18' => ['position' => 'E'],
-			// Student Financials
-			'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-			'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cour de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-			'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrer maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-			'entrepreise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'entrepreise']],
-			'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifier'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-			'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
-
-			'total_student' => [
-				'position' => 'L',
-				'type' => 'computed',
-				'labels' => ['default' => 'Total Etudiant'],
-				'background' => '#EBF1DE',
-				//'indicator' => ['to_justify','processing','medical','unjustified','other'],
-			],
-		],
-		'sums' => [
-			[
-				// Totals Students
-				'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
-				'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'En cour de traitement'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-				'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrer maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
-				'entrepreise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Presence en enteprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'entrepreise']],
-				'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifier'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-				'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
-			],
-		],
-	],
-
-        'columns' => [
             // Student Details
             'n_fn' => ['position' => 'A'],
             'place_caption' => ['position' => 'B'],
-            //'email_work' => ['position' => 'C'],
+            'email_work' => ['position' => 'C'],
             'account_groups' => ['position' => 'D'],
             //'account_property_18' => ['position' => 'E'],
             
             // Student Financials
             'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#EBF1DE', 'filter' => ['property_12' => 'to_justify']],
             'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'processing']],
-            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
+            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Raisons médicales'], 'background' => '#EBF1DE','filter' => ['property_12' => 'medical']],
             'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence entreprise'], 'background' => '#EBF1DE','filter' => ['property_12' => 'enterprise']],
-            'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
-            'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+			// add motifs 
+			'work' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Arrêt de travail'], 'background' => '#EBF1DE','filter' => ['property_12' => 'work']],
+			'exclusion_class' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Exclusion de cours'], 'background' => '#EBF1DE','filter' => ['property_12' => 'exclusion_class']],
+
+            'unjustified' => ['position' => 'L', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#EBF1DE','filter' => ['property_12' => 'unjustified']],
+			'unrecevable' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Non recevable'], 'background' => '#EBF1DE','filter' => ['property_12' =>'unrecevable']],
+			'other' => ['position' => 'N', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#EBF1DE','filter' => ['property_12' => 'other']],
+
 
             'total_student' => [
-                'position' => 'L',
+                'position' => 'O',
                 'type' => 'count',
                 'labels' => ['default' => 'Total Etudiant'],
                 'background' => '#EBF1DE',
@@ -5776,20 +5799,27 @@ table.note-report tr.period {
 
             'to_justify' => ['position' => 'F', 'type' => 'count', 'labels' => ['default' => 'À justifier'], 'background' => '#f44336', 'filter' => ['property_12' => 'to_justify']],
             'processing' => ['position' => 'G', 'type' => 'count', 'labels' => ['default' => 'Traitement en cours'], 'background' => '#f44336','filter' => ['property_12' => 'processing']],
-            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Arrêt maladie'], 'background' => '#f44336','filter' => ['property_12' => 'medical']],
+            'medical' => ['position' => 'H', 'type' => 'count', 'labels' => ['default' => 'Raisons médicales'], 'background' => '#f44336','filter' => ['property_12' => 'medical']],
             'enterprise' => ['position' => 'I', 'type' => 'count', 'labels' => ['default' => 'Présence entreprise'], 'background' => '#f44336','filter' => ['property_12' => 'enterprise']],
-            'unjustified' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#f44336','filter' => ['property_12' => 'unjustified']],
-            'other' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+			// add motifs 
+			'work' => ['position' => 'J', 'type' => 'count', 'labels' => ['default' => 'Arrêt de travail'], 'background' => '#f44336','filter' => ['property_12' => 'work']],
+			'exclusion_class' => ['position' => 'K', 'type' => 'count', 'labels' => ['default' => 'Exclusion de cours'], 'background' => '#f44336','filter' => ['property_12' => 'exclusion_class']],
+
+            'unjustified' => ['position' => 'L', 'type' => 'count', 'labels' => ['default' => 'Non justifié'], 'background' => '#f44336','filter' => ['property_12' => 'unjustified']],
+			'unrecevable' => ['position' => 'M', 'type' => 'count', 'labels' => ['default' => 'Non recevable'], 'background' => '#f44336','filter' => ['property_12' =>'unrecevable']],
+			'other' => ['position' => 'N', 'type' => 'count', 'labels' => ['default' => 'Autre justificatif'], 'background' => '#f44336','filter' => ['property_12' => 'other']],
+
 
             'total_student' => [
-                'position' => 'L',
+                'position' => 'O',
                 'type' => 'count',
                 'labels' => ['default' => 'Total Etudiant Par Motif'],
                 'background' => '#f44336',
-                //'indicator' => ['to_justify','processing','medical','unjustified','other'],
+                //'indicator' => ['ƒ','processing','medical','unjustified','other'],
             ],
         ],
-        
+	],
+
 
 
 	// Note
@@ -5845,6 +5875,13 @@ table.note-report tr.period {
 					'en_US' => 'Student name',
 					'fr_FR' => 'Nom de l\'élève',
 			),
+	),
+	'note/property/account_email_work' => array(
+		'type' => 'textarea',
+		'labels' => array(
+			'en_US' => 'Email Work',
+			'fr_FR' => 'Email Ecole',
+		),
 	),
 	'note/property/value' => array(
 			'type' => 'number',
@@ -5991,8 +6028,7 @@ table.note-report tr.period {
 									'2pit' => array('fr_FR' => 'P-PIT', 'en_US' => '2PIT'),
 							),
 							'labels' => array(
-									'en_US' => 'Center',
-									'fr_FR' => 'Centre',
+									'default' => 'Campus',
 							),
 					),
 					'place_caption' => array('definition' => 'note/property/place_caption'),
@@ -6035,6 +6071,7 @@ table.note-report tr.period {
 					'observations' => array('definition' => 'note/property/observations'),
 					'group_id' => array('definition' => 'note/property/group_id'),
 					'catchUp' => array('definition' => 'note/property/catchUp'),
+					'account_email_work' => array('definition' => 'note/property/account_email_work'),
 			),
 	),
 	'report/generic/property/groups' => ['definition' => 'core_account/generic/property/groups'],
@@ -6061,6 +6098,7 @@ table.note-report tr.period {
 					'group_id' => 'select',
 					'subject' => 'select',
 					'date' => 'date',
+					'account_email_work' => 'input',
 			),
 			'more' => array(
 			),
@@ -6138,20 +6176,21 @@ table.note-report tr.period {
 			'level' => 'F',
 			'subject' => 'G',
 			'name' => 'H',
-			'date' => 'I',
-			'reference_value' => 'J',
-			'weight' => 'K',
-			'value' => 'L',
-			'average' => 'M',
-			'global_average' => 'N',
-			'yearly_average' => 'O',
-			'lower_note' => 'P',
-			'average_note' => 'Q',
-			'higher_note' => 'R',
-			'assessment' => 'S',
-			'evaluation' => 'T',
-			'group_id' => 'U',
-			'catchUp' => 'V',
+			'account_email_work' => 'I',
+			'date' => 'J',
+			'reference_value' => 'K',
+			'weight' => 'L',
+			'value' => 'M',
+			'average' => 'N',
+			'global_average' => 'O',
+			'yearly_average' => 'P',
+			'lower_note' => 'Q',
+			'average_note' => 'R',
+			'higher_note' => 'S',
+			'assessment' => 'T',
+			'evaluation' => 'U',
+			'group_id' => 'V',
+			'catchUp' => 'W',
 		),
 	),
 

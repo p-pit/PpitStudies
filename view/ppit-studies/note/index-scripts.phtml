@@ -22,6 +22,62 @@ function exportNoteList() {
 	document.location.href = '<?php echo $this->url('note/export', array('category' => $category, 'type' => $type)) ?>' + params + '&major=' + criterion + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
 }
 
+function postNoteGroup(route) {
+  const noteIds = [];
+  $('.noteCheckbox').each(function () {
+    const id = $(this).attr('id').split('-')[1];
+    if ($(this).prop('checked')) noteIds.push(id);
+  });
+
+  const body = JSON.stringify({ "ids": noteIds });
+  const xhttp = new XMLHttpRequest();
+  xhttp.open("POST", route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        $('.groupMessage').hide();
+        $('#groupMessageOk').show();
+      }
+      else {
+        toastr.error("<?php echo $this->translate('A technical error has occured. PLease try again later', 'ppit-core', $context->getLocale()) ?>\nTechnical information: " + xhttp.status + ' - ' + xhttp.statusText);
+      }
+    }
+  }
+	xhttp.send(body);
+}
+
+function getNoteGroup(route) {
+  let xhttp = new XMLHttpRequest();
+  xhttp.open("GET", route, true);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        $('#modal-note-group').html(xhttp.responseText);
+        $('.groupMessage').hide();
+        $('#groupUpdateButton').click(function () { 
+          $(this).removeClass('btn-warning').addClass('btn-danger');
+          $(this).click(function () { 
+            $(this).hide();
+            $('#groupMessageProgress').show();
+            postNoteGroup(route); 
+          });
+        });
+        $('#groupFixButton').click(function () { 
+          $(this).removeClass('btn-warning').addClass('btn-danger');
+          $(this).click(function () { 
+            $(this).hide();
+            $('#groupMessageProgress').show();
+            postNoteGroup('<?php echo $this->url('report/fix') ?>'); 
+          });
+        });
+      }
+    }
+  }
+	xhttp.send();
+}
+
 // Load the list
 function getNoteList(params) {
 	// Execute the ajax request
@@ -31,28 +87,65 @@ function getNoteList(params) {
 	xhttp.onreadystatechange = function() {
 		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			$('#note-list-panel').html(xhttp.responseText);
+			  $('#note-list-panel').html(xhttp.responseText);
 
-            $('#export-button').click(function () { exportAbsenceList(); });
-      
-            // Connect the sort anchors
-            $('.sort_anchor').click(function () {
-              criterion = $(this).attr('id').split('-')[0];
-              ascCriterion = $('.sort_anchor_up').attr('id');
-              descCriterion = $('.sort_anchor_down').attr('id');
-              if (criterion + '-anchor' == ascCriterion) dir = 'DESC';
-              else if (criterion + '-anchor' == descCriterion) dir = 'ASC';
-              else dir = 'ASC';
-              getNoteList(getSearchParams(''));
+        $('#export-button').click(function () { exportAbsenceList(); });
+  
+        // Connect the sort anchors
+        $('.sort_anchor').click(function () {
+          criterion = $(this).attr('id').split('-')[0];
+          ascCriterion = $('.sort_anchor_up').attr('id');
+          descCriterion = $('.sort_anchor_down').attr('id');
+          if (criterion + '-anchor' == ascCriterion) dir = 'DESC';
+          else if (criterion + '-anchor' == descCriterion) dir = 'ASC';
+          else dir = 'ASC';
+          getNoteList(getSearchParams(''));
+        });
+  
+        // Connect the detail anchors
+        $('.note-detail-anchor').click(function () {
+          var id = $(this).attr('id').split('_')[1];
+          if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
+          else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(), id, 'note-update-panel');
+          $(this).removeClass("btn-outline-primary").addClass("btn-primary");
+          $('#modalForm').modal('toggle');
+        });
+
+        // Able the group action button
+        $('.noteListGroup').prop('disabled', true);
+        $('.noteCheckbox').click(function (e) {
+          $('.noteListGroup').prop('disabled', false);
+          if (e.shiftKey) {
+            const max = $(this).attr('id').split('-')[2], state = $(this).prop('checked');
+            $('.noteCheckbox').each(function () {
+              const i = parseInt($(this).attr('id').split('-')[2]);
+              if (i <= max) $(this).prop('checked', state);
             });
-      
-            // Connect the detail anchors
-            $('.note-detail-anchor').click(function () {
-              var id = $(this).attr('id').split('_')[1];
-              if ('<?php echo $category ?>' == 'homework') getNoteUpdate(id);
-              else if ('<?php echo $category ?>' == 'evaluation') getNoteEvaluation('<?php echo $type ?>', $('#search-group_id').val(), id, 'note-update-panel');
-              $(this).removeClass("btn-outline-primary").addClass("btn-primary");
-              $('#modalForm').modal('toggle');
+          } 
+          else {
+            const note_id = parseInt($(this).attr('id').split('-')[1]);
+          }
+        });
+
+        // Connect the check all checkbox
+        $('.noteCheckAll').click(function () {
+          var state = $(this).prop('checked');
+          $('.noteCheckbox').prop('checked', state);
+          $('.noteCheckAll').prop('checked', state);
+          $('.noteListGroup').prop('disabled', false);
+        });
+			
+        // Connect the grouped actions anchors
+        $('.noteListGroup').click(function () {
+          $('#modal-note-group').html('');
+          $('#groupModalForm').modal('toggle');
+          getNoteGroup('<?php echo $this->url('report/link') ?>');
+        });
+
+                  // Connect the more anchor
+            $('#more-anchor').click(function () {
+              $('#limit').val('');
+               getNoteList(getSearchParams(''));
             });
 		}
 	}
@@ -95,9 +188,14 @@ function getSearch() {
             $('.search_check').removeClass('btn-secondary').addClass('btn-default').removeClass('active');
             $('#erase-button').removeClass('btn-success').addClass('btn-default');
             $('#erase-button').attr('disabled', 'disabled');
-            getNoteList(getSearchParams(''));
           });
           
+          // refresh button
+          let refresh = function () {
+            $('#refresh-button').removeClass('btn-warning').addClass('btn-default');
+            $('#refresh-button').attr('disabled', 'disabled');
+            getNoteList(getSearchParams(''));
+          }
           $('.search_selectpicker').selectpicker('refresh');
           
           // Connect the date picker on date inputs
@@ -107,11 +205,12 @@ function getSearch() {
           $('.search_input').change(function () {
             if ($(this).attr('id')) {
               var propertyId = $(this).attr('id').split('-')[1];
+              $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
+              $('#refresh-button').attr('disabled', false);
               $('#erase-button').removeClass('btn-default').addClass('btn-success');
               $('#erase-button').attr('disabled', false);
               $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
               $('#search_check_value-' + propertyId).val('1');
-              getNoteList(getSearchParams(''));
             }
           }); 
 
@@ -120,19 +219,32 @@ function getSearch() {
             if ($(this).attr('id')) {
               if ($(this).val().length > 2) {
                 var propertyId = $(this).attr('id').split('-')[1];
+                $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
+                $('#refresh-button').attr('disabled', false);
                 $('#erase-button').removeClass('btn-default').addClass('btn-success');
                 $('#erase-button').attr('disabled', false);
                 $('#search_check-' + propertyId).removeClass('btn-default').addClass('btn-secondary').addClass('active');
                 $('#search_check_value-' + propertyId).val('1');
-                getNoteList(getSearchParams(''));
               }
             }
           });
+          
+            // Trigger the Entry key event that refreshes the list
+          $(document).keyup(function(e) {    
+            if (e.keyCode == 13) {
+                refresh();
+            }
+          });
+          // Connect the refresh button that refreshes the list
+          $('#refresh-button').click(refresh);
+          $('.search_selectpicker').selectpicker('refresh');
 
           // Trigger the click event on per-property checks (allowing to search on empty values) and refresh the list
           $('.search_check').click(function() {
             $('#erase-button').removeClass('btn-default').addClass('btn-success');
             $('#erase-button').attr('disabled', false);
+            $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
+            $('#refresh-button').attr('disabled', false);
             var propertyId = $(this).attr('id').split('-')[1], check = 'search_check_value-' + propertyId;
             if ($('#' + check).val() == '1') {
               $(this).removeClass('btn-secondary').addClass('btn-default').removeClass('active');
@@ -140,12 +252,15 @@ function getSearch() {
               $('#search-' + propertyId).val('');
               $('#search_min-' + propertyId).val('');
               $('#search_max-' + propertyId).val('');
+              $('#refresh-button').removeClass('btn-default').addClass('btn-warning');
+              $('#refresh-button').attr('disabled', false);
             }
             else {
               $(this).removeClass('btn-default').addClass('btn-secondary').addClass('active');
               $('#' + check).val('1');
             }
-            getNoteList(getSearchParams(''));
+            $('.shortcut-chip').removeClass('bg-primary').addClass('bg-light');
+           getNoteList(getSearchParams(''));
           });
 
           $('#export-button').click(function () {
@@ -158,6 +273,13 @@ function getSearch() {
     xhttp.send();
 }
 
-getSearch();
+getSearch(getSearchParams());
+
+// Session maintening
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open('GET', '<?php echo $this->url('user/maintainSession') ?>', true);
+  xhttp.send();
+}, 60000);
 
 </script>

@@ -48,7 +48,13 @@ class NoteLinkController extends AbstractActionController
 		$filters = ['category' => $category, 'type' => $type];
 		foreach ($config as $propertyId => $property) {
 			$value = $this->params()->fromQuery($propertyId, null);
-			if ($value !== null) $filters[$propertyId] = $value;
+			if ($value !== null) {
+				if ($propertyId == 'name') $filters[$propertyId] = ['like', $value];
+				elseif (in_array($propertyId, ['value', 'evaluation'])) {
+					$filters[$propertyId] = array_merge(['in'], explode(',', $value));
+				}
+				else $filters[$propertyId] = $value;
+			}
 		}
 
 		// Retrieve the limit
@@ -344,12 +350,12 @@ class NoteLinkController extends AbstractActionController
 		$filters = [];
 		foreach (NoteLink::getConfig(false) as $propertyId => $property) {
 			$value = $this->params()->fromQuery($propertyId, null);
-			if ($value !== null) $filters[$propertyId] = $value;
+			if ($value !== null/* && $propertyId != 'value'*/) $filters[$propertyId] = $value;
 		}
-		if ($type == 'report' && $filters) {
-			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
+		if ($type == 'report'/* && $filters*/) {
+			//$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			$notes = NoteLink::GetList('note', $filters, 'subject', 'ASC', 'search');
-			$averages = [];
+			/*$averages = [];
 			foreach ($notes as $link) {
 				if (!array_key_exists($link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject, $averages)) {
 					$averages[$link->school_year . '_' . $link->school_period . '_' . $link->account_id . '_' . $link->subject] = [
@@ -384,9 +390,9 @@ class NoteLinkController extends AbstractActionController
 					$globalAverages[$average['school_year'] . '_' . $average['school_period'] . '_' . $average['account_id'] . '_' . 'global']['den'] += $averageReference;
 				}
 			}
-			$averages = array_merge($averages, $globalAverages);
+			$averages = array_merge($averages, $globalAverages);*/
 		}
-		else $averages = [];
+		//else $averages = [];
 		
 		$view = new ViewModel(array(
 			'context' => $context,
@@ -395,7 +401,7 @@ class NoteLinkController extends AbstractActionController
 			//'teachers' => $teachers,
 			'groups' => $groups,
 			'content' => $content,
-			'averages' => $averages,
+			//'averages' => $averages,
 			'statusCode' => $this->response->getStatusCode(),
 			'reasonPhrase' => $this->response->getReasonPhrase(),
 			'order' => $order,
@@ -494,7 +500,7 @@ class NoteLinkController extends AbstractActionController
 		$place = Place::get($noteLink->place_id);
 		
 		// Compute the average
-		$averages = [];
+		/*$averages = [];
 		if ($noteLink->type == 'report') {
 			$averageReference = $context->getConfig('student/parameter/average_computation')['reference_value'];
 			$notes = NoteLink::GetList('note', ['school_year' => $noteLink->school_year, 'school_period' => $noteLink->school_period, 'account_id' => $noteLink->account_id], 'subject', 'ASC', 'search');
@@ -511,21 +517,11 @@ class NoteLinkController extends AbstractActionController
 				$globalAverage[1] += $averageReference;
 			}
 			$averages['global'] = $globalAverage;	
-		}
+		}*/
 		
-		// Retrieve the teachers
-		/*$select = Vcard::getTable()->getSelect()->order('n_fn ASC');
-		$where = new Where;
-		$where->notEqualTo('status', 'deleted');
-		$where->like('roles', '%teacher%');
-		$select->where($where);
-		$cursor = Vcard::getTable()->selectWith($select);
-		$contact = null;
-		$teachers = array();
-		foreach ($cursor as $contact) $teachers[$contact->id] = $contact;*/
-		$cursor = Account::getListV3('teacher', ['n_fn', 'contact_1_id'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
+		//$cursor = Account::getListV3('teacher', ['n_fn', 'contact_1_id'], ['status' => 'active,committed,contrat_envoye,reconnect_with'], '+name');
 		$teachers = [];
-		foreach ($cursor as $teacher_id => $teacher) $teachers[$teacher['contact_1_id']] = $teacher;
+		//foreach ($cursor as $teacher_id => $teacher) $teachers[$teacher['contact_1_id']] = $teacher;
 
 		// Retrieve the subject list. As a teacher my subject list is restricted according to my competences
 		$subjects = [];
@@ -595,7 +591,7 @@ class NoteLinkController extends AbstractActionController
     		'places' => Place::getList([]),
     		'teachers' => $teachers,
 			'subjects' => $subjects,
-			'averages' => $averages,
+			//'averages' => $averages,
 			'indicators' => NULL,
 			'statusCode' => $this->response->getStatusCode(),
 			'reasonPhrase' => $this->response->getReasonPhrase(),

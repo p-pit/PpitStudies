@@ -32,22 +32,20 @@
             <div class="input-group-prepend">
               <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-group_id"><?php echo $context->localize($context->getConfig('note/property/group_id')['labels']) ?></button>
             </div>
-            <select class="form-control search_input search_input_select" id="search-group_id">
-              <option value=""></option>
+            <select class="form-control search_input search_input_select selectpicker search_selectpicker "  data-none-selected-text multiple id="search-<?php echo $propertyId ?>">
       <?php foreach ($accountConfig['groups']['modalities'] as $modalityId => $modality) : ?>
               <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>
       <?php endforeach;?>
             </select>
           </div>
 
-    <?php elseif ($propertyId == 'teacher_id') : ?>
+    <?php elseif ($propertyId == 'teacher_id') : ?>   
         <div class="input-group input-group-sm mb-2 mr-sm-2">
             <input type="hidden" value="0" class="search_check_value" id="search_check_value-teacher_id" />
             <div class="input-group-prepend">
               <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-teacher_id"><?php echo $label ?></button>
             </div>
-            <select class="form-control search_input search_input_select" id="search-teacher_id">
-              <option value=""></option>
+            <select class="form-control search_input search_input_select selectpicker search_selectpicker "  data-none-selected-text multiple id="search-<?php echo $propertyId ?>">
       <?php foreach ($teachers as $teacher_id => $teacher) : ?>
               <option value="<?php echo $teacher_id ?>"><?php echo $teacher->n_fn ?></option>
       <?php endforeach;?>
@@ -64,7 +62,26 @@
             <input class="form-control search_input search_input_date search_input_date_min" type="text" id="search_min-date" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
             <input class="form-control search_input search_input_date search_input_date_max" type="text" id="search_max-date" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
           </div>
-	
+
+ <!-- Multi-sélection des filtres et l'année scolaire par défaut à 2022-2023 -->
+  <?php elseif ($propertyId == 'school_year') : ?>
+           <div class="input-group input-group-sm mb-2 mr-sm-2">
+            <input type="hidden" value="1" class="search_check_value" id="search_check_value-<?php echo $propertyId ?>" />
+            <div class="input-group-prepend">
+              <button type="button" class="btn btn-secondary input-group-text search_check active" id="search_check-<?php echo $propertyId ?>"><?php echo $label ?></button>
+            </div>
+            <select class="form-control search_input search_input_select selectpicker search_selectpicker " data-none-selected-text multiple id="search-<?php echo $propertyId ?>">
+            <?php foreach ($property['modalities'] as $modalityId => $modality) : ?>
+              <?php if ($modalityId == $context->getConfig('student/property/school_year/default')) : ?>
+                  <option value="<?php echo $modalityId ?>"selected><?php echo $context->localize($modality) ?></option>        
+              <?php else :?>     
+                 <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>        
+            <?php endif;?>
+		        <?php endforeach;?>
+          </select>
+          </div>         
+
+<!--subject-->
 	<?php elseif ($propertyId == 'subject') : ?>
 
           <div class="input-group input-group-sm mb-2 mr-sm-2">
@@ -72,8 +89,7 @@
             <div class="input-group-prepend">
               <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-<?php echo $propertyId ?>"><?php echo $label ?></button>
             </div>
-            <select class="form-control search_input search_input_select" id="search-<?php echo $propertyId ?>">
-              <option value=""></option>
+            <select class="form-control search_input search_input_select selectpicker search_selectpicker" data-none-selected-text multiple id="search-<?php echo $propertyId ?>">
 		<?php foreach ($property['modalities'] as $modalityId => $modality) : ?>
               <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modality) ?></option>
 		<?php endforeach;?>
@@ -88,10 +104,9 @@
           <div class="input-group input-group-sm mb-2 mr-sm-2">
             <input type="hidden" value="0" class="search_check_value" id="search_check_value-place_id" />
             <div class="input-group-prepend">
-              <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-place_id"><?php echo $label ?></button>
+              <button type="button" class="btn btn-secondary input-group-text search_check " id="search_check-place_id"><?php echo $label ?></button>
             </div>
-            <select class="form-control search_input search_input_select" id="search-place_id">
-              <option value=""></option>
+            <select class="form-control search_input search_input_select selectpicker search_selectpicker" data-none-selected-text multiple id="search-<?php echo $propertyId ?>">
         <?php foreach ($places as $place) : ?>
           <option value="<?php echo $place->id ?>"><?php echo $place->caption ?></option>
         <?php endforeach;?>
@@ -117,7 +132,6 @@
               <button type="button" class="btn btn-secondary input-group-text search_check" id="search_check-<?php echo $propertyId ?>"><?php echo $label ?></button>
             </div>
             <select class="form-control search_input search_input_select" id="search-<?php echo $propertyId ?>">
-              <option value=""></option>
       <?php foreach ($property['modalities'] as $modalityId => $modalityLabel) : ?>
               <option value="<?php echo $modalityId ?>"><?php echo $context->localize($modalityLabel) ?></option>
       <?php endforeach;?>
@@ -141,6 +155,9 @@
 
         <div class="col-md-3">    
           <div class="input-group input-group-sm mb-2 mr-sm-2">
+            <button type="button" class="btn btn-default" disabled title="<?php echo $this->translate('Refresh the list', 'ppit-core', $context->getLocale()) ?>" id="refresh-button">
+              <i class="fa fa-sync-alt text-center"></i>
+            </button>
             <button type="button" class="btn btn-default input-group-text" disabled data-toggle="tooltip" title="<?php echo $this->translate('Erase', 'ppit-core', $context->getLocale()) ?>" id="erase-button">
               <i class="fa fa-times text-center"></i>
             </button>
