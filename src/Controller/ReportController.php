@@ -458,7 +458,7 @@ class ReportController extends AbstractActionController
 				}
 				if ($reportLink['report']->subject != 'global') {
 					if ($reportLink['average']['referenceValue']) {
-						$values[$reportLink['link']->id] = $reportLink['link']->value;
+						if (!in_array($reportLink['acquisition'], [12, 13, 16])) $values[$reportLink['link']->id] = $reportLink['link']->value;
 					}
 					if ($reportLink['acquisition'] && !in_array($reportLink['acquisition'], [12, 13, 16])) {
 						//$acquisitions[$reportLink['link']->id] = $reportLink['acquisition'];
