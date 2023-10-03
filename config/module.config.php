@@ -1896,6 +1896,26 @@ return array_merge(
 		'labels' => ['default' => 'Nom de l\'entreprise App/Pro'],
 	],
 
+	'commitment/p-pit-studies/property/tinyint_1' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'labels' => ['default' => 'School status Q1', 'fr_FR' => 'Statut pédagogique S1'],
+		'modalities' => [
+			'1' => ['default' => 'Q1 - Pedagogic surveillance', 'fr_FR' => 'S1 - Surveillance pédagogique'],
+			'2' => ['default' => 'Q1 - Pedagogic exclusion', 'fr_FR' => 'S1 - Exclusion pédagogique'],
+		]
+	],
+
+	'commitment/p-pit-studies/property/tinyint_2' => [
+		'definition' => 'inline',
+		'type' => 'select',
+		'labels' => ['default' => 'School status Q2', 'fr_FR' => 'Statut pédagogique S2'],
+		'modalities' => [
+			'1' => ['default' => 'Q2 - Pedagogic surveillance', 'fr_FR' => 'S2 - Surveillance pédagogique'],
+			'2' => ['default' => 'Q2 - Pedagogic exclusion', 'fr_FR' => 'S2 - Exclusion pédagogique'],
+		]
+	],
+
 	'commitment/p-pit-studies/property/account_opening_date' => ['definition' => 'core_account/generic/property/opening_date'],
 	'commitment/p-pit-studies/property/account_callback_date' => ['definition' => 'core_account/generic/property/callback_date'],
 	'commitment/p-pit-studies/property/account_date_1' => ['definition' => 'core_account/generic/property/date_1'],
