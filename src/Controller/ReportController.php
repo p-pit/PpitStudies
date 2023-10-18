@@ -430,7 +430,7 @@ class ReportController extends AbstractActionController
 							$reportLink['acquisition'] = 15;
 							$acquisitions[$reportLink['link']->id] = 15;
 						}
-						elseif ($reportLink['link']->value <= 1) {
+						elseif ($reportLink['link']->value !== null && $reportLink['link']->value <= 1) {
 							$reportLink['acquisition'] = 10;
 							$acquisitions[$reportLink['link']->id] = 10;
 						}
