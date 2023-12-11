@@ -5268,8 +5268,15 @@ table.note-report tr.period {
 		'searchTitle' => array('default' => 'search', 'fr_FR' => 'recherche'),
 		'properties' => array(
 			'place_id' => ['multiple' => true],
-			'property_1' => ['default' => 'student/property/school_year/default', 'multiple' => true],
-			'groups' => ['multiple' => true],
+			'school' => ['multiple' => true],
+			'property_1' => [/*'default' => 'student/property/school_year/default',*/ 'multiple' => true],
+			'groups' => [
+				'multiple' => true,
+				'restrictions' => [
+					['property' => 'place_id', 'parent' => 'place_id'],
+					['property' => 'property_18', 'parent' => 'school'],
+				],
+			],
 			'subcategory' => ['multiple' => true],
 			'property_3' => ['multiple' => true],
 			'property_5' => ['multiple' => true],
