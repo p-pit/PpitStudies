@@ -6,6 +6,7 @@ include('core_account_message_p_pit_studies.php');
 include('core_account_message_teacher.php');
 include('event_message_p_pit_studies.php');
 include('note_link_generic.php');
+include('event_absence.php');
 
 return array_merge(
 [
@@ -6950,5 +6951,6 @@ table.note-report tr.period {
 	CORE_ACCOUNT_MESSAGE_P_PIT_STUDIES,
 	CORE_ACCOUNT_MESSAGE_TEACHER,
 	EVENT_MESSAGE_P_PIT_STUDIES,
-	NOTE_LINK_GENERIC
+	NOTE_LINK_GENERIC,
+	EVENT_ABSENCE,
 );
