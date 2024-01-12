@@ -4051,7 +4051,11 @@ table.note-report td {
 	),
 
 	'commitmentTerm/group/p-pit-studies' => array(
-		'tabs' => [],
+		'tabs' => [
+			'gemaDocument/intrumExportTab' => [],
+			'gemaDocument/uploadDropboxDocumentsTab' => [],
+			'cfaDock/uploadInvoiceTab' => [],
+		],
 	),
 
 	'commitmentTerm/generate/p-pit-studies' => array(
