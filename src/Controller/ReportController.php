@@ -675,6 +675,8 @@ class ReportController extends AbstractActionController
 			if (substr($c->caption, 0, 9) == $currentSchoolYear) $commitmentsByAccId[$c->account_id] = $c;
 		}
 
+		print_r($commitmentsByAccId); exit;
+
 		$accounts = [];
 
 		// Filter or not when subject is fulltime or parttime
