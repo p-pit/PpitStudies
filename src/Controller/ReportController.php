@@ -669,18 +669,17 @@ class ReportController extends AbstractActionController
 
 
 		// Temporary Fix : Exclude RD student from the list.
-		$commimentsByAccId = [];
+		$commitmentsByAccId = [];
 		$commitments = Commitment::getList('p-pit-studies', ['account_id' => implode(',', $accountIds)], 'caption');
-		foreach ($commiments as $c) {
-			if (substr($c->caption, 0, 9) == $currentSchoolYear) $commimentsByAccId[$c->account_id] = $c;
+		foreach ($commitments as $c) {
+			if (substr($c->caption, 0, 9) == $currentSchoolYear) $commitmentsByAccId[$c->account_id] = $c;
 		}
-		print_r($commimentsByAccId); exit;
 
 		$accounts = [];
 
 		// Filter or not when subject is fulltime or parttime
 		foreach ($account_ids as $account) {
-			if (substr($commimentsByAccId[$account['id']]->caption, 9) == 'd') continue;
+			if (substr($commitmentsByAccId[$account['id']]->caption, 9) == 'd') continue;
 			if ($full_time) {
 				if ($account['property_15'] !== "full_time") continue;
 				else {
