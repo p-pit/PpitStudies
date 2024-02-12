@@ -4,7 +4,7 @@ namespace PpitStudies\Controller;
 use PpitCore\Model\Account;
 use PpitCore\Model\Context;
 use PpitCore\Model\Event;
-use PpitCore\Model\Commitment;
+use PpitCommitment\Model\Commitment;
 use PpitCore\Model\Place;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
