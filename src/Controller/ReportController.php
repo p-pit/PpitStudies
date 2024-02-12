@@ -639,6 +639,7 @@ class ReportController extends AbstractActionController
 		$group_id = $this->params()->fromRoute('id');
 		$report_id = $this->params()->fromRoute('report_id');
 		$subject = $this->params()->fromQuery('subject');
+		$currentSchoolYear = $context->getConfig('student/property/school_year/default');
 
 		$coursesConfig = $context->getConfig('student/property/school_subject')['modalities'];
 		$courseConfig = $coursesConfig[$subject];
@@ -659,8 +660,20 @@ class ReportController extends AbstractActionController
 		} else {
 
 			// if report isn't generated yet.
-			$account_ids =  Account::getListV3('p-pit-studies', ['id', 'name', 'status', 'groups', 'property_15'], ['groups' => $group_id]);
+			$account_ids = Account::getListV3('p-pit-studies', ['id', 'name', 'status', 'groups', 'property_15'], ['groups' => $group_id]);
 		}
+
+		$accountIds = [];
+		foreach ($account_ids as $acc) $accountIds[] = $acc['id'];
+
+
+		// Temporary Fix : Exclude RD student from the list.
+		$commitmentsByAccId = [];
+		$commitments = Commitment::getList('p-pit-studies', ['account_id' => implode(',', $accountIds)], 'caption');
+		foreach ($commitments as $c) {
+			if (substr($c->caption, 0, 9) == $currentSchoolYear) $commitmentsByAccId[$c->account_id] = $c;
+		}
+
 
 		$accounts = [];
 
