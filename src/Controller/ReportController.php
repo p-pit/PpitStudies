@@ -666,6 +666,7 @@ class ReportController extends AbstractActionController
 
 		// Filter or not when subject is fulltime or parttime
 		foreach ($account_ids as $account) {
+			if (isset($commitmentsByAccId[$account['id']]) && substr($commitmentsByAccId[$account['id']]->caption, 9) == 'd') continue;
 			if ($full_time) {
 				if ($account['property_15'] !== "full_time") continue;
 				else {
