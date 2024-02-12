@@ -5,6 +5,7 @@ use PpitCore\Model\Account;
 use PpitCore\Model\Context;
 use PpitCore\Model\Event;
 use PpitCore\Model\Place;
+use PpitCommitment\Model\Commitment;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
 use Zend\Http\Client;
