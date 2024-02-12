@@ -671,10 +671,10 @@ class ReportController extends AbstractActionController
 		// Temporary Fix : Exclude RD student from the list.
 		$commimentsByAccId = [];
 		$commitments = Commitment::getList('p-pit-studies', ['account_id' => implode(',', $accountIds)], 'caption');
-		print_r($commitments); exit;
 		foreach ($commiments as $c) {
 			if (substr($c->caption, 0, 9) == $currentSchoolYear) $commimentsByAccId[$c->account_id] = $c;
 		}
+		print_r($commimentsByAccId); exit;
 
 		$accounts = [];
 
