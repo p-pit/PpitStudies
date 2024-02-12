@@ -668,6 +668,7 @@ class ReportController extends AbstractActionController
 		foreach ($account_ids as $acc) $accountIds[] = $acc['id'];
 
 
+		print_r(implode(',', $accountIds)); exit;
 		// Temporary Fix : Exclude RD student from the list.
 		$commimentsByAccId = [];
 		$commitments = Commitment::getList('p-pit-studies', ['account_id' => implode(',', $accountIds)], 'caption');
