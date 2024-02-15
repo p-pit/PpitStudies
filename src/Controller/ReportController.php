@@ -646,7 +646,7 @@ class ReportController extends AbstractActionController
 		$courseConfig = $coursesConfig[$subject];
 
 		// Course data
-		if (array_key_exists('fulltime', $courseConfig) && $courseConfig['fulltime'] == true) $full_time = true;
+		if (array_key_exists('full_time', $courseConfig) && $courseConfig['full_time'] == true) $full_time = true;
 		else $full_time = false;
 
 		// Report searching to check if the report is generate or not.
