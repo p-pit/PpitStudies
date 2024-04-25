@@ -6,6 +6,7 @@ use PpitCore\Model\Context;
 use PpitCore\Model\Event;
 use PpitCommitment\Model\Commitment;
 use PpitCore\Model\Place;
+use PpitCommitment\Model\Commitment;
 use PpitStudies\Model\Note;
 use PpitStudies\Model\NoteLink;
 use Zend\Http\Client;
@@ -646,7 +647,7 @@ class ReportController extends AbstractActionController
 		$courseConfig = $coursesConfig[$subject];
 
 		// Course data
-		if (array_key_exists('fulltime', $courseConfig) && $courseConfig['fulltime'] == true) $full_time = true;
+		if (array_key_exists('full_time', $courseConfig) && $courseConfig['full_time'] == true) $full_time = true;
 		else $full_time = false;
 
 		// Report searching to check if the report is generate or not.
@@ -664,23 +665,22 @@ class ReportController extends AbstractActionController
 			$account_ids = Account::getListV3('p-pit-studies', ['id', 'name', 'status', 'groups', 'property_15'], ['groups' => $group_id]);
 		}
 
-		$accountIds = [];
-		foreach ($account_ids as $acc) $accountIds[] = $acc['id'];
-
-
+		// $accountIds = [];
+		// foreach ($account_ids as $acc) $accountIds[] = $acc['id'];
+		
 		// Temporary Fix : Exclude RD student from the list.
-		$commitmentsByAccId = [];
-		$commitments = Commitment::getList('p-pit-studies', ['account_id' => implode(',', $accountIds)], 'caption');
-		foreach ($commitments as $c) {
-			if (substr($c->caption, 0, 9) == $currentSchoolYear) $commitmentsByAccId[$c->account_id] = $c;
-		}
+		// $commitmentsByAccId = [];
+		// $commitments = Commitment::getList('p-pit-studies', ['account_id' => implode(',', $accountIds)], 'caption');
+		// foreach ($commitments as $c) {
+		// 	if (substr($c->caption, 0, 9) == $currentSchoolYear) $commitmentsByAccId[$c->account_id] = $c;
+		// }
 
 
 		$accounts = [];
 
 		// Filter or not when subject is fulltime or parttime
 		foreach ($account_ids as $account) {
-			if (isset($commitmentsByAccId[$account['id']]) && substr($commitmentsByAccId[$account['id']]->caption, 9) == 'd') continue;
+			// if (isset($commitmentsByAccId[$account['id']]) && substr($commitmentsByAccId[$account['id']]->caption, 9) == 'd') continue;
 			if ($full_time) {
 				if ($account['property_15'] !== "full_time") continue;
 				else {
